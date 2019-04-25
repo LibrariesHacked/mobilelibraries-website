@@ -10,6 +10,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
 // Material Icons
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import MapIcon from '@material-ui/icons/Map';
 import MenuIcon from '@material-ui/icons/Menu';
 
 // Material UI Styles
@@ -31,7 +33,10 @@ const styles = theme => ({
 		transition: theme.transitions.create(['width', 'margin'], {
 			easing: theme.transitions.easing.sharp,
 			duration: theme.transitions.duration.enteringScreen
-		}),
+		})
+	},
+	grow: {
+		flexGrow: 1,
 	},
 	menuButton: {
 		marginRight: 36
@@ -68,6 +73,17 @@ class AppHeader extends Component {
 						<MenuIcon />
 					</IconButton>
 					<Typography variant="h6" color="inherit" noWrap>Mobile Libraries</Typography>
+					<div className={classes.grow} />
+					<IconButton
+						onClick={() => this.props.setPage('dashboard')}
+					>
+						<DashboardIcon />
+					</IconButton>
+					<IconButton
+						onClick={() => this.props.setPage('map')}
+					>
+						<MapIcon />
+					</IconButton>
 				</Toolbar>
 			</AppBar>
 		);

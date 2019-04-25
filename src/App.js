@@ -11,6 +11,7 @@ import { withStyles } from '@material-ui/core/styles';
 // Our components
 import AppDrawer from './AppDrawer';
 import AppHeader from './AppHeader';
+import MobileMap from './MobileMap';
 
 const styles = theme => ({
 	root: {
@@ -30,12 +31,17 @@ const styles = theme => ({
 });
 
 class App extends Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			drawer_open: false
-		}
-	}
+	state = {
+		drawer_open: false,
+		page: 'dashboard',
+		// Map variables, sent down to the map for updates.
+		fit_bounds: null,
+		position: [-4.1429, 50.3732],
+		zoom: [12],
+		pitch: [0],
+		bearing: [0]
+	};
+
 	render() {
 		const { classes } = this.props;
 		return (
@@ -43,12 +49,23 @@ class App extends Component {
 				<CssBaseline />
 				<AppHeader
 					drawer_open={this.state.drawer_open}
+					setPage={(page) => this.setState({ page: page })}
 					openDrawer={() => this.setState({ drawer_open: true })} />
 				<AppDrawer
 					drawer_open={this.state.drawer_open}
 					closeDrawer={() => this.setState({ drawer_open: false })} />
 				<main className={classes.content}>
 					<div className={classes.toolbar} />
+					{this.state.page === 'dashboard' ?
+						<div /> : null}
+					{this.state.page === 'map' ?
+						<MobileMap
+							bearing={this.state.bearing}
+							fit_bounds={this.state.fit_bounds}
+							pitch={this.state.pitch}
+							position={this.state.position}
+							zoom={this.state.zoom}
+						/> : null}
 				</main>
 			</div>
 		);
