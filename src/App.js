@@ -2,9 +2,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-// CSS
-import './App.css';
-
 // Material UI
 import CssBaseline from '@material-ui/core/CssBaseline';
 
