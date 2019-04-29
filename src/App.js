@@ -11,7 +11,10 @@ import { withStyles } from '@material-ui/core/styles';
 // Our components
 import AppDrawer from './AppDrawer';
 import AppHeader from './AppHeader';
+import Dashboard from './Dashboard';
 import MobileMap from './MobileMap';
+
+import * as mobilesHelper from './helpers/mobiles';
 
 const styles = theme => ({
 	root: {
@@ -34,6 +37,8 @@ class App extends Component {
 	state = {
 		drawer_open: false,
 		page: 'dashboard',
+		// Data storage
+		mobiles: [],
 		// Map variables, sent down to the map for updates.
 		fit_bounds: null,
 		position: [-4.1429, 50.3732],
@@ -41,6 +46,11 @@ class App extends Component {
 		pitch: [0],
 		bearing: [0]
 	};
+
+	// componentDidMount: sets up data and any logging
+	componentDidMount = () => {
+		mobilesHelper.getAllMobiles(mobiles => this.setState({ mobiles: mobiles }));
+	}
 
 	render() {
 		const { classes } = this.props;
@@ -57,7 +67,9 @@ class App extends Component {
 				<main className={classes.content}>
 					<div className={classes.toolbar} />
 					{this.state.page === 'dashboard' ?
-						<div /> : null}
+						<Dashboard
+							mobiles={this.state.mobiles}
+						/> : null}
 					{this.state.page === 'map' ?
 						<MobileMap
 							bearing={this.state.bearing}
