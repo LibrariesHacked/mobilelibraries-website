@@ -4,12 +4,21 @@ import PropTypes from 'prop-types';
 import clsx from 'clsx';
 
 // Material UI
+import Divider from '@material-ui/core/Divider';
 import Drawer from '@material-ui/core/Drawer';
 import IconButton from '@material-ui/core/IconButton';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
 
 // MUI Icons
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import BusinessIcon from '@material-ui/icons/Business';
+import DirectionBusIcon from '@material-ui/icons/DirectionsBus';
+import DirectionsIcon from '@material-ui/icons/Directions';
+import EventNoteIcon from '@material-ui/icons/EventNote';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -46,6 +55,11 @@ const styles = theme => ({
 		justifyContent: 'flex-end',
 		padding: '0 8px',
 		...theme.mixins.toolbar
+	},
+	listItemIcon: {
+		[theme.breakpoints.up('sm')]: {
+			paddingLeft: '8px'
+		}
 	}
 });
 
@@ -73,6 +87,25 @@ class AppDrawer extends Component {
 						{theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
 					</IconButton>
 				</div>
+				<Divider />
+				<List>
+				<ListItem button onClick={() => this.props.setDashboard('organisations')}>
+						<ListItemIcon className={classes.listItemIcon}><BusinessIcon /></ListItemIcon>
+						<ListItemText primary="Organisations" />
+					</ListItem>
+					<ListItem button onClick={() => this.props.setDashboard('mobiles')}>
+						<ListItemIcon className={classes.listItemIcon}><DirectionBusIcon /></ListItemIcon>
+						<ListItemText primary="Mobiles" />
+					</ListItem>
+					<ListItem button onClick={() => this.props.setDashboard('routes')}>
+						<ListItemIcon className={classes.listItemIcon}><DirectionsIcon /></ListItemIcon>
+						<ListItemText primary="Routes" />
+					</ListItem>
+					<ListItem button onClick={() => this.props.setDashboard('stops')}>
+						<ListItemIcon className={classes.listItemIcon}><EventNoteIcon /></ListItemIcon>
+						<ListItemText primary="Stops" />
+					</ListItem>
+				</List>
 			</Drawer>
 		);
 	}

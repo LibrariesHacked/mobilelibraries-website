@@ -11,25 +11,25 @@ import { withStyles } from '@material-ui/core/styles';
 // Our components
 import AppDrawer from './AppDrawer';
 import AppHeader from './AppHeader';
-import Dashboard from './Dashboard';
+import Mobiles from './Mobiles';
 import MobileMap from './MobileMap';
 
 import * as mobilesHelper from './helpers/mobiles';
 
 const styles = theme => ({
 	root: {
-		display: 'flex',
+		display: 'flex'
 	},
 	toolbar: {
 		display: 'flex',
 		alignItems: 'center',
 		justifyContent: 'flex-end',
 		padding: '0 8px',
-		...theme.mixins.toolbar,
+		...theme.mixins.toolbar
 	},
 	content: {
 		flexGrow: 1,
-		padding: theme.spacing(3),
+		padding: theme.spacing(3)
 	}
 });
 
@@ -37,6 +37,7 @@ class App extends Component {
 	state = {
 		drawer_open: false,
 		page: 'dashboard',
+		dashboard: 'mobiles',
 		// Data storage
 		mobiles: [],
 		// Map variables, sent down to the map for updates.
@@ -63,11 +64,12 @@ class App extends Component {
 					openDrawer={() => this.setState({ drawer_open: true })} />
 				<AppDrawer
 					drawer_open={this.state.drawer_open}
+					changeDashboard={(dashboard) => this.setState({ dashboard: dashboard })}
 					closeDrawer={() => this.setState({ drawer_open: false })} />
 				<main className={classes.content}>
 					<div className={classes.toolbar} />
-					{this.state.page === 'dashboard' ?
-						<Dashboard
+					{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
+						<Mobiles
 							mobiles={this.state.mobiles}
 						/> : null}
 					{this.state.page === 'map' ?

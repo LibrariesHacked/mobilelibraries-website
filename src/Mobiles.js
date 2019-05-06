@@ -7,7 +7,7 @@ import Grid from '@material-ui/core/Grid';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
-import DashboardMobile from './DashboardMobile';
+import MobileCard from './MobileCard';
 
 const styles = theme => ({
 	root: {
@@ -20,13 +20,13 @@ class Dashboard extends Component {
 	};
 
 	render() {
-		const { classes } = this.props;
+		const { classes, mobiles } = this.props;
 		return (
 			<div className={classes.root}>
 				<Grid container spacing={3}>
-					{this.props.mobiles.map((mobile, idx) => {
+					{mobiles.map((mobile, idx) => {
 						return (
-							<DashboardMobile
+							<MobileCard
 								key={'dsm_' + mobile.name.replace(' ', '') + '_' + idx}
 								mobile={mobile}
 							/>
