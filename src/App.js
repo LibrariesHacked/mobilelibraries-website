@@ -13,6 +13,9 @@ import AppDrawer from './AppDrawer';
 import AppHeader from './AppHeader';
 import Mobiles from './Mobiles';
 import MobileMap from './MobileMap';
+import Organisations from './Organisations';
+import Routes from './Routes';
+import Stops from './Stops';
 
 import * as mobilesHelper from './helpers/mobiles';
 
@@ -39,7 +42,10 @@ class App extends Component {
 		page: 'dashboard',
 		dashboard: 'mobiles',
 		// Data storage
+		organisations: [],
 		mobiles: [],
+		routes: [],
+		stops: [],
 		// Map variables, sent down to the map for updates.
 		fit_bounds: null,
 		position: [-4.1429, 50.3732],
@@ -53,6 +59,12 @@ class App extends Component {
 		mobilesHelper.getAllMobiles(mobiles => this.setState({ mobiles: mobiles }));
 	}
 
+	setPage = (page) => this.setState({ page: page })
+	setDashboard = (dashboard) => this.setState({ dashboard: dashboard })
+
+	closeDrawer = () => this.setState({ drawer_open: false })
+	openDrawer = () => this.setState({ drawer_open: true })
+
 	render() {
 		const { classes } = this.props;
 		return (
@@ -60,17 +72,29 @@ class App extends Component {
 				<CssBaseline />
 				<AppHeader
 					drawer_open={this.state.drawer_open}
-					setPage={(page) => this.setState({ page: page })}
-					openDrawer={() => this.setState({ drawer_open: true })} />
+					setPage={this.setPage}
+					openDrawer={this.openDrawer} />
 				<AppDrawer
 					drawer_open={this.state.drawer_open}
-					changeDashboard={(dashboard) => this.setState({ dashboard: dashboard })}
-					closeDrawer={() => this.setState({ drawer_open: false })} />
+					setDashboard={this.setDashboard}
+					closeDrawer={this.closeDrawer} />
 				<main className={classes.content}>
 					<div className={classes.toolbar} />
+					{this.state.page === 'dashboard' && this.state.dashboard === 'organisations' ?
+						<Organisations
+							organisations={this.state.organisations}
+						/> : null}
 					{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
 						<Mobiles
 							mobiles={this.state.mobiles}
+						/> : null}
+					{this.state.page === 'dashboard' && this.state.dashboard === 'routes' ?
+						<Routes
+							routes={this.state.routes}
+						/> : null}
+					{this.state.page === 'dashboard' && this.state.dashboard === 'stops' ?
+						<Stops
+							stops={this.state.stops}
 						/> : null}
 					{this.state.page === 'map' ?
 						<MobileMap

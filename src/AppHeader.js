@@ -64,7 +64,7 @@ class AppHeader extends Component {
 					<IconButton
 						color="inherit"
 						aria-label="Open drawer"
-						onClick={() => this.props.openDrawer()}
+						onClick={this.props.openDrawer}
 						edge="start"
 						className={clsx(classes.menuButton, {
 							[classes.hide]: drawer_open

@@ -15,19 +15,19 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
 	card: {
-		minWidth: 275,
+		minWidth: 275
 	},
 	bullet: {
 		display: 'inline-block',
 		margin: '0 2px',
-		transform: 'scale(0.8)',
+		transform: 'scale(0.8)'
 	},
 	title: {
 		fontSize: 14,
 	},
 	pos: {
-		marginBottom: 12,
-	},
+		marginBottom: 12
+	}
 });
 
 class MobileCard extends Component {

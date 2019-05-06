@@ -83,13 +83,13 @@ class AppDrawer extends Component {
 				open={drawer_open}
 			>
 				<div className={classes.toolbar}>
-					<IconButton onClick={() => this.props.closeDrawer()}>
+					<IconButton onClick={this.props.closeDrawer}>
 						{theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
 					</IconButton>
 				</div>
 				<Divider />
 				<List>
-				<ListItem button onClick={() => this.props.setDashboard('organisations')}>
+					<ListItem button onClick={() => this.props.setDashboard('organisations')}>
 						<ListItemIcon className={classes.listItemIcon}><BusinessIcon /></ListItemIcon>
 						<ListItemText primary="Organisations" />
 					</ListItem>

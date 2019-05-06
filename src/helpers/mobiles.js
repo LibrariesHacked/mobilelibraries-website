@@ -1,7 +1,7 @@
 // Axios for making requests
 import axios from 'axios';
 
-const config = require('../config.json');
+const config = require('./config.json');
 
 // getAllMobiles: 
 export function getAllMobiles(callback) {
