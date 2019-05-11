@@ -20,7 +20,7 @@ class Dashboard extends Component {
 	};
 
 	render() {
-		const { classes, mobiles } = this.props;
+		const { classes, mobiles, organisationLookup } = this.props;
 		return (
 			<div className={classes.root}>
 				<Grid container spacing={3}>
@@ -29,6 +29,7 @@ class Dashboard extends Component {
 							<MobileCard
 								key={'dsm_' + mobile.name.replace(' ', '') + '_' + idx}
 								mobile={mobile}
+								organisation={organisationLookup[mobile.organisation_id]}
 							/>
 						)
 					})}

@@ -7,15 +7,21 @@ import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
+
+// MUI Icons
+import EventNoteIcon from '@material-ui/icons/EventNote';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
 	card: {
-		minWidth: 275
+		minWidth: 275,
+		border: '1px solid rgba(0, 0, 0, 0.12)'
 	},
 	bullet: {
 		display: 'inline-block',
@@ -23,7 +29,7 @@ const styles = theme => ({
 		transform: 'scale(0.8)'
 	},
 	title: {
-		fontSize: 14,
+		fontSize: 14
 	},
 	pos: {
 		marginBottom: 12
@@ -35,18 +41,19 @@ class MobileCard extends Component {
 	};
 
 	render() {
-		const { classes, mobile } = this.props;
+		const { classes, mobile, organisation } = this.props;
 		return (
 			<Grid item xs={4}>
 				<Card className={classes.card} elevation={0}>
 					<CardContent>
-						<Typography className={classes.title} color="textSecondary" gutterBottom>{mobile.organisation_name}</Typography>
+						<Typography className={classes.title} color="textSecondary" gutterBottom>{organisation ? organisation.name : ''}</Typography>
 						<Typography variant="h5" component="h2">{mobile.name}</Typography>
-						<Typography className={classes.pos} color="textSecondary"></Typography>
-						<Typography variant="body2" component="p"></Typography>
 					</CardContent>
+					<Divider variant="middle" />
 					<CardActions>
-						<Button size="small">Learn More</Button>
+						<IconButton aria-label="Number of routes">
+							<EventNoteIcon />
+						</IconButton>
 					</CardActions>
 				</Card>
 			</Grid>

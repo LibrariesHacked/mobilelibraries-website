@@ -18,6 +18,7 @@ import Routes from './Routes';
 import Stops from './Stops';
 
 import * as mobilesHelper from './helpers/mobiles';
+import * as organisationsHelper from './helpers/organisations';
 
 const styles = theme => ({
 	root: {
@@ -43,9 +44,13 @@ class App extends Component {
 		dashboard: 'mobiles',
 		// Data storage
 		organisations: [],
+		organisationLookup: {},
 		mobiles: [],
+		mobileLookup: {},
 		routes: [],
+		routeLookup: {},
 		stops: [],
+		stopLookup: {},
 		// Map variables, sent down to the map for updates.
 		fit_bounds: null,
 		position: [-4.1429, 50.3732],
@@ -56,14 +61,25 @@ class App extends Component {
 
 	// componentDidMount: sets up data and any logging
 	componentDidMount = () => {
-		mobilesHelper.getAllMobiles(mobiles => this.setState({ mobiles: mobiles }));
+		mobilesHelper.getAllMobiles(mobiles => {
+			let mobileLookup = {};
+			mobiles.forEach(mobile => mobileLookup[mobile.id] = mobile);
+			this.setState({ mobiles: mobiles, mobileLookup: mobileLookup });
+		});
+
+		organisationsHelper.getAllOrganisations(organisations => {
+			let organisationLookup = {};
+			organisations.forEach(organisation => organisationLookup[organisation.id] = organisation);
+			this.setState({ organisations: organisations, organisationLookup: organisationLookup })
+		});
 	}
 
 	setPage = (page) => this.setState({ page: page })
 	setDashboard = (dashboard) => this.setState({ dashboard: dashboard })
 
-	closeDrawer = () => this.setState({ drawer_open: false })
+
 	openDrawer = () => this.setState({ drawer_open: true })
+	closeDrawer = () => this.setState({ drawer_open: false })
 
 	render() {
 		const { classes } = this.props;
@@ -87,6 +103,7 @@ class App extends Component {
 					{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
 						<Mobiles
 							mobiles={this.state.mobiles}
+							organisationLookup={this.state.organisationLookup}
 						/> : null}
 					{this.state.page === 'dashboard' && this.state.dashboard === 'routes' ?
 						<Routes
