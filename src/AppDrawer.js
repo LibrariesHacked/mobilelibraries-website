@@ -18,7 +18,7 @@ import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import BusinessIcon from '@material-ui/icons/Business';
 import DirectionBusIcon from '@material-ui/icons/DirectionsBus';
 import DirectionsIcon from '@material-ui/icons/Directions';
-import EventNoteIcon from '@material-ui/icons/EventNote';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -102,7 +102,7 @@ class AppDrawer extends Component {
 						<ListItemText primary="Routes" />
 					</ListItem>
 					<ListItem button onClick={() => this.props.setDashboard('stops')}>
-						<ListItemIcon className={classes.listItemIcon}><EventNoteIcon /></ListItemIcon>
+						<ListItemIcon className={classes.listItemIcon}><LocationOnIcon /></ListItemIcon>
 						<ListItemText primary="Stops" />
 					</ListItem>
 				</List>

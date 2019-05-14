@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 // Material UI
 import Grid from '@material-ui/core/Grid';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -23,6 +24,7 @@ class Dashboard extends Component {
 		const { classes, mobiles, organisationLookup } = this.props;
 		return (
 			<div className={classes.root}>
+				<ListSubheader>List of mobile libraries</ListSubheader>
 				<Grid container spacing={3}>
 					{mobiles.map((mobile, idx) => {
 						return (

@@ -6,7 +6,10 @@ import PropTypes from 'prop-types';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 // MUI Style
-import { withStyles } from '@material-ui/core/styles';
+import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
+import blue from '@material-ui/core/colors/blue';
+import red from '@material-ui/core/colors/red';
+import indigo from '@material-ui/core/colors/indigo';
 
 // Our components
 import AppDrawer from './AppDrawer';
@@ -19,6 +22,21 @@ import Stops from './Stops';
 
 import * as mobilesHelper from './helpers/mobiles';
 import * as organisationsHelper from './helpers/organisations';
+
+const theme = createMuiTheme({
+	palette: {
+		primary: blue,
+		secondary: indigo,
+		error: red,
+	},
+	overrides: {
+		MuiButton: {
+			text: {
+				textTransform: 'inherit'
+			}
+		}
+	}
+});
 
 const styles = theme => ({
 	root: {
@@ -84,45 +102,47 @@ class App extends Component {
 	render() {
 		const { classes } = this.props;
 		return (
-			<div className={classes.root}>
-				<CssBaseline />
-				<AppHeader
-					drawer_open={this.state.drawer_open}
-					setPage={this.setPage}
-					openDrawer={this.openDrawer} />
-				<AppDrawer
-					drawer_open={this.state.drawer_open}
-					setDashboard={this.setDashboard}
-					closeDrawer={this.closeDrawer} />
-				<main className={classes.content}>
-					<div className={classes.toolbar} />
-					{this.state.page === 'dashboard' && this.state.dashboard === 'organisations' ?
-						<Organisations
-							organisations={this.state.organisations}
-						/> : null}
-					{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
-						<Mobiles
-							mobiles={this.state.mobiles}
-							organisationLookup={this.state.organisationLookup}
-						/> : null}
-					{this.state.page === 'dashboard' && this.state.dashboard === 'routes' ?
-						<Routes
-							routes={this.state.routes}
-						/> : null}
-					{this.state.page === 'dashboard' && this.state.dashboard === 'stops' ?
-						<Stops
-							stops={this.state.stops}
-						/> : null}
-					{this.state.page === 'map' ?
-						<MobileMap
-							bearing={this.state.bearing}
-							fit_bounds={this.state.fit_bounds}
-							pitch={this.state.pitch}
-							position={this.state.position}
-							zoom={this.state.zoom}
-						/> : null}
-				</main>
-			</div>
+			<MuiThemeProvider theme={theme}>
+				<div className={classes.root}>
+					<CssBaseline />
+					<AppHeader
+						drawer_open={this.state.drawer_open}
+						setPage={this.setPage}
+						openDrawer={this.openDrawer} />
+					<AppDrawer
+						drawer_open={this.state.drawer_open}
+						setDashboard={this.setDashboard}
+						closeDrawer={this.closeDrawer} />
+					<main className={classes.content}>
+						<div className={classes.toolbar} />
+						{this.state.page === 'dashboard' && this.state.dashboard === 'organisations' ?
+							<Organisations
+								organisations={this.state.organisations}
+							/> : null}
+						{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
+							<Mobiles
+								mobiles={this.state.mobiles}
+								organisationLookup={this.state.organisationLookup}
+							/> : null}
+						{this.state.page === 'dashboard' && this.state.dashboard === 'routes' ?
+							<Routes
+								routes={this.state.routes}
+							/> : null}
+						{this.state.page === 'dashboard' && this.state.dashboard === 'stops' ?
+							<Stops
+								stops={this.state.stops}
+							/> : null}
+						{this.state.page === 'map' ?
+							<MobileMap
+								bearing={this.state.bearing}
+								fit_bounds={this.state.fit_bounds}
+								pitch={this.state.pitch}
+								position={this.state.position}
+								zoom={this.state.zoom}
+							/> : null}
+					</main>
+				</div>
+			</MuiThemeProvider>
 		);
 	}
 }

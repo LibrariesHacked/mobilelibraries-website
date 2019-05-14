@@ -3,17 +3,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
+import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 // MUI Icons
-import EventNoteIcon from '@material-ui/icons/EventNote';
+import DirectionsIcon from '@material-ui/icons/Directions';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
+import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -28,11 +32,19 @@ const styles = theme => ({
 		margin: '0 2px',
 		transform: 'scale(0.8)'
 	},
+	margin: {
+		margin: theme.spacing(2)
+	},
+	verticalDivider: {
+		width: 1,
+		height: 28,
+		margin: 8
+	},
+	leftIcon: {
+		marginRight: theme.spacing(1),
+	},
 	title: {
 		fontSize: 14
-	},
-	pos: {
-		marginBottom: 12
 	}
 });
 
@@ -46,14 +58,31 @@ class MobileCard extends Component {
 			<Grid item xs={4}>
 				<Card className={classes.card} elevation={0}>
 					<CardContent>
-						<Typography className={classes.title} color="textSecondary" gutterBottom>{organisation ? organisation.name : ''}</Typography>
+						<Typography className={classes.title} color="textSecondary" gutterBottom>{organisation ? 'Council: ' + organisation.name : ''}</Typography>
 						<Typography variant="h5" component="h2">{mobile.name}</Typography>
 					</CardContent>
 					<Divider variant="middle" />
 					<CardActions>
-						<IconButton aria-label="Number of routes">
-							<EventNoteIcon />
-						</IconButton>
+						<Tooltip title="Mobile library stops" aria-label="Mobile library stops">
+							<Badge color="primary" badgeContent={mobile.number_stops} className={classes.margin}>
+								<Button size="small" color="primary" className={classes.button}>
+									<LocationOnIcon className={classes.leftIcon} />Stops
+								</Button>
+							</Badge>
+						</Tooltip>
+						<Tooltip title="Mobile library routes" aria-label="Mobile library routes">
+							<Badge color="primary" badgeContent={mobile.number_routes} className={classes.margin}>
+								<Button size="small" color="primary" className={classes.button}>
+									<DirectionsIcon className={classes.leftIcon} />Routes
+								</Button>
+							</Badge>
+						</Tooltip>
+						<Divider className={classes.verticalDivider} />
+						<Tooltip title="Download PDF timetable document" aria-label="Download timetable document">
+							<IconButton>
+								<PictureAsPdfIcon />
+							</IconButton>
+						</Tooltip>
 					</CardActions>
 				</Card>
 			</Grid>
