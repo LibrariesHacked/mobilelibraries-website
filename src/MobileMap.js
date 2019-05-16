@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
 // Mapbox GL
-import ReactMapboxGl, { ZoomControl } from "react-mapbox-gl";
+import ReactMapboxGl, { ZoomControl, Source, Layer } from "react-mapbox-gl";
 
 const styles = theme => ({
 
@@ -37,6 +37,59 @@ class MobileMap extends Component {
 				fitBounds={this.props.fit_bounds}
 				containerStyle={{ top: 0, bottom: 0, right: 0, left: 0, height: '100vh', width: '100vw', position: 'absolute' }}
 			>
+				<Source
+					id='src_stops'
+					tileJsonSource={{
+						type: 'vector',
+						tiles: [
+							'https://api.mobilelibraries.org/api/stops/{z}/{x}/{y}.mvt',
+						],
+					}} />
+				<Layer
+					id='lyr_stops_circles'
+					type='circle'
+					sourceId='src_stops'
+					sourceLayer='stop'
+					layout={{}}
+					paint={{
+						'circle-radius': 4,
+						'circle-color': '#36A2EB',
+						'circle-stroke-width': 1,
+						'circle-stroke-color': '#FFFFFF',
+						'circle-opacity': 0.8
+					}}
+				/>
+				<Layer
+					id='lyr_stops_labels'
+					type='symbol'
+					sourceId='src_stops'
+					sourceLayer='stop'
+					layout={{
+						'text-field': 'name',
+						'text-ignore-placement': true,
+						'text-field': ['to-string', ['get', 'name']],
+						'text-size': [
+							'interpolate',
+							['linear'],
+							['zoom'],
+							12,
+							9,
+							14,
+							11
+						],
+						'text-font': [
+							'Source Sans Pro Regular'
+						],
+						'text-line-height': 1,
+						'text-anchor': 'top'
+					}}
+					paint={{
+						'text-halo-color': '#FFFFFF',
+						'text-halo-width': 1,
+						'text-halo-blur': 1,
+						'text-color': '#36A2EB'
+					}}
+				/>
 				<ZoomControl position="bottom-right" />
 			</Map>
 		);
