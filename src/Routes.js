@@ -3,11 +3,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
-import Grid from '@material-ui/core/Grid';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
-import RouteCard from './RouteCard';
 
 const styles = theme => ({
 	root: {
@@ -20,7 +18,7 @@ class Routes extends Component {
 	};
 
 	render() {
-		const { classes, routes } = this.props;
+		const { classes } = this.props;
 		return (
 			<div className={classes.root}>
 

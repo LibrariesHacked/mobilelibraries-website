@@ -65,7 +65,6 @@ class MobileMap extends Component {
 					sourceId='src_stops'
 					sourceLayer='stop'
 					layout={{
-						'text-field': 'name',
 						'text-ignore-placement': true,
 						'text-field': ['to-string', ['get', 'name']],
 						'text-size': [

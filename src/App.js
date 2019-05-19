@@ -9,7 +9,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
 import red from '@material-ui/core/colors/red';
-import indigo from '@material-ui/core/colors/indigo';
+import green from '@material-ui/core/colors/green';
 
 // Our components
 import AppDrawer from './AppDrawer';
@@ -26,7 +26,7 @@ import * as organisationsHelper from './helpers/organisations';
 const theme = createMuiTheme({
 	palette: {
 		primary: blue,
-		secondary: indigo,
+		secondary: green,
 		error: red,
 	},
 	overrides: {
@@ -67,8 +67,6 @@ class App extends Component {
 		mobileLookup: {},
 		routes: [],
 		routeLookup: {},
-		stops: [],
-		stopLookup: {},
 		// Map variables, sent down to the map for updates.
 		fit_bounds: null,
 		position: [-4.1429, 50.3732],
@@ -90,6 +88,7 @@ class App extends Component {
 			organisations.forEach(organisation => organisationLookup[organisation.id] = organisation);
 			this.setState({ organisations: organisations, organisationLookup: organisationLookup })
 		});
+
 	}
 
 	setPage = (page) => this.setState({ page: page })
@@ -129,9 +128,7 @@ class App extends Component {
 								routes={this.state.routes}
 							/> : null}
 						{this.state.page === 'dashboard' && this.state.dashboard === 'stops' ?
-							<Stops
-								stops={this.state.stops}
-							/> : null}
+							<Stops /> : null}
 						{this.state.page === 'map' ?
 							<MobileMap
 								bearing={this.state.bearing}
