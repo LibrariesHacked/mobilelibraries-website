@@ -62,11 +62,14 @@ class App extends Component {
 		dashboard: 'mobiles',
 		// Data storage
 		organisations: [],
-		organisationLookup: {},
+		organisation_lookup: {},
+		organisation_filter: [],
 		mobiles: [],
-		mobileLookup: {},
+		mobile_lookup: {},
+		mobile_filter: [],
 		routes: [],
-		routeLookup: {},
+		route_lookup: {},
+		route_filter: [],
 		// Map variables, sent down to the map for updates.
 		fit_bounds: null,
 		position: [-4.1429, 50.3732],
@@ -78,22 +81,24 @@ class App extends Component {
 	// componentDidMount: sets up data and any logging
 	componentDidMount = () => {
 		mobilesHelper.getAllMobiles(mobiles => {
-			let mobileLookup = {};
-			mobiles.forEach(mobile => mobileLookup[mobile.id] = mobile);
-			this.setState({ mobiles: mobiles, mobileLookup: mobileLookup });
+			let mobile_lookup = {};
+			mobiles.forEach(mobile => mobile_lookup[mobile.id] = mobile);
+			this.setState({ mobiles: mobiles, mobile_lookup: mobile_lookup });
 		});
 
 		organisationsHelper.getAllOrganisations(organisations => {
-			let organisationLookup = {};
-			organisations.forEach(organisation => organisationLookup[organisation.id] = organisation);
-			this.setState({ organisations: organisations, organisationLookup: organisationLookup })
+			let organisation_lookup = {};
+			organisations.forEach(organisation => organisation_lookup[organisation.id] = organisation);
+			this.setState({ organisations: organisations, organisation_lookup: organisation_lookup })
 		});
-
 	}
 
 	setPage = (page) => this.setState({ page: page })
 	setDashboard = (dashboard) => this.setState({ dashboard: dashboard })
 
+	viewStopsByMobile = (mobile_id) => {
+		this.setState({ page: 'dashboard', dashboard: 'stops', mobile_filter: [mobile_id] });
+	}
 
 	openDrawer = () => this.setState({ drawer_open: true })
 	closeDrawer = () => this.setState({ drawer_open: false })
@@ -121,14 +126,20 @@ class App extends Component {
 						{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
 							<Mobiles
 								mobiles={this.state.mobiles}
-								organisationLookup={this.state.organisationLookup}
+								organisation_lookup={this.state.organisation_lookup}
+								viewStopsByMobile={this.viewStopsByMobile}
 							/> : null}
 						{this.state.page === 'dashboard' && this.state.dashboard === 'routes' ?
 							<Routes
 								routes={this.state.routes}
 							/> : null}
 						{this.state.page === 'dashboard' && this.state.dashboard === 'stops' ?
-							<Stops /> : null}
+							<Stops
+								organisation_lookup={this.state.organisation_lookup}
+								organisation_filter={this.state.organisation_filter}
+								mobile_lookup={this.state.mobile_lookup}
+								mobile_filter={this.state.mobile_filter}
+							/> : null}
 						{this.state.page === 'map' ?
 							<MobileMap
 								bearing={this.state.bearing}

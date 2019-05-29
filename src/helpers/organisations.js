@@ -10,8 +10,8 @@ export function getAllOrganisations(callback) {
 			if (response && response.data) {
 				callback(response.data);
 			} else {
-				callback({});
+				callback([]);
 			}
 		})
-		.catch(err => callback({}));
+		.catch(err => callback([]));
 }

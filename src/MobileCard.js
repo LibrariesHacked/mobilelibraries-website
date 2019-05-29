@@ -65,7 +65,7 @@ class MobileCard extends Component {
 					<CardActions>
 						<Tooltip title="Mobile library stops" aria-label="Mobile library stops">
 							<Badge color="primary" badgeContent={mobile.number_stops} className={classes.margin}>
-								<Button size="small" color="primary" className={classes.button}>
+								<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
 									<LocationOnIcon className={classes.leftIcon} />Stops
 								</Button>
 							</Badge>

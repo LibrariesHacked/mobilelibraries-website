@@ -21,7 +21,7 @@ class Dashboard extends Component {
 	};
 
 	render() {
-		const { classes, mobiles, organisationLookup } = this.props;
+		const { classes, mobiles, organisation_lookup } = this.props;
 		return (
 			<div className={classes.root}>
 				<ListSubheader>List of mobile libraries</ListSubheader>
@@ -31,7 +31,8 @@ class Dashboard extends Component {
 							<MobileCard
 								key={'dsm_' + mobile.name.replace(' ', '') + '_' + idx}
 								mobile={mobile}
-								organisation={organisationLookup[mobile.organisation_id]}
+								organisation={organisation_lookup[mobile.organisation_id]}
+								viewStopsByMobile={this.props.viewStopsByMobile}
 							/>
 						)
 					})}

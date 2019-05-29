@@ -14,13 +14,12 @@ import { withStyles } from '@material-ui/core/styles';
 
 // MUI Icons
 import Event from '@material-ui/icons/Event';
-import Search from '@material-ui/icons/Search';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
 import FirstPage from '@material-ui/icons/FirstPage';
+import FilterList from '@material-ui/icons/FilterList';
 import LastPage from '@material-ui/icons/LastPage';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
-import Remove from '@material-ui/icons/Remove';
 
 import moment from 'moment';
 
@@ -41,42 +40,70 @@ class Stops extends Component {
 		title: 'All stops'
 	};
 
-	handleAddStopCalendar = (event, rowData) => {
+	tableRef = React.createRef();
+
+	getStopCalendar = (event, rowData) => {
 
 	}
 
-	handleStopPdf = (event, rowData) => {
+	getStopPdf = (event, rowData) => {
 
 	}
 
 	render() {
-		const { classes } = this.props;
+		const { classes, organisation_lookup, mobile_lookup } = this.props;
+		let orgText = {}
+		Object.keys(organisation_lookup).forEach(key => {
+			orgText[key] = organisation_lookup[key].name;
+		});
+		let mobileText = {}
+		Object.keys(mobile_lookup).forEach(key => {
+			mobileText[key] = mobile_lookup[key].name;
+		});
 		return (
 			<div style={{ maxWidth: '100%' }}>
 				<ListSubheader>List of mobile library stops</ListSubheader>
 				<MaterialTable
+					tableRef={this.tableRef}
 					components={{
 						Container: props => <Paper {...props} elevation={0} className={classes.table} />
 					}}
 					icons={{
+						Filter: FilterList,
 						FirstPage: FirstPage,
 						LastPage: LastPage,
 						NextPage: ChevronRight,
-						PreviousPage: ChevronLeft,
-						Search: Search,
-						ThirdStateCheck: Remove
+						PreviousPage: ChevronLeft
 					}}
 					options={{
 						search: false,
 						loadingType: 'linear',
-						actionsColumnIndex: 4
+						actionsColumnIndex: 6,
+						filtering: true
 					}}
 					columns={[
-						{ title: 'Name', field: 'name' },
-						{ title: 'Community', field: 'community' },
+						{ title: 'Name', field: 'name', filtering: false },
+						{ title: 'Community', field: 'community', filtering: false },
+						{
+							title: 'Organisation',
+							field: 'organisation_id',
+							type: 'numeric',
+							defaultFilter: this.props.organisation_filter,
+							lookup: orgText,
+							fitering: true
+						},
+						{
+							title: 'Mobile',
+							field: 'mobile_id',
+							type: 'numeric',
+							defaultFilter: this.props.mobile_filter,
+							lookup: mobileText,
+							filtering: true
+						},
 						{
 							title: 'Arrival',
 							field: 'arrival',
+							filtering: false,
 							render: (rowData) => {
 								return moment(rowData.arrival, 'HH:mm:ssZ').format('HH:mma');
 							}
@@ -84,15 +111,9 @@ class Stops extends Component {
 						{
 							title: 'Departure',
 							field: 'departure',
+							filtering: false,
 							render: (rowData) => {
 								return moment(rowData.departure, 'HH:mm:ssZ').format('HH:mma');
-							}
-						},
-						{
-							title: 'Next visit',
-							field: 'arrival',
-							render: (rowData) => {
-								return moment(rowData.arrival, 'HH:mm:ssZ').format('HH:mm');
 							}
 						}
 					]}
@@ -103,7 +124,7 @@ class Stops extends Component {
 								color: 'primary'
 							},
 							tooltip: 'Download stop calendar',
-							onClick: this.handleAddStopCalendar
+							onClick: this.getStopCalendar
 						},
 						{
 							icon: () => <PictureAsPdfIcon color='action' fontSize='small' />,
@@ -111,7 +132,7 @@ class Stops extends Component {
 								color: 'primary'
 							},
 							tooltip: 'Download stop as PDF',
-							onClick: this.handleStopPdf
+							onClick: this.getStopPdf
 						}
 					]}
 					data={query =>
