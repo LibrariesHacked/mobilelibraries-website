@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const config = require('./config.json');
 
-// getAllMobiles: 
 export function getAllMobiles(callback) {
 	axios.get(config.api + '/api/mobiles')
 		.then(response => {

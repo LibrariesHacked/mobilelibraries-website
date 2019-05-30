@@ -25,12 +25,12 @@ class Dashboard extends Component {
 		const { classes, mobiles, organisation_lookup } = this.props;
 		return (
 			<div className={classes.root}>
-				<ListSubheader>List of mobile libraries</ListSubheader>
+				<ListSubheader>Mobile libraries</ListSubheader>
 				<Grid container spacing={3}>
 					{mobiles.map((mobile, idx) => {
 						return (
 							<MobileCard
-								key={'dsm_' + mobile.name.replace(' ', '') + '_' + idx}
+								key={'crd_' + mobile.name.replace(' ', '') + '_' + idx}
 								mobile={mobile}
 								organisation={organisation_lookup[mobile.organisation_id]}
 								viewStopsByMobile={this.props.viewStopsByMobile}

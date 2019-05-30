@@ -25,7 +25,7 @@ class Routes extends Component {
 		const { classes, routes, organisation_lookup, mobile_lookup } = this.props;
 		return (
 			<div className={classes.root}>
-				<ListSubheader>List of mobile library routes</ListSubheader>
+				<ListSubheader>Mobile library routes</ListSubheader>
 				<Grid container spacing={3}>
 					{routes.map((route, idx) => {
 						return (

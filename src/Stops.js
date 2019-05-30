@@ -66,7 +66,7 @@ class Stops extends Component {
 		});
 		return (
 			<div style={{ maxWidth: '100%' }}>
-				<ListSubheader>List of mobile library stops</ListSubheader>
+				<ListSubheader>Mobile library stops</ListSubheader>
 				<MaterialTable
 					tableRef={this.tableRef}
 					components={{

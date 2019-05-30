@@ -40,7 +40,6 @@ export function getQueryStops(query, callback) {
 		.catch(err => callback({ stops: [], total: 0, page: 1 }));
 }
 
-// getAllStops: 
 export function getAllStops(callback) {
 	axios.get(config.api + '/api/stops')
 		.then(response => {

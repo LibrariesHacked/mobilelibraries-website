@@ -6,10 +6,10 @@ import PropTypes from 'prop-types';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 // MUI Style
-import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 import blue from '@material-ui/core/colors/blue';
-import red from '@material-ui/core/colors/red';
 import green from '@material-ui/core/colors/green';
+import red from '@material-ui/core/colors/red';
+import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 
 // Our components
 import AppDrawer from './AppDrawer';
@@ -103,13 +103,9 @@ class App extends Component {
 	setPage = (page) => this.setState({ page: page })
 	setDashboard = (dashboard) => this.setState({ dashboard: dashboard })
 
-	viewStopsByMobile = (mobile_id) => {
-		this.setState({ page: 'dashboard', dashboard: 'stops', mobile_filter: [mobile_id] });
-	}
-
-	viewStopsByRoute = (route_id) => {
-		this.setState({ page: 'dashboard', dashboard: 'stops', route_filter: [route_id] });
-	}
+	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'dashboard', dashboard: 'stops', organisation_filter: [organisation_id] });
+	viewStopsByMobile = (mobile_id) => this.setState({ page: 'dashboard', dashboard: 'stops', mobile_filter: [mobile_id] });
+	viewStopsByRoute = (route_id) => this.setState({ page: 'dashboard', dashboard: 'stops', route_filter: [route_id] });
 
 	openDrawer = () => this.setState({ drawer_open: true })
 	closeDrawer = () => this.setState({ drawer_open: false })
@@ -133,6 +129,7 @@ class App extends Component {
 						{this.state.page === 'dashboard' && this.state.dashboard === 'organisations' ?
 							<Organisations
 								organisations={this.state.organisations}
+								viewStopsByOrganisation={this.viewStopsByOrganisation}
 							/> : null}
 						{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
 							<Mobiles

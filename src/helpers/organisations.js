@@ -3,7 +3,6 @@ import axios from 'axios';
 
 const config = require('./config.json');
 
-//
 export function getAllOrganisations(callback) {
 	axios.get(config.api + '/api/organisations')
 		.then(response => {

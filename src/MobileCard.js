@@ -59,7 +59,7 @@ class MobileCard extends Component {
 			<Grid item xs={4}>
 				<Card className={classes.card} elevation={0}>
 					<CardContent>
-						<Typography className={classes.title} color="textSecondary" gutterBottom>{organisation ? 'Council: ' + organisation.name : ''}</Typography>
+						<Typography className={classes.title} color="textSecondary" gutterBottom>{organisation ? organisation.name : ''}</Typography>
 						<Typography variant="h6" component="h2">{mobile.name}</Typography>
 					</CardContent>
 					<Divider variant="middle" />
