@@ -51,7 +51,7 @@ class Stops extends Component {
 	}
 
 	render() {
-		const { classes, organisation_lookup, mobile_lookup } = this.props;
+		const { classes, organisation_lookup, mobile_lookup, route_lookup } = this.props;
 		let orgText = {}
 		Object.keys(organisation_lookup).forEach(key => {
 			orgText[key] = organisation_lookup[key].name;
@@ -59,6 +59,10 @@ class Stops extends Component {
 		let mobileText = {}
 		Object.keys(mobile_lookup).forEach(key => {
 			mobileText[key] = mobile_lookup[key].name;
+		});
+		let routeText = {}
+		Object.keys(route_lookup).forEach(key => {
+			routeText[key] = route_lookup[key].name;
 		});
 		return (
 			<div style={{ maxWidth: '100%' }}>
@@ -98,6 +102,14 @@ class Stops extends Component {
 							type: 'numeric',
 							defaultFilter: this.props.mobile_filter,
 							lookup: mobileText,
+							filtering: true
+						},
+						{
+							title: 'Route',
+							field: 'route_id',
+							type: 'numeric',
+							defaultFilter: this.props.route_filter,
+							lookup: routeText,
 							filtering: true
 						},
 						{

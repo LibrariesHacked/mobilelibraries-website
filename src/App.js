@@ -22,6 +22,7 @@ import Stops from './Stops';
 
 import * as mobilesHelper from './helpers/mobiles';
 import * as organisationsHelper from './helpers/organisations';
+import * as routesHelper from './helpers/routes';
 
 const theme = createMuiTheme({
 	palette: {
@@ -91,6 +92,12 @@ class App extends Component {
 			organisations.forEach(organisation => organisation_lookup[organisation.id] = organisation);
 			this.setState({ organisations: organisations, organisation_lookup: organisation_lookup })
 		});
+
+		routesHelper.getAllRoutes(routes => {
+			let route_lookup = {};
+			routes.forEach(route => route_lookup[route.id] = route);
+			this.setState({ routes: routes, route_lookup: route_lookup })
+		});
 	}
 
 	setPage = (page) => this.setState({ page: page })
@@ -98,6 +105,10 @@ class App extends Component {
 
 	viewStopsByMobile = (mobile_id) => {
 		this.setState({ page: 'dashboard', dashboard: 'stops', mobile_filter: [mobile_id] });
+	}
+
+	viewStopsByRoute = (route_id) => {
+		this.setState({ page: 'dashboard', dashboard: 'stops', route_filter: [route_id] });
 	}
 
 	openDrawer = () => this.setState({ drawer_open: true })
@@ -132,6 +143,9 @@ class App extends Component {
 						{this.state.page === 'dashboard' && this.state.dashboard === 'routes' ?
 							<Routes
 								routes={this.state.routes}
+								organisation_lookup={this.state.organisation_lookup}
+								mobile_lookup={this.state.mobile_lookup}
+								viewStopsByRoute={this.viewStopsByRoute}
 							/> : null}
 						{this.state.page === 'dashboard' && this.state.dashboard === 'stops' ?
 							<Stops
@@ -139,6 +153,8 @@ class App extends Component {
 								organisation_filter={this.state.organisation_filter}
 								mobile_lookup={this.state.mobile_lookup}
 								mobile_filter={this.state.mobile_filter}
+								route_lookup={this.state.route_lookup}
+								route_filter={this.state.route_filter}
 							/> : null}
 						{this.state.page === 'map' ?
 							<MobileMap

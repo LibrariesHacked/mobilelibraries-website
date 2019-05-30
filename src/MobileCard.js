@@ -44,7 +44,8 @@ const styles = theme => ({
 		marginRight: theme.spacing(1),
 	},
 	title: {
-		fontSize: 14
+		fontSize: 12,
+		fontWeight: 500
 	}
 });
 
@@ -59,18 +60,18 @@ class MobileCard extends Component {
 				<Card className={classes.card} elevation={0}>
 					<CardContent>
 						<Typography className={classes.title} color="textSecondary" gutterBottom>{organisation ? 'Council: ' + organisation.name : ''}</Typography>
-						<Typography variant="h5" component="h2">{mobile.name}</Typography>
+						<Typography variant="h6" component="h2">{mobile.name}</Typography>
 					</CardContent>
 					<Divider variant="middle" />
 					<CardActions>
-						<Tooltip title="Mobile library stops" aria-label="Mobile library stops">
+						<Tooltip title="Mobile library stops">
 							<Badge color="primary" badgeContent={mobile.number_stops} className={classes.margin}>
 								<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
 									<LocationOnIcon className={classes.leftIcon} />Stops
 								</Button>
 							</Badge>
 						</Tooltip>
-						<Tooltip title="Mobile library routes" aria-label="Mobile library routes">
+						<Tooltip title="Mobile library routes">
 							<Badge color="primary" badgeContent={mobile.number_routes} className={classes.margin}>
 								<Button size="small" color="primary" className={classes.button}>
 									<DirectionsIcon className={classes.leftIcon} />Routes
@@ -78,7 +79,7 @@ class MobileCard extends Component {
 							</Badge>
 						</Tooltip>
 						<Divider className={classes.verticalDivider} />
-						<Tooltip title="Download PDF timetable document" aria-label="Download timetable document">
+						<Tooltip title="Download PDF timetable for mobile">
 							<IconButton>
 								<PictureAsPdfIcon />
 							</IconButton>
