@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Chip from '@material-ui/core/Chip';
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
@@ -21,6 +22,9 @@ import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
+import { Breadcrumbs } from '@material-ui/core';
+
+import moment from 'moment';
 
 const styles = theme => ({
 	card: {
@@ -54,13 +58,40 @@ class MobileCard extends Component {
 	};
 
 	render() {
-		const { classes, mobile, organisation } = this.props;
+		const { classes, mobile, organisation, location } = this.props;
 		return (
 			<Grid item xs={4}>
 				<Card className={classes.card} elevation={0}>
 					<CardContent>
 						<Typography className={classes.title} color="textSecondary" gutterBottom>{organisation ? organisation.name : ''}</Typography>
 						<Typography variant="h6" component="h2">{mobile.name}</Typography>
+						<Breadcrumbs separator="›">
+							{
+								location && location.previous_stop_id ?
+									<Chip size="small" label={location.previous_stop_name} />
+									: null
+							}
+							{
+								location && !location.current_stop_id && !location.previous_stop_id & !location.geox ?
+									<Chip size="small" color="primary" label="Off Road" />
+									: null
+							}
+							{
+								location && !location.current_stop_id && location.previous_stop_id && location.next_stop_id && location.geox ?
+									<Chip size="small" color="primary" label="Travelling" />
+									: null
+							}
+							{
+								location && location.current_stop_id ?
+									<Chip size="small" color="primary" label={location.current_stop_name} />
+									: null
+							}
+							{
+								location && location.next_stop_id ?
+									<Chip size="small" label={moment(location.next_stop_arrival).format('HH:mma') + ' ' + location.next_stop_name} />
+									: null
+							}
+						</Breadcrumbs>
 					</CardContent>
 					<Divider variant="middle" />
 					<CardActions>

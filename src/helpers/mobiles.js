@@ -14,3 +14,15 @@ export function getAllMobiles(callback) {
 		})
 		.catch(err => callback([]));
 }
+
+export function getMobileLocations(callback) {
+	axios.get(config.api + '/api/mobiles/locations')
+		.then(response => {
+			if (response && response.data) {
+				callback(response.data);
+			} else {
+				callback([]);
+			}
+		})
+		.catch(err => callback([]));
+}

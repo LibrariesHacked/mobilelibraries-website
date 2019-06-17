@@ -68,6 +68,9 @@ class App extends Component {
 		mobiles: [],
 		mobile_lookup: {},
 		mobile_filter: [],
+		mobile_locations: [],
+		mobile_location_lookup: {},
+		location_timer: null,
 		routes: [],
 		route_lookup: {},
 		route_filter: [],
@@ -79,25 +82,49 @@ class App extends Component {
 		bearing: [0]
 	};
 
-	// componentDidMount: sets up data and any logging
-	componentDidMount = () => {
-		mobilesHelper.getAllMobiles(mobiles => {
-			let mobile_lookup = {};
-			mobiles.forEach(mobile => mobile_lookup[mobile.id] = mobile);
-			this.setState({ mobiles: mobiles, mobile_lookup: mobile_lookup });
-		});
-
+	getOrganisations = () => {
 		organisationsHelper.getAllOrganisations(organisations => {
 			let organisation_lookup = {};
 			organisations.forEach(organisation => organisation_lookup[organisation.id] = organisation);
 			this.setState({ organisations: organisations, organisation_lookup: organisation_lookup })
 		});
+	}
 
+	getMobiles = () => {
+		mobilesHelper.getAllMobiles(mobiles => {
+			let mobile_lookup = {};
+			mobiles.forEach(mobile => mobile_lookup[mobile.id] = mobile);
+			this.setState({ mobiles: mobiles, mobile_lookup: mobile_lookup });
+		});
+	}
+
+	getRoutes = () => {
 		routesHelper.getAllRoutes(routes => {
 			let route_lookup = {};
 			routes.forEach(route => route_lookup[route.id] = route);
 			this.setState({ routes: routes, route_lookup: route_lookup })
 		});
+	}
+
+	getMobileLocations = () => {
+		mobilesHelper.getMobileLocations(locations => {
+			let mobile_location_lookup = {};
+			locations.forEach(location => mobile_location_lookup[location.mobile_id] = location);
+			this.setState({ mobile_locations: locations, mobile_location_lookup: mobile_location_lookup });
+		});
+	}
+
+	// componentDidMount: sets up data and any logging
+	componentDidMount = () => {
+		this.getOrganisations();
+		this.getMobiles();
+		this.getRoutes();
+		// Set up a timer for the mobile locations
+		this.getMobileLocations();
+		const location_timer = setInterval(() => {
+			this.getMobileLocations();
+		}, 15000);
+		this.setState({ location_timer: location_timer });
 	}
 
 	setPage = (page) => this.setState({ page: page })
@@ -134,6 +161,8 @@ class App extends Component {
 						{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
 							<Mobiles
 								mobiles={this.state.mobiles}
+								mobile_lookup={this.state.mobile_lookup}
+								mobile_location_lookup={this.state.mobile_location_lookup}
 								organisation_lookup={this.state.organisation_lookup}
 								viewStopsByMobile={this.viewStopsByMobile}
 							/> : null}
@@ -160,6 +189,8 @@ class App extends Component {
 								pitch={this.state.pitch}
 								position={this.state.position}
 								zoom={this.state.zoom}
+								mobile_lookup={this.state.mobile_lookup}
+								mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
 							/> : null}
 					</main>
 				</div>

@@ -6,7 +6,9 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 
 // Mapbox GL
-import ReactMapboxGl, { ZoomControl, Source, Layer } from "react-mapbox-gl";
+import ReactMapboxGl, { ZoomControl, Source, Layer, Marker } from "react-mapbox-gl";
+
+import MobileAvatar from './MobileAvatar';
 
 const styles = theme => ({
 
@@ -26,17 +28,30 @@ class MobileMap extends Component {
 	};
 
 	render() {
+		const { position, zoom, pitch, bearing, fit_bounds, mobile_locations, mobile_lookup } = this.props;
 		return (
 			<Map
 				style='style.json'  // eslint-disable-line react/style-prop-object
-				center={this.props.position}
-				zoom={this.props.zoom}
+				center={position}
+				zoom={zoom}
 				maxZoom={17}
-				pitch={this.props.pitch}
-				bearing={this.props.bearing}
-				fitBounds={this.props.fit_bounds}
+				pitch={pitch}
+				bearing={bearing}
+				fitBounds={fit_bounds}
 				containerStyle={{ top: 0, bottom: 0, right: 0, left: 0, height: '100vh', width: '100vw', position: 'absolute' }}
 			>
+				{ // The mobile library locations
+					mobile_locations && mobile_locations.length > 0 ?
+						mobile_locations.map(l => {
+							return <Marker
+								coordinates={[l.geox, l.geoy]}
+								anchor="bottom">
+								<MobileAvatar
+									mobile={mobile_lookup[l.mobile_id]}
+								/>
+							</Marker>
+						}) : null
+				}
 				<Source
 					id='src_stops'
 					tileJsonSource={{
