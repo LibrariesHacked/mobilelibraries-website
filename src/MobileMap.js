@@ -15,7 +15,7 @@ const styles = theme => ({
 });
 
 const Map = ReactMapboxGl({
-	minZoom: 7,
+	minZoom: 5,
 	maxZoom: 18,
 	scrollZoom: true,
 	interactive: true,
@@ -67,7 +67,10 @@ class MobileMap extends Component {
 					sourceLayer='stop'
 					layout={{}}
 					paint={{
-						'circle-radius': 4,
+						'circle-radius': {
+							'base': 1.75,
+							'stops': [[12, 2], [22, 180]]
+						},
 						'circle-color': '#36A2EB',
 						'circle-stroke-width': 1,
 						'circle-stroke-color': '#FFFFFF',
@@ -79,29 +82,36 @@ class MobileMap extends Component {
 					type='symbol'
 					sourceId='src_stops'
 					sourceLayer='stop'
+					minZoom={12}
 					layout={{
 						'text-ignore-placement': true,
 						'text-field': ['to-string', ['get', 'name']],
-						'text-size': [
-							'interpolate',
-							['linear'],
-							['zoom'],
-							12,
-							9,
-							14,
-							11
+						"text-font": [
+							"Source Sans Pro Regular"
 						],
-						'text-font': [
-							'Source Sans Pro Regular'
+						"text-line-height": 1,
+						"text-size": [
+							"interpolate",
+							[
+								"linear"
+							],
+							[
+								"zoom"
+							],
+							10,
+							8,
+							15,
+							10,
+							22,
+							25
 						],
-						'text-line-height': 1,
-						'text-anchor': 'top'
+						"text-offset": [0, 1.8],
 					}}
 					paint={{
-						'text-halo-color': '#FFFFFF',
-						'text-halo-width': 1,
-						'text-halo-blur': 1,
-						'text-color': '#36A2EB'
+						"text-halo-color": "hsl(0, 0%, 100%)",
+						"text-halo-width": 1,
+						"text-halo-blur": 1,
+						"text-color": "#6a6f73"
 					}}
 				/>
 				<ZoomControl position="bottom-right" />

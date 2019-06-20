@@ -76,8 +76,8 @@ class App extends Component {
 		route_filter: [],
 		// Map variables, sent down to the map for updates.
 		fit_bounds: null,
-		position: [-4.1429, 50.3732],
-		zoom: [12],
+		position: [-2.1000, 53.6138],
+		zoom: [6],
 		pitch: [0],
 		bearing: [0]
 	};
