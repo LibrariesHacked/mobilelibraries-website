@@ -61,19 +61,15 @@ class OrganisationCard extends Component {
 					<CardContent>
 						<Typography className={classes.title} color="textSecondary" gutterBottom>Scotland</Typography>
 						<Typography variant="h6" component="h2">{organisation.name}</Typography>
+						<Typography className={classes.pos} color="textSecondary">
+							{'routes'}
+						</Typography>
 					</CardContent>
 					<CardActions>
 						<Tooltip title="Mobile library stops">
 							<Badge color="primary" badgeContent={organisation.number_stops} className={classes.margin}>
 								<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByOrganisation(organisation.id)}>
 									<LocationOnIcon className={classes.leftIcon} />Stops
-								</Button>
-							</Badge>
-						</Tooltip>
-						<Tooltip title="Mobile library routes">
-							<Badge color="primary" badgeContent={organisation.number_routes} className={classes.margin}>
-								<Button size="small" color="primary" className={classes.button}>
-									<DirectionsIcon className={classes.leftIcon} />Routes
 								</Button>
 							</Badge>
 						</Tooltip>

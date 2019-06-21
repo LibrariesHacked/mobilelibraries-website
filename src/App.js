@@ -17,7 +17,6 @@ import AppHeader from './AppHeader';
 import Mobiles from './Mobiles';
 import MobileMap from './MobileMap';
 import Organisations from './Organisations';
-import Routes from './Routes';
 import Stops from './Stops';
 
 import * as mobilesHelper from './helpers/mobiles';
@@ -165,13 +164,6 @@ class App extends Component {
 								mobile_location_lookup={this.state.mobile_location_lookup}
 								organisation_lookup={this.state.organisation_lookup}
 								viewStopsByMobile={this.viewStopsByMobile}
-							/> : null}
-						{this.state.page === 'dashboard' && this.state.dashboard === 'routes' ?
-							<Routes
-								routes={this.state.routes}
-								organisation_lookup={this.state.organisation_lookup}
-								mobile_lookup={this.state.mobile_lookup}
-								viewStopsByRoute={this.viewStopsByRoute}
 							/> : null}
 						{this.state.page === 'dashboard' && this.state.dashboard === 'stops' ?
 							<Stops

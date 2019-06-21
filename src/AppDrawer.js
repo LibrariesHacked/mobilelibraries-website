@@ -17,7 +17,6 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import BusinessIcon from '@material-ui/icons/Business';
 import DirectionBusIcon from '@material-ui/icons/DirectionsBus';
-import DirectionsIcon from '@material-ui/icons/Directions';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 // Material UI Styles
@@ -96,10 +95,6 @@ class AppDrawer extends Component {
 					<ListItem button onClick={() => this.props.setDashboard('mobiles')}>
 						<ListItemIcon className={classes.listItemIcon}><DirectionBusIcon /></ListItemIcon>
 						<ListItemText primary="Mobiles" />
-					</ListItem>
-					<ListItem button onClick={() => this.props.setDashboard('routes')}>
-						<ListItemIcon className={classes.listItemIcon}><DirectionsIcon /></ListItemIcon>
-						<ListItemText primary="Routes" />
 					</ListItem>
 					<ListItem button onClick={() => this.props.setDashboard('stops')}>
 						<ListItemIcon className={classes.listItemIcon}><LocationOnIcon /></ListItemIcon>
