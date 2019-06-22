@@ -82,36 +82,12 @@ class Stops extends Component {
 					options={{
 						search: false,
 						loadingType: 'linear',
-						actionsColumnIndex: 6,
-						filtering: true
+						actionsColumnIndex: 4,
+						filtering: false
 					}}
 					columns={[
 						{ title: 'Name', field: 'name', filtering: false },
 						{ title: 'Community', field: 'community', filtering: false },
-						{
-							title: 'Library service',
-							field: 'organisation_id',
-							type: 'numeric',
-							defaultFilter: this.props.organisation_filter,
-							lookup: orgText,
-							fitering: true
-						},
-						{
-							title: 'Mobile',
-							field: 'mobile_id',
-							type: 'numeric',
-							defaultFilter: this.props.mobile_filter,
-							lookup: mobileText,
-							filtering: true
-						},
-						{
-							title: 'Route',
-							field: 'route_id',
-							type: 'numeric',
-							defaultFilter: this.props.route_filter,
-							lookup: routeText,
-							filtering: true
-						},
 						{
 							title: 'Arrival',
 							field: 'arrival',
