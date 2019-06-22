@@ -135,6 +135,7 @@ class App extends Component {
 				<div className={classes.root}>
 					<CssBaseline />
 					<AppHeader
+						page={this.state.page}
 						setPage={this.setPage} />
 					<main className={classes.content}>
 						<div className={classes.toolbar} />
