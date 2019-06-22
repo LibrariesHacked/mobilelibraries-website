@@ -12,7 +12,6 @@ import red from '@material-ui/core/colors/red';
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 
 // Our components
-import AppDrawer from './AppDrawer';
 import AppHeader from './AppHeader';
 import Mobiles from './Mobiles';
 import MobileMap from './MobileMap';
@@ -56,9 +55,7 @@ const styles = theme => ({
 
 class App extends Component {
 	state = {
-		drawer_open: false,
-		page: 'dashboard',
-		dashboard: 'mobiles',
+		page: 'mobiles',
 		// Data storage
 		organisations: [],
 		organisation_lookup: {},
@@ -126,14 +123,10 @@ class App extends Component {
 	}
 
 	setPage = (page) => this.setState({ page: page })
-	setDashboard = (dashboard) => this.setState({ dashboard: dashboard })
 
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'dashboard', dashboard: 'stops', organisation_filter: [organisation_id] });
 	viewStopsByMobile = (mobile_id) => this.setState({ page: 'dashboard', dashboard: 'stops', mobile_filter: [mobile_id] });
 	viewStopsByRoute = (route_id) => this.setState({ page: 'dashboard', dashboard: 'stops', route_filter: [route_id] });
-
-	openDrawer = () => this.setState({ drawer_open: true })
-	closeDrawer = () => this.setState({ drawer_open: false })
 
 	render() {
 		const { classes } = this.props;
@@ -142,16 +135,10 @@ class App extends Component {
 				<div className={classes.root}>
 					<CssBaseline />
 					<AppHeader
-						drawer_open={this.state.drawer_open}
-						setPage={this.setPage}
-						openDrawer={this.openDrawer} />
-					<AppDrawer
-						drawer_open={this.state.drawer_open}
-						setDashboard={this.setDashboard}
-						closeDrawer={this.closeDrawer} />
+						setPage={this.setPage} />
 					<main className={classes.content}>
 						<div className={classes.toolbar} />
-						{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
+						{this.state.page === 'mobiles' ?
 							<Mobiles
 								mobiles={this.state.mobiles}
 								mobile_lookup={this.state.mobile_lookup}
@@ -159,7 +146,7 @@ class App extends Component {
 								organisation_lookup={this.state.organisation_lookup}
 								viewStopsByMobile={this.viewStopsByMobile}
 							/> : null}
-						{this.state.page === 'dashboard' && this.state.dashboard === 'stops' ?
+						{this.state.page === 'stops' ?
 							<Stops
 								organisation_lookup={this.state.organisation_lookup}
 								organisation_filter={this.state.organisation_filter}
