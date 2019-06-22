@@ -89,7 +89,7 @@ class Stops extends Component {
 						{ title: 'Name', field: 'name', filtering: false },
 						{ title: 'Community', field: 'community', filtering: false },
 						{
-							title: 'Organisation',
+							title: 'Library service',
 							field: 'organisation_id',
 							type: 'numeric',
 							defaultFilter: this.props.organisation_filter,
