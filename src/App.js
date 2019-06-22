@@ -16,7 +16,6 @@ import AppDrawer from './AppDrawer';
 import AppHeader from './AppHeader';
 import Mobiles from './Mobiles';
 import MobileMap from './MobileMap';
-import Organisations from './Organisations';
 import Stops from './Stops';
 
 import * as mobilesHelper from './helpers/mobiles';
@@ -152,11 +151,6 @@ class App extends Component {
 						closeDrawer={this.closeDrawer} />
 					<main className={classes.content}>
 						<div className={classes.toolbar} />
-						{this.state.page === 'dashboard' && this.state.dashboard === 'organisations' ?
-							<Organisations
-								organisations={this.state.organisations}
-								viewStopsByOrganisation={this.viewStopsByOrganisation}
-							/> : null}
 						{this.state.page === 'dashboard' && this.state.dashboard === 'mobiles' ?
 							<Mobiles
 								mobiles={this.state.mobiles}

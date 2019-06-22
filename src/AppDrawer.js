@@ -88,10 +88,6 @@ class AppDrawer extends Component {
 				</div>
 				<Divider />
 				<List>
-					<ListItem button onClick={() => this.props.setDashboard('organisations')}>
-						<ListItemIcon className={classes.listItemIcon}><BusinessIcon /></ListItemIcon>
-						<ListItemText primary="Organisations" />
-					</ListItem>
 					<ListItem button onClick={() => this.props.setDashboard('mobiles')}>
 						<ListItemIcon className={classes.listItemIcon}><DirectionBusIcon /></ListItemIcon>
 						<ListItemText primary="Mobiles" />
