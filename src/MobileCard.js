@@ -59,11 +59,18 @@ class MobileCard extends Component {
 
 	render() {
 		const { classes, mobile, organisation, location } = this.props;
+		const bull = <span className={classes.bullet}>•</span>;
 		return (
 			<Grid item xs={4}>
 				<Card className={classes.card} elevation={0}>
 					<CardContent>
-						<Typography className={classes.title} color="textSecondary" gutterBottom>{organisation ? organisation.name : ''}</Typography>
+						<Typography className={classes.title} color="textSecondary" gutterBottom>
+							{organisation ? organisation.name : ''}
+							{bull}
+							{mobile.number_routes + ' route' + (mobile.number_routes > 1 ? 's' : '')}
+							{bull}
+							{mobile.number_stops + ' stop' + (mobile.number_stops > 1 ? 's' : '')}
+						</Typography>
 						<Typography variant="h6" component="h2">{mobile.name}</Typography>
 						<Breadcrumbs separator="›">
 							{
@@ -96,18 +103,9 @@ class MobileCard extends Component {
 					<Divider variant="middle" />
 					<CardActions>
 						<Tooltip title="Mobile library stops">
-							<Badge color="primary" badgeContent={mobile.number_stops} className={classes.margin}>
-								<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
-									<LocationOnIcon className={classes.leftIcon} />Stops
-								</Button>
-							</Badge>
-						</Tooltip>
-						<Tooltip title="Mobile library routes">
-							<Badge color="primary" badgeContent={mobile.number_routes} className={classes.margin}>
-								<Button size="small" color="primary" className={classes.button}>
-									<DirectionsIcon className={classes.leftIcon} />Routes
-								</Button>
-							</Badge>
+							<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
+								<LocationOnIcon className={classes.leftIcon} />Stops
+							</Button>
 						</Tooltip>
 						<Divider className={classes.verticalDivider} />
 						<Tooltip title="Download PDF timetable for mobile">
