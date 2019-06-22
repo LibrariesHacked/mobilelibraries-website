@@ -61,7 +61,7 @@ class MobileCard extends Component {
 		const { classes, mobile, organisation, location } = this.props;
 		const bull = <span className={classes.bullet}>•</span>;
 		return (
-			<Grid item xs={4}>
+			<Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
 				<Card className={classes.card} elevation={0}>
 					<CardContent>
 						<Typography className={classes.title} color="textSecondary" gutterBottom>
