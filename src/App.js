@@ -149,12 +149,14 @@ class App extends Component {
 							/> : null}
 						{this.state.page === 'stops' ?
 							<Stops
+								organisations={this.state.organisations}
 								organisation_lookup={this.state.organisation_lookup}
 								organisation_filter={this.state.organisation_filter}
 								mobile_lookup={this.state.mobile_lookup}
 								mobile_filter={this.state.mobile_filter}
 								route_lookup={this.state.route_lookup}
 								route_filter={this.state.route_filter}
+								setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: organisation_id }) }}
 							/> : null}
 						{this.state.page === 'map' ?
 							<MobileMap

@@ -2,17 +2,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
-// Material UI Styles
-import { withStyles } from '@material-ui/core/styles';
-
 // Mapbox GL
 import ReactMapboxGl, { ZoomControl, Source, Layer, Marker } from "react-mapbox-gl";
 
 import MobileAvatar from './MobileAvatar';
-
-const styles = theme => ({
-
-});
 
 const Map = ReactMapboxGl({
 	minZoom: 5,
@@ -24,8 +17,6 @@ const Map = ReactMapboxGl({
 });
 
 class MobileMap extends Component {
-	state = {
-	};
 
 	render() {
 		const { position, zoom, pitch, bearing, fit_bounds, mobile_locations, mobile_lookup } = this.props;
@@ -124,4 +115,4 @@ MobileMap.propTypes = {
 	classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(MobileMap);
+export default MobileMap;

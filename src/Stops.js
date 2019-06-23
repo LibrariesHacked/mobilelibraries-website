@@ -3,8 +3,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
+import FormControl from '@material-ui/core/FormControl';
+import InputBase from '@material-ui/core/InputBase';
+import InputLabel from '@material-ui/core/InputLabel';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
+import Select from '@material-ui/core/Select';
 
 // Material Table
 import MaterialTable from 'material-table';
@@ -25,7 +30,14 @@ import moment from 'moment';
 
 import * as stopsHelper from './helpers/stops';
 
-const styles = theme => ({
+const styles = (theme) => ({
+	formControl: {
+		margin: theme.spacing(1),
+		minWidth: 200,
+	},
+	margin: {
+		margin: theme.spacing(1)
+	},
 	root: {
 		flexGrow: 1,
 		maxWidth: '100%'
@@ -50,6 +62,8 @@ class Stops extends Component {
 
 	}
 
+	handleChangeOrganisation = (event) => this.props.setOrganisationFilter(event.target.value);
+
 	render() {
 		const { classes, organisation_lookup, mobile_lookup, route_lookup } = this.props;
 		let orgText = {}
@@ -66,7 +80,28 @@ class Stops extends Component {
 		});
 		return (
 			<div style={{ maxWidth: '100%' }}>
-				<ListSubheader>Mobile library stops</ListSubheader>
+				<ListSubheader>Find stop by postcode</ListSubheader>
+
+				<ListSubheader>Find stop by library service</ListSubheader>
+				<FormControl className={classes.formControl}>
+					<InputLabel htmlFor="sel-organisation">Library services</InputLabel>
+					<Select
+						multiple
+						value={this.props.organisation_filter}
+						renderValue={selected => selected.map(org => this.props.organisation_lookup[org].name).join(', ')}
+						onChange={this.handleChangeOrganisation}
+						inputProps={{
+							name: 'sel-organisation',
+							id: 'sel-organisation',
+						}}
+					>
+						{this.props.organisations.map(org => {
+							return <MenuItem value={org.id}>
+								{org.name}
+							</MenuItem>
+						})}
+					</Select>
+				</FormControl>
 				<MaterialTable
 					tableRef={this.tableRef}
 					components={{

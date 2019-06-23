@@ -11,7 +11,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import MobileCard from './MobileCard';
 
-const styles = theme => ({
+const styles = () => ({
 	root: {
 		flexGrow: 1
 	}
@@ -22,7 +22,7 @@ class Dashboard extends Component {
 	};
 
 	render() {
-		const { classes, mobiles, organisation_lookup, mobile_location_lookup} = this.props;
+		const { classes, mobiles, organisation_lookup, mobile_location_lookup } = this.props;
 		return (
 			<div className={classes.root}>
 				<ListSubheader>Mobile libraries</ListSubheader>
@@ -48,4 +48,4 @@ Dashboard.propTypes = {
 	classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(Dashboard);
+export default withStyles(styles)(Dashboard);

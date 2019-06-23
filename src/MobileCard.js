@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
-import Badge from '@material-ui/core/Badge';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -16,7 +15,6 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 // MUI Icons
-import DirectionsIcon from '@material-ui/icons/Directions';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 

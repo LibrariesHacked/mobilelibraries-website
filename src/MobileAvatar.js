@@ -23,7 +23,7 @@ class MobileAvatar extends Component {
 	};
 
 	render() {
-		const { classes, mobile } = this.props;
+		const { classes } = this.props;
 		return (
 			<Fab size="small" color="primary" className={classes.fab}>
 				<DirectionBusIcon />
