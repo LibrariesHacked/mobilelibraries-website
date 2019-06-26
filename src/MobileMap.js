@@ -60,10 +60,13 @@ class MobileMap extends Component {
 					paint={{
 						'circle-radius': {
 							'base': 1.75,
-							'stops': [[12, 2], [22, 180]]
+							'stops': [[9, 5], [22, 180]]
 						},
 						'circle-color': '#36A2EB',
-						'circle-stroke-width': 1,
+						'circle-stroke-width': {
+							'base': 1,
+							'stops': [[9, 2], [22, 10]]
+						},
 						'circle-stroke-color': '#FFFFFF',
 						'circle-opacity': 0.8
 					}}

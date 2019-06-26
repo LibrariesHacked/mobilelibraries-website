@@ -48,19 +48,19 @@ class AppHeader extends Component {
 				})}
 			>
 				<Toolbar>
-					<Typography variant="h6" color="inherit" noWrap>Mobile Libraries</Typography>
+					<Typography variant="h6" color="secondary" noWrap>Mobile Libraries</Typography>
 					<div className={classes.grow} />
-					<Button color="primary" disabled={this.props.page === 'mobiles'}
+					<Button color="primary" variant={this.props.page === 'mobiles' ? 'text' : 'text'}
 						onClick={() => this.props.setPage('mobiles')}
 					>
 						<DashboardIcon className={classes.leftIcon} />Mobile dashboard
 					</Button>
-					<Button color="primary" disabled={this.props.page === 'stops'}
+					<Button color="primary" variant={this.props.page === 'stops' ? 'text' : 'text'}
 						onClick={() => this.props.setPage('stops')}
 					>
 						<LocationOnIcon className={classes.leftIcon} />Find a stop
 					</Button>
-					<Button color="primary" disabled={this.props.page === 'map'}
+					<Button color="primary" variant={this.props.page === 'map' ? 'text' : 'text'}
 						onClick={() => this.props.setPage('map')}
 					>
 						<MapIcon className={classes.leftIcon} />Map

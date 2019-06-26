@@ -9,7 +9,6 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Chip from '@material-ui/core/Chip';
 import Divider from '@material-ui/core/Divider';
-import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
@@ -59,61 +58,60 @@ class MobileCard extends Component {
 		const { classes, mobile, organisation, location } = this.props;
 		const bull = <span className={classes.bullet}>•</span>;
 		return (
-			<Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-				<Card className={classes.card} elevation={0}>
-					<CardContent>
-						<Typography className={classes.title} color="textSecondary" gutterBottom>
-							{organisation ? organisation.name : ''}
-							{bull}
-							{mobile.number_routes + ' route' + (mobile.number_routes > 1 ? 's' : '')}
-							{bull}
-							{mobile.number_stops + ' stop' + (mobile.number_stops > 1 ? 's' : '')}
-						</Typography>
-						<Typography variant="h6" component="h2">{mobile.name}</Typography>
-						<Breadcrumbs separator="›">
-							{
-								location && location.previous_stop_id ?
-									<Chip size="small" label={location.previous_stop_name} />
-									: null
-							}
-							{
-								location && !location.current_stop_id && !location.previous_stop_id & !location.geox ?
-									<Chip size="small" color="primary" label="Off Road" />
-									: null
-							}
-							{
-								location && !location.current_stop_id && location.previous_stop_id && location.next_stop_id && location.geox ?
-									<Chip size="small" color="primary" label="Travelling" />
-									: null
-							}
-							{
-								location && location.current_stop_id ?
-									<Chip size="small" color="primary" label={location.current_stop_name} />
-									: null
-							}
-							{
-								location && location.next_stop_id ?
-									<Chip size="small" label={moment(location.next_stop_arrival).format('HH:mma') + ' ' + location.next_stop_name} />
-									: null
-							}
-						</Breadcrumbs>
-					</CardContent>
-					<Divider variant="middle" />
-					<CardActions>
-						<Tooltip title="Mobile library stops">
-							<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
-								<LocationOnIcon className={classes.leftIcon} />Stops
+
+			<Card className={classes.card} elevation={0}>
+				<CardContent>
+					<Typography className={classes.title} color="textSecondary" gutterBottom>
+						{organisation ? organisation.name : ''}
+						{bull}
+						{mobile.number_routes + ' route' + (mobile.number_routes > 1 ? 's' : '')}
+						{bull}
+						{mobile.number_stops + ' stop' + (mobile.number_stops > 1 ? 's' : '')}
+					</Typography>
+					<Typography variant="h6" component="h2">{mobile.name}</Typography>
+					<Breadcrumbs separator="›">
+						{
+							location && location.previous_stop_id ?
+								<Chip size="small" label={location.previous_stop_name} />
+								: null
+						}
+						{
+							location && !location.current_stop_id && !location.previous_stop_id & !location.geox ?
+								<Chip size="small" color="primary" label="Off Road" />
+								: null
+						}
+						{
+							location && !location.current_stop_id && location.previous_stop_id && location.next_stop_id && location.geox ?
+								<Chip size="small" color="primary" label="Travelling" />
+								: null
+						}
+						{
+							location && location.current_stop_id ?
+								<Chip size="small" color="primary" label={location.current_stop_name} />
+								: null
+						}
+						{
+							location && location.next_stop_id ?
+								<Chip size="small" label={moment(location.next_stop_arrival).format('HH:mma') + ' ' + location.next_stop_name} />
+								: null
+						}
+					</Breadcrumbs>
+				</CardContent>
+				<Divider variant="middle" />
+				<CardActions>
+					<Tooltip title="Mobile library stops">
+						<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
+							<LocationOnIcon className={classes.leftIcon} />Stops
 							</Button>
-						</Tooltip>
-						<Divider className={classes.verticalDivider} />
-						<Tooltip title="Download PDF timetable for mobile">
-							<IconButton>
-								<PictureAsPdfIcon />
-							</IconButton>
-						</Tooltip>
-					</CardActions>
-				</Card>
-			</Grid>
+					</Tooltip>
+					<Divider className={classes.verticalDivider} />
+					<Tooltip title="Download PDF timetable for mobile">
+						<IconButton>
+							<PictureAsPdfIcon />
+						</IconButton>
+					</Tooltip>
+				</CardActions>
+			</Card>
 		);
 	}
 }

@@ -3,13 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
-import FormControl from '@material-ui/core/FormControl';
-import InputBase from '@material-ui/core/InputBase';
-import InputLabel from '@material-ui/core/InputLabel';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import MenuItem from '@material-ui/core/MenuItem';
 import Paper from '@material-ui/core/Paper';
-import Select from '@material-ui/core/Select';
 
 // Material Table
 import MaterialTable from 'material-table';
@@ -25,6 +19,8 @@ import FirstPage from '@material-ui/icons/FirstPage';
 import FilterList from '@material-ui/icons/FilterList';
 import LastPage from '@material-ui/icons/LastPage';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+
+import Filters from './Filters';
 
 import moment from 'moment';
 
@@ -48,11 +44,42 @@ const styles = (theme) => ({
 });
 
 class Stops extends Component {
+
 	state = {
 		title: 'All stops'
 	};
 
 	tableRef = React.createRef();
+
+	setOrganisationFilter = (organisation_id) => {
+		this.props.setOrganisationFilter(organisation_id);
+		this.tableRef.current.onQueryChange();
+	}
+
+	clearOrganisationFilter = () => {
+		this.props.clearOrganisationFilter();
+		this.tableRef.current.onQueryChange();
+	}
+
+	setMobileFilter = (mobile_id) => {
+		this.props.setMobileFilter(mobile_id);
+		this.tableRef.current.onQueryChange();
+	}
+
+	clearMobileFilter = () => {
+		this.props.clearMobileFilter();
+		this.tableRef.current.onQueryChange();
+	}
+
+	setRouteFilter = (route_id) => {
+		this.props.setRouteFilter(route_id);
+		this.tableRef.current.onQueryChange();
+	}
+
+	clearRouteFilter = () => {
+		this.props.clearRouteFilter();
+		this.tableRef.current.onQueryChange();
+	}
 
 	getStopCalendar = (event, rowData) => {
 
@@ -62,10 +89,11 @@ class Stops extends Component {
 
 	}
 
-	handleChangeOrganisation = (event) => this.props.setOrganisationFilter(event.target.value);
-
 	render() {
-		const { classes, organisation_lookup, mobile_lookup, route_lookup } = this.props;
+		const {
+			classes, organisations, organisation_lookup, organisation_filter, viewStopsByOrganisation,
+			mobiles, mobile_lookup, mobile_filter,
+			routes, route_lookup, route_filter } = this.props;
 		let orgText = {}
 		Object.keys(organisation_lookup).forEach(key => {
 			orgText[key] = organisation_lookup[key].name;
@@ -80,28 +108,25 @@ class Stops extends Component {
 		});
 		return (
 			<div style={{ maxWidth: '100%' }}>
-				<ListSubheader>Find stop by postcode</ListSubheader>
-
-				<ListSubheader>Find stop by library service</ListSubheader>
-				<FormControl className={classes.formControl}>
-					<InputLabel htmlFor="sel-organisation">Library services</InputLabel>
-					<Select
-						multiple
-						value={this.props.organisation_filter}
-						renderValue={selected => selected.map(org => this.props.organisation_lookup[org].name).join(', ')}
-						onChange={this.handleChangeOrganisation}
-						inputProps={{
-							name: 'sel-organisation',
-							id: 'sel-organisation',
-						}}
-					>
-						{this.props.organisations.map(org => {
-							return <MenuItem value={org.id}>
-								{org.name}
-							</MenuItem>
-						})}
-					</Select>
-				</FormControl>
+				<Filters
+					displayStopLink={false}
+					organisations={organisations}
+					organisation_lookup={organisation_lookup}
+					organisation_filter={organisation_filter}
+					setOrganisationFilter={this.setOrganisationFilter}
+					clearOrganisationFilter={this.clearOrganisationFilter}
+					viewStopsByOrganisation={viewStopsByOrganisation}
+					mobiles={mobiles}
+					mobile_lookup={mobile_lookup}
+					mobile_filter={mobile_filter}
+					setMobileFilter={this.setMobileFilter}
+					clearMobileFilter={this.clearMobileFilter}
+					routes={routes}
+					route_lookup={route_lookup}
+					route_filter={route_filter}
+					setRouteFilter={this.setRouteFilter}
+					clearRouteFilter={this.clearRouteFilter}
+				/>
 				<MaterialTable
 					tableRef={this.tableRef}
 					components={{
@@ -160,7 +185,7 @@ class Stops extends Component {
 					]}
 					data={query =>
 						new Promise((resolve, reject) => {
-							stopsHelper.getQueryStops(query, stopData => {
+							stopsHelper.getQueryStops(query, this.props.organisation_filter, this.props.mobile_filter, this.props.route_filter, stopData => {
 								resolve({
 									data: stopData.stops,
 									page: (stopData.page - 1),

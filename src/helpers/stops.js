@@ -3,20 +3,7 @@ import axios from 'axios';
 
 const config = require('./config.json');
 
-export function getQueryStops(query, callback) {
-
-	let organisation_filters = [];
-	let mobile_filters = [];
-	let route_filters = [];
-
-	// We can either filter by organisation_id or mobile_id, or route id
-	if (query.filters && query.filters.length > 0) {
-		query.filters.forEach(filter => {
-			if (filter.column.field === 'organisation_id') organisation_filters = filter.value;
-			if (filter.column.field === 'mobile_id') mobile_filters = filter.value;
-			if (filter.column.field === 'route_id') route_filters = filter.value;
-		});
-	}
+export function getQueryStops(query, organisation_filters, mobile_filters, route_filters, callback) {
 
 	let url = config.api + '/api/stops?page=' + (query.page + 1) + '&limit=' + query.pageSize;
 	if (query.orderBy && query.orderBy.field) url = url + '&sort=' + query.orderBy.field + '&direction=' + query.orderDirection;

@@ -7,7 +7,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 
 // MUI Style
 import blue from '@material-ui/core/colors/blue';
-import green from '@material-ui/core/colors/green';
+import deepOrange from '@material-ui/core/colors/deepOrange';
 import red from '@material-ui/core/colors/red';
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 
@@ -24,8 +24,8 @@ import * as routesHelper from './helpers/routes';
 const theme = createMuiTheme({
 	palette: {
 		primary: blue,
-		secondary: green,
-		error: red,
+		secondary: deepOrange,
+		error: red
 	},
 	overrides: {
 		MuiButton: {
@@ -124,9 +124,13 @@ class App extends Component {
 
 	setPage = (page) => this.setState({ page: page })
 
-	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'dashboard', dashboard: 'stops', organisation_filter: [organisation_id] });
-	viewStopsByMobile = (mobile_id) => this.setState({ page: 'dashboard', dashboard: 'stops', mobile_filter: [mobile_id] });
-	viewStopsByRoute = (route_id) => this.setState({ page: 'dashboard', dashboard: 'stops', route_filter: [route_id] });
+	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
+	viewStopsByMobile = (mobile_id) => this.setState({ page: 'stops', organisation_filter: [], mobile_filter: [mobile_id], route_filter: [] });
+	viewStopsByRoute = (route_id) => this.setState({ page: 'stops', organisation_filter: [], mobile_filter: [], route_filter: [route_id] });
+
+	clearOrganisationFilter = () => this.setState({ organisation_filter: [], mobile_filter: [], route_filter: [] });
+	clearMobileFilter = () => this.setState({ mobile_filter: [], route_filter: [] });
+	clearRouteFilter = () => this.setState({ route_filter: [] });
 
 	render() {
 		const { classes } = this.props;
@@ -146,17 +150,37 @@ class App extends Component {
 								mobile_location_lookup={this.state.mobile_location_lookup}
 								organisation_lookup={this.state.organisation_lookup}
 								viewStopsByMobile={this.viewStopsByMobile}
+								viewStopsByOrganisation={this.viewStopsByOrganisation}
+								organisations={this.state.organisations}
+								organisation_filter={this.state.organisation_filter}
+								setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
+								clearOrganisationFilter={this.clearOrganisationFilter}
+								mobile_filter={this.state.mobile_filter}
+								setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
+								clearMobileFilter={this.clearMobileFilter}
+								routes={this.state.routes}
+								route_lookup={this.state.route_lookup}
+								route_filter={this.state.route_filter}
+								setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
+								clearRouteFilter={this.clearRouteFilter}
 							/> : null}
 						{this.state.page === 'stops' ?
 							<Stops
 								organisations={this.state.organisations}
 								organisation_lookup={this.state.organisation_lookup}
 								organisation_filter={this.state.organisation_filter}
+								setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
+								clearOrganisationFilter={this.clearOrganisationFilter}
+								mobiles={this.state.mobiles}
 								mobile_lookup={this.state.mobile_lookup}
 								mobile_filter={this.state.mobile_filter}
+								setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
+								clearMobileFilter={this.clearMobileFilter}
+								routes={this.state.routes}
 								route_lookup={this.state.route_lookup}
 								route_filter={this.state.route_filter}
-								setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: organisation_id }) }}
+								setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
+								clearRouteFilter={this.clearRouteFilter}
 							/> : null}
 						{this.state.page === 'map' ?
 							<MobileMap
