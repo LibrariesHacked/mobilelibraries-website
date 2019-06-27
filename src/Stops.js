@@ -20,16 +20,19 @@ import FilterList from '@material-ui/icons/FilterList';
 import LastPage from '@material-ui/icons/LastPage';
 import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
+// Our components
 import Filters from './Filters';
 
+// Moment
 import moment from 'moment';
 
+// Our Helpers
 import * as stopsHelper from './helpers/stops';
 
 const styles = (theme) => ({
 	formControl: {
 		margin: theme.spacing(1),
-		minWidth: 200,
+		minWidth: 200
 	},
 	margin: {
 		margin: theme.spacing(1)

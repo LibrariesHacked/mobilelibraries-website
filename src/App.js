@@ -17,6 +17,8 @@ import Mobiles from './Mobiles';
 import MobileMap from './MobileMap';
 import Stops from './Stops';
 
+// Our helpers
+import * as geoHelper from './helpers/geo';
 import * as mobilesHelper from './helpers/mobiles';
 import * as organisationsHelper from './helpers/organisations';
 import * as routesHelper from './helpers/routes';
@@ -56,7 +58,6 @@ const styles = theme => ({
 class App extends Component {
 	state = {
 		page: 'mobiles',
-		// Data storage
 		organisations: [],
 		organisation_lookup: {},
 		organisation_filter: [],
@@ -69,12 +70,17 @@ class App extends Component {
 		routes: [],
 		route_lookup: {},
 		route_filter: [],
-		// Map variables, sent down to the map for updates.
 		fit_bounds: null,
 		position: [-2.1000, 53.6138],
-		zoom: [6],
+		zoom: [7],
 		pitch: [0],
-		bearing: [0]
+		bearing: [0],
+		gps_loading: true,
+		postcode_loading: true,
+		current_position: [],
+		gps_available: false,
+		position_update_interval: '',
+		search_type: ''
 	};
 
 	getOrganisations = () => {
@@ -132,6 +138,39 @@ class App extends Component {
 	clearMobileFilter = () => this.setState({ mobile_filter: [], route_filter: [] });
 	clearRouteFilter = () => this.setState({ route_filter: [] });
 
+	// logPosition: Retrieve position from gps
+	logPosition = (fit = false) => {
+		this.setState({ loading: true, gps_loading: true });
+		geoHelper.getCurrentPosition(position => {
+			this.setState({ current_position: position, gps_loading: false, gps_available: (position.length > 0) });
+			this.getLocations('gps', fit);
+		});
+	}
+
+	// postcodeSearch
+	postcodeSearch = (postcode) => {
+		// If we're already tracking GPS then turn this off
+		let new_state = { search_type: 'postcode', loading: true, postcode_loading: true };
+		if (this.state.search_type === 'gps') {
+			clearInterval(this.state.position_update_interval);
+			new_state.position_update_interval = null;
+		}
+		this.setState(new_state);
+	}
+
+	// toggleGPS
+	toggleGPS = () => {
+		// If we're already tracking GPS then turn this off
+		if (this.state.search_type === 'gps') {
+			clearInterval(this.state.position_update_interval);
+			this.setState({ search_type: '', postcode: '', position_update_interval: null });
+		} else {
+			let position_update_interval = setInterval(this.logPosition, 10000);
+			this.setState({ position_update_interval: position_update_interval, search_type: 'gps', postcode: '' });
+			this.logPosition(true);
+		}
+	}
+
 	render() {
 		const { classes } = this.props;
 		return (
@@ -140,7 +179,12 @@ class App extends Component {
 					<CssBaseline />
 					<AppHeader
 						page={this.state.page}
-						setPage={this.setPage} />
+						setPage={this.setPage}
+						search_type={this.state.search_type}
+						gps_available={this.state.gps_available}
+						toggleGPS={this.toggleGPS}
+						postcodeSearch={this.postcodeSearch}
+					/>
 					<main className={classes.content}>
 						<div className={classes.toolbar} />
 						{this.state.page === 'mobiles' ?

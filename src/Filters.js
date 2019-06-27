@@ -8,6 +8,7 @@ import Grid from '@material-ui/core/Grid';
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
 
+// Our components
 import MobileFilterCard from './MobileFilterCard';
 import OrganisationFilterCard from './OrganisationFilterCard';
 import RouteFilterCard from './RouteFilterCard';

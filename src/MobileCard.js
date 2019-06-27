@@ -24,29 +24,26 @@ import { Breadcrumbs } from '@material-ui/core';
 import moment from 'moment';
 
 const styles = theme => ({
-	card: {
-		minWidth: 275,
-		border: '1px solid rgba(0, 0, 0, 0.12)'
-	},
 	bullet: {
 		display: 'inline-block',
 		margin: '0 2px',
 		transform: 'scale(0.8)'
 	},
-	margin: {
-		margin: theme.spacing(2)
+	card: {
+		minWidth: 275,
+		border: '1px solid rgba(0, 0, 0, 0.12)'
+	},
+	leftIcon: {
+		marginRight: theme.spacing(1)
+	},
+	title: {
+		fontSize: 12,
+		fontWeight: 500
 	},
 	verticalDivider: {
 		width: 1,
 		height: 28,
 		margin: 8
-	},
-	leftIcon: {
-		marginRight: theme.spacing(1),
-	},
-	title: {
-		fontSize: 12,
-		fontWeight: 500
 	}
 });
 
@@ -58,7 +55,6 @@ class MobileCard extends Component {
 		const { classes, mobile, organisation, location } = this.props;
 		const bull = <span className={classes.bullet}>•</span>;
 		return (
-
 			<Card className={classes.card} elevation={0}>
 				<CardContent>
 					<Typography className={classes.title} color="textSecondary" gutterBottom>

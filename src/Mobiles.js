@@ -9,6 +9,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
 
+// Our components
 import Filters from './Filters';
 import MobileCard from './MobileCard';
 

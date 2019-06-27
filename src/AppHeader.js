@@ -17,6 +17,9 @@ import MapIcon from '@material-ui/icons/Map';
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
 
+// Our components
+import PostcodeSearch from './PostcodeSearch';
+
 const styles = theme => ({
 	appBar: {
 		zIndex: theme.zIndex.drawer + 1,
@@ -36,7 +39,7 @@ const styles = theme => ({
 class AppHeader extends Component {
 
 	render() {
-		const { classes, drawer_open } = this.props;
+		const { classes, drawer_open, search_type, gps_available, toggleGPS, postcodeSearch } = this.props;
 
 		return (
 			<AppBar
@@ -50,6 +53,12 @@ class AppHeader extends Component {
 				<Toolbar>
 					<Typography variant="h6" color="secondary" noWrap>Mobile Libraries</Typography>
 					<div className={classes.grow} />
+					<PostcodeSearch
+						search_type={search_type}
+						gps_available={gps_available}
+						toggleGPS={toggleGPS}
+						postcodeSearch={postcodeSearch}
+					/>
 					<Button color="primary" variant={this.props.page === 'mobiles' ? 'text' : 'text'}
 						onClick={() => this.props.setPage('mobiles')}
 					>

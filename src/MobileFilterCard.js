@@ -7,9 +7,9 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import Fab from '@material-ui/core/Fab';
-import Typography from '@material-ui/core/Typography';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Typography from '@material-ui/core/Typography';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -29,14 +29,14 @@ const styles = theme => ({
 		minWidth: 275,
 		border: '1px solid rgba(0, 0, 0, 0.12)'
 	},
-	title: {
-		fontSize: 12,
-		fontWeight: 500
-	},
 	fab: {
 		position: 'absolute',
 		top: theme.spacing(2),
 		right: theme.spacing(2)
+	},
+	title: {
+		fontSize: 12,
+		fontWeight: 500
 	}
 });
 
@@ -101,9 +101,7 @@ class MobileFilterCard extends Component {
 						})}
 				</Menu>
 				{mobile_filter.length > 0 ?
-					<div>
-						<Divider variant="middle" />
-					</div> : null}
+					<Divider variant="middle" /> : null}
 			</Card>
 		);
 	}

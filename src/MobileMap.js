@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 // Mapbox GL
 import ReactMapboxGl, { ZoomControl, Source, Layer, Marker } from "react-mapbox-gl";
 
+// Our components
 import MobileAvatar from './MobileAvatar';
 
 const Map = ReactMapboxGl({

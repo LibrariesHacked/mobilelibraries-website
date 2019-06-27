@@ -29,14 +29,14 @@ const styles = theme => ({
 		minWidth: 275,
 		border: '1px solid rgba(0, 0, 0, 0.12)'
 	},
-	title: {
-		fontSize: 12,
-		fontWeight: 500
-	},
 	fab: {
 		position: 'absolute',
 		top: theme.spacing(2),
 		right: theme.spacing(2)
+	},
+	title: {
+		fontSize: 12,
+		fontWeight: 500
 	}
 });
 
