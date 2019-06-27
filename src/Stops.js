@@ -149,19 +149,14 @@ class Stops extends Component {
 						{ title: 'Name', field: 'name', filtering: false },
 						{ title: 'Community', field: 'community', filtering: false },
 						{
-							title: 'Arrival',
+							title: 'Time',
 							field: 'arrival',
 							filtering: false,
 							render: (rowData) => {
-								return moment(rowData.arrival, 'HH:mm:ssZ').format('HH:mma');
-							}
-						},
-						{
-							title: 'Departure',
-							field: 'departure',
-							filtering: false,
-							render: (rowData) => {
-								return moment(rowData.departure, 'HH:mm:ssZ').format('HH:mma');
+								return (
+									moment(rowData.arrival, 'HH:mm:ssZ').format('HH:mma') + '-' +
+									moment(rowData.departure, 'HH:mm:ssZ').format('HH:mma')
+								);
 							}
 						}
 					]}
