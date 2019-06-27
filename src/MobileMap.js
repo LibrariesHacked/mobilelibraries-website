@@ -58,15 +58,21 @@ class MobileMap extends Component {
 					sourceLayer='stop'
 					layout={{}}
 					paint={{
-						'circle-radius': {
-							'base': 1.75,
-							'stops': [[9, 5], [22, 180]]
-						},
+						'circle-radius': [
+							'interpolate',
+							['linear'],
+							['zoom'],
+							5, 2,
+							17, 10
+						],
 						'circle-color': '#36A2EB',
-						'circle-stroke-width': {
-							'base': 1,
-							'stops': [[9, 2], [22, 10]]
-						},
+						'circle-stroke-width': [
+							'interpolate',
+							['linear'],
+							['zoom'],
+							5, 1,
+							14, 2
+						],
 						'circle-stroke-color': '#FFFFFF',
 						'circle-opacity': 0.8
 					}}
@@ -76,12 +82,12 @@ class MobileMap extends Component {
 					type='symbol'
 					sourceId='src_stops'
 					sourceLayer='stop'
-					minZoom={12}
+					minZoom={13}
 					layout={{
-						'text-ignore-placement': true,
+						'text-ignore-placement': false,
 						'text-field': ['to-string', ['get', 'name']],
 						"text-font": [
-							"Source Sans Pro Regular"
+							"Source Sans Pro Bold"
 						],
 						"text-line-height": 1,
 						"text-size": [
@@ -92,14 +98,10 @@ class MobileMap extends Component {
 							[
 								"zoom"
 							],
-							10,
-							8,
-							15,
-							10,
-							22,
-							25
+							13,10,
+							17,22
 						],
-						"text-offset": [0, 1.8],
+						"text-offset": [0, 1.7],
 					}}
 					paint={{
 						"text-halo-color": "hsl(0, 0%, 100%)",
