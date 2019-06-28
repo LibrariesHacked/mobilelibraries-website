@@ -3,7 +3,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
 import Grid from '@material-ui/core/Grid';
+import Typography from '@material-ui/core/Typography';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -14,8 +17,22 @@ import OrganisationFilterCard from './OrganisationFilterCard';
 import RouteFilterCard from './RouteFilterCard';
 
 const styles = (theme) => ({
+	bullet: {
+		display: 'inline-block',
+		margin: '0 2px',
+		transform: 'scale(0.8)'
+	},
+	card: {
+		position: 'relative',
+		minWidth: 275,
+		border: '1px solid rgba(0, 0, 0, 0.12)'
+	},
 	grid: {
 		marginBottom: 10
+	},
+	title: {
+		fontSize: 12,
+		fontWeight: 500
 	}
 });
 
@@ -27,67 +44,27 @@ class Filters extends Component {
 	render() {
 		const {
 			classes, displayStopLink,
-			organisations, organisation_lookup, organisation_filter, setOrganisationFilter, 
+			organisations, organisation_lookup, organisation_filter, setOrganisationFilter,
 			clearOrganisationFilter, viewStopsByOrganisation,
 			mobiles, mobile_lookup, mobile_filter, setMobileFilter, clearMobileFilter,
 			routes, route_lookup, route_filter, setRouteFilter, clearRouteFilter
 		} = this.props;
+		const bull = <span className={classes.bullet}>•</span>;
 
 		return (
 			<Grid className={classes.grid} container spacing={3}>
 				<Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-					<OrganisationFilterCard
-						displayStopLink={displayStopLink}
-						organisations={organisations}
-						organisation_lookup={organisation_lookup}
-						organisation_filter={organisation_filter}
-						setOrganisationFilter={setOrganisationFilter}
-						clearOrganisationFilter={clearOrganisationFilter}
-						viewStopsByOrganisation={viewStopsByOrganisation}
-					/>
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-					<MobileFilterCard
-						displayStopLink={displayStopLink}
-						organisation_filter={organisation_filter}
-						organisation_lookup={organisation_lookup}
-						mobiles={mobiles.filter(mob => {
-							let display = true;
-							if (organisation_filter.length > 0 &&
-								organisation_filter.indexOf(mob.organisation_id) === -1) {
-								display = false;
-							}
-							return display;
-						})}
-						mobile_lookup={mobile_lookup}
-						mobile_filter={mobile_filter}
-						setMobileFilter={setMobileFilter}
-						clearMobileFilter={clearMobileFilter}
-					/>
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-					{mobile_filter.length > 0 ?
-						<RouteFilterCard
-							displayStopLink={displayStopLink}
-							organisation_filter={organisation_filter}
-							organisation_lookup={organisation_lookup}
-							mobile_lookup={mobile_lookup}
-							mobile_filter={mobile_filter}
-							routes={routes.filter(route => {
-								let display = true;
-								if (mobile_filter.length > 0 &&
-									mobile_filter.indexOf(route.mobile_id) === -1) {
-									display = false;
-								}
-								return display;
-							})}
-							route_lookup={route_lookup}
-							route_filter={route_filter}
-							setRouteFilter={setRouteFilter}
-							clearRouteFilter={clearRouteFilter}
-						/> : null
-					}
-
+					<Card className={classes.card} elevation={0}>
+						<CardContent>
+							<Typography className={classes.title} color="textSecondary" gutterBottom>
+								{organisations.length + ' library services'}
+								{bull}
+								{mobiles.length + ' mobile libraries'}
+								{bull}
+								{routes.length + ' routes'}
+							</Typography>
+						</CardContent>
+					</Card>
 				</Grid>
 			</Grid>
 		);

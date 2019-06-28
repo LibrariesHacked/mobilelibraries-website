@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import ReactMapboxGl, { ZoomControl, Source, Layer, Marker } from "react-mapbox-gl";
 
 // Our components
+import MeAvatar from './MeAvatar';
 import MobileAvatar from './MobileAvatar';
 
 const Map = ReactMapboxGl({
@@ -17,10 +18,13 @@ const Map = ReactMapboxGl({
 	attributionControl: true
 });
 
+const stop_tiles = ['https://api.mobilelibraries.org/api/stops/{z}/{x}/{y}.mvt'];
+
 class MobileMap extends Component {
 
 	render() {
 		const { position, zoom, pitch, bearing, fit_bounds, mobile_locations, mobile_lookup } = this.props;
+
 		return (
 			<Map
 				style='style.json'  // eslint-disable-line react/style-prop-object
@@ -48,9 +52,7 @@ class MobileMap extends Component {
 					id='src_stops'
 					tileJsonSource={{
 						type: 'vector',
-						tiles: [
-							'https://api.mobilelibraries.org/api/stops/{z}/{x}/{y}.mvt',
-						],
+						tiles: stop_tiles
 					}} />
 				<Layer
 					id='lyr_stops_circles'
@@ -66,7 +68,7 @@ class MobileMap extends Component {
 							5, 2,
 							17, 10
 						],
-						'circle-color': '#36A2EB',
+						'circle-color': '#607d8b',
 						'circle-stroke-width': [
 							'interpolate',
 							['linear'],
@@ -99,8 +101,8 @@ class MobileMap extends Component {
 							[
 								"zoom"
 							],
-							13,10,
-							17,22
+							13, 10,
+							17, 22
 						],
 						"text-offset": [0, 1.7],
 					}}
@@ -111,6 +113,13 @@ class MobileMap extends Component {
 						"text-color": "#6a6f73"
 					}}
 				/>
+				{this.props.current_position && this.props.current_position.length > 0 ?
+					<Marker
+						key={'mk_me'}
+						coordinates={[this.props.current_position[0], this.props.current_position[1]]}>
+						<MeAvatar search_type={this.props.search_type} />
+					</Marker>
+					: null}
 				<ZoomControl position="bottom-right" />
 			</Map>
 		);
@@ -118,7 +127,6 @@ class MobileMap extends Component {
 }
 
 MobileMap.propTypes = {
-	classes: PropTypes.object.isRequired
 }
 
 export default MobileMap;

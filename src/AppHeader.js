@@ -51,7 +51,7 @@ class AppHeader extends Component {
 				})}
 			>
 				<Toolbar>
-					<Typography variant="h6" color="secondary" noWrap>Mobile Libraries</Typography>
+					<Typography variant="h6" noWrap>Mobile Libraries</Typography>
 					<div className={classes.grow} />
 					<PostcodeSearch
 						search_type={search_type}

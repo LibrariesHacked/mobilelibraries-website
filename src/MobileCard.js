@@ -65,33 +65,6 @@ class MobileCard extends Component {
 						{mobile.number_stops + ' stop' + (mobile.number_stops > 1 ? 's' : '')}
 					</Typography>
 					<Typography variant="h6" component="h2">{mobile.name}</Typography>
-					<Breadcrumbs separator="›">
-						{
-							location && location.previous_stop_id ?
-								<Chip size="small" label={location.previous_stop_name} />
-								: null
-						}
-						{
-							location && !location.current_stop_id && !location.previous_stop_id & !location.geox ?
-								<Chip size="small" color="primary" label="Off Road" />
-								: null
-						}
-						{
-							location && !location.current_stop_id && location.previous_stop_id && location.next_stop_id && location.geox ?
-								<Chip size="small" color="primary" label="Travelling" />
-								: null
-						}
-						{
-							location && location.current_stop_id ?
-								<Chip size="small" color="primary" label={location.current_stop_name} />
-								: null
-						}
-						{
-							location && location.next_stop_id ?
-								<Chip size="small" label={moment(location.next_stop_arrival).format('HH:mma') + ' ' + location.next_stop_name} />
-								: null
-						}
-					</Breadcrumbs>
 				</CardContent>
 				<Divider variant="middle" />
 				<CardActions>
@@ -106,6 +79,22 @@ class MobileCard extends Component {
 							<PictureAsPdfIcon />
 						</IconButton>
 					</Tooltip>
+					<Divider className={classes.verticalDivider} />
+					{
+						location && !location.current_stop_id && !location.previous_stop_id & !location.geox ?
+							<Chip size="small" color="secondary" label="Off Road" />
+							: null
+					}
+					{
+						location && !location.current_stop_id && location.previous_stop_id && location.next_stop_id && location.geox ?
+							<Chip size="small" color="primary" label="Travelling" />
+							: null
+					}
+					{
+						location && location.current_stop_id ?
+							<Chip size="small" color="primary" label={location.current_stop_name} />
+							: null
+					}
 				</CardActions>
 			</Card>
 		);

@@ -6,9 +6,8 @@ import PropTypes from 'prop-types';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 // MUI Style
-import blue from '@material-ui/core/colors/blue';
 import deepOrange from '@material-ui/core/colors/deepOrange';
-import red from '@material-ui/core/colors/red';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 
 // Our components
@@ -25,9 +24,8 @@ import * as routesHelper from './helpers/routes';
 
 const theme = createMuiTheme({
 	palette: {
-		primary: blue,
-		secondary: deepOrange,
-		error: red
+		primary: deepOrange,
+		secondary: blueGrey
 	},
 	overrides: {
 		MuiButton: {
@@ -76,6 +74,7 @@ class App extends Component {
 		pitch: [0],
 		bearing: [0],
 		gps_loading: true,
+		postcode: '',
 		postcode_loading: true,
 		current_position: [],
 		gps_available: false,
@@ -143,19 +142,25 @@ class App extends Component {
 		this.setState({ loading: true, gps_loading: true });
 		geoHelper.getCurrentPosition(position => {
 			this.setState({ current_position: position, gps_loading: false, gps_available: (position.length > 0) });
-			this.getLocations('gps', fit);
 		});
 	}
 
 	// postcodeSearch
 	postcodeSearch = (postcode) => {
 		// If we're already tracking GPS then turn this off
-		let new_state = { search_type: 'postcode', loading: true, postcode_loading: true };
+		let new_state = { search_type: 'postcode', loading: true, postcode_loading: true, postcode: postcode };
 		if (this.state.search_type === 'gps') {
 			clearInterval(this.state.position_update_interval);
 			new_state.position_update_interval = null;
 		}
-		this.setState(new_state);
+
+		// Get the postcode
+		geoHelper.getPostcode(postcode, location => {
+			new_state.current_position = location;
+			new_state.position = location;
+			new_state.zoom = [11];
+			this.setState(new_state);
+		});
 	}
 
 	// toggleGPS
@@ -232,7 +237,9 @@ class App extends Component {
 								fit_bounds={this.state.fit_bounds}
 								pitch={this.state.pitch}
 								position={this.state.position}
+								current_position={this.state.current_position}
 								zoom={this.state.zoom}
+								search_type={this.state.search_type}
 								mobile_lookup={this.state.mobile_lookup}
 								mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
 							/> : null}

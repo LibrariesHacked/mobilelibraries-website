@@ -21,6 +21,19 @@ const styles = theme => ({
 		height: 28,
 		margin: 8
 	},
+	iconButton: {
+		padding: 10
+	},
+	inputRoot: {
+		color: 'inherit'
+	},
+	inputInput: {
+		paddingTop: theme.spacing(),
+		paddingRight: theme.spacing(),
+		paddingBottom: theme.spacing(),
+		paddingLeft: theme.spacing(2),
+		width: 100
+	},
 	search: {
 		position: 'relative',
 		border: '1px solid #e5e5e5',
@@ -30,21 +43,8 @@ const styles = theme => ({
 			backgroundColor: fade(theme.palette.common.white, 0.9),
 		},
 		marginLeft: 0,
-		marginRight: theme.spacing.unit,
+		marginRight: theme.spacing(),
 		display: 'flex'
-	},
-	iconButton: {
-		padding: 10
-	},
-	inputRoot: {
-		color: 'inherit'
-	},
-	inputInput: {
-		paddingTop: theme.spacing.unit,
-		paddingRight: theme.spacing.unit,
-		paddingBottom: theme.spacing.unit,
-		paddingLeft: theme.spacing.unit * 2,
-		width: 100
 	}
 });
 
