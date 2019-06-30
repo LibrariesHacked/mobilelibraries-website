@@ -80,26 +80,6 @@ class MobileFilterCard extends Component {
 						: null}
 				</CardContent>
 				<CardContent></CardContent>
-				<Menu
-					id="menu-mobile-library"
-					anchorEl={this.state.menu_anchor}
-					keepMounted
-					open={Boolean(this.state.menu_anchor)}
-					onClose={() => this.closeMenu()}
-				>
-					{mobiles
-						.filter(mob => {
-							let display = true;
-							if (organisation_filter.length > 0 &&
-								organisation_filter.indexOf(mob.organisation_id) === -1) {
-								display = false;
-							}
-							return display;
-						})
-						.map(mob => {
-							return <MenuItem key={'mnu_itm_mob_' + mob.id} onClick={() => this.chooseMobile(mob.id)}>{mob.name}</MenuItem>
-						})}
-				</Menu>
 				{mobile_filter.length > 0 ?
 					<Divider variant="middle" /> : null}
 			</Card>

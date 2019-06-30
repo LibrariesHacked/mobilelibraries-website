@@ -10,8 +10,6 @@ import CardContent from '@material-ui/core/CardContent';
 import Divider from '@material-ui/core/Divider';
 import Fab from '@material-ui/core/Fab';
 import IconButton from '@material-ui/core/IconButton';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
@@ -94,17 +92,7 @@ class OrganisationFilterCard extends Component {
 							</Tooltip>
 						</CardActions>
 					</React.Fragment> : <CardContent></CardContent>}
-				<Menu
-					id="menu-library-service"
-					anchorEl={this.state.menu_anchor}
-					keepMounted
-					open={Boolean(this.state.menu_anchor)}
-					onClose={() => this.closeMenu()}
-				>
-					{organisations.map(org => {
-						return <MenuItem key={'mnu_itm_org_' + org.id} onClick={() => this.chooseOrganisation(org.id)}>{org.name}</MenuItem>
-					})}
-				</Menu>
+				
 			</Card >
 		);
 	}
