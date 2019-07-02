@@ -146,9 +146,9 @@ class App extends Component {
 	}
 
 	// postcodeSearch
-	postcodeSearch = (postcode) => {
+	postcodeSearch = (postcode, distance) => {
 		// If we're already tracking GPS then turn this off
-		let new_state = { search_type: 'postcode', loading: true, postcode_loading: true, postcode: postcode };
+		let new_state = { search_type: 'postcode', loading: true, postcode_loading: true, postcode: postcode, distance: distance };
 		if (this.state.search_type === 'gps') {
 			clearInterval(this.state.position_update_interval);
 			new_state.position_update_interval = null;
@@ -156,10 +156,12 @@ class App extends Component {
 
 		// Get the postcode
 		geoHelper.getPostcode(postcode, location => {
-			new_state.current_position = location;
-			new_state.position = location;
-			new_state.zoom = [11];
-			this.setState(new_state);
+			if (location.length === 2) {
+				new_state.current_position = location;
+				new_state.position = location;
+				new_state.zoom = [11];
+				this.setState(new_state);
+			}
 		});
 	}
 

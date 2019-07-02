@@ -40,6 +40,7 @@ class MobileMap extends Component {
 					mobile_locations && mobile_locations.length > 0 ?
 						mobile_locations.map(l => {
 							return <Marker
+								key={'mkr_' + l.id}
 								coordinates={[l.geox, l.geoy]}
 								anchor="bottom">
 								<MobileAvatar

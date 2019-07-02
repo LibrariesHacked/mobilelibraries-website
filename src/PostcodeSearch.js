@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
+import MenuItem from '@material-ui/core/MenuItem';
+import Select from '@material-ui/core/Select';
 import Tooltip from '@material-ui/core/Tooltip';
 
 import { fade } from '@material-ui/core/styles/colorManipulator';
@@ -50,7 +52,8 @@ const styles = theme => ({
 
 class PostcodeSearch extends React.Component {
 	state = {
-		postcode: ''
+		postcode: '',
+		distance: 1609
 	}
 
 	render() {
@@ -66,10 +69,20 @@ class PostcodeSearch extends React.Component {
 					value={this.state.postcode}
 					onChange={(e) => this.setState({ postcode: e.target.value })}
 				/>
+				<Select
+					value={this.state.distance}
+					onChange={(e) => { this.setState({ distance: e.target.value }) }}
+					input={<InputBase name="sel-miles" id="sel-miles" />}
+				>
+					<MenuItem value={1609}>1 mi</MenuItem>
+					<MenuItem value={3219}>2 mi</MenuItem>
+					<MenuItem value={4828}>3 mi</MenuItem>
+					<MenuItem value={8047}>5 mi</MenuItem>
+				</Select>
 				<Tooltip title={'Search by postcode'}>
 					<IconButton
 						className={classes.iconButton}
-						onClick={() => postcodeSearch(this.state.postcode)}>
+						onClick={() => postcodeSearch(this.state.postcode, this.state.distance)}>
 						<SearchIcon />
 					</IconButton>
 				</Tooltip>

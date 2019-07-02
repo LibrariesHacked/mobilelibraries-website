@@ -20,8 +20,6 @@ import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
 
-import moment from 'moment';
-
 const styles = theme => ({
 	bullet: {
 		display: 'inline-block',

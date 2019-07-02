@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -18,11 +19,11 @@ import { withStyles } from '@material-ui/core/styles';
 
 // MUI Icons
 import BusinessIcon from '@material-ui/icons/Business';
+import DirectionBusIcon from '@material-ui/icons/DirectionsBus';
+import DirectionsIcon from '@material-ui/icons/Directions';
 
 // Our components
-import MobileFilterCard from './MobileFilterCard';
-import OrganisationFilterCard from './OrganisationFilterCard';
-import RouteFilterCard from './RouteFilterCard';
+
 
 const styles = (theme) => ({
 	bullet: {
@@ -76,6 +77,11 @@ class Filters extends Component {
 		this.setState({ mobile_menu_anchor: null });
 	}
 
+	chooseMobile = (mobile_id) => {
+		this.props.setMobileFilter(mobile_id);
+		this.closeMobileMenu();
+	}
+
 	openRouteMenu = (element) => {
 		this.setState({ route_menu_anchor: element });
 	}
@@ -84,13 +90,16 @@ class Filters extends Component {
 		this.setState({ route_menu_anchor: null });
 	}
 
+	chooseRoute = (route_id) => {
+		this.props.setRouteFilter(route_id);
+		this.closeRouteMenu();
+	}
+
 	render() {
 		const {
-			classes, displayStopLink,
-			organisations, organisation_lookup, organisation_filter, setOrganisationFilter,
-			clearOrganisationFilter, viewStopsByOrganisation,
-			mobiles, mobile_lookup, mobile_filter, setMobileFilter, clearMobileFilter,
-			routes, route_lookup, route_filter, setRouteFilter, clearRouteFilter
+			classes, organisations, organisation_lookup, organisation_filter,
+			clearOrganisationFilter, mobiles, mobile_lookup, mobile_filter, clearMobileFilter,
+			routes, route_lookup, route_filter, clearRouteFilter
 		} = this.props;
 		const bull = <span className={classes.bullet}>•</span>;
 
@@ -108,11 +117,33 @@ class Filters extends Component {
 							</Typography>
 						</CardContent>
 						<CardActions>
-							<Tooltip title="Choose library service">
+							{organisation_filter.length === 0 ? <Tooltip title="Choose library service">
 								<Button size="small" color="primary" className={classes.button} onClick={(e) => this.openOrganisationMenu(e.currentTarget)}>
 									<BusinessIcon className={classes.leftIcon} />Service
 								</Button>
-							</Tooltip>
+							</Tooltip> :
+								<Chip size="small" color="secondary" onDelete={clearOrganisationFilter} label={organisation_lookup[organisation_filter[0]].name} />
+							}
+							{organisation_filter.length > 0 ?
+								(mobile_filter.length === 0 ?
+									<Tooltip title="Choose mobile library">
+										<Button size="small" color="primary" className={classes.button} onClick={(e) => this.openMobileMenu(e.currentTarget)}>
+											<DirectionBusIcon className={classes.leftIcon} />Mobile
+										</Button>
+									</Tooltip> :
+									<Chip size="small" color="secondary" onDelete={(e) => clearMobileFilter()} label={mobile_lookup[mobile_filter[0]].name} />
+								)
+								: null}
+							{mobile_filter.length > 0 ?
+								(route_filter.length === 0 ?
+									<Tooltip title="Choose route">
+										<Button size="small" color="primary" className={classes.button} onClick={(e) => this.openRouteMenu(e.currentTarget)}>
+											<DirectionsIcon className={classes.leftIcon} />Route
+										</Button>
+									</Tooltip> :
+									<Chip size="small" color="secondary" onDelete={(e) => clearRouteFilter()} label={route_lookup[route_filter[0]].name} />
+								)
+								: null}
 						</CardActions>
 					</Card>
 				</Grid>
@@ -123,9 +154,11 @@ class Filters extends Component {
 					open={Boolean(this.state.organisation_menu_anchor)}
 					onClose={() => this.closeOrganisationMenu()}
 				>
-					{organisations.map(org => {
-						return <MenuItem key={'mnu_itm_org_' + org.id} onClick={() => this.chooseOrganisation(org.id)}>{org.name}</MenuItem>
-					})}
+					{organisations
+						.sort((a, b) => a.name.localeCompare(b.name))
+						.map(org => {
+							return <MenuItem key={'mnu_itm_org_' + org.id} onClick={() => this.chooseOrganisation(org.id)}>{org.name}</MenuItem>
+						})}
 				</Menu>
 				<Menu
 					id="menu-mobile-library"
@@ -143,6 +176,7 @@ class Filters extends Component {
 							}
 							return display;
 						})
+						.sort((a, b) => a.name.localeCompare(b.name))
 						.map(mob => {
 							return <MenuItem key={'mnu_itm_mob_' + mob.id} onClick={() => this.chooseMobile(mob.id)}>{mob.name}</MenuItem>
 						})}
@@ -154,9 +188,19 @@ class Filters extends Component {
 					open={Boolean(this.state.route_menu_anchor)}
 					onClose={() => this.closeRouteMenu()}
 				>
-					{routes.map(route => {
-						return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => this.chooseRoute(route.id)}>{route.name}</MenuItem>
-					})}
+					{routes
+						.filter(route => {
+							let display = true;
+							if (mobile_filter.length > 0 &&
+								mobile_filter.indexOf(route.mobile_id) === -1) {
+								display = false;
+							}
+							return display;
+						})
+						.sort((a, b) => a.name.localeCompare(b.name))
+						.map(route => {
+							return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => this.chooseRoute(route.id)}>{route.name}</MenuItem>
+						})}
 				</Menu>
 
 			</Grid>
