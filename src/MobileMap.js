@@ -114,7 +114,7 @@ class MobileMap extends Component {
 						"text-color": "#6a6f73"
 					}}
 				/>
-				{this.props.current_position && this.props.current_position.length > 0 ?
+				{this.props.current_position && this.props.current_position.length > 1 ?
 					<Marker
 						key={'mk_me'}
 						coordinates={[this.props.current_position[0], this.props.current_position[1]]}>
@@ -128,6 +128,7 @@ class MobileMap extends Component {
 }
 
 MobileMap.propTypes = {
+	current_position: PropTypes.array
 }
 
 export default MobileMap;

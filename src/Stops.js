@@ -54,6 +54,10 @@ class Stops extends Component {
 
 	tableRef = React.createRef();
 
+	componentWillReceiveProps(nextProps) {
+		if (this.props.postcode !== nextProps.postcode || this.props.distance !== nextProps.distance) this.tableRef.current.onQueryChange();
+	}
+
 	setOrganisationFilter = (organisation_id) => {
 		this.props.setOrganisationFilter(organisation_id);
 		this.tableRef.current.onQueryChange();
@@ -96,7 +100,7 @@ class Stops extends Component {
 		const {
 			classes, organisations, organisation_lookup, organisation_filter, viewStopsByOrganisation,
 			mobiles, mobile_lookup, mobile_filter,
-			routes, route_lookup, route_filter } = this.props;
+			routes, route_lookup, route_filter, current_position, distance } = this.props;
 		let orgText = {}
 		Object.keys(organisation_lookup).forEach(key => {
 			orgText[key] = organisation_lookup[key].name;
@@ -183,7 +187,7 @@ class Stops extends Component {
 					]}
 					data={query =>
 						new Promise((resolve, reject) => {
-							stopsHelper.getQueryStops(query, this.props.organisation_filter, this.props.mobile_filter, this.props.route_filter, stopData => {
+							stopsHelper.getQueryStops(query, organisation_filter, mobile_filter, route_filter, current_position, distance, stopData => {
 								resolve({
 									data: stopData.stops,
 									page: (stopData.page - 1),

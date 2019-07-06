@@ -157,6 +157,7 @@ class App extends Component {
 		// Get the postcode
 		geoHelper.getPostcode(postcode, location => {
 			if (location.length === 2) {
+				new_state.search_type = 'postcode';
 				new_state.current_position = location;
 				new_state.position = location;
 				new_state.zoom = [11];
@@ -232,6 +233,9 @@ class App extends Component {
 								route_filter={this.state.route_filter}
 								setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
 								clearRouteFilter={this.clearRouteFilter}
+								current_position={this.state.current_position}
+								postcode={this.state.postcode}
+								distance={this.state.distance}
 							/> : null}
 						{this.state.page === 'map' ?
 							<MobileMap
