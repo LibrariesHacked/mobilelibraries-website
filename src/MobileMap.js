@@ -9,6 +9,8 @@ import ReactMapboxGl, { ZoomControl, Source, Layer, Marker } from "react-mapbox-
 import MeAvatar from './MeAvatar';
 import MobileAvatar from './MobileAvatar';
 
+import moment from 'moment';
+
 const Map = ReactMapboxGl({
 	minZoom: 5,
 	maxZoom: 18,
@@ -21,6 +23,19 @@ const Map = ReactMapboxGl({
 const stop_tiles = ['https://api.mobilelibraries.org/api/stops/{z}/{x}/{y}.mvt'];
 
 class MobileMap extends Component {
+
+	state = {
+		time_update_interval: null,
+		current_time: null
+	}
+
+	componentDidMount = () => {
+		// Set up interval to provide a date every 500 milliseconds
+		let time_update_interval = setInterval(this.setCurrentTime, 500);
+		this.setState({ time_update_interval: time_update_interval });
+	}
+
+	setCurrentTime = () => this.setState({ current_time: moment() });
 
 	render() {
 		const { position, zoom, pitch, bearing, fit_bounds, mobile_locations, mobile_lookup } = this.props;
@@ -39,9 +54,17 @@ class MobileMap extends Component {
 				{ // The mobile library locations
 					mobile_locations && mobile_locations.length > 0 ?
 						mobile_locations.map(l => {
+							let location_point = [l.geox, l.geoy];
+							if (this.state.current_time && l.route_section && l.route_section.coordinates && l.updated) {
+								const milliseconds_passed = moment(this.state.current_time).diff(l.updated);
+								const index = Math.round(milliseconds_passed / 500);
+								const coords = l.route_section.coordinates;
+								if (coords.length > index && index > 0) location_point = coords[index];
+								if (coords.length <= index && index > 0) location_point = coords[coords.length - 1];
+							}
 							return <Marker
 								key={'mkr_' + l.id}
-								coordinates={[l.geox, l.geoy]}
+								coordinates={location_point}
 								anchor="bottom">
 								<MobileAvatar
 									mobile={mobile_lookup[l.mobile_id]}
