@@ -20,6 +20,9 @@ import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
 
+// Helpers
+import * as mobilesHelper from './helpers/mobiles';
+
 const styles = theme => ({
 	bullet: {
 		display: 'inline-block',
@@ -50,6 +53,7 @@ class MobileCard extends Component {
 
 	render() {
 		const { classes, mobile, organisation, location } = this.props;
+		const status = mobilesHelper.getMobileStatus(mobile, location);
 		const bull = <span className={classes.bullet}>•</span>;
 		return (
 			<Card className={classes.card} elevation={0}>
@@ -77,21 +81,7 @@ class MobileCard extends Component {
 						</IconButton>
 					</Tooltip>
 					<Divider className={classes.verticalDivider} />
-					{
-						location && !location.current_stop_id && !location.previous_stop_id & !location.geox ?
-							<Chip size="small" color="secondary" label="Off Road" />
-							: null
-					}
-					{
-						location && !location.current_stop_id && location.previous_stop_id && location.next_stop_id && location.geox ?
-							<Chip size="small" color="primary" label="Travelling" />
-							: null
-					}
-					{
-						location && location.current_stop_id ?
-							<Chip size="small" color="primary" label={location.current_stop_name} />
-							: null
-					}
+					<Chip size="small" color="secondary" label={status.label} />
 				</CardActions>
 			</Card>
 		);
