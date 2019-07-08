@@ -66,11 +66,12 @@ class MobileCard extends Component {
 						{mobile.number_stops + ' stop' + (mobile.number_stops > 1 ? 's' : '')}
 					</Typography>
 					<Typography variant="h6" component="h2">{mobile.name}</Typography>
+					<Chip size="small" color="secondary" label={status} />
 				</CardContent>
 				<Divider variant="middle" />
 				<CardActions>
 					<Tooltip title="Mobile library stops">
-						<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
+						<Button size="small" color="secondary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
 							<LocationOnIcon className={classes.leftIcon} />Stops
 							</Button>
 					</Tooltip>
@@ -81,7 +82,6 @@ class MobileCard extends Component {
 						</IconButton>
 					</Tooltip>
 					<Divider className={classes.verticalDivider} />
-					<Chip size="small" color="secondary" label={status.label} />
 				</CardActions>
 			</Card>
 		);

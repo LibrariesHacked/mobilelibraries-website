@@ -91,7 +91,7 @@ class PostcodeSearch extends React.Component {
 					<Tooltip title={'Track my location'}>
 						<IconButton
 							className={classes.iconButton}
-							color="primary"
+							color="secondary"
 							onClick={() => { this.setState({ postcode: '' }); toggleGPS() }}
 						>
 							{gps_available && search_type === 'gps' ? <MyLocation /> : <LocationSearching />}

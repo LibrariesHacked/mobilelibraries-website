@@ -68,6 +68,7 @@ class MobileMap extends Component {
 								anchor="bottom">
 								<MobileAvatar
 									mobile={mobile_lookup[l.mobile_id]}
+									location={l}
 								/>
 							</Marker>
 						}) : null

@@ -23,7 +23,7 @@ import PostcodeSearch from './PostcodeSearch';
 const styles = theme => ({
 	appBar: {
 		zIndex: theme.zIndex.drawer + 1,
-		backgroundColor: 'rgba(255, 255, 255, 0.5)'
+		backgroundColor: 'rgba(255, 255, 255, 0)'
 	},
 	grow: {
 		flexGrow: 1
@@ -59,17 +59,17 @@ class AppHeader extends Component {
 						toggleGPS={toggleGPS}
 						postcodeSearch={postcodeSearch}
 					/>
-					<Button color="primary" variant={this.props.page === 'mobiles' ? 'text' : 'text'}
+					<Button color="secondary" variant={this.props.page === 'mobiles' ? 'text' : 'text'}
 						onClick={() => this.props.setPage('mobiles')}
 					>
 						<DashboardIcon className={classes.leftIcon} />Mobile dashboard
 					</Button>
-					<Button color="primary" variant={this.props.page === 'stops' ? 'text' : 'text'}
+					<Button color="secondary" variant={this.props.page === 'stops' ? 'text' : 'text'}
 						onClick={() => this.props.setPage('stops')}
 					>
 						<LocationOnIcon className={classes.leftIcon} />Find a stop
 					</Button>
-					<Button color="primary" variant={this.props.page === 'map' ? 'text' : 'text'}
+					<Button color="secondary" variant={this.props.page === 'map' ? 'text' : 'text'}
 						onClick={() => this.props.setPage('map')}
 					>
 						<MapIcon className={classes.leftIcon} />Map

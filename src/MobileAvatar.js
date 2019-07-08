@@ -4,12 +4,16 @@ import PropTypes from 'prop-types';
 
 // Material UI
 import Fab from '@material-ui/core/Fab';
+import Tooltip from '@material-ui/core/Tooltip';
 
 // MUI Icons
 import DirectionBusIcon from '@material-ui/icons/DirectionsBus';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
+
+// Helpers
+import * as mobilesHelper from './helpers/mobiles';
 
 const styles = theme => ({
 	fab: {
@@ -23,11 +27,14 @@ class MobileAvatar extends Component {
 	};
 
 	render() {
-		const { classes } = this.props;
+		const { classes, tooltips, location, mobile } = this.props;
 		return (
-			<Fab size="small" color="primary" className={classes.fab}>
-				<DirectionBusIcon />
-			</Fab>
+			<Tooltip
+				title={mobilesHelper.getMobileStatus(mobile, location)}>
+				<Fab size="small" color="primary" className={classes.fab}>
+					<DirectionBusIcon />
+				</Fab>
+			</Tooltip>
 		);
 	}
 }
