@@ -21,6 +21,7 @@ const Map = ReactMapboxGl({
 });
 
 const stop_tiles = ['https://api.mobilelibraries.org/api/stops/{z}/{x}/{y}.mvt'];
+const trip_tiles = ['https://api.mobilelibraries.org/api/trips/{z}/{x}/{y}.mvt'];
 
 class MobileMap extends Component {
 
@@ -79,11 +80,52 @@ class MobileMap extends Component {
 						type: 'vector',
 						tiles: stop_tiles
 					}} />
+				<Source
+					id='src_trips'
+					tileJsonSource={{
+						type: 'vector',
+						tiles: trip_tiles
+					}} />
+				<Layer
+					id='lyr_trips_lines'
+					type='line'
+					sourceId='src_trips'
+					sourceLayer='trip'
+					minZoom={13}
+					layout={{
+						"line-join": "round",
+						"line-cap": "square"
+					}}
+					paint={{
+						"line-color": "#a7a39b",
+						"line-opacity": 1,
+						"line-width": [
+							"interpolate",
+							[
+								"linear"
+							],
+							[
+								"zoom"
+							],
+							13, 0.5,
+							14, 1,
+							15, 2,
+							16, 3,
+							18, 10,
+							22, 20
+						],
+						"line-dasharray": [
+							2,
+							0.5
+						]
+					}}
+				/>
 				<Layer
 					id='lyr_stops_circles'
 					type='circle'
 					sourceId='src_stops'
 					sourceLayer='stop'
+					minZoom={7}
 					layout={{}}
 					paint={{
 						'circle-radius': [
