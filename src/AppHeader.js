@@ -6,6 +6,8 @@ import clsx from 'clsx';
 // Material UI
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 
@@ -23,7 +25,14 @@ import PostcodeSearch from './PostcodeSearch';
 const styles = theme => ({
 	appBar: {
 		zIndex: theme.zIndex.drawer + 1,
-		backgroundColor: 'rgba(255, 255, 255, 0)'
+		backgroundColor: 'rgba(250, 250, 250, 1)'
+	},
+	appBarTransparent: {
+		zIndex: theme.zIndex.drawer + 1,
+		backgroundColor: 'rgba(250, 250, 250, 0)'
+	},
+	button: {
+		margin: theme.spacing(1),
 	},
 	grow: {
 		flexGrow: 1
@@ -39,19 +48,19 @@ const styles = theme => ({
 class AppHeader extends Component {
 
 	render() {
-		const { classes, drawer_open, search_type, gps_available, toggleGPS, postcodeSearch } = this.props;
+		const { classes, search_type, gps_available, toggleGPS, postcodeSearch, page } = this.props;
 
 		return (
 			<AppBar
 				position="fixed"
 				color="inherit"
 				elevation={0}
-				className={clsx(classes.appBar, {
-					[classes.appBarShift]: drawer_open
-				})}
+				className={(page === 'map' ? classes.appBarTransparent : classes.appBar)}
 			>
 				<Toolbar>
-					<Typography variant="h6" noWrap>Mobile Libraries</Typography>
+					<Hidden xsDown>
+						<Typography color="secondary" variant="h6" noWrap>Mobile Libraries</Typography>
+					</Hidden>
 					<div className={classes.grow} />
 					<PostcodeSearch
 						search_type={search_type}
@@ -59,21 +68,38 @@ class AppHeader extends Component {
 						toggleGPS={toggleGPS}
 						postcodeSearch={postcodeSearch}
 					/>
-					<Button color="secondary" variant={this.props.page === 'mobiles' ? 'text' : 'text'}
-						onClick={() => this.props.setPage('mobiles')}
-					>
-						<DashboardIcon className={classes.leftIcon} />Mobile dashboard
-					</Button>
-					<Button color="secondary" variant={this.props.page === 'stops' ? 'text' : 'text'}
-						onClick={() => this.props.setPage('stops')}
-					>
-						<LocationOnIcon className={classes.leftIcon} />Find a stop
-					</Button>
-					<Button color="secondary" variant={this.props.page === 'map' ? 'text' : 'text'}
-						onClick={() => this.props.setPage('map')}
-					>
-						<MapIcon className={classes.leftIcon} />Map
-					</Button>
+					<Hidden smDown>
+						<React.Fragment>
+							<Button color="secondary" variant={this.props.page === 'mobiles' ? 'text' : 'text'}
+								onClick={() => this.props.setPage('mobiles')}
+							>
+								<DashboardIcon className={classes.leftIcon} />Mobile dashboard
+							</Button>
+							<Button color="secondary" variant={this.props.page === 'stops' ? 'text' : 'text'}
+								onClick={() => this.props.setPage('stops')}
+							>
+								<LocationOnIcon className={classes.leftIcon} />Find a stop
+							</Button>
+							<Button color="secondary" variant={this.props.page === 'map' ? 'text' : 'text'}
+								onClick={() => this.props.setPage('map')}
+							>
+								<MapIcon className={classes.leftIcon} />Map
+							</Button>
+						</React.Fragment>
+					</Hidden>
+					<Hidden mdUp>
+						<React.Fragment>
+							<IconButton className={classes.button} onClick={() => this.props.setPage('mobiles')}>
+								<DashboardIcon />
+							</IconButton>
+							<IconButton className={classes.button} onClick={() => this.props.setPage('stops')}>
+								<LocationOnIcon />
+							</IconButton>
+							<IconButton className={classes.button} onClick={() => this.props.setPage('map')}>
+								<MapIcon />
+							</IconButton>
+						</React.Fragment>
+					</Hidden>
 				</Toolbar>
 			</AppBar>
 		);
