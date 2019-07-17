@@ -27,7 +27,7 @@ class MobileAvatar extends Component {
 	};
 
 	render() {
-		const { classes, tooltips, location, mobile } = this.props;
+		const { classes, location, mobile } = this.props;
 		return (
 			<Tooltip
 				title={mobilesHelper.getMobileStatus(mobile, location)}>

@@ -18,7 +18,7 @@ import ChevronRight from '@material-ui/icons/ChevronRight';
 import FirstPage from '@material-ui/icons/FirstPage';
 import FilterList from '@material-ui/icons/FilterList';
 import LastPage from '@material-ui/icons/LastPage';
-import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
+import SaveAltIcon from '@material-ui/icons/SaveAlt';
 
 // Our components
 import Filters from './Filters';
@@ -28,6 +28,8 @@ import moment from 'moment';
 
 // Our Helpers
 import * as stopsHelper from './helpers/stops';
+
+const config = require('./helpers/config.json');
 
 const styles = (theme) => ({
 	formControl: {
@@ -177,12 +179,12 @@ class Stops extends Component {
 							onClick: this.getStopCalendar
 						},
 						{
-							icon: () => <PictureAsPdfIcon color='action' fontSize='small' />,
+							icon: () => <SaveAltIcon color='action' fontSize='small' />,
 							iconProps: {
 								color: 'primary'
 							},
 							tooltip: 'Download stop as PDF',
-							onClick: this.getStopPdf
+							onClick: (e, row) => window.open(config.api + '/stops/' + row.id + '/pdf', '_blank')
 						}
 					]}
 					data={query =>

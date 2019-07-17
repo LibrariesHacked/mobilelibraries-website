@@ -5,7 +5,7 @@ const config = require('./config.json');
 
 export function getQueryStops(query, organisation_filters, mobile_filters, route_filters, current_position, distance, callback) {
 
-	let url = config.api + '/api/stops?page=' + (query.page + 1) + '&limit=' + query.pageSize;
+	let url = config.api + '/stops?page=' + (query.page + 1) + '&limit=' + query.pageSize;
 	if (query.orderBy && query.orderBy.field) url = url + '&sort=' + query.orderBy.field + '&direction=' + query.orderDirection;
 
 	if (mobile_filters.length > 0) url = url + '&mobile_ids=' + mobile_filters.join('|');
@@ -31,7 +31,7 @@ export function getQueryStops(query, organisation_filters, mobile_filters, route
 }
 
 export function getAllStops(callback) {
-	axios.get(config.api + '/api/stops')
+	axios.get(config.api + '/stops')
 		.then(response => {
 			if (response && response.data) {
 				callback(response.data);

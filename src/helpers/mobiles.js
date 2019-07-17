@@ -9,7 +9,7 @@ import util from 'util';
 const config = require('./config.json');
 
 export function getAllMobiles(callback) {
-	axios.get(config.api + '/api/mobiles')
+	axios.get(config.api + '/mobiles')
 		.then(response => {
 			if (response && response.data) {
 				callback(response.data);
@@ -21,7 +21,7 @@ export function getAllMobiles(callback) {
 }
 
 export function getMobileLocations(callback) {
-	axios.get(config.api + '/api/mobiles/locations')
+	axios.get(config.api + '/mobiles/locations')
 		.then(response => {
 			if (response && response.data) {
 				callback(response.data);

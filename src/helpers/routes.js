@@ -4,7 +4,7 @@ import axios from 'axios';
 const config = require('./config.json');
 
 export function getAllRoutes(callback) {
-	axios.get(config.api + '/api/routes')
+	axios.get(config.api + '/routes')
 		.then(response => {
 			if (response && response.data) {
 				callback(response.data);
