@@ -57,9 +57,11 @@ class AppHeader extends Component {
 				className={(page === 'map' ? classes.appBarTransparent : classes.appBar)}
 			>
 				<Toolbar>
-					<Hidden xsDown>
-						<Typography color="secondary" variant="h6" noWrap>Mobile Libraries</Typography>
-					</Hidden>
+					{page !== 'map' ? 
+						<Hidden xsDown>
+							<Typography color="secondary" variant="h6" noWrap>Mobile Libraries</Typography>
+						</Hidden>
+					: null}
 					<div className={classes.grow} />
 					<PostcodeSearch
 						search_type={search_type}
