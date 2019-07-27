@@ -79,38 +79,46 @@ class App extends Component {
 		current_position: [],
 		gps_available: false,
 		position_update_interval: '',
-		search_type: ''
+		search_type: '',
+		loading_organisations: false,
+		loading_mobiles: false,
+		loading_routes: false,
+		loading_locations: false
 	};
 
 	getOrganisations = () => {
+		this.setState({ loading_organisations: true });
 		organisationsHelper.getAllOrganisations(organisations => {
 			let organisation_lookup = {};
 			organisations.forEach(organisation => organisation_lookup[organisation.id] = organisation);
-			this.setState({ organisations: organisations, organisation_lookup: organisation_lookup })
+			this.setState({ organisations: organisations, organisation_lookup: organisation_lookup, loading_organisations: false })
 		});
 	}
 
 	getMobiles = () => {
+		this.setState({ loading_mobiles: true });
 		mobilesHelper.getAllMobiles(mobiles => {
 			let mobile_lookup = {};
 			mobiles.forEach(mobile => mobile_lookup[mobile.id] = mobile);
-			this.setState({ mobiles: mobiles, mobile_lookup: mobile_lookup });
+			this.setState({ mobiles: mobiles, mobile_lookup: mobile_lookup, loading_mobiles: false });
 		});
 	}
 
 	getRoutes = () => {
+		this.setState({ loading_routes: true });
 		routesHelper.getAllRoutes(routes => {
 			let route_lookup = {};
 			routes.forEach(route => route_lookup[route.id] = route);
-			this.setState({ routes: routes, route_lookup: route_lookup })
+			this.setState({ routes: routes, route_lookup: route_lookup, loading_routes: false });
 		});
 	}
 
 	getMobileLocations = () => {
+		this.setState({ loading_locations: true });
 		mobilesHelper.getMobileLocations(locations => {
 			let mobile_location_lookup = {};
 			locations.forEach(location => mobile_location_lookup[location.mobile_id] = location);
-			this.setState({ mobile_locations: locations, mobile_location_lookup: mobile_location_lookup });
+			this.setState({ mobile_locations: locations, mobile_location_lookup: mobile_location_lookup, loading_locations: false });
 		});
 	}
 
@@ -186,6 +194,7 @@ class App extends Component {
 				<div className={classes.root}>
 					<CssBaseline />
 					<AppHeader
+						loading={this.state.loading_locations || this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
 						page={this.state.page}
 						setPage={this.setPage}
 						search_type={this.state.search_type}

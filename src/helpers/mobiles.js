@@ -52,6 +52,13 @@ export function getMobileStatus(mobile, location) {
 		}
 	}
 
+	// The mobile is not due out today
+	if (location && !location.current_stop_id &&
+		!location.previous_stop_id && location.next_stop_id &&
+		!moment(location.next_stop_arrival).isSame(moment(), 'day')) {
+		return statuses.off_road.label;
+	}
+
 	// The mobile is due out today
 	if (location && !location.current_stop_id &&
 		!location.previous_stop_id && location.next_stop_id &&

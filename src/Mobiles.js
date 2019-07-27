@@ -79,9 +79,9 @@ class Mobiles extends Component {
 									</Grid>
 								)
 							})}
-					</Grid> : 
+					</Grid> :
 					<div>
-						<br/>
+						<br />
 						<LinearProgress color="secondary" />
 					</div>}
 			</div>

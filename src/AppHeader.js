@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 // Material UI
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -41,13 +42,16 @@ const styles = theme => ({
 	},
 	leftIcon: {
 		marginRight: theme.spacing(1)
+	},
+	progress: {
+		margin: theme.spacing(2),
 	}
 });
 
 class AppHeader extends Component {
 
 	render() {
-		const { classes, search_type, gps_available, toggleGPS, postcodeSearch, page } = this.props;
+		const { loading, classes, search_type, gps_available, toggleGPS, postcodeSearch, page } = this.props;
 
 		return (
 			<AppBar
@@ -57,12 +61,13 @@ class AppHeader extends Component {
 				className={(page === 'map' ? classes.appBarTransparent : classes.appBar)}
 			>
 				<Toolbar>
-					{page !== 'map' ? 
+					{page !== 'map' ?
 						<Hidden xsDown>
-							<Typography color="secondary" variant="h6" noWrap>Mobile Libraries</Typography>
+							<Typography color="secondary" variant="h6" noWrap>Mobiles</Typography>
 						</Hidden>
-					: null}
+						: null}
 					<div className={classes.grow} />
+					{loading ? <CircularProgress className={classes.progress} color="secondary" size={30} /> : null}
 					<PostcodeSearch
 						search_type={search_type}
 						gps_available={gps_available}

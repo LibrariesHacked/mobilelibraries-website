@@ -45,6 +45,9 @@ const styles = theme => ({
 		width: 1,
 		height: 28,
 		margin: 8
+	},
+	progress: {
+		margin: theme.spacing(2),
 	}
 });
 
@@ -66,10 +69,10 @@ class MobileCard extends Component {
 						{bull}
 						{mobile.number_stops + ' stop' + (mobile.number_stops > 1 ? 's' : '')}
 					</Typography>
-					<Typography variant="h6" component="h2">{mobile.name}</Typography>
-					{status ? 
-						<Chip size="small" color="secondary" label={status} /> : 
-						<CircularProgress className={classes.progress} color="secondary" />}
+					<Typography variant="h6" component="h2">{organisation.name + ' ' + mobile.name }</Typography>
+					{status ?
+						<Chip size="small" color="secondary" label={status} /> :
+						<CircularProgress className={classes.progress} color="secondary" size={30} />}
 				</CardContent>
 				<Divider variant="middle" />
 				<CardActions>
