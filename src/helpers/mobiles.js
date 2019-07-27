@@ -84,5 +84,5 @@ export function getMobileStatus(mobile, location) {
 		return statuses.post_route.label;
 	}
 
-	return statuses.off_road.label;
+	return null;
 }

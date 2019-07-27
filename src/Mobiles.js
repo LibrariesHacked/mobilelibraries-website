@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 // Material UI
 import Grid from '@material-ui/core/Grid';
+import LinearProgress from '@material-ui/core/LinearProgress';
 import ListSubheader from '@material-ui/core/ListSubheader';
 
 // Material UI Styles
@@ -49,35 +50,40 @@ class Mobiles extends Component {
 					clearRouteFilter={clearRouteFilter}
 				/>
 				<ListSubheader disableSticky={true}>Library dashboard</ListSubheader>
-				<Grid container spacing={3}>
-					{mobiles
-						.filter(mob => {
-							let display = true;
-							if (organisation_filter.length > 0 &&
-								organisation_filter.indexOf(mob.organisation_id) === -1) {
-								display = false;
-							}
-							if (mobile_filter.length > 0 &&
-								mobile_filter.indexOf(mob.id) === -1) {
-								display = false;
-							}
-							return display;
-						})
-						.map((mobile, idx) => {
-							return (
-								<Grid
-									key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
-									item xs={12} sm={6} md={4} lg={3} xl={2}>
-									<MobileCard
-										mobile={mobile}
-										location={mobile_location_lookup[mobile.id]}
-										organisation={organisation_lookup[mobile.organisation_id]}
-										viewStopsByMobile={this.props.viewStopsByMobile}
-									/>
-								</Grid>
-							)
-						})}
-				</Grid>
+				{mobiles && mobiles.length > 0 ?
+					<Grid container spacing={3}>
+						{mobiles
+							.filter(mob => {
+								let display = true;
+								if (organisation_filter.length > 0 &&
+									organisation_filter.indexOf(mob.organisation_id) === -1) {
+									display = false;
+								}
+								if (mobile_filter.length > 0 &&
+									mobile_filter.indexOf(mob.id) === -1) {
+									display = false;
+								}
+								return display;
+							})
+							.map((mobile, idx) => {
+								return (
+									<Grid
+										key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
+										item xs={12} sm={6} md={4} lg={3} xl={2}>
+										<MobileCard
+											mobile={mobile}
+											location={mobile_location_lookup[mobile.id]}
+											organisation={organisation_lookup[mobile.organisation_id]}
+											viewStopsByMobile={this.props.viewStopsByMobile}
+										/>
+									</Grid>
+								)
+							})}
+					</Grid> : 
+					<div>
+						<br/>
+						<LinearProgress color="secondary" />
+					</div>}
 			</div>
 		);
 	}

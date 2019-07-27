@@ -8,6 +8,7 @@ import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Chip from '@material-ui/core/Chip';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -66,7 +67,9 @@ class MobileCard extends Component {
 						{mobile.number_stops + ' stop' + (mobile.number_stops > 1 ? 's' : '')}
 					</Typography>
 					<Typography variant="h6" component="h2">{mobile.name}</Typography>
-					<Chip size="small" color="secondary" label={status} />
+					{status ? 
+						<Chip size="small" color="secondary" label={status} /> : 
+						<CircularProgress className={classes.progress} color="secondary" />}
 				</CardContent>
 				<Divider variant="middle" />
 				<CardActions>

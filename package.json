@@ -12,7 +12,7 @@
 		"moment": "^2.24.0",
 		"react": "^16.8.6",
 		"react-dom": "^16.8.6",
-		"react-mapbox-gl": "^4.5.1",
+		"react-mapbox-gl": "^4.6.0",
 		"react-scripts": "^3.0.1"
 	},
 	"scripts": {
