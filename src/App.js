@@ -74,6 +74,7 @@ class App extends Component {
 		pitch: [0],
 		bearing: [0],
 		gps_loading: true,
+		distance: 1609,
 		postcode: '',
 		postcode_loading: true,
 		current_position: [],
@@ -153,6 +154,9 @@ class App extends Component {
 		});
 	}
 
+	setDistance = (distance) => this.setState({ distance: distance});
+	setPostcode = (postcode) => this.setState({ postcode: postcode});
+
 	// postcodeSearch
 	postcodeSearch = (postcode, distance) => {
 		// If we're already tracking GPS then turn this off
@@ -194,11 +198,15 @@ class App extends Component {
 				<div className={classes.root}>
 					<CssBaseline />
 					<AppHeader
-						loading={this.state.loading_locations || this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
+						postcode={this.state.postcode}
+						distance={this.state.distance}
 						page={this.state.page}
-						setPage={this.setPage}
-						search_type={this.state.search_type}
 						gps_available={this.state.gps_available}
+						search_type={this.state.search_type}
+						loading={this.state.loading_locations || this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
+						setPage={this.setPage}
+						setDistance={this.setDistance}
+						setPostcode={this.setPostcode}
 						toggleGPS={this.toggleGPS}
 						postcodeSearch={this.postcodeSearch}
 					/>
