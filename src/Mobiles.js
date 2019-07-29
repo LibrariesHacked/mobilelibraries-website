@@ -49,7 +49,7 @@ class Mobiles extends Component {
 					setRouteFilter={setRouteFilter}
 					clearRouteFilter={clearRouteFilter}
 				/>
-				<ListSubheader disableSticky={true}>Library dashboard</ListSubheader>
+				<ListSubheader disableSticky={true}>Mobile library dashboard</ListSubheader>
 				{mobiles && mobiles.length > 0 ?
 					<Grid container spacing={3}>
 						{mobiles

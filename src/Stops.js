@@ -90,13 +90,8 @@ class Stops extends Component {
 		this.tableRef.current.onQueryChange();
 	}
 
-	getStopCalendar = (event, rowData) => {
-
-	}
-
-	getStopPdf = (event, rowData) => {
-
-	}
+	getStopCalendar = (e, row) => window.open(config.api + '/stops/' + row.id + '/ics');
+	getStopPdf = (e, row) => window.open(config.api + '/stops/' + row.id + '/pdf', '_blank');
 
 	render() {
 		const {
@@ -184,7 +179,7 @@ class Stops extends Component {
 								color: 'primary'
 							},
 							tooltip: 'Download stop as PDF',
-							onClick: (e, row) => window.open(config.api + '/stops/' + row.id + '/pdf', '_blank')
+							onClick: this.getStopPdf
 						}
 					]}
 					data={query =>
