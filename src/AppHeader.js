@@ -51,7 +51,7 @@ const styles = theme => ({
 class AppHeader extends Component {
 
 	render() {
-		const { loading, classes, search_type, gps_available, postcode, distance, toggleGPS, postcodeSearch, setPostcode, setDistance, page } = this.props;
+		const { loading, classes, search_type, postcode, distance, toggleGPS, postcodeSearch, setDistance, page } = this.props;
 
 		return (
 			<AppBar
@@ -72,9 +72,7 @@ class AppHeader extends Component {
 						postcode={postcode}
 						distance={distance}
 						search_type={search_type}
-						gps_available={gps_available}
 						toggleGPS={toggleGPS}
-						setPostcode={setPostcode}
 						setDistance={setDistance}
 						postcodeSearch={postcodeSearch}
 					/>

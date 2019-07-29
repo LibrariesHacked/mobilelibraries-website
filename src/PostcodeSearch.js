@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -53,11 +54,20 @@ const styles = theme => ({
 
 class PostcodeSearch extends React.Component {
 	state = {
+		postcode: this.props.postcode,
 		anchor: null
 	}
 
+	openSettingsMenu = (e) => this.setState({ anchor: e.currentTarget })
+	closeSettingsMenu = () => this.setState({ anchor: null })
+
+	setSearchDistance = (distance) => {
+		this.closeSettingsMenu();
+		this.props.setDistance(distance);
+	}
+
 	render() {
-		const { classes, gps_available, search_type, postcode, distance, postcodeSearch, setDistance, setPostcode, toggleGPS } = this.props;
+		const { classes, search_type, postcodeSearch, toggleGPS } = this.props;
 		return (
 			<div className={classes.search}>
 				<InputBase
@@ -67,46 +77,46 @@ class PostcodeSearch extends React.Component {
 						input: classes.inputInput,
 					}}
 					value={this.state.postcode}
-					onChange={(e) => setPostcode(e.target.value)}
+					onChange={(e) => this.setState({ postcode: e.target.value })}
 				/>
-				<Tooltip title={'Track my location'}>
-					<IconButton
-						className={classes.iconButton}
-						color="secondary"
-						onClick={() => { }}
-					>
-						<SettingsIcon />
-					</IconButton>
-				</Tooltip>
 				<Tooltip title={'Search by postcode'}>
 					<IconButton
 						className={classes.iconButton}
-						onClick={() => postcodeSearch(postcode, distance)}>
+						onClick={() => postcodeSearch(this.state.postcode)}>
 						<SearchIcon />
 					</IconButton>
 				</Tooltip>
 				<Divider className={classes.divider} />
-				{gps_available ?
-					<Tooltip title={'Track my location'}>
-						<IconButton
-							className={classes.iconButton}
-							color="secondary"
-							onClick={() => { setPostcode(''); toggleGPS() }}
-						>
-							{gps_available && search_type === 'gps' ? <MyLocationIcon /> : <LocationSearchingIcon />}
-						</IconButton>
-					</Tooltip> : null}
+				<Tooltip title={'Track my location'}>
+					<IconButton
+						className={classes.iconButton}
+						color="secondary"
+						onClick={() => { toggleGPS() }}
+					>
+						{search_type === 'gps' ? <MyLocationIcon /> : <LocationSearchingIcon />}
+					</IconButton>
+				</Tooltip>
+				<Tooltip title={'Change search settings'}>
+					<IconButton
+						className={classes.iconButton}
+						color="secondary"
+						onClick={(e) => { this.openSettingsMenu(e) }}
+					>
+						<SettingsIcon />
+					</IconButton>
+				</Tooltip>
 				<Menu
-					id="mnu-distances"
+					id="mnu-settings"
 					anchorEl={this.state.anchor}
 					keepMounted
 					open={Boolean(this.state.anchor)}
-					onClose={() => this.setState({ anchor: null })}
+					onClose={() => this.closeSettingsMenu()}
 				>
-					<MenuItem onClick={() => setDistance(1609)}>1 mile</MenuItem>
-					<MenuItem onClick={() => setDistance(3219)}>2 mile</MenuItem>
-					<MenuItem onClick={() => setDistance(4828)}>3 mile</MenuItem>
-					<MenuItem onClick={() => setDistance(8047)}>5 miles</MenuItem>
+					<ListSubheader disableSticky={true}>Search distance</ListSubheader>
+					<MenuItem onClick={() => this.setSearchDistance(1609)}>1 mile</MenuItem>
+					<MenuItem onClick={() => this.setSearchDistance(3219)}>2 mile</MenuItem>
+					<MenuItem onClick={() => this.setSearchDistance(4828)}>3 mile</MenuItem>
+					<MenuItem onClick={() => this.setSearchDistance(8047)}>5 miles</MenuItem>
 				</Menu>
 			</div>
 		);

@@ -63,8 +63,6 @@ class MobileCard extends Component {
 			<Card className={classes.card} elevation={0}>
 				<CardContent>
 					<Typography className={classes.title} color="textSecondary" gutterBottom>
-						{organisation ? organisation.name : ''}
-						{bull}
 						{mobile.number_routes + ' route' + (mobile.number_routes > 1 ? 's' : '')}
 						{bull}
 						{mobile.number_stops + ' stop' + (mobile.number_stops > 1 ? 's' : '')}

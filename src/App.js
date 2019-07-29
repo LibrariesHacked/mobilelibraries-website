@@ -78,7 +78,6 @@ class App extends Component {
 		postcode: '',
 		postcode_loading: true,
 		current_position: [],
-		gps_available: false,
 		position_update_interval: '',
 		search_type: '',
 		loading_organisations: false,
@@ -150,17 +149,16 @@ class App extends Component {
 	logPosition = (fit = false) => {
 		this.setState({ loading: true, gps_loading: true });
 		geoHelper.getCurrentPosition(position => {
-			this.setState({ current_position: position, gps_loading: false, gps_available: (position.length > 0) });
+			this.setState({ current_position: position, position: position, zoom: [11], gps_loading: false });
 		});
 	}
 
 	setDistance = (distance) => this.setState({ distance: distance});
-	setPostcode = (postcode) => this.setState({ postcode: postcode});
 
 	// postcodeSearch
-	postcodeSearch = (postcode, distance) => {
+	postcodeSearch = (postcode) => {
 		// If we're already tracking GPS then turn this off
-		let new_state = { search_type: 'postcode', loading: true, postcode_loading: true, postcode: postcode, distance: distance };
+		let new_state = { search_type: 'postcode', loading: true, postcode_loading: true, postcode: postcode };
 		if (this.state.search_type === 'gps') {
 			clearInterval(this.state.position_update_interval);
 			new_state.position_update_interval = null;
@@ -173,6 +171,7 @@ class App extends Component {
 				new_state.current_position = location;
 				new_state.position = location;
 				new_state.zoom = [11];
+				new_state.loading = false;
 				this.setState(new_state);
 			}
 		});
@@ -201,12 +200,10 @@ class App extends Component {
 						postcode={this.state.postcode}
 						distance={this.state.distance}
 						page={this.state.page}
-						gps_available={this.state.gps_available}
 						search_type={this.state.search_type}
 						loading={this.state.loading_locations || this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
 						setPage={this.setPage}
 						setDistance={this.setDistance}
-						setPostcode={this.setPostcode}
 						toggleGPS={this.toggleGPS}
 						postcodeSearch={this.postcodeSearch}
 					/>
