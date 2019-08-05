@@ -10,13 +10,11 @@ import CardContent from '@material-ui/core/CardContent';
 import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 // MUI Icons
 import LocationOnIcon from '@material-ui/icons/LocationOn';
-import PictureAsPdfIcon from '@material-ui/icons/PictureAsPdf';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -78,12 +76,6 @@ class MobileCard extends Component {
 						<Button size="small" color="secondary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
 							<LocationOnIcon className={classes.leftIcon} />Stops
 							</Button>
-					</Tooltip>
-					<Divider className={classes.verticalDivider} />
-					<Tooltip title="Download PDF timetable for mobile">
-						<IconButton>
-							<PictureAsPdfIcon />
-						</IconButton>
 					</Tooltip>
 					<Divider className={classes.verticalDivider} />
 				</CardActions>

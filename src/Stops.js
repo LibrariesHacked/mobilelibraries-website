@@ -1,9 +1,12 @@
 // React
+import compose from 'recompose/compose';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
+import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
+import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
 // Material Table
 import MaterialTable from 'material-table';
@@ -97,7 +100,7 @@ class Stops extends Component {
 		const {
 			classes, organisations, organisation_lookup, organisation_filter, viewStopsByOrganisation,
 			mobiles, mobile_lookup, mobile_filter,
-			routes, route_lookup, route_filter, current_position, distance } = this.props;
+			routes, route_lookup, route_filter, current_position, distance, width } = this.props;
 		let orgText = {}
 		Object.keys(organisation_lookup).forEach(key => {
 			orgText[key] = organisation_lookup[key].name;
@@ -144,13 +147,22 @@ class Stops extends Component {
 						PreviousPage: ChevronLeft
 					}}
 					options={{
+						padding: isWidthUp('sm', width) ? 'default' : 'dense',
 						search: false,
 						loadingType: 'linear',
 						actionsColumnIndex: 4,
-						filtering: false
+						filtering: false,
+						headerStyle: {
+							backgroundColor: '#ff5722',
+							color: '#ffffff'
+						}
 					}}
 					columns={[
-						{ title: 'Name', field: 'name', filtering: false },
+						{
+							title: 'Name',
+							field: 'name', filtering: false,
+							render: rowData => <Button color='primary'>{rowData.name}</Button>
+						},
 						{ title: 'Community', field: 'community', filtering: false },
 						{
 							title: 'Time',
@@ -158,7 +170,7 @@ class Stops extends Component {
 							filtering: false,
 							render: (rowData) => {
 								return (
-									moment(rowData.arrival, 'HH:mm:ssZ').format('HH:mma') + '-' +
+									moment(rowData.arrival, 'HH:mm:ssZ').format('HH:mma') + ' - ' +
 									moment(rowData.departure, 'HH:mm:ssZ').format('HH:mma')
 								);
 							}
@@ -166,18 +178,12 @@ class Stops extends Component {
 					]}
 					actions={[
 						{
-							icon: () => <Event color='action' fontSize='small' />,
-							iconProps: {
-								color: 'primary'
-							},
+							icon: () => <Event color='primary' fontSize='small' />,
 							tooltip: 'Download stop calendar',
 							onClick: this.getStopCalendar
 						},
 						{
-							icon: () => <SaveAltIcon color='action' fontSize='small' />,
-							iconProps: {
-								color: 'primary'
-							},
+							icon: () => <SaveAltIcon color='primary' fontSize='small' />,
 							tooltip: 'Download stop as PDF',
 							onClick: this.getStopPdf
 						}
@@ -204,4 +210,4 @@ Stops.propTypes = {
 	classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(Stops);
+export default compose(withWidth(), withStyles(styles, { withTheme: true }))(Stops);

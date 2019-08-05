@@ -31,9 +31,6 @@ const styles = theme => ({
 		zIndex: theme.zIndex.drawer + 1,
 		backgroundColor: 'rgba(250, 250, 250, 0)'
 	},
-	button: {
-		margin: theme.spacing(1),
-	},
 	grow: {
 		flexGrow: 1
 	},
@@ -44,7 +41,7 @@ const styles = theme => ({
 		marginRight: theme.spacing(1)
 	},
 	progress: {
-		margin: theme.spacing(2),
+		margin: theme.spacing(1),
 	}
 });
 
@@ -97,13 +94,13 @@ class AppHeader extends Component {
 					</Hidden>
 					<Hidden mdUp>
 						<React.Fragment>
-							<IconButton className={classes.button} onClick={() => this.props.setPage('mobiles')}>
+							<IconButton onClick={() => this.props.setPage('mobiles')}>
 								<DashboardIcon />
 							</IconButton>
-							<IconButton className={classes.button} onClick={() => this.props.setPage('stops')}>
+							<IconButton onClick={() => this.props.setPage('stops')}>
 								<LocationOnIcon />
 							</IconButton>
-							<IconButton className={classes.button} onClick={() => this.props.setPage('map')}>
+							<IconButton onClick={() => this.props.setPage('map')}>
 								<MapIcon />
 							</IconButton>
 						</React.Fragment>
