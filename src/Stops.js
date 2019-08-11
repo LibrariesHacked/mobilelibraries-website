@@ -153,7 +153,7 @@ class Stops extends Component {
 						actionsColumnIndex: 4,
 						filtering: false,
 						headerStyle: {
-							backgroundColor: '#ff5722',
+							backgroundColor: '#2196f3',
 							color: '#ffffff'
 						}
 					}}

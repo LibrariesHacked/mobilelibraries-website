@@ -60,7 +60,7 @@ class AppHeader extends Component {
 				<Toolbar>
 					{page !== 'map' ?
 						<Hidden xsDown>
-							<Typography color="secondary" variant="h6" noWrap>Mobiles</Typography>
+							<Typography variant="h6" noWrap>Mobiles</Typography>
 						</Hidden>
 						: null}
 					<div className={classes.grow} />

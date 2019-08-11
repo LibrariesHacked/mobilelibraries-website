@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import CssBaseline from '@material-ui/core/CssBaseline';
 
 // MUI Style
-import deepOrange from '@material-ui/core/colors/deepOrange';
+import blue from '@material-ui/core/colors/blue';
 import blueGrey from '@material-ui/core/colors/blueGrey';
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 
@@ -24,7 +24,7 @@ import * as routesHelper from './helpers/routes';
 
 const theme = createMuiTheme({
 	palette: {
-		primary: deepOrange,
+		primary: blue,
 		secondary: blueGrey
 	},
 	overrides: {
