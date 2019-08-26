@@ -138,8 +138,8 @@ class App extends Component {
 	setPage = (page) => this.setState({ page: page })
 
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
-	viewStopsByMobile = (mobile_id) => this.setState({ page: 'stops', organisation_filter: [], mobile_filter: [mobile_id], route_filter: [] });
-	viewStopsByRoute = (route_id) => this.setState({ page: 'stops', organisation_filter: [], mobile_filter: [], route_filter: [route_id] });
+	viewStopsByMobile = (organisation_id, mobile_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [] });
+	viewStopsByRoute = (organisation_id, mobile_id, route_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [route_id] });
 
 	clearOrganisationFilter = () => this.setState({ organisation_filter: [], mobile_filter: [], route_filter: [] });
 	clearMobileFilter = () => this.setState({ mobile_filter: [], route_filter: [] });
@@ -153,7 +153,7 @@ class App extends Component {
 		});
 	}
 
-	setDistance = (distance) => this.setState({ distance: distance});
+	setDistance = (distance) => this.setState({ distance: distance });
 
 	// postcodeSearch
 	postcodeSearch = (postcode) => {

@@ -73,9 +73,9 @@ class MobileCard extends Component {
 				<Divider variant="middle" />
 				<CardActions>
 					<Tooltip title="Mobile library stops">
-						<Button size="small" color="secondary" className={classes.button} onClick={() => this.props.viewStopsByMobile(mobile.id)}>
+						<Button size="small" color="secondary" className={classes.button} onClick={() => this.props.viewStopsByMobile(organisation.id, mobile.id)}>
 							<LocationOnIcon className={classes.leftIcon} />Stops
-							</Button>
+						</Button>
 					</Tooltip>
 					<Divider className={classes.verticalDivider} />
 				</CardActions>
