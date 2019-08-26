@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
-import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
@@ -15,11 +14,13 @@ import MaterialTable from 'material-table';
 import { withStyles } from '@material-ui/core/styles';
 
 // MUI Icons
-import Event from '@material-ui/icons/Event';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
+import Event from '@material-ui/icons/Event';
 import FirstPage from '@material-ui/icons/FirstPage';
 import FilterList from '@material-ui/icons/FilterList';
+import MoreVert from '@material-ui/icons/MoreVert';
 import LastPage from '@material-ui/icons/LastPage';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 
@@ -95,6 +96,7 @@ class Stops extends Component {
 
 	getStopCalendar = (e, row) => window.open(config.api + '/stops/' + row.id + '/ics');
 	getStopPdf = (e, row) => window.open(config.api + '/stops/' + row.id + '/pdf', '_blank');
+	displayStopInfo = (e, row) => this.props.viewStop(row.id);
 
 	render() {
 		const {
@@ -144,7 +146,8 @@ class Stops extends Component {
 						FirstPage: FirstPage,
 						LastPage: LastPage,
 						NextPage: ChevronRight,
-						PreviousPage: ChevronLeft
+						PreviousPage: ChevronLeft,
+						SortArrow: ArrowUpward
 					}}
 					options={{
 						padding: isWidthUp('sm', width) ? 'default' : 'dense',
@@ -161,7 +164,7 @@ class Stops extends Component {
 						{
 							title: 'Name',
 							field: 'name', filtering: false,
-							render: rowData => <Button color='primary'>{rowData.name}</Button>
+							render: rowData => rowData.name
 						},
 						{ title: 'Community', field: 'community', filtering: false },
 						{
@@ -170,13 +173,17 @@ class Stops extends Component {
 							filtering: false,
 							render: (rowData) => {
 								return (
-									moment(rowData.arrival, 'HH:mm:ssZ').format('HH:mma') + ' - ' +
-									moment(rowData.departure, 'HH:mm:ssZ').format('HH:mma')
+									moment(rowData.arrival, 'HH:mm:ssZ').format('HH:mma')
 								);
 							}
 						}
 					]}
 					actions={[
+						{
+							icon: () => <MoreVert color='primary' fontSize='small' />,
+							tooltip: 'See more information',
+							onClick: this.displayStopInfo
+						},
 						{
 							icon: () => <Event color='primary' fontSize='small' />,
 							tooltip: 'Download stop calendar',

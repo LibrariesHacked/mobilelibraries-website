@@ -118,7 +118,7 @@ class Filters extends Component {
 						</CardContent>
 						<CardActions>
 							{organisation_filter.length === 0 ? <Tooltip title="Choose library service">
-								<Button size="small" color="secondary" className={classes.button} onClick={(e) => this.openOrganisationMenu(e.currentTarget)}>
+								<Button size="small" color="primary" className={classes.button} onClick={(e) => this.openOrganisationMenu(e.currentTarget)}>
 									<BusinessIcon className={classes.leftIcon} />Service
 								</Button>
 							</Tooltip> :
@@ -127,7 +127,7 @@ class Filters extends Component {
 							{organisation_filter.length > 0 ?
 								(mobile_filter.length === 0 ?
 									<Tooltip title="Choose mobile library">
-										<Button size="small" color="secondary" className={classes.button} onClick={(e) => this.openMobileMenu(e.currentTarget)}>
+										<Button size="small" color="primary" className={classes.button} onClick={(e) => this.openMobileMenu(e.currentTarget)}>
 											<DirectionBusIcon className={classes.leftIcon} />Mobile
 										</Button>
 									</Tooltip> :
@@ -137,7 +137,7 @@ class Filters extends Component {
 							{mobile_filter.length > 0 ?
 								(route_filter.length === 0 ?
 									<Tooltip title="Choose route">
-										<Button size="small" color="secondary" className={classes.button} onClick={(e) => this.openRouteMenu(e.currentTarget)}>
+										<Button size="small" color="primary" className={classes.button} onClick={(e) => this.openRouteMenu(e.currentTarget)}>
 											<DirectionsIcon className={classes.leftIcon} />Route
 										</Button>
 									</Tooltip> :

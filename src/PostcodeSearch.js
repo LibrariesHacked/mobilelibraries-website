@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
-import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import InputBase from '@material-ui/core/InputBase';
 import ListSubheader from '@material-ui/core/ListSubheader';
@@ -20,11 +19,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 const styles = theme => ({
-	divider: {
-		width: 1,
-		height: 28,
-		margin: 8
-	},
 	iconButton: {
 		padding: 10
 	},
@@ -86,7 +80,6 @@ class PostcodeSearch extends React.Component {
 						<SearchIcon />
 					</IconButton>
 				</Tooltip>
-				<Divider className={classes.divider} />
 				<Tooltip title={'Track my location'}>
 					<IconButton
 						className={classes.iconButton}

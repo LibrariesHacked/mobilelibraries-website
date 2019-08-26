@@ -7,7 +7,6 @@ import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Chip from '@material-ui/core/Chip';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -37,7 +36,8 @@ const styles = theme => ({
 	},
 	title: {
 		fontSize: 12,
-		fontWeight: 500
+		fontWeight: 500,
+		align: 'right'
 	},
 	verticalDivider: {
 		width: 1,
@@ -67,13 +67,12 @@ class MobileCard extends Component {
 					</Typography>
 					<Typography variant="h6" component="h2">{(organisation ? organisation.name + ' ' : '') + mobile.name}</Typography>
 					{status ?
-						<Chip size="small" color="secondary" label={status} /> :
-						<CircularProgress className={classes.progress} color="secondary" size={30} />}
+						<Typography>{status}</Typography> : <CircularProgress className={classes.progress} color="secondary" size={30} />}
 				</CardContent>
 				<Divider variant="middle" />
 				<CardActions>
 					<Tooltip title="Mobile library stops">
-						<Button size="small" color="secondary" className={classes.button} onClick={() => this.props.viewStopsByMobile(organisation.id, mobile.id)}>
+						<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(organisation.id, mobile.id)}>
 							<LocationOnIcon className={classes.leftIcon} />Stops
 						</Button>
 					</Tooltip>

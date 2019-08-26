@@ -135,6 +135,7 @@ class App extends Component {
 
 	setPage = (page) => this.setState({ page: page })
 
+	viewStop = (stop_id) => {}
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
 	viewStopsByMobile = (organisation_id, mobile_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [] });
 	viewStopsByRoute = (organisation_id, mobile_id, route_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [route_id] });
@@ -245,6 +246,7 @@ class App extends Component {
 								route_filter={this.state.route_filter}
 								setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
 								clearRouteFilter={this.clearRouteFilter}
+								viewStop={this.viewStop}
 								current_position={this.state.current_position}
 								postcode={this.state.postcode}
 								distance={this.state.distance}
