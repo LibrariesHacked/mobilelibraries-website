@@ -82,8 +82,7 @@ class App extends Component {
 		search_type: '',
 		loading_organisations: false,
 		loading_mobiles: false,
-		loading_routes: false,
-		loading_locations: false
+		loading_routes: false
 	};
 
 	getOrganisations = () => {
@@ -114,11 +113,10 @@ class App extends Component {
 	}
 
 	getMobileLocations = () => {
-		this.setState({ loading_locations: true });
 		mobilesHelper.getMobileLocations(locations => {
 			let mobile_location_lookup = {};
 			locations.forEach(location => mobile_location_lookup[location.mobile_id] = location);
-			this.setState({ mobile_locations: locations, mobile_location_lookup: mobile_location_lookup, loading_locations: false });
+			this.setState({ mobile_locations: locations, mobile_location_lookup: mobile_location_lookup });
 		});
 	}
 
@@ -201,7 +199,7 @@ class App extends Component {
 						distance={this.state.distance}
 						page={this.state.page}
 						search_type={this.state.search_type}
-						loading={this.state.loading_locations || this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
+						loading={this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
 						setPage={this.setPage}
 						setDistance={this.setDistance}
 						toggleGPS={this.toggleGPS}
