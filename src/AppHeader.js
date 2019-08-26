@@ -25,11 +25,12 @@ import PostcodeSearch from './PostcodeSearch';
 const styles = theme => ({
 	appBar: {
 		zIndex: theme.zIndex.drawer + 1,
-		backgroundColor: 'rgba(250, 250, 250, 1)'
+		borderBottom: '1px solid #F5F5F5'
 	},
 	appBarTransparent: {
 		zIndex: theme.zIndex.drawer + 1,
-		backgroundColor: 'rgba(250, 250, 250, 0)'
+		backgroundColor: 'rgba(250, 250, 250, 0.5)',
+		borderBottom: '1px solid #F5F5F5'
 	},
 	grow: {
 		flexGrow: 1
