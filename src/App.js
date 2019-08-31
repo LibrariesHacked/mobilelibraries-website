@@ -14,6 +14,7 @@ import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/
 import AppHeader from './AppHeader';
 import Mobiles from './Mobiles';
 import MobileMap from './MobileMap';
+import StopDetails from './StopDetails';
 import Stops from './Stops';
 
 // Our helpers
@@ -56,6 +57,7 @@ const styles = theme => ({
 class App extends Component {
 	state = {
 		page: 'mobiles',
+		stop_dialog_open: false,
 		organisations: [],
 		organisation_lookup: {},
 		organisation_filter: [],
@@ -135,10 +137,12 @@ class App extends Component {
 
 	setPage = (page) => this.setState({ page: page })
 
-	viewStop = (stop_id) => {}
+	viewStop = (stop_id) => { this.setState({ stop_dialog_open: true }) }
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
 	viewStopsByMobile = (organisation_id, mobile_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [] });
 	viewStopsByRoute = (organisation_id, mobile_id, route_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [route_id] });
+
+	closeStopDialog = () => { this.setState({ stop_dialog_open: false }) }
 
 	clearOrganisationFilter = () => this.setState({ organisation_filter: [], mobile_filter: [], route_filter: [] });
 	clearMobileFilter = () => this.setState({ mobile_filter: [], route_filter: [] });
@@ -264,6 +268,10 @@ class App extends Component {
 								mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
 							/> : null}
 					</main>
+					<StopDetails
+						open={this.state.stop_dialog_open}
+						close={() => this.closeStopDialog()}
+					/>
 				</div>
 			</MuiThemeProvider>
 		);
