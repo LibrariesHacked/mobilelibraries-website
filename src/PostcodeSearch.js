@@ -30,7 +30,7 @@ const styles = theme => ({
 		paddingRight: theme.spacing(),
 		paddingBottom: theme.spacing(),
 		paddingLeft: theme.spacing(2),
-		width: 100
+		width: 80
 	},
 	search: {
 		position: 'relative',

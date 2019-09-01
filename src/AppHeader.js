@@ -79,7 +79,7 @@ class AppHeader extends Component {
 							<Button color="secondary" variant={this.props.page === 'mobiles' ? 'text' : 'text'}
 								onClick={() => this.props.setPage('mobiles')}
 							>
-								<DashboardIcon className={classes.leftIcon} />Mobile dashboard
+								<DashboardIcon className={classes.leftIcon} />Dashboard
 							</Button>
 							<Button color="secondary" variant={this.props.page === 'stops' ? 'text' : 'text'}
 								onClick={() => this.props.setPage('stops')}

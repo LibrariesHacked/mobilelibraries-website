@@ -48,7 +48,7 @@ const styles = (theme) => ({
 		maxWidth: '100%'
 	},
 	table: {
-		border: '1px solid rgba(0, 0, 0, 0.12)'
+		border: '1px solid #F5F5F5'
 	}
 });
 

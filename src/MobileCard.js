@@ -29,7 +29,7 @@ const styles = theme => ({
 	},
 	card: {
 		minWidth: 275,
-		border: '1px solid rgba(0, 0, 0, 0.12)'
+		border: '1px solid #F5F5F5'
 	},
 	leftIcon: {
 		marginRight: theme.spacing(1)
