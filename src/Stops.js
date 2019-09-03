@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 // Material UI
 import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
 // Material Table
@@ -32,6 +33,7 @@ import moment from 'moment';
 
 // Our Helpers
 import * as stopsHelper from './helpers/stops';
+import { IconButton } from '@material-ui/core';
 
 const config = require('./helpers/config.json');
 
@@ -94,9 +96,7 @@ class Stops extends Component {
 		this.tableRef.current.onQueryChange();
 	}
 
-	getStopCalendar = (e, row) => window.open(config.api + '/stops/' + row.id + '/ics');
-	getStopPdf = (e, row) => window.open(config.api + '/stops/' + row.id + '/pdf', '_blank');
-	displayStopInfo = (e, row) => this.props.viewStop(row.id);
+	displayStopInfo = (row) => this.props.viewStop(row);
 
 	render() {
 		const {
@@ -164,7 +164,13 @@ class Stops extends Component {
 						{
 							title: 'Name',
 							field: 'name', filtering: false,
-							render: rowData => rowData.name
+							render: rowData => {
+								return (
+									<React.Fragment>
+										<IconButton size="small" color="primary" onClick={() => this.displayStopInfo(rowData)}><MoreVert /></IconButton> {rowData.name}
+									</React.Fragment>
+								)
+							}
 						},
 						{ title: 'Community', field: 'community', filtering: false },
 						{
@@ -173,26 +179,9 @@ class Stops extends Component {
 							filtering: false,
 							render: (rowData) => {
 								return (
-									moment(rowData.arrival, 'HH:mm:ssZ').format('HH:mma')
+									moment(rowData.arrival, 'HH:mm:ssZ').format('h:mma')
 								);
 							}
-						}
-					]}
-					actions={[
-						{
-							icon: () => <MoreVert color='primary' fontSize='small' />,
-							tooltip: 'See more information',
-							onClick: this.displayStopInfo
-						},
-						{
-							icon: () => <Event color='primary' fontSize='small' />,
-							tooltip: 'Download stop calendar',
-							onClick: this.getStopCalendar
-						},
-						{
-							icon: () => <SaveAltIcon color='primary' fontSize='small' />,
-							tooltip: 'Download stop as PDF',
-							onClick: this.getStopPdf
 						}
 					]}
 					data={query =>

@@ -58,6 +58,7 @@ class App extends Component {
 	state = {
 		page: 'mobiles',
 		stop_dialog_open: false,
+		current_stop: {},
 		organisations: [],
 		organisation_lookup: {},
 		organisation_filter: [],
@@ -137,7 +138,7 @@ class App extends Component {
 
 	setPage = (page) => this.setState({ page: page })
 
-	viewStop = (stop_id) => { this.setState({ stop_dialog_open: true }) }
+	viewStop = (stop) => { this.setState({ current_stop: stop, stop_dialog_open: true }) }
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
 	viewStopsByMobile = (organisation_id, mobile_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [] });
 	viewStopsByRoute = (organisation_id, mobile_id, route_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [route_id] });
@@ -269,6 +270,7 @@ class App extends Component {
 							/> : null}
 					</main>
 					<StopDetails
+						stop={this.state.current_stop}
 						open={this.state.stop_dialog_open}
 						close={() => this.closeStopDialog()}
 					/>
