@@ -22,9 +22,6 @@ import BusinessIcon from '@material-ui/icons/Business';
 import DirectionBusIcon from '@material-ui/icons/DirectionsBus';
 import DirectionsIcon from '@material-ui/icons/Directions';
 
-// Our components
-
-
 const styles = (theme) => ({
 	bullet: {
 		display: 'inline-block',

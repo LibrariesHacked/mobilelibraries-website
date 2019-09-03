@@ -10,6 +10,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import ListSubheader from '@material-ui/core/ListSubheader';
 
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
@@ -21,26 +22,29 @@ const config = require('./helpers/config.json');
 
 const styles = theme => ({
     dialog: {
-        border: '1px solid #F5F5F5'
+        border: '1px solid #e5e5e5'
     },
     list: {
         width: '100%',
         maxWidth: 360,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.background.paper
     },
 });
 
-class ResponsiveDialog extends React.Component {
+class StopDetails extends React.Component {
     state = {}
 
-    getStopCalendar = (e, row) => window.open(config.api + '/stops/' + row.id + '/ics');
-	getStopPdf = (e, row) => window.open(config.api + '/stops/' + row.id + '/pdf', '_blank');
+    getStopCalendar = () => window.open(config.api + '/stops/' + this.props.stop.id + '/ics');
+    getStopPdf = () => window.open(config.api + '/stops/' + this.props.stop.id + '/pdf', '_blank');
 
     close = () => { this.props.close() }
 
     render() {
         const { classes, width, stop } = this.props;
         const fullScreen = isWidthDown('sm', width);
+        const arrival = moment(stop.arrival, 'HH:mm:ssZ');
+        const departure = moment(stop.departure, 'HH:mm:ssZ');
+        const duration = moment.duration(departure.diff(arrival)).humanize()
         return (
             <Dialog
                 fullScreen={fullScreen}
@@ -63,17 +67,18 @@ class ResponsiveDialog extends React.Component {
                 <DialogTitle id="responsive-dialog-title">{stop.name}</DialogTitle>
                 <DialogContent>
                     <List className={classes.list}>
+                        <ListSubheader>{'Visiting for ' + duration}</ListSubheader>
                         <ListItem>
-                            <ListItemText primary="Address" secondary={stop.address} />
+                            <ListItemText primary={stop.address} />
                         </ListItem>
                         <ListItem>
-                            <ListItemText primary="Time" secondary={moment(stop.arrival, 'HH:mm:ssZ').format('h:mma') + ' - ' + moment(stop.departure, 'HH:mm:ssZ').format('h:mma')} />
+                            <ListItemText primary={arrival.format('h:mma') + ' - ' + departure.format('h:mma')} />
                         </ListItem>
                     </List>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => this.close()} color="primary">Add to calendar</Button>
-                    <Button onClick={() => this.close()} color="primary">Download PDF</Button>
+                    <Button onClick={() => this.getStopCalendar()} color="primary">Add to calendar</Button>
+                    <Button onClick={() => this.getStopPdf()} color="primary">Get PDF</Button>
                     <Button onClick={() => this.close()} color="secondary">Close</Button>
                 </DialogActions>
             </Dialog>
@@ -81,8 +86,8 @@ class ResponsiveDialog extends React.Component {
     }
 }
 
-ResponsiveDialog.propTypes = {
-    classes: PropTypes.object.isRequired,
+StopDetails.propTypes = {
+    classes: PropTypes.object.isRequired
 };
 
-export default compose(withWidth(), withStyles(styles, { withTheme: true }))(ResponsiveDialog);
+export default compose(withWidth(), withStyles(styles, { withTheme: true }))(StopDetails);

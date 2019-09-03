@@ -42,7 +42,7 @@ const styles = theme => ({
 		marginRight: theme.spacing(1)
 	},
 	progress: {
-		margin: theme.spacing(1),
+		margin: theme.spacing(1)
 	}
 });
 
@@ -84,7 +84,7 @@ class AppHeader extends Component {
 							<Button color="secondary" variant={this.props.page === 'stops' ? 'text' : 'text'}
 								onClick={() => this.props.setPage('stops')}
 							>
-								<LocationOnIcon className={classes.leftIcon} />Find a stop
+								<LocationOnIcon className={classes.leftIcon} />Stops
 							</Button>
 							<Button color="secondary" variant={this.props.page === 'map' ? 'text' : 'text'}
 								onClick={() => this.props.setPage('map')}

@@ -1,10 +1,9 @@
 // Axios for making requests
 import axios from 'axios';
+import util from 'util';
 
 // Moment for time calculations
 import moment from 'moment';
-
-import util from 'util';
 
 const config = require('./config.json');
 

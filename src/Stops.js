@@ -4,8 +4,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
+import Link from '@material-ui/core/Link';
 import Paper from '@material-ui/core/Paper';
-import Typography from '@material-ui/core/Typography';
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
 // Material Table
@@ -18,12 +18,9 @@ import { withStyles } from '@material-ui/core/styles';
 import ArrowUpward from '@material-ui/icons/ArrowUpward';
 import ChevronLeft from '@material-ui/icons/ChevronLeft';
 import ChevronRight from '@material-ui/icons/ChevronRight';
-import Event from '@material-ui/icons/Event';
 import FirstPage from '@material-ui/icons/FirstPage';
 import FilterList from '@material-ui/icons/FilterList';
-import MoreVert from '@material-ui/icons/MoreVert';
 import LastPage from '@material-ui/icons/LastPage';
-import SaveAltIcon from '@material-ui/icons/SaveAlt';
 
 // Our components
 import Filters from './Filters';
@@ -33,9 +30,7 @@ import moment from 'moment';
 
 // Our Helpers
 import * as stopsHelper from './helpers/stops';
-import { IconButton } from '@material-ui/core';
 
-const config = require('./helpers/config.json');
 
 const styles = (theme) => ({
 	formControl: {
@@ -62,8 +57,8 @@ class Stops extends Component {
 
 	tableRef = React.createRef();
 
-	componentWillReceiveProps(nextProps) {
-		if (this.props.postcode !== nextProps.postcode || this.props.distance !== nextProps.distance) this.tableRef.current.onQueryChange();
+	componentDidUpdate(prevProps) {
+		if (this.props.postcode !== prevProps.postcode || this.props.distance !== prevProps.distance) this.tableRef.current.onQueryChange();
 	}
 
 	setOrganisationFilter = (organisation_id) => {
@@ -167,7 +162,7 @@ class Stops extends Component {
 							render: rowData => {
 								return (
 									<React.Fragment>
-										<IconButton size="small" color="primary" onClick={() => this.displayStopInfo(rowData)}><MoreVert /></IconButton> {rowData.name}
+										<Link component="button" variant="body2" onClick={() => this.displayStopInfo(rowData)}>{rowData.name}</Link>
 									</React.Fragment>
 								)
 							}
