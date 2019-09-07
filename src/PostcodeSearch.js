@@ -68,7 +68,7 @@ class PostcodeSearch extends React.Component {
 					placeholder="Postcode"
 					classes={{
 						root: classes.inputRoot,
-						input: classes.inputInput,
+						input: classes.inputInput
 					}}
 					value={this.state.postcode}
 					onChange={(e) => this.setState({ postcode: e.target.value })}
@@ -83,7 +83,7 @@ class PostcodeSearch extends React.Component {
 				<Tooltip title={'Track my location'}>
 					<IconButton
 						className={classes.iconButton}
-						color="secondary"
+						color={search_type === 'gps' ? 'primary' : 'secondary'}
 						onClick={() => { toggleGPS() }}
 					>
 						{search_type === 'gps' ? <MyLocationIcon /> : <LocationSearchingIcon />}

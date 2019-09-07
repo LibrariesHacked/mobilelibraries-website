@@ -97,7 +97,8 @@ class Stops extends Component {
 		const {
 			classes, organisations, organisation_lookup, organisation_filter, viewStopsByOrganisation,
 			mobiles, mobile_lookup, mobile_filter,
-			routes, route_lookup, route_filter, current_position, distance, width } = this.props;
+			routes, route_lookup, route_filter, current_position, distance, width,
+			search_type, postcode, toggleGPS, postcodeSearch, setDistance } = this.props;
 		let orgText = {}
 		Object.keys(organisation_lookup).forEach(key => {
 			orgText[key] = organisation_lookup[key].name;
@@ -130,6 +131,12 @@ class Stops extends Component {
 					route_filter={route_filter}
 					setRouteFilter={this.setRouteFilter}
 					clearRouteFilter={this.clearRouteFilter}
+					postcode={postcode}
+					distance={distance}
+					search_type={search_type}
+					setDistance={setDistance}
+					toggleGPS={toggleGPS}
+					postcodeSearch={postcodeSearch}
 				/>
 				<MaterialTable
 					tableRef={this.tableRef}

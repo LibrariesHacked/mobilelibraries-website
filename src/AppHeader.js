@@ -66,14 +66,15 @@ class AppHeader extends Component {
 						: null}
 					<div className={classes.grow} />
 					{loading ? <CircularProgress className={classes.progress} color="secondary" size={30} /> : null}
-					<PostcodeSearch
-						postcode={postcode}
-						distance={distance}
-						search_type={search_type}
-						toggleGPS={toggleGPS}
-						setDistance={setDistance}
-						postcodeSearch={postcodeSearch}
-					/>
+					{page === 'map' ? 
+						<PostcodeSearch
+							postcode={postcode}
+							distance={distance}
+							search_type={search_type}
+							toggleGPS={toggleGPS}
+							setDistance={setDistance}
+							postcodeSearch={postcodeSearch}
+						/> : null}
 					<Hidden smDown>
 						<React.Fragment>
 							<Button color="secondary" variant={this.props.page === 'mobiles' ? 'text' : 'text'}

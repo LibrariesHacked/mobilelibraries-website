@@ -27,7 +27,8 @@ class Mobiles extends Component {
 	render() {
 		const { classes, organisations, organisation_lookup, organisation_filter, setOrganisationFilter, clearOrganisationFilter, viewStopsByOrganisation,
 			mobiles, mobile_lookup, mobile_location_lookup, mobile_filter, setMobileFilter, clearMobileFilter,
-			routes, route_lookup, route_filter, setRouteFilter, clearRouteFilter } = this.props;
+			routes, route_lookup, route_filter, setRouteFilter, clearRouteFilter,
+			search_type, postcode, distance, toggleGPS, postcodeSearch, setDistance } = this.props;
 		return (
 			<div className={classes.root}>
 				<Filters
@@ -48,6 +49,12 @@ class Mobiles extends Component {
 					route_filter={route_filter}
 					setRouteFilter={setRouteFilter}
 					clearRouteFilter={clearRouteFilter}
+					postcode={postcode}
+					distance={distance}
+					search_type={search_type}
+					setDistance={setDistance}
+					toggleGPS={toggleGPS}
+					postcodeSearch={postcodeSearch}
 				/>
 				<ListSubheader disableSticky={true}>Mobile library dashboard</ListSubheader>
 				{mobiles && mobiles.length > 0 ?

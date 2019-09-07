@@ -77,15 +77,15 @@ class App extends Component {
 		zoom: [7],
 		pitch: [0],
 		bearing: [0],
-		gps_loading: true,
 		distance: 1609,
 		postcode: '',
-		postcode_loading: true,
 		current_position: [],
 		position_update_interval: '',
-		search_type: '',
-		loading_organisations: false,
+		search_type: '', // search types can be gps, postcode, service
+		loading_gps: true,
 		loading_mobiles: false,
+		loading_organisations: false,
+		loading_postcode: true,
 		loading_routes: false
 	};
 
@@ -124,7 +124,6 @@ class App extends Component {
 		});
 	}
 
-	// componentDidMount: sets up data and any logging
 	componentDidMount = () => {
 		this.getOrganisations();
 		this.getMobiles();
@@ -152,7 +151,6 @@ class App extends Component {
 	openStopDialog = (stop) => this.setState({ current_stop: stop, stop_dialog_open: true }) 
 	closeStopDialog = () => this.setState({ stop_dialog_open: false })
 
-
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
 	viewStopsByMobile = (organisation_id, mobile_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [] });
 	viewStopsByRoute = (organisation_id, mobile_id, route_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [route_id] });
@@ -161,11 +159,10 @@ class App extends Component {
 	clearRouteFilter = () => this.setState({ route_filter: [] });
 	clearOrganisationFilter = () => this.setState({ organisation_filter: [], mobile_filter: [], route_filter: [] });
 
-	// logPosition: Retrieve position from gps
 	logPosition = (fit = false) => {
-		this.setState({ loading: true, gps_loading: true });
+		this.setState({ loading_gps: true });
 		geoHelper.getCurrentPosition(position => {
-			this.setState({ current_position: position, position: position, zoom: [11], gps_loading: false });
+			this.setState({ current_position: position, position: position, zoom: [11], loading_gps: false });
 		});
 	}
 
@@ -174,7 +171,7 @@ class App extends Component {
 	// postcodeSearch
 	postcodeSearch = (postcode) => {
 		// If we're already tracking GPS then turn this off
-		let new_state = { search_type: 'postcode', loading: true, postcode_loading: true, postcode: postcode };
+		let new_state = { search_type: 'postcode', loading_postcode: true, postcode: postcode };
 		if (this.state.search_type === 'gps') {
 			clearInterval(this.state.position_update_interval);
 			new_state.position_update_interval = null;
@@ -187,7 +184,7 @@ class App extends Component {
 				new_state.current_position = location;
 				new_state.position = location;
 				new_state.zoom = [11];
-				new_state.loading = false;
+				new_state.loading_postcode = false;
 				this.setState(new_state);
 			}
 		});
@@ -213,12 +210,12 @@ class App extends Component {
 				<div className={classes.root}>
 					<CssBaseline />
 					<AppHeader
+						page={this.state.page}
+						setPage={this.setPage}
+						loading={this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
 						postcode={this.state.postcode}
 						distance={this.state.distance}
-						page={this.state.page}
 						search_type={this.state.search_type}
-						loading={this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
-						setPage={this.setPage}
 						setDistance={this.setDistance}
 						toggleGPS={this.toggleGPS}
 						postcodeSearch={this.postcodeSearch}
@@ -246,6 +243,12 @@ class App extends Component {
 								route_filter={this.state.route_filter}
 								setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
 								clearRouteFilter={this.clearRouteFilter}
+								postcode={this.state.postcode}
+								distance={this.state.distance}
+								search_type={this.state.search_type}
+								setDistance={this.setDistance}
+								toggleGPS={this.toggleGPS}
+								postcodeSearch={this.postcodeSearch}
 							/> : null}
 						{this.state.page === 'stops' ?
 							<Stops
@@ -268,6 +271,10 @@ class App extends Component {
 								current_position={this.state.current_position}
 								postcode={this.state.postcode}
 								distance={this.state.distance}
+								search_type={this.state.search_type}
+								setDistance={this.setDistance}
+								toggleGPS={this.toggleGPS}
+								postcodeSearch={this.postcodeSearch}
 							/> : null}
 						{this.state.page === 'map' ?
 							<MobileMap
