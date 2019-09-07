@@ -36,6 +36,12 @@ class MobileMap extends Component {
 		this.setState({ time_update_interval: time_update_interval });
 	}
 
+	clickStop = (map) => {
+		if (map && map.features && map.features.length > 0 && map.features[0].properties){
+			this.props.viewStop({ id: map.features[0].properties.id });
+		}
+	}
+
 	setCurrentTime = () => this.setState({ current_time: moment() });
 
 	render() {
@@ -146,6 +152,7 @@ class MobileMap extends Component {
 						'circle-stroke-color': '#FFFFFF',
 						'circle-opacity': 0.8
 					}}
+					onClick={this.clickStop}
 				/>
 				<Layer
 					id='lyr_stops_labels'
@@ -179,6 +186,7 @@ class MobileMap extends Component {
 						"text-halo-blur": 1,
 						"text-color": "#6a6f73"
 					}}
+					onClick={this.clickStop}
 				/>
 				{this.props.current_position && this.props.current_position.length > 1 ?
 					<Marker

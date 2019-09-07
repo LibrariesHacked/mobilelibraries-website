@@ -1,6 +1,5 @@
 // Axios for making requests
 import axios from 'axios';
-import util from 'util';
 
 // Moment for time calculations
 import moment from 'moment';
@@ -31,20 +30,20 @@ export function getMobileLocations(callback) {
 		.catch(err => callback([]));
 }
 
-export function getMobileStatus(mobile, location) {
+export function getMobileStatus(location) {
 
 	let statuses = {
 		off_road: {
 			label: "Not out today"
 		},
 		pre_route: {
-			label: "Arriving at %s %s"
+			label: "Arriving at ",
 		},
 		at_stop: {
-			label: "At %s for %s"
+			label: "At"
 		},
 		between_stops: {
-			label: "Arriving at %s %s"
+			label: "Arriving at "
 		},
 		post_route: {
 			label: "Finished for the day"
@@ -55,21 +54,38 @@ export function getMobileStatus(mobile, location) {
 	if (location && !location.current_stop_id &&
 		!location.previous_stop_id && location.next_stop_id &&
 		!moment(location.next_stop_arrival).isSame(moment(), 'day')) {
-		return statuses.off_road.label;
+		return {
+			type: 'off_road',
+			message: statuses.off_road.label
+		};
 	}
 
 	// The mobile is due out today
 	if (location && !location.current_stop_id &&
 		!location.previous_stop_id && location.next_stop_id &&
 		moment(location.next_stop_arrival).isSame(moment(), 'day')) {
-		const arrival = moment(location.next_stop_arrival).fromNow()
-		return util.format(statuses.pre_route.label, location.next_stop_name, arrival);
+		const arrival = moment(location.next_stop_arrival).fromNow();
+		return {
+			type: 'pre_route',
+			message: statuses.pre_route.label,
+			args: [
+				{ stop_name: location.next_stop_name, stop_id: location.next_stop_id },
+				arrival
+			]
+		};
 	}
 
 	// The mobile is at a stop, and will be for a certain amount of time
 	if (location && location.current_stop_id) {
 		const stop_remaining = moment(location.current_stop_departure).fromNow(true);
-		return util.format(statuses.at_stop.label, location.current_stop_name, stop_remaining);
+		return {
+			type: 'at_stop',
+			message: statuses.at_stop.label,
+			args: [
+				{ stop_name: location.current_stop_name, stop_id: location.current_stop_id },
+				stop_remaining
+			]
+		};
 	}
 
 	// The mobile is between stops
@@ -78,7 +94,14 @@ export function getMobileStatus(mobile, location) {
 		moment(location.previous_stop_departure).isSame(moment(), 'day') &&
 		moment(location.next_stop_arrival).isSame(moment(), 'day')) {
 		const arrival = moment(location.next_stop_arrival).fromNow();
-		return util.format(statuses.between_stops.label, location.next_stop_name, arrival);
+		return {
+			type: 'between_stops',
+			message: statuses.between_stops.label,
+			args: [
+				{ stop_name: location.next_stop_name, stop_id: location.next_stop_id },
+				arrival
+			]
+		};
 
 	}
 
@@ -87,7 +110,11 @@ export function getMobileStatus(mobile, location) {
 		location.previous_stop_id && location.next_stop_id &&
 		moment(location.previous_stop_departure).isSame(moment(), 'day') &&
 		!moment(location.next_stop_arrival).isSame(moment(), 'day')) {
-		return statuses.post_route.label;
+		return {
+			type: 'post_route',
+			message: statuses.post_route.label
+		};
+
 	}
 
 	return null;

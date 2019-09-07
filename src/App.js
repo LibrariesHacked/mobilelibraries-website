@@ -22,6 +22,7 @@ import * as geoHelper from './helpers/geo';
 import * as mobilesHelper from './helpers/mobiles';
 import * as organisationsHelper from './helpers/organisations';
 import * as routesHelper from './helpers/routes';
+import * as stopsHelper from './helpers/stops';
 
 const theme = createMuiTheme({
 	palette: {
@@ -138,8 +139,18 @@ class App extends Component {
 
 	setPage = (page) => this.setState({ page: page })
 
-	viewStop = (stop) => { this.setState({ current_stop: stop, stop_dialog_open: true }) }
-	closeStopDialog = () => { this.setState({ stop_dialog_open: false }) }
+	viewStop = (stop) => {
+		// We may or may not have a complete stop object.
+		// If calling from the stop table we do - if not we don't, all we have is ID
+		if (stop.name) this.openStopDialog(stop);
+		if (!stop.name) {
+			stopsHelper.getStopById(stop.id, stop => {
+				this.openStopDialog(stop);
+			});
+		}
+	}
+	openStopDialog = (stop) => this.setState({ current_stop: stop, stop_dialog_open: true }) 
+	closeStopDialog = () => this.setState({ stop_dialog_open: false })
 
 
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
@@ -220,6 +231,7 @@ class App extends Component {
 								mobile_lookup={this.state.mobile_lookup}
 								mobile_location_lookup={this.state.mobile_location_lookup}
 								organisation_lookup={this.state.organisation_lookup}
+								viewStop={this.viewStop}
 								viewStopsByMobile={this.viewStopsByMobile}
 								viewStopsByOrganisation={this.viewStopsByOrganisation}
 								organisations={this.state.organisations}
@@ -268,6 +280,7 @@ class App extends Component {
 								search_type={this.state.search_type}
 								mobile_lookup={this.state.mobile_lookup}
 								mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
+								viewStop={this.viewStop}
 							/> : null}
 					</main>
 					<StopDetails

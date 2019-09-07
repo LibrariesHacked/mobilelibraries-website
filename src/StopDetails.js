@@ -67,7 +67,7 @@ class StopDetails extends React.Component {
                 <DialogTitle id="responsive-dialog-title">{stop.name}</DialogTitle>
                 <DialogContent>
                     <List className={classes.list}>
-                        <ListSubheader>{'Visiting for ' + duration}</ListSubheader>
+                        <ListSubheader>{duration + ' visit'}</ListSubheader>
                         <ListItem>
                             <ListItemText primary={stop.address} />
                         </ListItem>

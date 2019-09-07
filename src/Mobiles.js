@@ -74,6 +74,7 @@ class Mobiles extends Component {
 											mobile={mobile}
 											location={mobile_location_lookup[mobile.id]}
 											organisation={organisation_lookup[mobile.organisation_id]}
+											viewStop={this.props.viewStop}
 											viewStopsByMobile={this.props.viewStopsByMobile}
 										/>
 									</Grid>

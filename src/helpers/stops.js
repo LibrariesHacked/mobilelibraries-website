@@ -41,3 +41,15 @@ export function getAllStops(callback) {
 		})
 		.catch(err => callback({}));
 }
+
+export function getStopById(id, callback) {
+	axios.get(config.api + '/stops/' + id)
+		.then(response => {
+			if (response && response.data) {
+				callback(response.data);
+			} else {
+				callback({});
+			}
+		})
+		.catch(err => callback({}));
+}

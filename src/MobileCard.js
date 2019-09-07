@@ -53,9 +53,70 @@ class MobileCard extends Component {
 	state = {
 	};
 
+	stopButton = (stop) => {
+		return <Button color="secondary" onClick={() => this.props.viewStop({ id: stop.stop_id })}>{stop.stop_name}</Button>
+	}
+
+	offRoadMessage = (status) => {
+		return (
+			<Typography>{status.message}</Typography>
+		)
+	}
+
+	preRouteMessage = (status) => {
+		const stop_button = this.stopButton(status.args[0]);
+		return (
+			<React.Fragment>
+				<Typography>
+					{status.message}
+					{stop_button}
+					{status.args[1]}
+				</Typography>
+			</React.Fragment>
+		)
+	}
+
+	atStopMessage = (status) => {
+		const stop_button = this.stopButton(status.args[0]);
+		return (
+			<React.Fragment>
+				<Typography>
+					{status.message}
+					{stop_button}
+					{status.args[1]}
+				</Typography>
+			</React.Fragment>
+		)
+	}
+
+	betweenStopsMessage = (status) => {
+		const stop_button = this.stopButton(status.args[0]);
+		return (
+			<React.Fragment>
+				<Typography>
+					{status.message}
+					{stop_button}
+					{status.args[1]}
+				</Typography>
+			</React.Fragment>
+		)
+	}
+
+	postRouteMessage = (status) => {
+		return (
+			<Typography>{status.message}</Typography>
+		)
+	}
+
 	render() {
 		const { classes, mobile, organisation, location } = this.props;
-		const status = mobilesHelper.getMobileStatus(mobile, location);
+		let status = mobilesHelper.getMobileStatus(location);
+		if (status && status.type === 'off_road') status = this.offRoadMessage(status);
+		if (status && status.type === 'pre_route') status = this.preRouteMessage(status);
+		if (status && status.type === 'at_stop') status = this.atStopMessage(status);
+		if (status && status.type === 'between_stops') status = this.betweenStopsMessage(status);
+		if (status && status.type === 'post_route') status = this.postRouteMessage(status);
+		if (!status) status = <CircularProgress className={classes.progress} color="secondary" size={30} />
 		const bull = <span className={classes.bullet}>•</span>;
 		return (
 			<Card className={classes.card} elevation={0}>
@@ -66,8 +127,7 @@ class MobileCard extends Component {
 						{mobile.number_stops + ' stop' + (mobile.number_stops > 1 ? 's' : '')}
 					</Typography>
 					<Typography variant="h6" component="h2">{(organisation ? organisation.name + ' ' : '') + mobile.name}</Typography>
-					{status ?
-						<Typography>{status}</Typography> : <CircularProgress className={classes.progress} color="secondary" size={30} />}
+					{status}
 				</CardContent>
 				<Divider variant="middle" />
 				<CardActions>
