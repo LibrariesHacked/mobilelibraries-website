@@ -16,6 +16,7 @@ import Mobiles from './Mobiles';
 import MobileMap from './MobileMap';
 import StopDetails from './StopDetails';
 import Stops from './Stops';
+import TripDetails from './TripDetails';
 
 // Our helpers
 import * as geoHelper from './helpers/geo';
@@ -23,6 +24,7 @@ import * as mobilesHelper from './helpers/mobiles';
 import * as organisationsHelper from './helpers/organisations';
 import * as routesHelper from './helpers/routes';
 import * as stopsHelper from './helpers/stops';
+import * as tripsHelper from './helpers/trips';
 
 const theme = createMuiTheme({
 	palette: {
@@ -60,7 +62,9 @@ class App extends Component {
 		// Pages and views
 		page: 'mobiles',
 		stop_dialog_open: false,
+		trip_dialog_open: false,
 		current_stop: {},
+		current_trip: {},
 		// Organisation data
 		organisations: [],
 		organisation_lookup: {},
@@ -147,17 +151,29 @@ class App extends Component {
 	setPage = (page) => this.setState({ page: page })
 
 	viewStop = (stop) => {
+		// First open the dialog
+		this.openStopDialog(stop);
 		// We may or may not have a complete stop object.
 		// If calling from the stop table we do - if not we don't, all we have is ID
-		if (stop.name) this.openStopDialog(stop);
 		if (!stop.name) {
 			stopsHelper.getStopById(stop.id, stop => {
-				this.openStopDialog(stop);
+				this.setState({ current_stop: stop })
 			});
 		}
 	}
 	openStopDialog = (stop) => this.setState({ current_stop: stop, stop_dialog_open: true })
 	closeStopDialog = () => this.setState({ stop_dialog_open: false })
+
+	viewTrip = (trip) => {
+		// First open the dialog
+		this.openTripDialog(trip);
+		tripsHelper.getTripById(trip.id, trip => {
+			this.setState({ current_trip: trip })
+		});
+
+	}
+	openTripDialog = (trip) => this.setState({ current_trip: trip, trip_dialog_open: true })
+	closeTripDialog = () => this.setState({ trip_dialog_open: false })
 
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
 	viewStopsByMobile = (organisation_id, mobile_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [] });
@@ -304,12 +320,18 @@ class App extends Component {
 								mobile_lookup={this.state.mobile_lookup}
 								mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
 								viewStop={this.viewStop}
+								viewTrip={this.viewTrip}
 							/> : null}
 					</main>
 					<StopDetails
 						stop={this.state.current_stop}
 						open={this.state.stop_dialog_open}
 						close={() => this.closeStopDialog()}
+					/>
+					<TripDetails
+						trip={this.state.current_trip}
+						open={this.state.trip_dialog_open}
+						close={() => this.closeTripDialog()}
 					/>
 				</div>
 			</MuiThemeProvider>

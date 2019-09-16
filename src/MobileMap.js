@@ -42,6 +42,12 @@ class MobileMap extends Component {
 		}
 	}
 
+	clickTrip = (map) => {
+		if (map && map.features && map.features.length > 0 && map.features[0].properties){
+			this.props.viewTrip(map.features[0].properties);
+		}
+	}
+
 	setCurrentTime = () => this.setState({ current_time: moment() });
 
 	render() {
@@ -125,6 +131,7 @@ class MobileMap extends Component {
 							0.5
 						]
 					}}
+					onClick={this.clickTrip}
 				/>
 				<Layer
 					id='lyr_stops_circles'
