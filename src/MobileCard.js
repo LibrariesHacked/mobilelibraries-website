@@ -83,7 +83,7 @@ class MobileCard extends Component {
 				<Typography>
 					{status.message}
 					{stop_button}
-					{status.args[1]}
+					{' for ' + status.args[1]}
 				</Typography>
 			</React.Fragment>
 		)

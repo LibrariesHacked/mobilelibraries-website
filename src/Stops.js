@@ -58,7 +58,7 @@ class Stops extends Component {
 	tableRef = React.createRef();
 
 	componentDidUpdate(prevProps) {
-		if (this.props.postcode !== prevProps.postcode || this.props.distance !== prevProps.distance) this.tableRef.current.onQueryChange();
+		if (this.props.current_position !== prevProps.current_position || this.props.distance !== prevProps.distance) this.tableRef.current.onQueryChange();
 	}
 
 	setOrganisationFilter = (organisation_id) => {
@@ -98,7 +98,7 @@ class Stops extends Component {
 			classes, organisations, organisation_lookup, organisation_filter, viewStopsByOrganisation,
 			mobiles, mobile_lookup, mobile_filter,
 			routes, route_lookup, route_filter, current_position, distance, width,
-			search_type, postcode, toggleGPS, postcodeSearch, setDistance } = this.props;
+			search_type, postcode, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
 		let orgText = {}
 		Object.keys(organisation_lookup).forEach(key => {
 			orgText[key] = organisation_lookup[key].name;
@@ -137,6 +137,7 @@ class Stops extends Component {
 					setDistance={setDistance}
 					toggleGPS={toggleGPS}
 					postcodeSearch={postcodeSearch}
+					clearSearch={clearSearch}
 				/>
 				<MaterialTable
 					tableRef={this.tableRef}

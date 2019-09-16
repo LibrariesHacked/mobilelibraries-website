@@ -57,31 +57,39 @@ const styles = theme => ({
 
 class App extends Component {
 	state = {
+		// Pages and views
 		page: 'mobiles',
 		stop_dialog_open: false,
 		current_stop: {},
+		// Organisation data
 		organisations: [],
 		organisation_lookup: {},
 		organisation_filter: [],
+		// Mobile data
 		mobiles: [],
 		mobile_lookup: {},
 		mobile_filter: [],
 		mobile_locations: [],
 		mobile_location_lookup: {},
-		location_timer: null,
+		mobile_location_timer: null,
+		// Route data
 		routes: [],
 		route_lookup: {},
 		route_filter: [],
+		// Map views
 		fit_bounds: null,
 		position: [-2.1000, 53.6138],
 		zoom: [7],
 		pitch: [0],
 		bearing: [0],
+		// Search
+		search_type: '', // search types can be gps, postcode, service
 		distance: 1609,
 		postcode: '',
+		// GPS and search 
 		current_position: [],
 		position_update_interval: '',
-		search_type: '', // search types can be gps, postcode, service
+		// Loading indicators
 		loading_gps: true,
 		loading_mobiles: false,
 		loading_organisations: false,
@@ -130,10 +138,10 @@ class App extends Component {
 		this.getRoutes();
 		// Set up a timer for the mobile locations
 		this.getMobileLocations();
-		const location_timer = setInterval(() => {
+		const mobile_location_timer = setInterval(() => {
 			this.getMobileLocations();
 		}, 15000);
-		this.setState({ location_timer: location_timer });
+		this.setState({ mobile_location_timer: mobile_location_timer });
 	}
 
 	setPage = (page) => this.setState({ page: page })
@@ -148,13 +156,12 @@ class App extends Component {
 			});
 		}
 	}
-	openStopDialog = (stop) => this.setState({ current_stop: stop, stop_dialog_open: true }) 
+	openStopDialog = (stop) => this.setState({ current_stop: stop, stop_dialog_open: true })
 	closeStopDialog = () => this.setState({ stop_dialog_open: false })
 
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
 	viewStopsByMobile = (organisation_id, mobile_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [] });
 	viewStopsByRoute = (organisation_id, mobile_id, route_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [route_id] });
-
 	clearMobileFilter = () => this.setState({ mobile_filter: [], route_filter: [] });
 	clearRouteFilter = () => this.setState({ route_filter: [] });
 	clearOrganisationFilter = () => this.setState({ organisation_filter: [], mobile_filter: [], route_filter: [] });
@@ -168,10 +175,16 @@ class App extends Component {
 
 	setDistance = (distance) => this.setState({ distance: distance });
 
+	clearSearch = () => {
+		this.setState({ postcode: '', current_position: [], search_type: '', organisation_filter: [], mobile_filter: [], route_filter: [] });
+	}
+
 	// postcodeSearch
 	postcodeSearch = (postcode) => {
+
+		let new_state = { search_type: 'postcode', loading_postcode: true, postcode: postcode, organisation_filter: [], mobile_filter: [], route_filter: [] };
+	
 		// If we're already tracking GPS then turn this off
-		let new_state = { search_type: 'postcode', loading_postcode: true, postcode: postcode };
 		if (this.state.search_type === 'gps') {
 			clearInterval(this.state.position_update_interval);
 			new_state.position_update_interval = null;
@@ -195,7 +208,7 @@ class App extends Component {
 		// If we're already tracking GPS then turn this off
 		if (this.state.search_type === 'gps') {
 			clearInterval(this.state.position_update_interval);
-			this.setState({ search_type: '', postcode: '', position_update_interval: null });
+			this.setState({ search_type: '', postcode: '', current_position: [], position_update_interval: null });
 		} else {
 			let position_update_interval = setInterval(this.logPosition, 10000);
 			this.setState({ position_update_interval: position_update_interval, search_type: 'gps', postcode: '' });
@@ -219,6 +232,7 @@ class App extends Component {
 						setDistance={this.setDistance}
 						toggleGPS={this.toggleGPS}
 						postcodeSearch={this.postcodeSearch}
+						clearSearch={this.clearSearch}
 					/>
 					<main className={classes.content}>
 						<div className={classes.toolbar} />
@@ -249,6 +263,7 @@ class App extends Component {
 								setDistance={this.setDistance}
 								toggleGPS={this.toggleGPS}
 								postcodeSearch={this.postcodeSearch}
+								clearSearch={this.clearSearch}
 							/> : null}
 						{this.state.page === 'stops' ?
 							<Stops
@@ -275,6 +290,7 @@ class App extends Component {
 								setDistance={this.setDistance}
 								toggleGPS={this.toggleGPS}
 								postcodeSearch={this.postcodeSearch}
+								clearSearch={this.clearSearch}
 							/> : null}
 						{this.state.page === 'map' ?
 							<MobileMap

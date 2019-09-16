@@ -49,7 +49,7 @@ const styles = theme => ({
 class AppHeader extends Component {
 
 	render() {
-		const { loading, classes, search_type, postcode, distance, toggleGPS, postcodeSearch, setDistance, page } = this.props;
+		const { loading, classes, search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance, page } = this.props;
 
 		return (
 			<AppBar
@@ -74,6 +74,7 @@ class AppHeader extends Component {
 							toggleGPS={toggleGPS}
 							setDistance={setDistance}
 							postcodeSearch={postcodeSearch}
+							clearSearch={clearSearch}
 						/> : null}
 					<Hidden smDown>
 						<React.Fragment>

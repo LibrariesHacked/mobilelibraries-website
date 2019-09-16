@@ -13,12 +13,16 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 
 // Material icons
+import ClearIcon from '@material-ui/icons/Clear';
 import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
 import MyLocationIcon from '@material-ui/icons/MyLocation';
 import SearchIcon from '@material-ui/icons/Search';
 import SettingsIcon from '@material-ui/icons/Settings';
 
 const styles = theme => ({
+	grow: {
+		flexGrow: 1
+	},
 	iconButton: {
 		padding: 10
 	},
@@ -52,6 +56,10 @@ class PostcodeSearch extends React.Component {
 		anchor: null
 	}
 
+	componentDidUpdate(prevProps) {
+		if (this.props.postcode !== prevProps.postcode) this.setState({ postcode: this.props.postcode });
+	}
+
 	openSettingsMenu = (e) => this.setState({ anchor: e.currentTarget })
 	closeSettingsMenu = () => this.setState({ anchor: null })
 
@@ -61,7 +69,7 @@ class PostcodeSearch extends React.Component {
 	}
 
 	render() {
-		const { classes, search_type, postcodeSearch, toggleGPS } = this.props;
+		const { classes, search_type, postcodeSearch, clearSearch, toggleGPS } = this.props;
 		return (
 			<div className={classes.search}>
 				<InputBase
@@ -73,8 +81,20 @@ class PostcodeSearch extends React.Component {
 					value={this.state.postcode}
 					onChange={(e) => this.setState({ postcode: e.target.value })}
 				/>
+				<div className={classes.grow} />
+				{search_type === 'postcode' ?
+					<Tooltip title={'Clear search'}>
+						<IconButton
+							color="secondary"
+							className={classes.iconButton}
+							onClick={() => clearSearch()}>
+							<ClearIcon />
+						</IconButton>
+					</Tooltip>
+					: null}
 				<Tooltip title={'Search by postcode'}>
 					<IconButton
+						color="primary"
 						className={classes.iconButton}
 						onClick={() => postcodeSearch(this.state.postcode)}>
 						<SearchIcon />

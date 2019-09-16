@@ -64,6 +64,7 @@ class Filters extends Component {
 	}
 
 	chooseOrganisation = (organisation_id) => {
+		this.props.clearSearch();
 		this.props.setOrganisationFilter(organisation_id);
 		this.closeOrganisationMenu();
 	}
@@ -99,7 +100,7 @@ class Filters extends Component {
 			classes, organisations, organisation_lookup, organisation_filter,
 			clearOrganisationFilter, mobiles, mobile_lookup, mobile_filter, clearMobileFilter,
 			routes, route_lookup, route_filter, clearRouteFilter,
-			search_type, postcode, distance, toggleGPS, postcodeSearch, setDistance
+			search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
 		} = this.props;
 		const bull = <span className={classes.bullet}>•</span>;
 
@@ -156,7 +157,7 @@ class Filters extends Component {
 								{bull}
 								{'GPS tracking ' + (search_type === 'gps' ? 'on' : 'off')}
 							</Typography>
-							<Typography variant="h6" component="h2">Search by location</Typography>
+							<Typography variant="h6" component="h2" gutterBottom>Search by location</Typography>
 							<PostcodeSearch
 								postcode={postcode}
 								distance={distance}
@@ -164,6 +165,7 @@ class Filters extends Component {
 								toggleGPS={toggleGPS}
 								setDistance={setDistance}
 								postcodeSearch={postcodeSearch}
+								clearSearch={clearSearch}
 							/>
 						</CardContent>
 					</Card>
