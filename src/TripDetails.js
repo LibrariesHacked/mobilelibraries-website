@@ -15,9 +15,6 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
 
-// Moment
-import moment from 'moment';
-
 const styles = theme => ({
     dialog: {
         border: '1px solid #e5e5e5'
@@ -37,8 +34,9 @@ class TripDetails extends React.Component {
     render() {
         const { classes, width, trip } = this.props;
         const fullScreen = isWidthDown('sm', width);
-        const estimated_duration = 'Estimated duration: ' + Math.round(trip.duration / 60) + ' mins';
-        const scheduled_duration = 'Time between stops: ' + Math.round(trip.scheduled_duration / 60) + ' mins';
+        const estimated_duration = Math.round(trip.duration / 60) + ' mins journey time';
+        const scheduled_duration = Math.round(trip.scheduled_duration / 60) + ' mins scheduled between stops';
+        const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)';
         return (
             <Dialog
                 fullScreen={fullScreen}
@@ -58,12 +56,12 @@ class TripDetails extends React.Component {
                     }
                 }
             >
-                <DialogTitle id="responsive-dialog-title">{''}</DialogTitle>
+                <DialogTitle id="responsive-dialog-title">{trip.mobile_name + ' journey details'}</DialogTitle>
                 <DialogContent>
                     <List className={classes.list}>
                         <ListSubheader>{'Journey from ' + trip.origin_stop_name + ' to ' + trip.destination_stop_name}</ListSubheader>
                         <ListItem>
-                            <ListItemText primary={estimated_duration} />
+                            <ListItemText primary={estimated_duration} secondary={distance} />
                         </ListItem>
                         <ListItem>
                             <ListItemText primary={scheduled_duration} />
