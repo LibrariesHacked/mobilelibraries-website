@@ -1,6 +1,10 @@
 // React
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import compose from 'recompose/compose';
+
+import { Link } from "react-router-dom";
+import { withRouter } from 'react-router-dom';
 
 // Material UI
 import AppBar from '@material-ui/core/AppBar';
@@ -49,24 +53,23 @@ const styles = theme => ({
 class AppHeader extends Component {
 
 	render() {
-		const { loading, classes, search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance, page } = this.props;
-
+		const { loading, classes, search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance, location } = this.props;
 		return (
 			<AppBar
 				position="fixed"
 				color="inherit"
 				elevation={0}
-				className={(page === 'map' ? classes.appBarTransparent : classes.appBar)}
+				className={(location.pathname === '/map' ? classes.appBarTransparent : classes.appBar)}
 			>
 				<Toolbar>
-					{page !== 'map' ?
+					{location.pathname !== '/map' ?
 						<Hidden xsDown>
 							<Typography variant="h6" noWrap>Mobiles</Typography>
 						</Hidden>
 						: null}
 					<div className={classes.grow} />
 					{loading ? <CircularProgress className={classes.progress} color="secondary" size={30} /> : null}
-					{page === 'map' ? 
+					{location.pathname === '/map' ?
 						<PostcodeSearch
 							postcode={postcode}
 							distance={distance}
@@ -78,18 +81,18 @@ class AppHeader extends Component {
 						/> : null}
 					<Hidden smDown>
 						<React.Fragment>
-							<Button color="secondary" variant={this.props.page === 'mobiles' ? 'text' : 'text'}
-								onClick={() => this.props.setPage('mobiles')}
+							<Button component={Link} to="/" color="secondary"
+								onClick={() => { }}
 							>
 								<DashboardIcon className={classes.leftIcon} />Dashboard
 							</Button>
-							<Button color="secondary" variant={this.props.page === 'stops' ? 'text' : 'text'}
-								onClick={() => this.props.setPage('stops')}
+							<Button component={Link} to="/stops" color="secondary"
+								onClick={() => { }}
 							>
 								<LocationOnIcon className={classes.leftIcon} />Stops
 							</Button>
-							<Button color="secondary" variant={this.props.page === 'map' ? 'text' : 'text'}
-								onClick={() => this.props.setPage('map')}
+							<Button component={Link} to="/map" color="secondary"
+								onClick={() => { }}
 							>
 								<MapIcon className={classes.leftIcon} />Map
 							</Button>
@@ -97,13 +100,13 @@ class AppHeader extends Component {
 					</Hidden>
 					<Hidden mdUp>
 						<React.Fragment>
-							<IconButton onClick={() => this.props.setPage('mobiles')}>
+							<IconButton component={Link} to="/" onClick={() => { }}>
 								<DashboardIcon />
 							</IconButton>
-							<IconButton onClick={() => this.props.setPage('stops')}>
+							<IconButton component={Link} to="/stops" onClick={() => { }}>
 								<LocationOnIcon />
 							</IconButton>
-							<IconButton onClick={() => this.props.setPage('map')}>
+							<IconButton component={Link} to="/map" onClick={() => { }}>
 								<MapIcon />
 							</IconButton>
 						</React.Fragment>
@@ -118,4 +121,4 @@ AppHeader.propTypes = {
 	classes: PropTypes.object.isRequired
 }
 
-export default withStyles(styles, { withTheme: true })(AppHeader);
+export default compose(withRouter, withStyles(styles, { withTheme: true }))(AppHeader);

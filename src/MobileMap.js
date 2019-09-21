@@ -110,6 +110,21 @@ class MobileMap extends Component {
 					}}
 					paint={{
 						"line-color": "#a7a39b",
+						"line-offset": [
+							"interpolate",
+							[
+								"linear"
+							],
+							[
+								"zoom"
+							],
+							13, 0.5,
+							14, 1,
+							15, 2,
+							16, 3,
+							18, 10,
+							22, 20
+						],
 						"line-opacity": 1,
 						"line-width": [
 							"interpolate",

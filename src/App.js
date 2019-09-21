@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { BrowserRouter, Route } from "react-router-dom";
+
 // Material UI
 import CssBaseline from '@material-ui/core/CssBaseline';
 
@@ -59,8 +61,6 @@ const styles = theme => ({
 
 class App extends Component {
 	state = {
-		// Pages and views
-		page: 'mobiles',
 		stop_dialog_open: false,
 		trip_dialog_open: false,
 		current_stop: {},
@@ -148,8 +148,6 @@ class App extends Component {
 		this.setState({ mobile_location_timer: mobile_location_timer });
 	}
 
-	setPage = (page) => this.setState({ page: page })
-
 	viewStop = (stop) => {
 		// First open the dialog
 		this.openStopDialog(stop);
@@ -199,7 +197,7 @@ class App extends Component {
 	postcodeSearch = (postcode) => {
 
 		let new_state = { search_type: 'postcode', loading_postcode: true, postcode: postcode, organisation_filter: [], mobile_filter: [], route_filter: [] };
-	
+
 		// If we're already tracking GPS then turn this off
 		if (this.state.search_type === 'gps') {
 			clearInterval(this.state.position_update_interval);
@@ -235,105 +233,122 @@ class App extends Component {
 	render() {
 		const { classes } = this.props;
 		return (
+
 			<MuiThemeProvider theme={theme}>
-				<div className={classes.root}>
-					<CssBaseline />
-					<AppHeader
-						page={this.state.page}
-						setPage={this.setPage}
-						loading={this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
-						postcode={this.state.postcode}
-						distance={this.state.distance}
-						search_type={this.state.search_type}
-						setDistance={this.setDistance}
-						toggleGPS={this.toggleGPS}
-						postcodeSearch={this.postcodeSearch}
-						clearSearch={this.clearSearch}
-					/>
-					<main className={classes.content}>
-						<div className={classes.toolbar} />
-						{this.state.page === 'mobiles' ?
-							<Mobiles
-								mobiles={this.state.mobiles}
-								mobile_lookup={this.state.mobile_lookup}
-								mobile_location_lookup={this.state.mobile_location_lookup}
-								organisation_lookup={this.state.organisation_lookup}
-								viewStop={this.viewStop}
-								viewStopsByMobile={this.viewStopsByMobile}
-								viewStopsByOrganisation={this.viewStopsByOrganisation}
-								organisations={this.state.organisations}
-								organisation_filter={this.state.organisation_filter}
-								setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
-								clearOrganisationFilter={this.clearOrganisationFilter}
-								mobile_filter={this.state.mobile_filter}
-								setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
-								clearMobileFilter={this.clearMobileFilter}
-								routes={this.state.routes}
-								route_lookup={this.state.route_lookup}
-								route_filter={this.state.route_filter}
-								setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
-								clearRouteFilter={this.clearRouteFilter}
-								postcode={this.state.postcode}
-								distance={this.state.distance}
-								search_type={this.state.search_type}
-								setDistance={this.setDistance}
-								toggleGPS={this.toggleGPS}
-								postcodeSearch={this.postcodeSearch}
-								clearSearch={this.clearSearch}
-							/> : null}
-						{this.state.page === 'stops' ?
-							<Stops
-								organisations={this.state.organisations}
-								organisation_lookup={this.state.organisation_lookup}
-								organisation_filter={this.state.organisation_filter}
-								setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
-								clearOrganisationFilter={this.clearOrganisationFilter}
-								mobiles={this.state.mobiles}
-								mobile_lookup={this.state.mobile_lookup}
-								mobile_filter={this.state.mobile_filter}
-								setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
-								clearMobileFilter={this.clearMobileFilter}
-								routes={this.state.routes}
-								route_lookup={this.state.route_lookup}
-								route_filter={this.state.route_filter}
-								setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
-								clearRouteFilter={this.clearRouteFilter}
-								viewStop={this.viewStop}
-								current_position={this.state.current_position}
-								postcode={this.state.postcode}
-								distance={this.state.distance}
-								search_type={this.state.search_type}
-								setDistance={this.setDistance}
-								toggleGPS={this.toggleGPS}
-								postcodeSearch={this.postcodeSearch}
-								clearSearch={this.clearSearch}
-							/> : null}
-						{this.state.page === 'map' ?
-							<MobileMap
-								bearing={this.state.bearing}
-								fit_bounds={this.state.fit_bounds}
-								pitch={this.state.pitch}
-								position={this.state.position}
-								current_position={this.state.current_position}
-								zoom={this.state.zoom}
-								search_type={this.state.search_type}
-								mobile_lookup={this.state.mobile_lookup}
-								mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
-								viewStop={this.viewStop}
-								viewTrip={this.viewTrip}
-							/> : null}
-					</main>
-					<StopDetails
-						stop={this.state.current_stop}
-						open={this.state.stop_dialog_open}
-						close={() => this.closeStopDialog()}
-					/>
-					<TripDetails
-						trip={this.state.current_trip}
-						open={this.state.trip_dialog_open}
-						close={() => this.closeTripDialog()}
-					/>
-				</div>
+				<BrowserRouter>
+					<div className={classes.root}>
+						<CssBaseline />
+						<AppHeader
+							loading={this.state.loading_mobiles || this.state.loading_organisations || this.state.loading_routes}
+							postcode={this.state.postcode}
+							distance={this.state.distance}
+							search_type={this.state.search_type}
+							setDistance={this.setDistance}
+							toggleGPS={this.toggleGPS}
+							postcodeSearch={this.postcodeSearch}
+							clearSearch={this.clearSearch}
+						/>
+						<main className={classes.content}>
+							<div className={classes.toolbar} />
+							<Route
+								path='/'
+								exact
+								render={() => {
+									return (<Mobiles
+										mobiles={this.state.mobiles}
+										mobile_lookup={this.state.mobile_lookup}
+										mobile_location_lookup={this.state.mobile_location_lookup}
+										organisation_lookup={this.state.organisation_lookup}
+										viewStop={this.viewStop}
+										viewStopsByMobile={this.viewStopsByMobile}
+										viewStopsByOrganisation={this.viewStopsByOrganisation}
+										organisations={this.state.organisations}
+										organisation_filter={this.state.organisation_filter}
+										setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
+										clearOrganisationFilter={this.clearOrganisationFilter}
+										mobile_filter={this.state.mobile_filter}
+										setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
+										clearMobileFilter={this.clearMobileFilter}
+										routes={this.state.routes}
+										route_lookup={this.state.route_lookup}
+										route_filter={this.state.route_filter}
+										setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
+										clearRouteFilter={this.clearRouteFilter}
+										postcode={this.state.postcode}
+										distance={this.state.distance}
+										search_type={this.state.search_type}
+										setDistance={this.setDistance}
+										toggleGPS={this.toggleGPS}
+										postcodeSearch={this.postcodeSearch}
+										clearSearch={this.clearSearch}
+									/>)
+								}}
+							/>
+
+							<Route
+								path='/stops'
+								render={() => {
+									return (
+										<Stops
+											organisations={this.state.organisations}
+											organisation_lookup={this.state.organisation_lookup}
+											organisation_filter={this.state.organisation_filter}
+											setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
+											clearOrganisationFilter={this.clearOrganisationFilter}
+											mobiles={this.state.mobiles}
+											mobile_lookup={this.state.mobile_lookup}
+											mobile_filter={this.state.mobile_filter}
+											setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
+											clearMobileFilter={this.clearMobileFilter}
+											routes={this.state.routes}
+											route_lookup={this.state.route_lookup}
+											route_filter={this.state.route_filter}
+											setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
+											clearRouteFilter={this.clearRouteFilter}
+											viewStop={this.viewStop}
+											current_position={this.state.current_position}
+											postcode={this.state.postcode}
+											distance={this.state.distance}
+											search_type={this.state.search_type}
+											setDistance={this.setDistance}
+											toggleGPS={this.toggleGPS}
+											postcodeSearch={this.postcodeSearch}
+											clearSearch={this.clearSearch}
+										/>)
+								}}
+							/>
+							<Route
+								path='/map'
+								render={() => {
+									return (
+										<MobileMap
+											bearing={this.state.bearing}
+											fit_bounds={this.state.fit_bounds}
+											pitch={this.state.pitch}
+											position={this.state.position}
+											current_position={this.state.current_position}
+											zoom={this.state.zoom}
+											search_type={this.state.search_type}
+											mobile_lookup={this.state.mobile_lookup}
+											mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
+											viewStop={this.viewStop}
+											viewTrip={this.viewTrip}
+										/>)
+								}}
+							/>
+						</main>
+						<StopDetails
+							stop={this.state.current_stop}
+							open={this.state.stop_dialog_open}
+							close={() => this.closeStopDialog()}
+						/>
+						<TripDetails
+							trip={this.state.current_trip}
+							open={this.state.trip_dialog_open}
+							close={() => this.closeTripDialog()}
+						/>
+					</div>
+				</BrowserRouter>
 			</MuiThemeProvider>
 		);
 	}

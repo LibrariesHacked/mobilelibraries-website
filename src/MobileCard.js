@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+import { Link } from "react-router-dom";
+
 // Material UI
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
@@ -132,7 +134,7 @@ class MobileCard extends Component {
 				<Divider variant="middle" />
 				<CardActions>
 					<Tooltip title="Mobile library stops">
-						<Button size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(organisation.id, mobile.id)}>
+						<Button component={Link} to="/stops" size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(organisation.id, mobile.id)}>
 							<LocationOnIcon className={classes.leftIcon} />Stops
 						</Button>
 					</Tooltip>
