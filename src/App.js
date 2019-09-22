@@ -36,7 +36,12 @@ const theme = createMuiTheme({
 	overrides: {
 		MuiButton: {
 			text: {
-				textTransform: 'inherit'
+				textTransform: 'none'
+			}
+		},
+		MuiTab: {
+			root: {
+				textTransform: 'none'
 			}
 		}
 	}

@@ -3,9 +3,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
+import Badge from '@material-ui/core/Badge';
 import Grid from '@material-ui/core/Grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import Tab from '@material-ui/core/Tab';
+import Tabs from '@material-ui/core/Tabs';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -14,7 +17,12 @@ import { withStyles } from '@material-ui/core/styles';
 import Filters from './Filters';
 import MobileCard from './MobileCard';
 
-const styles = () => ({
+import * as mobilesHelper from './helpers/mobiles';
+
+const styles = (theme) => ({
+	chip: {
+		margin: theme.spacing(1),
+	},
 	root: {
 		flexGrow: 1
 	}
@@ -22,13 +30,20 @@ const styles = () => ({
 
 class Mobiles extends Component {
 	state = {
+		on_road: false,
+		open_tab: 0
 	};
+
+	changeTab = (value) => {
+		this.setState({ open_tab: value });
+	}
 
 	render() {
 		const { classes, organisations, organisation_lookup, organisation_filter, setOrganisationFilter, clearOrganisationFilter, viewStopsByOrganisation,
 			mobiles, mobile_lookup, mobile_location_lookup, mobile_filter, setMobileFilter, clearMobileFilter,
 			routes, route_lookup, route_filter, setRouteFilter, clearRouteFilter,
 			search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
+		const on_road = this.state.on_road;
 		return (
 			<div className={classes.root}>
 				<Filters
@@ -58,11 +73,47 @@ class Mobiles extends Component {
 					clearSearch={clearSearch}
 				/>
 				<ListSubheader disableSticky={true}>Mobile library dashboard</ListSubheader>
+				<Tabs
+					variant="standard"
+					scrollButtons="off"
+					value={this.state.open_tab}
+					indicatorColor="secondary"
+					textColor="secondary"
+					onChange={(e, value) => this.changeTab(value)}
+				>
+					<Tab
+						className={classes.tab}
+						label={
+							<Badge
+								className={classes.padding}
+								color='default'
+								badgeContent={0}>
+								All mobiles
+							</Badge>
+						}
+					/>
+					<Tab
+						className={classes.tab}
+						label={
+							<Badge
+								className={classes.padding}
+								color={'default'}
+								badgeContent={0}>
+								Active today
+							</Badge>
+						}
+					/>
+				</Tabs>
+				<br />
 				{mobiles && mobiles.length > 0 ?
 					<Grid container spacing={3}>
 						{mobiles
 							.filter(mob => {
 								let display = true;
+								if (this.state.open_tab === 1 && mobile_location_lookup[mob.id]) {
+									const status = mobilesHelper.getMobileStatus(mobile_location_lookup[mob.id]);
+									display = (status.type !== 'off_road');
+								}
 								if (organisation_filter.length > 0 &&
 									organisation_filter.indexOf(mob.organisation_id) === -1) {
 									display = false;
