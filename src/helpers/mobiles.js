@@ -30,6 +30,18 @@ export function getMobileLocations(callback) {
 		.catch(err => callback([]));
 }
 
+export function getMobilesNearest(location, distance, callback) {
+	axios.get(config.api + '/mobiles/nearest?longitude=' + location[0] + '&latitude=' + location[1] + '&distance=' + distance)
+		.then(response => {
+			if (response && response.data) {
+				callback(response.data);
+			} else {
+				callback([]);
+			}
+		})
+		.catch(err => callback([]));
+}
+
 export function getMobileStatus(location) {
 
 	let statuses = {
@@ -56,6 +68,7 @@ export function getMobileStatus(location) {
 		!moment(location.next_stop_arrival).isSame(moment(), 'day')) {
 		return {
 			type: 'off_road',
+			text_format: statuses.off_road.label,
 			message: statuses.off_road.label
 		};
 	}
@@ -68,6 +81,7 @@ export function getMobileStatus(location) {
 		return {
 			type: 'pre_route',
 			message: statuses.pre_route.label,
+			text_format: statuses.pre_route.label + arrival,
 			args: [
 				{ stop_name: location.next_stop_name, stop_id: location.next_stop_id },
 				arrival
@@ -81,6 +95,7 @@ export function getMobileStatus(location) {
 		return {
 			type: 'at_stop',
 			message: statuses.at_stop.label,
+			text_format: statuses.at_stop.label + ' for ' + stop_remaining,
 			args: [
 				{ stop_name: location.current_stop_name, stop_id: location.current_stop_id },
 				stop_remaining
@@ -97,6 +112,7 @@ export function getMobileStatus(location) {
 		return {
 			type: 'between_stops',
 			message: statuses.between_stops.label,
+			text_format: statuses.at_stop.label + arrival,
 			args: [
 				{ stop_name: location.next_stop_name, stop_id: location.next_stop_id },
 				arrival
@@ -112,7 +128,8 @@ export function getMobileStatus(location) {
 		!moment(location.next_stop_arrival).isSame(moment(), 'day')) {
 		return {
 			type: 'post_route',
-			message: statuses.post_route.label
+			message: statuses.post_route.label,
+			text_format: statuses.post_route.label
 		};
 
 	}

@@ -30,7 +30,7 @@ class MobileAvatar extends Component {
 		const { classes, location, mobile } = this.props;
 		return (
 			<Tooltip
-				title={mobilesHelper.getMobileStatus(mobile, location)}>
+				title={mobilesHelper.getMobileStatus(mobile, location).text_format}>
 				<Fab size="small" color="primary" className={classes.fab}>
 					<DirectionBusIcon />
 				</Fab>

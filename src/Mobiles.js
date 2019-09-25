@@ -40,10 +40,9 @@ class Mobiles extends Component {
 
 	render() {
 		const { classes, organisations, organisation_lookup, organisation_filter, setOrganisationFilter, clearOrganisationFilter, viewStopsByOrganisation,
-			mobiles, mobile_lookup, mobile_location_lookup, mobile_filter, setMobileFilter, clearMobileFilter,
+			mobiles, mobile_lookup, mobile_location_lookup, mobiles_nearest_lookup, mobile_filter, setMobileFilter, clearMobileFilter,
 			routes, route_lookup, route_filter, setRouteFilter, clearRouteFilter,
 			search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
-		const on_road = this.state.on_road;
 		return (
 			<div className={classes.root}>
 				<Filters
@@ -123,6 +122,12 @@ class Mobiles extends Component {
 									display = false;
 								}
 								return display;
+							})
+							.filter(mob => {
+								if (search_type === 'gps' || search_type === 'postcode') {
+									return mobiles_nearest_lookup[mob.id];
+								}
+								return true;
 							})
 							.map((mobile, idx) => {
 								return (

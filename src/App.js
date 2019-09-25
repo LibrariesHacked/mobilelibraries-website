@@ -80,6 +80,8 @@ class App extends Component {
 		mobile_filter: [],
 		mobile_locations: [],
 		mobile_location_lookup: {},
+		mobiles_nearest: [],
+		mobiles_nearest_lookup: {},
 		mobile_location_timer: null,
 		// Route data
 		routes: [],
@@ -141,6 +143,14 @@ class App extends Component {
 		});
 	}
 
+	getMobilesNearest = () => {
+		mobilesHelper.getMobilesNearest(this.state.current_position, this.state.distance, mobiles => {
+			let mobiles_nearest_lookup = {};
+			mobiles.forEach(mobile => mobiles_nearest_lookup[mobile.mobile_id] = mobile);
+			this.setState({ mobiles_nearest: mobiles, mobiles_nearest_lookup: mobiles_nearest_lookup });
+		});
+	}
+
 	componentDidMount = () => {
 		this.getOrganisations();
 		this.getMobiles();
@@ -188,6 +198,7 @@ class App extends Component {
 	logPosition = (fit = false) => {
 		this.setState({ loading_gps: true });
 		geoHelper.getCurrentPosition(position => {
+			this.getMobilesNearest();
 			this.setState({ current_position: position, position: position, zoom: [11], loading_gps: false });
 		});
 	}
@@ -218,6 +229,7 @@ class App extends Component {
 				new_state.zoom = [11];
 				new_state.loading_postcode = false;
 				this.setState(new_state);
+				this.getMobilesNearest();
 			}
 		});
 	}
@@ -263,6 +275,7 @@ class App extends Component {
 										mobiles={this.state.mobiles}
 										mobile_lookup={this.state.mobile_lookup}
 										mobile_location_lookup={this.state.mobile_location_lookup}
+										mobiles_nearest_lookup={this.state.mobiles_nearest_lookup}
 										organisation_lookup={this.state.organisation_lookup}
 										viewStop={this.viewStop}
 										viewStopsByMobile={this.viewStopsByMobile}
