@@ -16,31 +16,32 @@ import { withStyles } from '@material-ui/core/styles';
 import * as mobilesHelper from './helpers/mobiles';
 
 const styles = theme => ({
-	fab: {
-		margin: theme.spacing(1),
-		boxShadow: 'none'
-	}
+    fab: {
+        margin: theme.spacing(1),
+        boxShadow: 'none'
+    }
 });
 
 class MobileAvatar extends Component {
-	state = {
-	};
+    state = {
+    };
 
-	render() {
-		const { classes, location, mobile } = this.props;
-		return (
-			<Tooltip
-				title={mobilesHelper.getMobileStatus(mobile, location).text_format}>
-				<Fab size="small" color="primary" className={classes.fab}>
-					<DirectionBusIcon />
-				</Fab>
-			</Tooltip>
-		);
-	}
+    render() {
+        const { classes, location } = this.props;
+        const status = mobilesHelper.getMobileStatus(location);
+        return (
+            <Tooltip
+                title={(status ? status.text_format : '')}>
+                <Fab size="small" color="primary" className={classes.fab}>
+                    <DirectionBusIcon />
+                </Fab>
+            </Tooltip >
+        );
+    }
 }
 
 MobileAvatar.propTypes = {
-	classes: PropTypes.object.isRequired
+    classes: PropTypes.object.isRequired
 }
 
 export default withStyles(styles, { withTheme: true })(MobileAvatar);
