@@ -127,9 +127,10 @@ class PostcodeSearch extends React.Component {
 				>
 					<ListSubheader disableSticky={true}>Search distance</ListSubheader>
 					<MenuItem onClick={() => this.setSearchDistance(1609)}>1 mile</MenuItem>
-					<MenuItem onClick={() => this.setSearchDistance(3219)}>2 mile</MenuItem>
-					<MenuItem onClick={() => this.setSearchDistance(4828)}>3 mile</MenuItem>
-					<MenuItem onClick={() => this.setSearchDistance(8047)}>5 miles</MenuItem>
+					<MenuItem onClick={() => this.setSearchDistance(4827)}>3 miles</MenuItem>
+					<MenuItem onClick={() => this.setSearchDistance(8045)}>5 miles</MenuItem>
+					<MenuItem onClick={() => this.setSearchDistance(16090)}>10 miles</MenuItem>
+					<MenuItem onClick={() => this.setSearchDistance(32180)}>20 miles</MenuItem>
 				</Menu>
 			</div>
 		);
