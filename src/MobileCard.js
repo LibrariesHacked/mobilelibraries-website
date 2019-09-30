@@ -11,11 +11,13 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
+import IconButton from '@material-ui/core/IconButton';
 import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 // MUI Icons
 import LocationOnIcon from '@material-ui/icons/LocationOn';
+import WebIcon from '@material-ui/icons/Web';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -110,6 +112,8 @@ class MobileCard extends Component {
 		)
 	}
 
+	goToWebsite = () => window.open(this.props.mobile.timetable, '_blank');
+
 	render() {
 		const { classes, mobile, organisation, location } = this.props;
 		let status = mobilesHelper.getMobileStatus(location);
@@ -139,6 +143,11 @@ class MobileCard extends Component {
 						</Button>
 					</Tooltip>
 					<Divider className={classes.verticalDivider} />
+					{mobile.timetable ? <Tooltip title="Website timetable">
+						<IconButton className={classes.button} onClick={() => this.goToWebsite()}>
+							<WebIcon />
+						</IconButton>
+					</Tooltip> : null}
 				</CardActions>
 			</Card>
 		);
