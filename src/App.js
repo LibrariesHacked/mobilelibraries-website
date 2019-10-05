@@ -5,7 +5,10 @@ import PropTypes from 'prop-types';
 import { BrowserRouter, Route } from "react-router-dom";
 
 // Material UI
+import CloseIcon from '@material-ui/icons/Close';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import IconButton from '@material-ui/core/IconButton';
+import Snackbar from '@material-ui/core/Snackbar';
 
 // MUI Style
 import blue from '@material-ui/core/colors/blue';
@@ -105,7 +108,10 @@ class App extends Component {
 		loading_mobiles: false,
 		loading_organisations: false,
 		loading_postcode: true,
-		loading_routes: false
+		loading_routes: false,
+		// Snackbar
+		snackbar_open: false,
+		snackbar_message: ''
 	};
 
 	getOrganisations = () => {
@@ -198,8 +204,13 @@ class App extends Component {
 	logPosition = (fit = false) => {
 		this.setState({ loading_gps: true });
 		geoHelper.getCurrentPosition(position => {
-			this.getMobilesNearest();
-			this.setState({ current_position: position, position: position, zoom: [11], loading_gps: false });
+			if (position.length === 2) {
+				this.getMobilesNearest();
+				this.setState({ current_position: position, position: position, zoom: [11], loading_gps: false });
+			} else {
+				clearInterval(this.state.position_update_interval);
+				this.setState({ search_type: '', postcode: '', current_position: [], position_update_interval: null, snackbar_open: true, snackbar_message: 'Could not fetch current location' });
+			}
 		});
 	}
 
@@ -230,6 +241,8 @@ class App extends Component {
 				new_state.loading_postcode = false;
 				this.setState(new_state);
 				this.getMobilesNearest();
+			} else {
+				this.setState({ snackbar_open: true, snackbar_message: 'Could not find postcode' })
 			}
 		});
 	}
@@ -246,6 +259,13 @@ class App extends Component {
 			this.logPosition(true);
 		}
 	}
+
+	closeSnackbar = (event, reason) => {
+		if (reason === 'clickaway') {
+			return;
+		}
+		this.setState({ snackbar_open: false });
+	};
 
 	render() {
 		const { classes } = this.props;
@@ -364,6 +384,30 @@ class App extends Component {
 							trip={this.state.current_trip}
 							open={this.state.trip_dialog_open}
 							close={() => this.closeTripDialog()}
+						/>
+						<Snackbar
+							anchorOrigin={{
+								vertical: 'bottom',
+								horizontal: 'left'
+							}}
+							open={this.state.snackbar_open}
+							autoHideDuration={4000}
+							onClose={this.closeSnackbar}
+							ContentProps={{
+								'aria-describedby': 'message-id',
+							}}
+							message={<span id="message-id">{this.state.snackbar_message}</span>}
+							action={[
+								<IconButton
+									key="close"
+									aria-label="close"
+									color="inherit"
+									className={classes.close}
+									onClick={this.closeSnackbar}
+								>
+									<CloseIcon />
+								</IconButton>,
+							]}
 						/>
 					</div>
 				</BrowserRouter>
