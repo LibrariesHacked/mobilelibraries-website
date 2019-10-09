@@ -64,7 +64,7 @@ class AppHeader extends Component {
 				<Toolbar>
 					{location.pathname !== '/map' ?
 						<Hidden xsDown>
-							<Typography variant="h6" noWrap>Mobiles</Typography>
+							<Typography variant="h6" color="error" noWrap>In development</Typography>
 						</Hidden>
 						: null}
 					<div className={classes.grow} />
@@ -84,7 +84,7 @@ class AppHeader extends Component {
 							<Button component={Link} to="/" color="secondary"
 								onClick={() => { }}
 							>
-								<DashboardIcon className={classes.leftIcon} />Dashboard
+								<DashboardIcon className={classes.leftIcon} />Mobiles
 							</Button>
 							<Button component={Link} to="/stops" color="secondary"
 								onClick={() => { }}

@@ -106,7 +106,31 @@ class Filters extends Component {
 
 		return (
 			<Grid className={classes.grid} container spacing={3}>
-				<Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
+				<Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
+					<Card className={classes.card} elevation={0}>
+						<CardContent>
+							<Typography className={classes.title} color="textSecondary" gutterBottom>
+								{Math.round(distance / 1609) + ' mile radius'}
+								{bull}
+								{'GPS tracking ' + (search_type === 'gps' ? 'on' : 'off')}
+							</Typography>
+							<Typography variant="h6" component="h2" gutterBottom>Search by location</Typography>
+							<PostcodeSearch
+								postcode={postcode}
+								distance={distance}
+								search_type={search_type}
+								toggleGPS={toggleGPS}
+								setDistance={setDistance}
+								postcodeSearch={postcodeSearch}
+								clearSearch={clearSearch}
+							/>
+							{postcode_district !== '' ?
+								<Typography variant="caption" display="block">{'Searching around ' + postcode_district + '.'}</Typography>
+								: null}
+						</CardContent>
+					</Card>
+				</Grid>
+				<Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
 					<Card className={classes.card} elevation={0}>
 						<CardContent>
 							<Typography className={classes.title} color="textSecondary" gutterBottom>
@@ -147,30 +171,6 @@ class Filters extends Component {
 								)
 								: null}
 						</CardActions>
-					</Card>
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} lg={3} xl={2}>
-					<Card className={classes.card} elevation={0}>
-						<CardContent>
-							<Typography className={classes.title} color="textSecondary" gutterBottom>
-								{Math.round(distance / 1609) + ' mile radius'}
-								{bull}
-								{'GPS tracking ' + (search_type === 'gps' ? 'on' : 'off')}
-							</Typography>
-							<Typography variant="h6" component="h2" gutterBottom>Search by location</Typography>
-							<PostcodeSearch
-								postcode={postcode}
-								distance={distance}
-								search_type={search_type}
-								toggleGPS={toggleGPS}
-								setDistance={setDistance}
-								postcodeSearch={postcodeSearch}
-								clearSearch={clearSearch}
-							/>
-							{postcode_district !== '' ?
-								<Typography variant="caption" display="block">{'Searching around ' + postcode_district + '.'}</Typography>
-								: null}
-						</CardContent>
 					</Card>
 				</Grid>
 				<Menu
@@ -228,7 +228,6 @@ class Filters extends Component {
 							return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => this.chooseRoute(route.id)}>{route.name}</MenuItem>
 						})}
 				</Menu>
-
 			</Grid>
 		);
 	}
