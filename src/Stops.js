@@ -98,7 +98,7 @@ class Stops extends Component {
 			classes, organisations, organisation_lookup, organisation_filter, viewStopsByOrganisation,
 			mobiles, mobile_lookup, mobile_filter,
 			routes, route_lookup, route_filter, current_position, distance, width,
-			search_type, postcode, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
+			search_type, postcode, postcode_district, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
 		let orgText = {}
 		Object.keys(organisation_lookup).forEach(key => {
 			orgText[key] = organisation_lookup[key].name;
@@ -132,6 +132,7 @@ class Stops extends Component {
 					setRouteFilter={this.setRouteFilter}
 					clearRouteFilter={this.clearRouteFilter}
 					postcode={postcode}
+					postcode_district={postcode_district}
 					distance={distance}
 					search_type={search_type}
 					setDistance={setDistance}

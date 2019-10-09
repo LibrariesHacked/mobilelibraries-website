@@ -20,7 +20,10 @@ export function getPostcode(postcode, callback) {
 	axios.get('https://api.postcodes.io/postcodes/' + postcode)
 		.then(response => {
 			if (response && response.data && response.data.result) {
-				callback([response.data.result.longitude, response.data.result.latitude]);
+				callback({
+					location: [response.data.result.longitude, response.data.result.latitude],
+					admin_district: response.data.result.admin_district
+				});
 			} else {
 				callback([]);
 			}

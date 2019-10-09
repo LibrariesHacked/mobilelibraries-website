@@ -100,7 +100,7 @@ class Filters extends Component {
 			classes, organisations, organisation_lookup, organisation_filter,
 			clearOrganisationFilter, mobiles, mobile_lookup, mobile_filter, clearMobileFilter,
 			routes, route_lookup, route_filter, clearRouteFilter,
-			search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
+			search_type, postcode, postcode_district, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
 		} = this.props;
 		const bull = <span className={classes.bullet}>•</span>;
 
@@ -167,6 +167,9 @@ class Filters extends Component {
 								postcodeSearch={postcodeSearch}
 								clearSearch={clearSearch}
 							/>
+							{postcode_district !== '' ?
+								<Typography variant="caption" display="block">{'Searching around ' + postcode_district + '.'}</Typography>
+								: null}
 						</CardContent>
 					</Card>
 				</Grid>

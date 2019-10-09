@@ -42,7 +42,7 @@ class Mobiles extends Component {
 		const { classes, organisations, organisation_lookup, organisation_filter, setOrganisationFilter, clearOrganisationFilter, viewStopsByOrganisation,
 			mobiles, mobile_lookup, mobile_location_lookup, mobiles_nearest_lookup, mobile_filter, setMobileFilter, clearMobileFilter,
 			routes, route_lookup, route_filter, setRouteFilter, clearRouteFilter,
-			search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
+			search_type, postcode, postcode_district, distance, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
 		return (
 			<div className={classes.root}>
 				<Filters
@@ -64,6 +64,7 @@ class Mobiles extends Component {
 					setRouteFilter={setRouteFilter}
 					clearRouteFilter={clearRouteFilter}
 					postcode={postcode}
+					postcode_district={postcode_district}
 					distance={distance}
 					search_type={search_type}
 					setDistance={setDistance}

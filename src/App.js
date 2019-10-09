@@ -100,6 +100,7 @@ class App extends Component {
 		search_type: '', // search types can be gps, postcode, service
 		distance: 1609,
 		postcode: '',
+		postcode_district: '',
 		// GPS and search 
 		current_position: [],
 		position_update_interval: '',
@@ -217,11 +218,16 @@ class App extends Component {
 	setDistance = (distance) => this.setState({ distance: distance });
 
 	clearSearch = () => {
-		this.setState({ postcode: '', current_position: [], search_type: '', organisation_filter: [], mobile_filter: [], route_filter: [] });
+		this.setState({ postcode: '', postcode_district: '', current_position: [], search_type: '', organisation_filter: [], mobile_filter: [], route_filter: [] });
 	}
 
 	// postcodeSearch
 	postcodeSearch = (postcode) => {
+
+		if (postcode === '') {
+			this.setState({ snackbar_open: true, snackbar_message: 'You must enter a postcode', postcode_district: '' });
+			return;
+		} 
 
 		let new_state = { search_type: 'postcode', loading_postcode: true, postcode: postcode, organisation_filter: [], mobile_filter: [], route_filter: [] };
 
@@ -232,17 +238,18 @@ class App extends Component {
 		}
 
 		// Get the postcode
-		geoHelper.getPostcode(postcode, location => {
-			if (location.length === 2) {
+		geoHelper.getPostcode(postcode, postcode_data => {
+			if (postcode_data.location && postcode_data.location.length === 2) {
 				new_state.search_type = 'postcode';
-				new_state.current_position = location;
-				new_state.position = location;
+				new_state.current_position = postcode_data.location;
+				new_state.position = postcode_data.location;
 				new_state.zoom = [11];
 				new_state.loading_postcode = false;
+				new_state.postcode_district = postcode_data.admin_district;
 				this.setState(new_state);
 				this.getMobilesNearest();
 			} else {
-				this.setState({ snackbar_open: true, snackbar_message: 'Could not find postcode' })
+				this.setState({ snackbar_open: true, snackbar_message: 'Could not find postcode', postcode_district: '' });
 			}
 		});
 	}
@@ -313,6 +320,7 @@ class App extends Component {
 										setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
 										clearRouteFilter={this.clearRouteFilter}
 										postcode={this.state.postcode}
+										postcode_district={this.state.postcode_district}
 										distance={this.state.distance}
 										search_type={this.state.search_type}
 										setDistance={this.setDistance}
@@ -346,6 +354,7 @@ class App extends Component {
 											viewStop={this.viewStop}
 											current_position={this.state.current_position}
 											postcode={this.state.postcode}
+											postcode_district={this.state.postcode_district}
 											distance={this.state.distance}
 											search_type={this.state.search_type}
 											setDistance={this.setDistance}
