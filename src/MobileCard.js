@@ -135,7 +135,6 @@ class MobileCard extends Component {
 					<Typography variant="h6" component="h2">{(organisation ? organisation.name + ' ' : '') + mobile.name}</Typography>
 					{status}
 				</CardContent>
-				<Divider variant="middle" />
 				<CardActions>
 					<Tooltip title="Mobile library stops">
 						<Button component={Link} to="/stops" size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(organisation.id, mobile.id)}>

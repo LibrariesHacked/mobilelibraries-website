@@ -1,7 +1,8 @@
 // React
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 
+// Other core stuff
+import PropTypes from 'prop-types';
 import { BrowserRouter, Route } from "react-router-dom";
 
 // Material UI
@@ -19,8 +20,8 @@ import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/
 import AppHeader from './AppHeader';
 import Mobiles from './Mobiles';
 import MobileMap from './MobileMap';
-import StopDetails from './StopDetails';
 import Stops from './Stops';
+import StopDetails from './StopDetails';
 import TripDetails from './TripDetails';
 
 // Our helpers
@@ -69,9 +70,11 @@ const styles = theme => ({
 
 class App extends Component {
 	state = {
+		// Stop dialog
 		stop_dialog_open: false,
-		trip_dialog_open: false,
 		current_stop: {},
+		// Trip dialog
+		trip_dialog_open: false,
 		current_trip: {},
 		// Organisation data
 		organisations: [],
@@ -90,7 +93,7 @@ class App extends Component {
 		routes: [],
 		route_lookup: {},
 		route_filter: [],
-		// Map views
+		// Map view settings
 		fit_bounds: null,
 		position: [-2.1000, 53.6138],
 		zoom: [7],
@@ -101,7 +104,7 @@ class App extends Component {
 		distance: 1609,
 		postcode: '',
 		postcode_district: '',
-		// GPS and search 
+		// GPS
 		current_position: [],
 		position_update_interval: '',
 		// Loading indicators
@@ -162,8 +165,8 @@ class App extends Component {
 		this.getOrganisations();
 		this.getMobiles();
 		this.getRoutes();
-		// Set up a timer for the mobile locations
 		this.getMobileLocations();
+		// Set up a timer for the mobile locations
 		const mobile_location_timer = setInterval(() => {
 			this.getMobileLocations();
 		}, 15000);
@@ -181,8 +184,8 @@ class App extends Component {
 			});
 		}
 	}
-	openStopDialog = (stop) => this.setState({ current_stop: stop, stop_dialog_open: true })
-	closeStopDialog = () => this.setState({ stop_dialog_open: false })
+	openStopDialog = (stop) => this.setState({ current_stop: stop, stop_dialog_open: true });
+	closeStopDialog = () => this.setState({ stop_dialog_open: false });
 
 	viewTrip = (trip) => {
 		// First open the dialog
@@ -190,10 +193,9 @@ class App extends Component {
 		tripsHelper.getTripById(trip.id, trip => {
 			this.setState({ current_trip: trip })
 		});
-
 	}
-	openTripDialog = (trip) => this.setState({ current_trip: trip, trip_dialog_open: true })
-	closeTripDialog = () => this.setState({ trip_dialog_open: false })
+	openTripDialog = (trip) => this.setState({ current_trip: trip, trip_dialog_open: true });
+	closeTripDialog = () => this.setState({ trip_dialog_open: false });
 
 	viewStopsByOrganisation = (organisation_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [], route_filter: [] });
 	viewStopsByMobile = (organisation_id, mobile_id) => this.setState({ page: 'stops', organisation_filter: [organisation_id], mobile_filter: [mobile_id], route_filter: [] });
@@ -227,7 +229,7 @@ class App extends Component {
 		if (postcode === '') {
 			this.setState({ snackbar_open: true, snackbar_message: 'You must enter a postcode', postcode_district: '' });
 			return;
-		} 
+		}
 
 		let new_state = { search_type: 'postcode', loading_postcode: true, postcode: postcode, organisation_filter: [], mobile_filter: [], route_filter: [] };
 
@@ -277,7 +279,6 @@ class App extends Component {
 	render() {
 		const { classes } = this.props;
 		return (
-
 			<MuiThemeProvider theme={theme}>
 				<BrowserRouter>
 					<div className={classes.root}>

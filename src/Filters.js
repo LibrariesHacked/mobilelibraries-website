@@ -1,5 +1,7 @@
 // React
 import React, { Component } from 'react';
+
+// Other core stuff
 import PropTypes from 'prop-types';
 
 // Material UI
@@ -22,6 +24,7 @@ import BusinessIcon from '@material-ui/icons/Business';
 import DirectionBusIcon from '@material-ui/icons/DirectionsBus';
 import DirectionsIcon from '@material-ui/icons/Directions';
 
+// Our components
 import PostcodeSearch from './PostcodeSearch';
 
 const styles = (theme) => ({

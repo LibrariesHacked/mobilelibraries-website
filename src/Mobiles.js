@@ -23,6 +23,9 @@ const styles = (theme) => ({
 	chip: {
 		margin: theme.spacing(1),
 	},
+	padding: {
+		padding: theme.spacing(0, 2)
+	},
 	root: {
 		flexGrow: 1
 	}
@@ -43,6 +46,11 @@ class Mobiles extends Component {
 			mobiles, mobile_lookup, mobile_location_lookup, mobiles_nearest_lookup, mobile_filter, setMobileFilter, clearMobileFilter,
 			routes, route_lookup, route_filter, setRouteFilter, clearRouteFilter,
 			search_type, postcode, postcode_district, distance, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
+		const active_mobiles = mobiles.filter(mob => {
+			const status = mobilesHelper.getMobileStatus(mobile_location_lookup[mob.id]);
+			return (status && status.type !== 'off_road' && status.type !== 'post_route');
+		});
+		const display_mobiles = (this.state.open_tab === 1 ? active_mobiles : mobiles);
 		return (
 			<div className={classes.root}>
 				<Filters
@@ -82,38 +90,35 @@ class Mobiles extends Component {
 					onChange={(e, value) => this.changeTab(value)}
 				>
 					<Tab
-						className={classes.tab}
 						label={
 							<Badge
 								className={classes.padding}
-								color='default'
-								badgeContent={0}>
+								color="secondary"
+								badgeContent={mobiles.length}>
 								All mobiles
 							</Badge>
 						}
 					/>
 					<Tab
 						className={classes.tab}
+						disabled={active_mobiles.length === 0}
 						label={
 							<Badge
+								showZero
 								className={classes.padding}
-								color={'default'}
-								badgeContent={0}>
-								Active today
+								color={active_mobiles.length > 0 ? "secondary" : "inherit"}
+								badgeContent={active_mobiles.length}>
+								Active
 							</Badge>
 						}
 					/>
 				</Tabs>
 				<br />
-				{mobiles && mobiles.length > 0 ?
+				{mobiles ?
 					<Grid container spacing={3}>
-						{mobiles
+						{display_mobiles
 							.filter(mob => {
 								let display = true;
-								if (this.state.open_tab === 1 && mobile_location_lookup[mob.id]) {
-									const status = mobilesHelper.getMobileStatus(mobile_location_lookup[mob.id]);
-									display = (status.type !== 'off_road');
-								}
 								if (organisation_filter.length > 0 &&
 									organisation_filter.indexOf(mob.organisation_id) === -1) {
 									display = false;
