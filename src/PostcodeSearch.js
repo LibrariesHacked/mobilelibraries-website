@@ -41,11 +41,12 @@ const styles = theme => ({
 		borderRadius: theme.shape.borderRadius,
 		backgroundColor: fade(theme.palette.common.white, 0.8),
 		'&:hover': {
-			backgroundColor: fade(theme.palette.common.white, 0.9),
+			backgroundColor: fade(theme.palette.common.white, 0.9)
 		},
 		marginLeft: 0,
 		marginRight: theme.spacing(),
-		display: 'flex'
+		display: 'flex',
+		maxWidth: 300
 	}
 });
 
