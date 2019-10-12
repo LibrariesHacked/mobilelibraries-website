@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 
 // Material UI
 import Link from '@material-ui/core/Link';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import Paper from '@material-ui/core/Paper';
 import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
 
@@ -151,6 +152,7 @@ class Stops extends Component {
 					postcodeSearch={postcodeSearch}
 					clearSearch={clearSearch}
 				/>
+				<ListSubheader disableSticky={true}>{title}</ListSubheader>
 				<MaterialTable
 					tableRef={this.tableRef}
 					components={{
@@ -167,9 +169,10 @@ class Stops extends Component {
 					options={{
 						padding: isWidthUp('sm', width) ? 'default' : 'dense',
 						search: false,
-						loadingType: 'linear',
+						loadingType: 'overlay',
 						actionsColumnIndex: 4,
 						filtering: false,
+						toolbar: false,
 						headerStyle: {
 							backgroundColor: '#2196f3',
 							color: '#ffffff'
@@ -210,7 +213,6 @@ class Stops extends Component {
 							});
 						})
 					}
-					title={title}
 				/>
 			</div>
 		);

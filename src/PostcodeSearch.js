@@ -131,6 +131,7 @@ class PostcodeSearch extends React.Component {
 					<MenuItem onClick={() => this.setSearchDistance(8045)}>5 miles</MenuItem>
 					<MenuItem onClick={() => this.setSearchDistance(16090)}>10 miles</MenuItem>
 					<MenuItem onClick={() => this.setSearchDistance(32180)}>20 miles</MenuItem>
+					<MenuItem onClick={() => this.setSearchDistance(80450)}>50 miles</MenuItem>
 				</Menu>
 			</div>
 		);

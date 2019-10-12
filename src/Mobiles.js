@@ -46,11 +46,46 @@ class Mobiles extends Component {
 			mobiles, mobile_lookup, mobile_location_lookup, mobiles_nearest_lookup, mobile_filter, setMobileFilter, clearMobileFilter,
 			routes, route_lookup, route_filter, setRouteFilter, clearRouteFilter,
 			search_type, postcode, postcode_district, distance, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
-		const active_mobiles = mobiles.filter(mob => {
+
+		// Get all mobiles that are currently filtered
+		const filtered_mobiles = mobiles.filter(mob => {
+			let display = true;
+			if (search_type === 'gps' || search_type === 'postcode') {
+				display = mobiles_nearest_lookup[mob.id];
+			}
+			if (organisation_filter.length > 0 &&
+				organisation_filter.indexOf(mob.organisation_id) === -1) {
+				display = false;
+			}
+			if (mobile_filter.length > 0 &&
+				mobile_filter.indexOf(mob.id) === -1) {
+				display = false;
+			}
+			return display;
+		});
+		// Then get those that are currently active
+		const active_mobiles = filtered_mobiles.filter(mob => {
 			const status = mobilesHelper.getMobileStatus(mobile_location_lookup[mob.id]);
 			return (status && status.type !== 'off_road' && status.type !== 'post_route');
 		});
-		const display_mobiles = (this.state.open_tab === 1 ? active_mobiles : mobiles);
+
+		// Apply filters
+		const display_mobiles = (this.state.open_tab === 1 ? active_mobiles : filtered_mobiles);
+
+		// Calculate title
+		const organisation_name = (organisation_filter.length > 0 ? organisation_lookup[organisation_filter[0]].name : '');
+		const mobile_name = (mobile_filter.length > 0 ? mobile_lookup[mobile_filter[0]].name : '');
+		const route_name = (route_filter.length > 0 ? route_lookup[route_filter[0]].name : '');
+		let title = 'Mobile library dashboard';
+		// Filter stops
+		if (organisation_name !== '') title = 'Mobiles in ' + organisation_name;
+		if (mobile_name !== '') title = organisation_name + ' ' + mobile_name;
+		if (route_name !== '') title = organisation_name + ' ' + route_name;
+		// Postcode search stops
+		if (postcode !== '') title = 'Mobiles with stops within ' + Math.round(distance / 1609) + ' mile(s) of ' + postcode;
+		// GPS search stops
+		if (search_type === 'gps') title = 'Mobiles with stops within ' + Math.round(distance / 1609) + ' mile(s) of your location';
+
 		return (
 			<div className={classes.root}>
 				<Filters
@@ -80,7 +115,7 @@ class Mobiles extends Component {
 					postcodeSearch={postcodeSearch}
 					clearSearch={clearSearch}
 				/>
-				<ListSubheader disableSticky={true}>Mobile library dashboard</ListSubheader>
+				<ListSubheader disableSticky={true}>{title}</ListSubheader>
 				<Tabs
 					variant="standard"
 					scrollButtons="off"
@@ -92,10 +127,11 @@ class Mobiles extends Component {
 					<Tab
 						label={
 							<Badge
+								showZero
 								className={classes.padding}
 								color="secondary"
-								badgeContent={mobiles.length}>
-								All mobiles
+								badgeContent={filtered_mobiles.length}>
+								Mobiles
 							</Badge>
 						}
 					/>
@@ -104,7 +140,6 @@ class Mobiles extends Component {
 						disabled={active_mobiles.length === 0}
 						label={
 							<Badge
-								showZero
 								className={classes.padding}
 								color={"secondary"}
 								badgeContent={active_mobiles.length}>
