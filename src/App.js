@@ -264,7 +264,7 @@ class App extends Component {
 			this.setState({ search_type: '', postcode: '', current_position: [], position_update_interval: null });
 		} else {
 			let position_update_interval = setInterval(this.logPosition, 10000);
-			this.setState({ position_update_interval: position_update_interval, search_type: 'gps', postcode: '' });
+			this.setState({ position_update_interval: position_update_interval, search_type: 'gps', postcode: '', organisation_filter: [], mobile_filter: [], route_filter: [] });
 			this.logPosition(true);
 		}
 	}

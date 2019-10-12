@@ -51,10 +51,6 @@ const styles = (theme) => ({
 
 class Stops extends Component {
 
-	state = {
-		title: 'All stops'
-	};
-
 	tableRef = React.createRef();
 
 	componentDidUpdate(prevProps) {
@@ -99,6 +95,21 @@ class Stops extends Component {
 			mobiles, mobile_lookup, mobile_filter,
 			routes, route_lookup, route_filter, current_position, distance, width,
 			search_type, postcode, postcode_district, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
+
+		// Calculate title
+		const organisation_name = (organisation_filter.length > 0 ? organisation_lookup[organisation_filter[0]].name : '');
+		const mobile_name = (mobile_filter.length > 0 ? mobile_lookup[mobile_filter[0]].name : '');
+		const route_name = (route_filter.length > 0 ? route_lookup[route_filter[0]].name : '');
+		let title = 'All stops';
+		// Filter stops
+		if (organisation_name !== '') title = 'Stops in ' + organisation_name;
+		if (mobile_name !== '') title = 'Stops for ' + organisation_name + ' ' + mobile_name;
+		if (route_name !== '') title = 'Stops for ' + organisation_name + ' ' + route_name;
+		// Postcode search stops
+		if (postcode !== '') title = 'Stops within ' + Math.round(distance/1609) + ' mile(s) of ' + postcode;
+		// GPS search stops
+		if (search_type === 'gps') title = 'Stops within ' + Math.round(distance/1609) + ' mile(s) of your location';
+
 		let orgText = {}
 		Object.keys(organisation_lookup).forEach(key => {
 			orgText[key] = organisation_lookup[key].name;
@@ -199,7 +210,7 @@ class Stops extends Component {
 							});
 						})
 					}
-					title={this.state.title}
+					title={title}
 				/>
 			</div>
 		);

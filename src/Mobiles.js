@@ -106,7 +106,7 @@ class Mobiles extends Component {
 							<Badge
 								showZero
 								className={classes.padding}
-								color={active_mobiles.length > 0 ? "secondary" : "inherit"}
+								color={"secondary"}
 								badgeContent={active_mobiles.length}>
 								Active
 							</Badge>

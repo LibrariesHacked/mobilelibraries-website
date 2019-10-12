@@ -143,7 +143,7 @@ class Filters extends Component {
 								{bull}
 								{routes.length + ' routes'}
 							</Typography>
-							<Typography variant="h6" component="h2">Select by service</Typography>
+							<Typography variant="h6" component="h2">Search by service</Typography>
 						</CardContent>
 						<CardActions>
 							{organisation_filter.length === 0 ? <Tooltip title="Choose library service">
