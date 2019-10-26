@@ -12,6 +12,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import IconButton from '@material-ui/core/IconButton';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 
@@ -43,9 +44,9 @@ const styles = theme => ({
         maxWidth: 360,
         backgroundColor: theme.palette.background.paper
     },
-	progress: {
-		margin: theme.spacing(2)
-	}
+    progress: {
+        margin: theme.spacing(2)
+    }
 });
 
 class StopDetails extends React.Component {
@@ -69,7 +70,7 @@ class StopDetails extends React.Component {
                 disableBackdropClick={true}
                 open={this.props.open}
                 onClose={this.close}
-                aria-labelledby="responsive-dialog-title"
+                aria-labelledby="dlg-title"
                 BackdropProps={
                     {
                         invisible: true
@@ -84,7 +85,7 @@ class StopDetails extends React.Component {
             >
                 {stop && stop.route_day ?
                     <React.Fragment>
-                        <DialogTitle id="responsive-dialog-title">{stop.name}</DialogTitle>
+                        <DialogTitle id="dlg-title">{stop.name}</DialogTitle>
                         <DialogContent>
                             <IconButton className={classes.button} onClick={() => this.getStopCalendar()}>
                                 <EventIcon />
@@ -101,7 +102,20 @@ class StopDetails extends React.Component {
                             <List className={classes.list}>
                                 <ListSubheader>{stop.address}</ListSubheader>
                                 <ListItem>
-                                    <ListItemText primary={stop.route_day + 'for ' + duration} />
+                                    <ListItemText primary={stop.route_day} secondary={'For ' + duration} />
+                                    <ListItemSecondaryAction>
+                                        <IconButton edge="end">
+                                            <EventIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary={'Where'} secondary={stop.address} />
+                                    <ListItemSecondaryAction>
+                                        <IconButton edge="end">
+                                            <EventIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
                                 </ListItem>
                                 <ListItem>
                                     <ListItemText primary={arrival.format('h:mma') + ' - ' + departure.format('h:mma')} />
@@ -111,7 +125,7 @@ class StopDetails extends React.Component {
                                 </ListItem>
                             </List>
                         </DialogContent>
-                    </React.Fragment> : 
+                    </React.Fragment> :
                     <CircularProgress className={classes.progress} color="secondary" size={30} />}
                 <DialogActions>
                     <Button onClick={() => this.close()} color="secondary">Close</Button>
