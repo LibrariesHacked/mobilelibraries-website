@@ -4,7 +4,6 @@ import compose from 'recompose/compose';
 
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import Divider from '@material-ui/core/Divider';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -15,13 +14,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import Typography from '@material-ui/core/Typography';
 
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
 
 // MUI Icons
 import EventIcon from '@material-ui/icons/Event';
-import PrintIcon from '@material-ui/icons/Print';
 import WebIcon from '@material-ui/icons/Web';
 
 // Moment
@@ -87,47 +86,34 @@ class StopDetails extends React.Component {
                     <React.Fragment>
                         <DialogTitle id="dlg-title">{stop.name}</DialogTitle>
                         <DialogContent>
-                            <IconButton className={classes.button} onClick={() => this.getStopCalendar()}>
-                                <EventIcon />
-                            </IconButton>
-                            <IconButton className={classes.button} onClick={() => this.getStopPdf()}>
-                                <PrintIcon />
-                            </IconButton>
-                            <IconButton className={classes.button} onClick={() => this.goToWebsite()}>
-                                <WebIcon />
-                            </IconButton>
-                            <Divider />
-                        </DialogContent>
-                        <DialogContent>
+                        <Typography>{'Next visiting on ' + (stop.route_dates && stop.route_dates.length > 0 ? moment(stop.route_dates[0], 'YYYY-MM-DD').format('Mo MMMM') : '')}</Typography>
                             <List className={classes.list}>
-                                <ListSubheader>{stop.address}</ListSubheader>
+                                <ListSubheader>Stop details</ListSubheader>
                                 <ListItem>
-                                    <ListItemText primary={stop.route_day} secondary={'For ' + duration} />
+                                    <ListItemText primary={stop.organisation_name} secondary={stop.mobile_name + ' mobile'} />
                                     <ListItemSecondaryAction>
-                                        <IconButton edge="end">
+                                        <IconButton edge="end" onClick={() => this.goToWebsite()}>
+                                            <WebIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                <ListItem>
+                                    <ListItemText primary={stop.route_day} secondary={arrival.format('h:mma') + ' - ' + departure.format('h:mma') + '(' + duration + ')'} />
+                                    <ListItemSecondaryAction>
+                                        <IconButton edge="end" onClick={() => this.getStopCalendar()}>
                                             <EventIcon />
                                         </IconButton>
                                     </ListItemSecondaryAction>
                                 </ListItem>
                                 <ListItem>
-                                    <ListItemText primary={'Where'} secondary={stop.address} />
-                                    <ListItemSecondaryAction>
-                                        <IconButton edge="end">
-                                            <EventIcon />
-                                        </IconButton>
-                                    </ListItemSecondaryAction>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText primary={arrival.format('h:mma') + ' - ' + departure.format('h:mma')} />
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemText primary={'Next visiting on ' + (stop.route_dates && stop.route_dates.length > 0 ? stop.route_dates[0] : '')} />
+                                    <ListItemText primary={stop.community} secondary={stop.address} />
                                 </ListItem>
                             </List>
                         </DialogContent>
                     </React.Fragment> :
                     <CircularProgress className={classes.progress} color="secondary" size={30} />}
                 <DialogActions>
+                    <Button onClick={() => this.getStopPdf()} color="primary">Timetable</Button>
                     <Button onClick={() => this.close()} color="secondary">Close</Button>
                 </DialogActions>
             </Dialog>
