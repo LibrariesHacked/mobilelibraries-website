@@ -37,13 +37,13 @@ class MobileMap extends Component {
 	}
 
 	clickStop = (map) => {
-		if (map && map.features && map.features.length > 0 && map.features[0].properties){
+		if (map && map.features && map.features.length > 0 && map.features[0].properties) {
 			this.props.viewStop({ id: map.features[0].properties.id });
 		}
 	}
 
 	clickTrip = (map) => {
-		if (map && map.features && map.features.length > 0 && map.features[0].properties){
+		if (map && map.features && map.features.length > 0 && map.features[0].properties) {
 			this.props.viewTrip(map.features[0].properties);
 		}
 	}
@@ -153,26 +153,26 @@ class MobileMap extends Component {
 					type='circle'
 					sourceId='src_stops'
 					sourceLayer='stop'
-					minZoom={7}
+					minZoom={5}
 					layout={{}}
 					paint={{
 						'circle-radius': [
 							'interpolate',
 							['linear'],
 							['zoom'],
-							5, 2,
+							5, 1,
 							17, 10
 						],
-						'circle-color': '#607d8b',
+						'circle-color': ['get', 'organisation_colour'],
 						'circle-stroke-width': [
 							'interpolate',
 							['linear'],
 							['zoom'],
-							5, 1,
-							14, 2
+							5, 0,
+							17, 3
 						],
 						'circle-stroke-color': '#FFFFFF',
-						'circle-opacity': 0.8
+						'circle-opacity': 0.7
 					}}
 					onClick={this.clickStop}
 				/>
@@ -201,6 +201,40 @@ class MobileMap extends Component {
 							17, 22
 						],
 						"text-offset": [0, 1.7],
+					}}
+					paint={{
+						"text-halo-color": "hsl(0, 0%, 100%)",
+						"text-halo-width": 1,
+						"text-halo-blur": 1,
+						"text-color": "#6a6f73"
+					}}
+					onClick={this.clickStop}
+				/>
+				<Layer
+					id='lyr_stops_next_visiting'
+					type='symbol'
+					sourceId='src_stops'
+					sourceLayer='stop'
+					minZoom={13}
+					layout={{
+						'text-ignore-placement': false,
+						'text-field': ['to-string', ['get', 'next_visiting']],
+						"text-font": [
+							"Source Sans Pro Bold"
+						],
+						"text-line-height": 1,
+						"text-size": [
+							"interpolate",
+							[
+								"linear"
+							],
+							[
+								"zoom"
+							],
+							13, 8,
+							17, 12
+						],
+						"text-offset": [0, -3],
 					}}
 					paint={{
 						"text-halo-color": "hsl(0, 0%, 100%)",
