@@ -86,11 +86,11 @@ class StopDetails extends React.Component {
                     <React.Fragment>
                         <DialogTitle id="dlg-title">{stop.name}</DialogTitle>
                         <DialogContent>
-                        <Typography>{'Next visiting on ' + (stop.route_dates && stop.route_dates.length > 0 ? moment(stop.route_dates[0], 'YYYY-MM-DD').format('Mo MMMM') : '')}</Typography>
+                            <Typography>{'Next visiting on ' + (stop.route_dates && stop.route_dates.length > 0 ? moment(stop.route_dates[0], 'YYYY-MM-DD').format('Do MMMM') : '')}</Typography>
                             <List className={classes.list}>
                                 <ListSubheader>Stop details</ListSubheader>
                                 <ListItem>
-                                    <ListItemText primary={stop.organisation_name} secondary={stop.mobile_name + ' mobile'} />
+                                    <ListItemText primary={stop.organisation_name} secondary={stop.mobile_name} />
                                     <ListItemSecondaryAction>
                                         <IconButton edge="end" onClick={() => this.goToWebsite()}>
                                             <WebIcon />
