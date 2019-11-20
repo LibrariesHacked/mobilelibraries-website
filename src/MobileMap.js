@@ -160,16 +160,16 @@ class MobileMap extends Component {
 							'interpolate',
 							['linear'],
 							['zoom'],
-							5, 1,
-							17, 10
+							5, 2,
+							17, 12
 						],
 						'circle-color': ['get', 'organisation_colour'],
 						'circle-stroke-width': [
 							'interpolate',
 							['linear'],
 							['zoom'],
-							5, 0,
-							17, 3
+							5, 1,
+							17, 4
 						],
 						'circle-stroke-color': '#FFFFFF',
 						'circle-opacity': 0.7
@@ -197,10 +197,10 @@ class MobileMap extends Component {
 							[
 								"zoom"
 							],
-							13, 10,
+							13, 12,
 							17, 22
 						],
-						"text-offset": [0, 1.7],
+						"text-offset": [0, 2],
 					}}
 					paint={{
 						"text-halo-color": "hsl(0, 0%, 100%)",
@@ -231,10 +231,10 @@ class MobileMap extends Component {
 							[
 								"zoom"
 							],
-							13, 8,
-							17, 12
+							13, 10,
+							17, 16
 						],
-						"text-offset": [0, -3],
+						"text-offset": [0, -2.8],
 					}}
 					paint={{
 						"text-halo-color": "hsl(0, 0%, 100%)",
