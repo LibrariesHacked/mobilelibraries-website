@@ -18,21 +18,27 @@ import * as mobilesHelper from './helpers/mobiles';
 const styles = theme => ({
     fab: {
         margin: theme.spacing(1),
+        border: '2px solid #FFFFFF',
         boxShadow: 'none'
     }
 });
 
 class MobileAvatar extends Component {
-    state = {
-    };
 
     render() {
-        const { classes, location } = this.props;
+        const { classes, location, organisation } = this.props;
         const status = mobilesHelper.getMobileStatus(location);
         return (
             <Tooltip
                 title={(status ? status.text_format : '')}>
-                <Fab size="small" color="primary" className={classes.fab}>
+                <Fab 
+                    size="small"
+                    className={classes.fab}
+                    color="primary"
+                    style={{
+                        backgroundColor: organisation.colour
+                    }}
+                >
                     <DirectionBusIcon />
                 </Fab>
             </Tooltip >

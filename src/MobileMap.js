@@ -27,7 +27,8 @@ class MobileMap extends Component {
 
 	state = {
 		time_update_interval: null,
-		current_time: null
+		current_time: null,
+		map: null
 	}
 
 	componentDidMount = () => {
@@ -51,7 +52,7 @@ class MobileMap extends Component {
 	setCurrentTime = () => this.setState({ current_time: moment() });
 
 	render() {
-		const { position, zoom, pitch, bearing, fit_bounds, mobile_locations, mobile_lookup } = this.props;
+		const { position, zoom, pitch, bearing, fit_bounds, mobile_locations, mobile_lookup, organisation_lookup } = this.props;
 
 		return (
 			<Map
@@ -63,6 +64,7 @@ class MobileMap extends Component {
 				bearing={bearing}
 				fitBounds={fit_bounds}
 				containerStyle={{ top: 0, bottom: 0, right: 0, left: 0, height: '100vh', width: '100vw', position: 'absolute' }}
+				onStyleLoad={map => this.setState({ map: map })}
 			>
 				{ // The mobile library locations
 					mobile_locations && mobile_locations.length > 0 ?
@@ -75,13 +77,16 @@ class MobileMap extends Component {
 								if (coords.length > index && index > 0) location_point = coords[index];
 								if (coords.length <= index && index > 0) location_point = coords[coords.length - 1];
 							}
+							const mobile = mobile_lookup[l.mobile_id];
+							const organisation = (mobile ? organisation_lookup[mobile.organisation_id] : null);
 							return <Marker
 								key={'mkr_' + l.id}
 								coordinates={location_point}
 								anchor="bottom">
 								<MobileAvatar
-									mobile={mobile_lookup[l.mobile_id]}
+									organisation={organisation}
 									location={l}
+									zoom={this.state.map ? this.state.map.getZoom() : 0}
 								/>
 							</Marker>
 						}) : null
