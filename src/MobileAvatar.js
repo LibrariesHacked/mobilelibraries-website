@@ -14,11 +14,11 @@ import { withStyles } from '@material-ui/core/styles';
 
 // Helpers
 import * as mobilesHelper from './helpers/mobiles';
+import * as utilsHelper from './helpers/utils';
 
 const styles = theme => ({
     fab: {
         margin: theme.spacing(1),
-        border: '2px solid #FFFFFF',
         boxShadow: 'none'
     }
 });
@@ -26,17 +26,20 @@ const styles = theme => ({
 class MobileAvatar extends Component {
 
     render() {
-        const { classes, location, organisation } = this.props;
+        const { classes, location, organisation, zoom } = this.props;
         const status = mobilesHelper.getMobileStatus(location);
+        const size = (zoom < 8 ? "small" : (zoom < 12 ? "medium" : "large"));
+        const border = (zoom < 8 ? 2 : (zoom < 12 ? 3 : 4));
         return (
             <Tooltip
                 title={(status ? status.text_format : '')}>
                 <Fab 
-                    size="small"
+                    size={size}
                     className={classes.fab}
                     color="primary"
                     style={{
-                        backgroundColor: organisation.colour
+                        backgroundColor: utilsHelper.hextoRGBA(organisation.colour, 0.8),
+                        border: (border + 'px solid #FFFFFF')
                     }}
                 >
                     <DirectionBusIcon />
