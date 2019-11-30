@@ -11,6 +11,7 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import Chip from '@material-ui/core/Chip';
 import Grid from '@material-ui/core/Grid';
+import ListSubheader from '@material-ui/core/ListSubheader';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -106,6 +107,7 @@ class Filters extends Component {
 			search_type, postcode, postcode_district, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
 		} = this.props;
 		const bull = <span className={classes.bullet}>•</span>;
+		const countries = new Set(organisations.map(org => org.country));
 
 		return (
 			<Grid className={classes.grid} container spacing={3}>
@@ -183,11 +185,25 @@ class Filters extends Component {
 					open={Boolean(this.state.organisation_menu_anchor)}
 					onClose={() => this.closeOrganisationMenu()}
 				>
-					{organisations
-						.sort((a, b) => a.name.localeCompare(b.name))
-						.map(org => {
-							return <MenuItem key={'mnu_itm_org_' + org.id} onClick={() => this.chooseOrganisation(org.id)}>{org.name}</MenuItem>
-						})}
+
+					{
+						Array.from(countries)
+							.sort((a, b) => a.localeCompare(b))
+							.map(country => {
+								const org_list = organisations
+									.sort((a, b) => a.name.localeCompare(b.name))
+									.filter(org => org.country === country)
+									.map(org => {
+										return <MenuItem key={'mnu_itm_org_' + org.id} onClick={() => this.chooseOrganisation(org.id)}>{org.name}</MenuItem>
+									})
+								return (
+									<React.Fragment>
+										<ListSubheader disableSticky={true}>{country}</ListSubheader>
+										{org_list}
+									</React.Fragment>
+								)
+							})
+					}
 				</Menu>
 				<Menu
 					id="menu-mobile-library"
