@@ -12,8 +12,8 @@ import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 
 // MUI Style
-import blue from '@material-ui/core/colors/blue';
-import blueGrey from '@material-ui/core/colors/blueGrey';
+import deepOrange from '@material-ui/core/colors/deepOrange';
+import brown from '@material-ui/core/colors/brown';
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 
 // Our components
@@ -34,8 +34,8 @@ import * as tripsHelper from './helpers/trips';
 
 const theme = createMuiTheme({
 	palette: {
-		primary: blue,
-		secondary: blueGrey
+		primary: deepOrange,
+		secondary: brown
 	},
 	overrides: {
 		MuiButton: {
@@ -204,12 +204,14 @@ class App extends Component {
 	clearRouteFilter = () => this.setState({ route_filter: [] });
 	clearOrganisationFilter = () => this.setState({ organisation_filter: [], mobile_filter: [], route_filter: [] });
 
+	viewMapStop = (longitude, latitude) => this.setState({ page: 'map', position: [longitude, latitude], zoom: [15], stop_dialog_open: false });
+
 	logPosition = (fit = false) => {
 		this.setState({ loading_gps: true });
 		geoHelper.getCurrentPosition(position => {
 			if (position.length === 2) {
 				this.getMobilesNearest();
-				this.setState({ current_position: position, position: position, zoom: [11], loading_gps: false });
+				this.setState({ current_position: position, position: position, zoom: [12], loading_gps: false });
 			} else {
 				clearInterval(this.state.position_update_interval);
 				this.setState({ search_type: '', postcode: '', current_position: [], position_update_interval: null, snackbar_open: true, snackbar_message: 'Could not fetch current location' });
@@ -390,6 +392,7 @@ class App extends Component {
 							stop={this.state.current_stop}
 							open={this.state.stop_dialog_open}
 							close={() => this.closeStopDialog()}
+							viewMapStop={this.viewMapStop}
 						/>
 						<TripDetails
 							trip={this.state.current_trip}

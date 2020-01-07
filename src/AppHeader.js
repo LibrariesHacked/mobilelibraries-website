@@ -64,7 +64,7 @@ class AppHeader extends Component {
 				<Toolbar>
 					{location.pathname !== '/map' ?
 						<Hidden xsDown>
-							<Typography variant="h6" color="error" noWrap>In development</Typography>
+							<Typography variant="h6" color="primary" noWrap>Mobile libraries</Typography>
 						</Hidden>
 						: null}
 					<div className={classes.grow} />

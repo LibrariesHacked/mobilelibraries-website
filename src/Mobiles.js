@@ -76,7 +76,7 @@ class Mobiles extends Component {
 		const organisation_name = (organisation_filter.length > 0 ? organisation_lookup[organisation_filter[0]].name : '');
 		const mobile_name = (mobile_filter.length > 0 ? mobile_lookup[mobile_filter[0]].name : '');
 		const route_name = (route_filter.length > 0 ? route_lookup[route_filter[0]].name : '');
-		let title = 'Mobile library dashboard';
+		let title = 'Dashboard';
 		// Filter stops
 		if (organisation_name !== '') title = 'Mobiles in ' + organisation_name;
 		if (mobile_name !== '') title = organisation_name + ' ' + mobile_name;

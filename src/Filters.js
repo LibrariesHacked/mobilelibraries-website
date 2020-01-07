@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
+import { Alert, AlertTitle } from '@material-ui/lab';
 import Button from '@material-ui/core/Button';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
@@ -111,6 +112,12 @@ class Filters extends Component {
 
 		return (
 			<Grid className={classes.grid} container spacing={3}>
+				<Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
+				<Alert severity="warning">
+					<AlertTitle>In development</AlertTitle>
+					While this site is being developed you may see unexpected behaviour.
+				</Alert>
+				</Grid>
 				<Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
 					<Card className={classes.card} elevation={0}>
 						<CardContent>
