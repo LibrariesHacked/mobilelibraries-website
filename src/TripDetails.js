@@ -7,10 +7,8 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import Typography from '@material-ui/core/Typography';
 
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
@@ -18,12 +16,7 @@ import { withStyles } from '@material-ui/core/styles';
 const styles = theme => ({
     dialog: {
         border: '1px solid #e5e5e5'
-    },
-    list: {
-        width: '100%',
-        maxWidth: 360,
-        backgroundColor: theme.palette.background.paper
-    },
+    }
 });
 
 class TripDetails extends React.Component {
@@ -34,8 +27,8 @@ class TripDetails extends React.Component {
     render() {
         const { classes, width, trip } = this.props;
         const fullScreen = isWidthDown('sm', width);
-        const estimated_duration = Math.round(trip.duration / 60) + ' mins journey time';
-        const scheduled_duration = Math.round(trip.scheduled_duration / 60) + ' mins scheduled between stops';
+        const estimated_duration = Math.round(trip.duration / 60) + ' mins journey time.';
+        const scheduled_duration = Math.round(trip.scheduled_duration / 60) + ' mins scheduled between stops.';
         const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)';
         return (
             <Dialog
@@ -43,7 +36,6 @@ class TripDetails extends React.Component {
                 disableBackdropClick={true}
                 open={this.props.open}
                 onClose={this.close}
-                aria-labelledby="responsive-dialog-title"
                 BackdropProps={
                     {
                         invisible: true
@@ -56,17 +48,11 @@ class TripDetails extends React.Component {
                     }
                 }
             >
-                <DialogTitle id="responsive-dialog-title">{trip.mobile_name + ' journey details'}</DialogTitle>
+                <DialogTitle>{trip.mobile_name + ' trip'}</DialogTitle>
                 <DialogContent>
-                    <List className={classes.list}>
-                        <ListSubheader>{'Journey from ' + trip.origin_stop_name + ' to ' + trip.destination_stop_name}</ListSubheader>
-                        <ListItem>
-                            <ListItemText primary={estimated_duration} secondary={distance} />
-                        </ListItem>
-                        <ListItem>
-                            <ListItemText primary={scheduled_duration} />
-                        </ListItem>
-                    </List>
+                <ListSubheader disableSticky>{'From ' + trip.origin_stop_name + ' to ' + trip.destination_stop_name}</ListSubheader>
+                <Typography variant="body2" component="p">{estimated_duration + ' ' + distance}</Typography>
+                <Typography variant="body2" component="p">{scheduled_duration}</Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => this.close()} color="secondary">Close</Button>
