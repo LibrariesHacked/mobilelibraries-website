@@ -46,7 +46,8 @@ const styles = (theme) => ({
 		maxWidth: '100%'
 	},
 	table: {
-		border: '1px solid #F5F5F5'
+		backgroundColor: 'rgba(0, 0, 0, 0)',
+		border: '1px solid #f5f5f5'
 	}
 });
 
@@ -107,9 +108,9 @@ class Stops extends Component {
 		if (mobile_name !== '') title = 'Stops for ' + organisation_name + ' ' + mobile_name;
 		if (route_name !== '') title = 'Stops for ' + organisation_name + ' ' + route_name;
 		// Postcode search stops
-		if (postcode !== '') title = 'Stops within ' + Math.round(distance/1609) + ' mile(s) of ' + postcode;
+		if (postcode !== '') title = 'Stops within ' + Math.round(distance / 1609) + ' mile(s) of ' + postcode;
 		// GPS search stops
-		if (search_type === 'gps') title = 'Stops within ' + Math.round(distance/1609) + ' mile(s) of your location';
+		if (search_type === 'gps') title = 'Stops within ' + Math.round(distance / 1609) + ' mile(s) of your location';
 
 		let orgText = {}
 		Object.keys(organisation_lookup).forEach(key => {
@@ -172,11 +173,7 @@ class Stops extends Component {
 						loadingType: 'overlay',
 						actionsColumnIndex: 4,
 						filtering: false,
-						toolbar: false,
-						headerStyle: {
-							backgroundColor: '#2196f3',
-							color: '#ffffff'
-						}
+						toolbar: false
 					}}
 					columns={[
 						{
@@ -188,9 +185,21 @@ class Stops extends Component {
 										<Link component="button" variant="body2" onClick={() => this.displayStopInfo(rowData)}>{rowData.name}</Link>
 									</React.Fragment>
 								)
+							},
+							cellStyle: {
+								borderBottom: '1px solid #f5f5f5',
+								backgroundColor: '#ffffff'
 							}
 						},
-						{ title: 'Community', field: 'community', filtering: false },
+						{ 
+							title: 'Community', 
+							field: 'community', 
+							filtering: false,
+							cellStyle: {
+								borderBottom: '1px solid #f5f5f5',
+								backgroundColor: '#ffffff'
+							} 
+						},
 						{
 							title: 'Time',
 							field: 'arrival',
@@ -199,6 +208,10 @@ class Stops extends Component {
 								return (
 									moment(rowData.arrival, 'HH:mm:ssZ').format('h:mma')
 								);
+							},
+							cellStyle: {
+								borderBottom: '1px solid #f5f5f5',
+								backgroundColor: '#ffffff'
 							}
 						}
 					]}

@@ -47,7 +47,12 @@ const theme = createMuiTheme({
 			root: {
 				textTransform: 'none'
 			}
-		}
+		},
+		MuiTableCell: {
+			root: {
+				borderBottom: 'none'
+			}
+		},
 	}
 });
 
