@@ -4,10 +4,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
+import Hidden from '@material-ui/core/Hidden';
+import IconButton from '@material-ui/core/IconButton';
 import Link from '@material-ui/core/Link';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Paper from '@material-ui/core/Paper';
-import withWidth, { isWidthUp } from '@material-ui/core/withWidth';
+import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
 
 // Material Table
 import MaterialTable from 'material-table';
@@ -22,6 +24,12 @@ import ChevronRight from '@material-ui/icons/ChevronRight';
 import FirstPage from '@material-ui/icons/FirstPage';
 import FilterList from '@material-ui/icons/FilterList';
 import LastPage from '@material-ui/icons/LastPage';
+import MoreVertIcon from '@material-ui/icons/MoreVert';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
+
+import EventIcon from '@material-ui/icons/Event';
+import PrintIcon from '@material-ui/icons/Print';
+import LocationOnIcon from '@material-ui/icons/LocationOn';
 
 // Our components
 import Filters from './Filters';
@@ -32,6 +40,7 @@ import moment from 'moment';
 // Our Helpers
 import * as stopsHelper from './helpers/stops';
 
+const config = require('./helpers/config.json');
 
 const styles = (theme) => ({
 	formControl: {
@@ -54,6 +63,11 @@ const styles = (theme) => ({
 class Stops extends Component {
 
 	tableRef = React.createRef();
+
+	getStopCalendar = (stop) => window.open(config.api + '/stops/' + stop.id + '/ics');
+	getStopPdf = (stop) => window.open(config.api + '/stops/' + stop.id + '/pdf', '_blank');
+	viewMapStop = (stop) => this.props.viewMapStop(stop.longitude, stop.latitude);
+	goToWebsite = (stop) => window.open(stop.timetable, '_blank');
 
 	componentDidUpdate(prevProps) {
 		if (this.props.current_position !== prevProps.current_position || this.props.distance !== prevProps.distance) this.tableRef.current.onQueryChange();
@@ -177,12 +191,35 @@ class Stops extends Component {
 					}}
 					columns={[
 						{
-							title: 'Name',
-							field: 'name', filtering: false,
+							title: '',
+							field: 'name',
+							filtering: false,
 							render: rowData => {
 								return (
 									<React.Fragment>
-										<Link component="button" variant="body2" onClick={() => this.displayStopInfo(rowData)}>{rowData.name}</Link>
+										<IconButton onClick={() => this.displayStopInfo(rowData)}>
+											<MoreVertIcon />
+										</IconButton>
+										<Hidden mdDown>
+											<IconButton onClick={() => this.getStopCalendar(rowData)}>
+												<EventIcon />
+											</IconButton>
+										</Hidden>
+										<Hidden mdDown>
+											<IconButton onClick={() => this.getStopPdf(rowData)}>
+												<PrintIcon />
+											</IconButton>
+										</Hidden>
+										<Hidden mdDown>
+											<IconButton component={Link} to="/map" onClick={() => this.viewMapStop(rowData)}>
+												<LocationOnIcon />
+											</IconButton>
+										</Hidden>
+										<Hidden mdDown>
+											<IconButton onClick={() => this.goToWebsite(rowData)}>
+												<OpenInBrowserIcon />
+											</IconButton>
+										</Hidden>
 									</React.Fragment>
 								)
 							},
@@ -191,22 +228,105 @@ class Stops extends Component {
 								backgroundColor: '#ffffff'
 							}
 						},
-						{ 
-							title: 'Community', 
-							field: 'community', 
+						{
+							title: 'Name',
+							field: 'name',
+							filtering: false,
+							hidden: false,
+							render: rowData => {
+								return (
+									rowData.name
+								)
+							},
+							cellStyle: {
+								borderBottom: '1px solid #f5f5f5',
+								backgroundColor: '#ffffff'
+							}
+						},
+						{
+							title: 'Community',
+							field: 'community',
 							filtering: false,
 							cellStyle: {
 								borderBottom: '1px solid #f5f5f5',
 								backgroundColor: '#ffffff'
-							} 
+							}
 						},
 						{
-							title: 'Time',
+							title: 'Authority',
+							field: 'organisation_name',
+							filtering: false,
+							hidden: isWidthDown('md', width),
+							cellStyle: {
+								borderBottom: '1px solid #f5f5f5',
+								backgroundColor: '#ffffff'
+							}
+						},
+						{
+							title: 'Mobile',
+							field: 'mobile_name',
+							filtering: false,
+							hidden: isWidthDown('md', width),
+							cellStyle: {
+								borderBottom: '1px solid #f5f5f5',
+								backgroundColor: '#ffffff'
+							}
+						},
+						{
+							title: 'Date',
+							field: 'route_dates',
+							filtering: false,
+							hidden: isWidthDown('xs', width),
+							render: (rowData) => {
+								return (
+									rowData.route_dates.length > 0 ? moment(rowData.route_dates[0], 'YYYY-MM-DD').format('D/MM/YYYY') : ''
+								);
+							},
+							cellStyle: {
+								borderBottom: '1px solid #f5f5f5',
+								backgroundColor: '#ffffff'
+							}
+						},
+						{
+							title: 'Arrive',
 							field: 'arrival',
 							filtering: false,
+							hidden: isWidthDown('sm', width),
 							render: (rowData) => {
 								return (
 									moment(rowData.arrival, 'HH:mm:ssZ').format('h:mma')
+								);
+							},
+							cellStyle: {
+								borderBottom: '1px solid #f5f5f5',
+								backgroundColor: '#ffffff'
+							}
+						},
+						{
+							title: 'Depart',
+							field: 'departure',
+							filtering: false,
+							hidden: isWidthDown('sm', width),
+							render: (rowData) => {
+								return (
+									moment(rowData.departure, 'HH:mm:ssZ').format('h:mma')
+								);
+							},
+							cellStyle: {
+								borderBottom: '1px solid #f5f5f5',
+								backgroundColor: '#ffffff'
+							}
+						},
+						{
+							title: 'Duration',
+							field: 'arrival',
+							filtering: false,
+							hidden: isWidthDown('md', width),
+							render: (rowData) => {
+								const arrival = moment(rowData.arrival, 'HH:mm:ssZ');
+								const departure = moment(rowData.departure, 'HH:mm:ssZ');
+								return (
+									moment.duration(departure.diff(arrival)).humanize()
 								);
 							},
 							cellStyle: {
