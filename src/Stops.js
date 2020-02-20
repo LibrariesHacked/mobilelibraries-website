@@ -39,6 +39,7 @@ import moment from 'moment';
 
 // Our Helpers
 import * as stopsHelper from './helpers/stops';
+import { Tooltip } from '@material-ui/core';
 
 const config = require('./helpers/config.json');
 
@@ -187,7 +188,12 @@ class Stops extends Component {
 						loadingType: 'overlay',
 						actionsColumnIndex: 4,
 						filtering: false,
-						toolbar: false
+						toolbar: false,
+						headerStyle: {
+							backgroundColor: '#fafafa',
+							color: '#737373',
+							border: '0px'
+						}
 					}}
 					columns={[
 						{
@@ -197,28 +203,38 @@ class Stops extends Component {
 							render: rowData => {
 								return (
 									<React.Fragment>
-										<IconButton onClick={() => this.displayStopInfo(rowData)}>
-											<MoreVertIcon />
-										</IconButton>
-										<Hidden mdDown>
-											<IconButton onClick={() => this.getStopCalendar(rowData)}>
-												<EventIcon />
+										<Tooltip title="See more stop details">
+											<IconButton onClick={() => this.displayStopInfo(rowData)}>
+												<MoreVertIcon />
 											</IconButton>
+										</Tooltip>
+										<Hidden mdDown>
+											<Tooltip title="Add event to your device calendar">
+												<IconButton onClick={() => this.getStopCalendar(rowData)}>
+													<EventIcon />
+												</IconButton>
+											</Tooltip>
 										</Hidden>
 										<Hidden mdDown>
-											<IconButton onClick={() => this.getStopPdf(rowData)}>
-												<PrintIcon />
-											</IconButton>
+											<Tooltip title="Download a PDF timetable for this stop">
+												<IconButton onClick={() => this.getStopPdf(rowData)}>
+													<PrintIcon />
+												</IconButton>
+											</Tooltip>
 										</Hidden>
 										<Hidden mdDown>
-											<IconButton component={Link} to="/map" onClick={() => this.viewMapStop(rowData)}>
-												<LocationOnIcon />
-											</IconButton>
+											<Tooltip title="See this stop on the map">
+												<IconButton component={Link} to="/map" onClick={() => this.viewMapStop(rowData)}>
+													<LocationOnIcon />
+												</IconButton>
+											</Tooltip>
 										</Hidden>
 										<Hidden mdDown>
-											<IconButton onClick={() => this.goToWebsite(rowData)}>
-												<OpenInBrowserIcon />
-											</IconButton>
+											<Tooltip title="Go to the website for this stop">
+												<IconButton onClick={() => this.goToWebsite(rowData)}>
+													<OpenInBrowserIcon />
+												</IconButton>
+											</Tooltip>
 										</Hidden>
 									</React.Fragment>
 								)
@@ -279,7 +295,7 @@ class Stops extends Component {
 							hidden: isWidthDown('xs', width),
 							render: (rowData) => {
 								return (
-									rowData.route_dates.length > 0 ? moment(rowData.route_dates[0], 'YYYY-MM-DD').format('D/MM/YYYY') : ''
+									rowData.route_dates.length > 0 ? moment(rowData.route_dates[0], 'YYYY-MM-DD').format('Do MMMM') : ''
 								);
 							},
 							cellStyle: {
