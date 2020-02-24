@@ -186,7 +186,7 @@ class Stops extends Component {
 						padding: isWidthUp('sm', width) ? 'default' : 'dense',
 						search: false,
 						loadingType: 'overlay',
-						actionsColumnIndex: 4,
+						actionsColumnIndex: 0,
 						filtering: false,
 						toolbar: false,
 						headerStyle: {
