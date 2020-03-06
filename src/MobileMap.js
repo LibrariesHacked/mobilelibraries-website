@@ -11,6 +11,8 @@ import MobileAvatar from './MobileAvatar';
 
 import moment from 'moment';
 
+const config = require('./helpers/config.json');
+
 const Map = ReactMapboxGl({
 	minZoom: 5,
 	maxZoom: 18,
@@ -20,8 +22,8 @@ const Map = ReactMapboxGl({
 	attributionControl: true
 });
 
-const stop_tiles = ['https://api.mobilelibraries.org/api/stops/{z}/{x}/{y}.mvt'];
-const trip_tiles = ['https://api.mobilelibraries.org/api/trips/{z}/{x}/{y}.mvt'];
+const stop_tiles = [config.stop_tiles];
+const trip_tiles = [config.trip_tiles];
 
 class MobileMap extends Component {
 

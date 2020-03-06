@@ -2,11 +2,11 @@
 import compose from 'recompose/compose';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from "react-router-dom";
 
 // Material UI
 import Hidden from '@material-ui/core/Hidden';
 import IconButton from '@material-ui/core/IconButton';
-import Link from '@material-ui/core/Link';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Paper from '@material-ui/core/Paper';
 import withWidth, { isWidthUp, isWidthDown } from '@material-ui/core/withWidth';
@@ -224,7 +224,7 @@ class Stops extends Component {
 										</Hidden>
 										<Hidden mdDown>
 											<Tooltip title="See this stop on the map">
-												<IconButton component={Link} to="/map" onClick={() => this.viewMapStop(rowData)}>
+												<IconButton onClick={() => this.viewMapStop(rowData)} component={Link} to="/map">
 													<LocationOnIcon />
 												</IconButton>
 											</Tooltip>
@@ -279,70 +279,13 @@ class Stops extends Component {
 							}
 						},
 						{
-							title: 'Mobile',
-							field: 'mobile_name',
-							filtering: false,
-							hidden: isWidthDown('md', width),
-							cellStyle: {
-								borderBottom: '1px solid #f5f5f5',
-								backgroundColor: '#ffffff'
-							}
-						},
-						{
-							title: 'Date',
-							field: 'route_dates',
+							title: 'Next due',
+							field: 'route_schedule',
 							filtering: false,
 							hidden: isWidthDown('xs', width),
 							render: (rowData) => {
 								return (
-									rowData.route_dates.length > 0 ? moment(rowData.route_dates[0], 'YYYY-MM-DD').format('Do MMMM') : ''
-								);
-							},
-							cellStyle: {
-								borderBottom: '1px solid #f5f5f5',
-								backgroundColor: '#ffffff'
-							}
-						},
-						{
-							title: 'Arrive',
-							field: 'arrival',
-							filtering: false,
-							hidden: isWidthDown('sm', width),
-							render: (rowData) => {
-								return (
-									moment(rowData.arrival, 'HH:mm:ssZ').format('h:mma')
-								);
-							},
-							cellStyle: {
-								borderBottom: '1px solid #f5f5f5',
-								backgroundColor: '#ffffff'
-							}
-						},
-						{
-							title: 'Depart',
-							field: 'departure',
-							filtering: false,
-							hidden: isWidthDown('sm', width),
-							render: (rowData) => {
-								return (
-									moment(rowData.departure, 'HH:mm:ssZ').format('h:mma')
-								);
-							},
-							cellStyle: {
-								borderBottom: '1px solid #f5f5f5',
-								backgroundColor: '#ffffff'
-							}
-						},
-						{
-							title: 'Duration',
-							field: 'arrival',
-							filtering: false,
-							hidden: isWidthDown('md', width),
-							render: (rowData) => {
-								const arrival = moment(rowData.arrival, 'HH:mm:ssZ');
-								const departure = moment(rowData.departure, 'HH:mm:ssZ');
-								return (
-									moment.duration(departure.diff(arrival)).humanize()
+									rowData.route_schedule.length > 0 ? moment(rowData.route_schedule[0]).format('Do MMMM h:mma') : ''
 								);
 							},
 							cellStyle: {

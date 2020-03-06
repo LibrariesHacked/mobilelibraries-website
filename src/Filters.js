@@ -197,18 +197,14 @@ class Filters extends Component {
 						Array.from(countries)
 							.sort((a, b) => a.localeCompare(b))
 							.map(country => {
+								let menu_items = [<ListSubheader disableSticky={true}>{country}</ListSubheader>];
 								const org_list = organisations
 									.sort((a, b) => a.name.localeCompare(b.name))
 									.filter(org => org.country === country)
 									.map(org => {
 										return <MenuItem key={'mnu_itm_org_' + org.id} onClick={() => this.chooseOrganisation(org.id)}>{org.name}</MenuItem>
 									})
-								return (
-									<React.Fragment>
-										<ListSubheader disableSticky={true}>{country}</ListSubheader>
-										{org_list}
-									</React.Fragment>
-								)
+								return menu_items.concat(org_list);
 							})
 					}
 				</Menu>

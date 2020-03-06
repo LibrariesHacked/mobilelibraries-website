@@ -12,7 +12,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Divider from '@material-ui/core/Divider';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import Typography from '@material-ui/core/Typography';
 
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
@@ -60,9 +59,6 @@ class StopDetails extends React.Component {
     render() {
         const { classes, width, stop } = this.props;
         const fullScreen = isWidthDown('sm', width);
-        const arrival = moment(stop.arrival, 'HH:mm:ssZ');
-        const departure = moment(stop.departure, 'HH:mm:ssZ');
-        const duration = moment.duration(departure.diff(arrival)).humanize();
         return (
             <Dialog
                 fullScreen={fullScreen}
@@ -82,12 +78,12 @@ class StopDetails extends React.Component {
                     }
                 }
             >
-                {stop && stop.route_day ?
+                {stop && stop.route_days ?
                     <React.Fragment>
                         <DialogTitle id="dlg-title">{stop.name + '. ' + stop.community}</DialogTitle>
                         <DialogContent>
-                            <ListSubheader>{(stop.route_dates && stop.route_dates.length > 0 ? moment(stop.route_dates[0], 'YYYY-MM-DD').format('dddd Do MMMM') : '')}</ListSubheader>
-                            <Typography variant="body2" component="p">{'Between ' + arrival.format('h:mma') + ' and ' + departure.format('h:mma') + ' (' + duration + ')'}</Typography>
+                            <ListSubheader>{(stop.route_schedule && stop.route_schedule.length > 0 ? moment(stop.route_schedule[0]).format('dddd Do MMMM h:mma') : '')}</ListSubheader>
+                           
                             <br />
                             <Divider />
                             <br />

@@ -360,6 +360,7 @@ class App extends Component {
 											setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
 											clearRouteFilter={this.clearRouteFilter}
 											viewStop={this.viewStop}
+											viewMapStop={this.viewMapStop}
 											current_position={this.state.current_position}
 											postcode={this.state.postcode}
 											postcode_district={this.state.postcode_district}

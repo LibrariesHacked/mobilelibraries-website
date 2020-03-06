@@ -28,7 +28,6 @@ class TripDetails extends React.Component {
         const { classes, width, trip } = this.props;
         const fullScreen = isWidthDown('sm', width);
         const estimated_duration = Math.round(trip.duration / 60) + ' mins journey time.';
-        const scheduled_duration = Math.round(trip.scheduled_duration / 60) + ' mins scheduled between stops.';
         const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)';
         return (
             <Dialog
@@ -48,11 +47,10 @@ class TripDetails extends React.Component {
                     }
                 }
             >
-                <DialogTitle>{trip.mobile_name + ' trip'}</DialogTitle>
+                <DialogTitle>{'Trip details'}</DialogTitle>
                 <DialogContent>
                 <ListSubheader disableSticky>{'From ' + trip.origin_stop_name + ' to ' + trip.destination_stop_name}</ListSubheader>
                 <Typography variant="body2" component="p">{estimated_duration + ' ' + distance}</Typography>
-                <Typography variant="body2" component="p">{scheduled_duration}</Typography>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => this.close()} color="secondary">Close</Button>

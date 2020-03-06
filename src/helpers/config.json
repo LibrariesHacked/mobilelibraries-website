@@ -1,3 +1,5 @@
 {
-    "api": "https://api.mobilelibraries.org/api"
+    "api": "http://localhost:8080/api",
+    "stop_tiles": "http://localhost:8080/api/stops/{z}/{x}/{y}.mvt",
+    "trip_tiles": "http://localhost:8080/api/trips/{z}/{x}/{y}.mvt"
 }
