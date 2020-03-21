@@ -7,7 +7,6 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
-import ListSubheader from '@material-ui/core/ListSubheader';
 
 import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
@@ -42,9 +41,8 @@ class MapSettings extends React.Component {
                     }
                 }
             >
-                <DialogTitle>{'Trip details'}</DialogTitle>
+                <DialogTitle>Map settings</DialogTitle>
                 <DialogContent>
-                    <ListSubheader disableSticky>{''}</ListSubheader>
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => this.close()} color="secondary">Close</Button>

@@ -48,8 +48,8 @@ class MobileMap extends Component {
 		time_update_interval: null,
 		current_time: null,
 		map: null,
-		settings_dial_hidden: true,
-		settings_dial_open: false
+		settings_dial_open: false,
+		settings_dialog_open: false
 	}
 
 	componentDidMount = () => {
@@ -296,10 +296,13 @@ class MobileMap extends Component {
 						key={'act_more'}
 						icon={<MoreVertIcon />}
 						tooltipTitle={'More settings'}
-						onClick={() => this.setState({ settings_dial_open: false })}
+						onClick={() => this.setState({ settings_dialog_open: true, settings_dial_open: false })}
 					/>
 				</SpeedDial>
-				<MapSettings />
+				<MapSettings
+					open={this.state.settings_dialog_open}
+					close={() => this.setState({ settings_dialog_open: false, settings_dial_open: false })}
+				/>
 			</React.Fragment>
 		);
 	}
