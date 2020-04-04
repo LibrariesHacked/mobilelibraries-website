@@ -41,6 +41,7 @@ const Map = ReactMapboxGl({
 
 const stop_tiles = [config.stop_tiles];
 const trip_tiles = [config.trip_tiles];
+const library_authority_tiles = [config.library_authority_tiles];
 
 class MobileMap extends Component {
 
@@ -73,7 +74,15 @@ class MobileMap extends Component {
 	setCurrentTime = () => this.setState({ current_time: moment() });
 
 	render() {
-		const { classes, position, zoom, pitch, bearing, fit_bounds, mobile_locations, mobile_lookup, organisation_lookup } = this.props;
+		const { classes, position, zoom, pitch, bearing, fit_bounds, mobile_locations, mobile_lookup, organisations, organisation_lookup } = this.props;
+
+		// Build the colour match
+		let organisation_colour_match = ['match', ['get', 'utla19cd']]
+		organisations.forEach(org => {
+			organisation_colour_match.push(org.code);
+			organisation_colour_match.push(org.colour);
+		});
+		organisation_colour_match.push('#a7a39b');
 
 		return (
 			<React.Fragment>
@@ -124,6 +133,12 @@ class MobileMap extends Component {
 						tileJsonSource={{
 							type: 'vector',
 							tiles: trip_tiles
+						}} />
+					<Source
+						id='src_library_authorities'
+						tileJsonSource={{
+							type: 'vector',
+							tiles: library_authority_tiles
 						}} />
 					<Layer
 						id='lyr_trips_lines'
@@ -270,6 +285,43 @@ class MobileMap extends Component {
 							"text-color": "#6a6f73"
 						}}
 						onClick={this.clickStop}
+					/>
+					<Layer
+						id='lyr_library_authorities_lines'
+						type='line'
+						sourceId='src_library_authorities'
+						sourceLayer='library_authority_boundaries'
+						minZoom={6}
+						layout={{
+							"line-join": "round",
+							"line-cap": "square"
+						}}
+						paint={{
+							"line-color": "#a7a39b",
+							"line-opacity": 1,
+							"line-width": [
+								"interpolate",
+								[
+									"linear"
+								],
+								[
+									"zoom"
+								],
+								6, 1,
+								22, 4
+							]
+						}}
+					/>
+					<Layer
+						id='lyr_library_authorities_fill'
+						type='fill'
+						sourceId='src_library_authorities'
+						sourceLayer='library_authority_boundaries'
+						minZoom={6}
+						paint={{
+							'fill-color': organisation_colour_match,
+							'fill-opacity': 0.1
+						}}
 					/>
 					{this.props.current_position && this.props.current_position.length > 1 ?
 						<Marker

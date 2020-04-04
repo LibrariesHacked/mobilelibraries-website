@@ -387,6 +387,7 @@ class App extends Component {
 											search_type={this.state.search_type}
 											mobile_lookup={this.state.mobile_lookup}
 											mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
+											organisations={this.state.organisations}
 											organisation_lookup={this.state.organisation_lookup}
 											viewStop={this.viewStop}
 											viewTrip={this.viewTrip}
