@@ -2,5 +2,5 @@
     "api": "https://api.mobilelibraries.org/api",
     "stop_tiles": "https://api.mobilelibraries.org/api/stops/{z}/{x}/{y}.mvt",
     "trip_tiles": "https://api.mobilelibraries.org/api/trips/{z}/{x}/{y}.mvt",
-    "library_authority_tiles": "http://localhost:8080/rest/libraryauthorities/{z}/{x}/{y}.mvt"
+    "library_authority_tiles": "https://api-geography.librarydata.uk/rest/libraryauthorities/{z}/{x}/{y}.mvt"
 }
