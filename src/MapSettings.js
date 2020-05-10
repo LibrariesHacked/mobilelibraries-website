@@ -26,7 +26,7 @@ class MapSettings extends React.Component {
         this.props.toggleMapSetting('authority_boundary');
     }
 
-    close = () => { this.props.close() }
+    close = () => this.props.close()
 
     render() {
         const { classes, width, map_settings } = this.props;

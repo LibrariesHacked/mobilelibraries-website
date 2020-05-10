@@ -280,14 +280,14 @@ class App extends Component {
   }
 
   toggleMapSetting = (setting) => {
-    const current_setting = this.state[setting];
-    this.setState({ [setting]: !current_setting })
+    let map_settings = this.state.map_settings;
+    const current_setting = this.state.map_settings[setting];
+    map_settings[setting] = !current_setting;
+    this.setState({ map_settings: map_settings });
   }
 
   closeSnackbar = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
+    if (reason === 'clickaway') return;
     this.setState({ snackbar_open: false });
   };
 
