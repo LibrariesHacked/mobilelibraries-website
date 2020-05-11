@@ -15,7 +15,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 const styles = theme => ({
     dialog: {
-        border: '1px solid #e5e5e5'
+        border: '1px solid #E0E0E0'
     }
 });
 

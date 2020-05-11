@@ -13,11 +13,11 @@ import { fade } from '@material-ui/core/styles/colorManipulator';
 import { withStyles } from '@material-ui/core/styles';
 
 // Material icons
-import ClearIcon from '@material-ui/icons/Clear';
-import LocationSearchingIcon from '@material-ui/icons/LocationSearching';
-import MyLocationIcon from '@material-ui/icons/MyLocation';
-import SearchIcon from '@material-ui/icons/Search';
-import SettingsIcon from '@material-ui/icons/Settings';
+import ClearIcon from '@material-ui/icons/ClearTwoTone';
+import LocationSearchingIcon from '@material-ui/icons/LocationSearchingTwoTone';
+import MyLocationIcon from '@material-ui/icons/MyLocationTwoTone';
+import SearchIcon from '@material-ui/icons/SearchTwoTone';
+import SettingsIcon from '@material-ui/icons/SettingsTwoTone';
 
 const styles = theme => ({
 	grow: {
@@ -37,7 +37,7 @@ const styles = theme => ({
 	},
 	search: {
 		position: 'relative',
-		border: '1px solid #e5e5e5',
+		border: '1px solid #E0E0E0',
 		borderRadius: theme.shape.borderRadius,
 		backgroundColor: fade(theme.palette.common.white, 0.8),
 		'&:hover': {

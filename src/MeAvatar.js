@@ -8,7 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Tooltip from '@material-ui/core/Tooltip';
 
 // Icons
-import Face from '@material-ui/icons/Face';
+import Face from '@material-ui/icons/FaceTwoTone';
 
 const styles = theme => ({
     avatar: {

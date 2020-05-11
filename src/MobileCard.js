@@ -16,8 +16,8 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Typography from '@material-ui/core/Typography';
 
 // MUI Icons
-import LocationOnIcon from '@material-ui/icons/LocationOn';
-import WebIcon from '@material-ui/icons/Web';
+import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone';
+import WebIcon from '@material-ui/icons/WebTwoTone';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
@@ -33,7 +33,7 @@ const styles = theme => ({
 	},
 	card: {
 		minWidth: 275,
-		border: '1px solid #F5F5F5'
+		border: '1px solid #E0E0E0'
 	},
 	leftIcon: {
 		marginRight: theme.spacing(1)

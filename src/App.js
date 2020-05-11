@@ -6,14 +6,16 @@ import PropTypes from 'prop-types';
 import { BrowserRouter, Route } from "react-router-dom";
 
 // Material UI
-import CloseIcon from '@material-ui/icons/Close';
+import Container from '@material-ui/core/Container';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 
+import CloseIcon from '@material-ui/icons/CloseTwoTone';
+
 // MUI Style
-import deepOrange from '@material-ui/core/colors/deepOrange';
-import brown from '@material-ui/core/colors/brown';
+import lightBlue from '@material-ui/core/colors/lightBlue';
+import blueGrey from '@material-ui/core/colors/blueGrey';
 import { MuiThemeProvider, createMuiTheme, withStyles } from '@material-ui/core/styles';
 
 // Our components
@@ -34,8 +36,8 @@ import * as tripsHelper from './helpers/trips';
 
 const theme = createMuiTheme({
   palette: {
-    primary: deepOrange,
-    secondary: brown
+    primary: lightBlue,
+    secondary: blueGrey
   },
   overrides: {
     MuiButton: {
@@ -58,7 +60,7 @@ const theme = createMuiTheme({
 
 const styles = theme => ({
   root: {
-    display: 'flex'
+    flexGrow: 1
   },
   toolbar: {
     display: 'flex',
@@ -308,57 +310,26 @@ class App extends Component {
               postcodeSearch={this.postcodeSearch}
               clearSearch={this.clearSearch}
             />
-            <main className={classes.content}>
-              <div className={classes.toolbar} />
-              <Route
-                path='/'
-                exact
-                render={() => {
-                  return (<Mobiles
-                    mobiles={this.state.mobiles}
-                    mobile_lookup={this.state.mobile_lookup}
-                    mobile_location_lookup={this.state.mobile_location_lookup}
-                    mobiles_nearest_lookup={this.state.mobiles_nearest_lookup}
-                    organisation_lookup={this.state.organisation_lookup}
-                    viewStop={this.viewStop}
-                    viewStopsByMobile={this.viewStopsByMobile}
-                    viewStopsByOrganisation={this.viewStopsByOrganisation}
-                    organisations={this.state.organisations}
-                    organisation_filter={this.state.organisation_filter}
-                    setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
-                    clearOrganisationFilter={this.clearOrganisationFilter}
-                    mobile_filter={this.state.mobile_filter}
-                    setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
-                    clearMobileFilter={this.clearMobileFilter}
-                    routes={this.state.routes}
-                    route_lookup={this.state.route_lookup}
-                    route_filter={this.state.route_filter}
-                    setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
-                    clearRouteFilter={this.clearRouteFilter}
-                    postcode={this.state.postcode}
-                    postcode_district={this.state.postcode_district}
-                    distance={this.state.distance}
-                    search_type={this.state.search_type}
-                    setDistance={this.setDistance}
-                    toggleGPS={this.toggleGPS}
-                    postcodeSearch={this.postcodeSearch}
-                    clearSearch={this.clearSearch}
-                  />)
-                }}
-              />
-
-              <Route
-                path='/stops'
-                render={() => {
-                  return (
-                    <Stops
-                      organisations={this.state.organisations}
+            <Container maxWidth="lg">
+              <main className={classes.content}>
+                <div className={classes.toolbar} />
+                <Route
+                  path='/'
+                  exact
+                  render={() => {
+                    return (<Mobiles
+                      mobiles={this.state.mobiles}
+                      mobile_lookup={this.state.mobile_lookup}
+                      mobile_location_lookup={this.state.mobile_location_lookup}
+                      mobiles_nearest_lookup={this.state.mobiles_nearest_lookup}
                       organisation_lookup={this.state.organisation_lookup}
+                      viewStop={this.viewStop}
+                      viewStopsByMobile={this.viewStopsByMobile}
+                      viewStopsByOrganisation={this.viewStopsByOrganisation}
+                      organisations={this.state.organisations}
                       organisation_filter={this.state.organisation_filter}
                       setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
                       clearOrganisationFilter={this.clearOrganisationFilter}
-                      mobiles={this.state.mobiles}
-                      mobile_lookup={this.state.mobile_lookup}
                       mobile_filter={this.state.mobile_filter}
                       setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
                       clearMobileFilter={this.clearMobileFilter}
@@ -367,9 +338,6 @@ class App extends Component {
                       route_filter={this.state.route_filter}
                       setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
                       clearRouteFilter={this.clearRouteFilter}
-                      viewStop={this.viewStop}
-                      viewMapStop={this.viewMapStop}
-                      current_position={this.state.current_position}
                       postcode={this.state.postcode}
                       postcode_district={this.state.postcode_district}
                       distance={this.state.distance}
@@ -379,32 +347,67 @@ class App extends Component {
                       postcodeSearch={this.postcodeSearch}
                       clearSearch={this.clearSearch}
                     />)
-                }}
-              />
-              <Route
-                path='/map'
-                render={() => {
-                  return (
-                    <MobileMap
-                      bearing={this.state.bearing}
-                      fit_bounds={this.state.fit_bounds}
-                      pitch={this.state.pitch}
-                      position={this.state.position}
-                      current_position={this.state.current_position}
-                      zoom={this.state.zoom}
-                      search_type={this.state.search_type}
-                      mobile_lookup={this.state.mobile_lookup}
-                      mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
-                      organisations={this.state.organisations}
-                      organisation_lookup={this.state.organisation_lookup}
-                      map_settings={this.state.map_settings}
-                      toggleMapSetting={this.toggleMapSetting}
-                      viewStop={this.viewStop}
-                      viewTrip={this.viewTrip}
-                    />)
-                }}
-              />
-            </main>
+                  }}
+                />
+                <Route
+                  path='/stops'
+                  render={() => {
+                    return (
+                      <Stops
+                        organisations={this.state.organisations}
+                        organisation_lookup={this.state.organisation_lookup}
+                        organisation_filter={this.state.organisation_filter}
+                        setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
+                        clearOrganisationFilter={this.clearOrganisationFilter}
+                        mobiles={this.state.mobiles}
+                        mobile_lookup={this.state.mobile_lookup}
+                        mobile_filter={this.state.mobile_filter}
+                        setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
+                        clearMobileFilter={this.clearMobileFilter}
+                        routes={this.state.routes}
+                        route_lookup={this.state.route_lookup}
+                        route_filter={this.state.route_filter}
+                        setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
+                        clearRouteFilter={this.clearRouteFilter}
+                        viewStop={this.viewStop}
+                        viewMapStop={this.viewMapStop}
+                        current_position={this.state.current_position}
+                        postcode={this.state.postcode}
+                        postcode_district={this.state.postcode_district}
+                        distance={this.state.distance}
+                        search_type={this.state.search_type}
+                        setDistance={this.setDistance}
+                        toggleGPS={this.toggleGPS}
+                        postcodeSearch={this.postcodeSearch}
+                        clearSearch={this.clearSearch}
+                      />)
+                  }}
+                />
+                <Route
+                  path='/map'
+                  render={() => {
+                    return (
+                      <MobileMap
+                        bearing={this.state.bearing}
+                        fit_bounds={this.state.fit_bounds}
+                        pitch={this.state.pitch}
+                        position={this.state.position}
+                        current_position={this.state.current_position}
+                        zoom={this.state.zoom}
+                        search_type={this.state.search_type}
+                        mobile_lookup={this.state.mobile_lookup}
+                        mobile_locations={this.state.mobile_locations.filter(l => l.geox !== null)}
+                        organisations={this.state.organisations}
+                        organisation_lookup={this.state.organisation_lookup}
+                        map_settings={this.state.map_settings}
+                        toggleMapSetting={this.toggleMapSetting}
+                        viewStop={this.viewStop}
+                        viewTrip={this.viewTrip}
+                      />)
+                  }}
+                />
+              </main>
+            </Container>
             <StopDetails
               stop={this.state.current_stop}
               open={this.state.stop_dialog_open}

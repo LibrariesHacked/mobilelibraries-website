@@ -22,9 +22,9 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
 // MUI Icons
-import BusinessIcon from '@material-ui/icons/Business';
-import DirectionBusIcon from '@material-ui/icons/DirectionsBus';
-import DirectionsIcon from '@material-ui/icons/Directions';
+import BusinessIcon from '@material-ui/icons/BusinessTwoTone';
+import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone';
+import DirectionsIcon from '@material-ui/icons/DirectionsTwoTone';
 
 // Our components
 import PostcodeSearch from './PostcodeSearch';
@@ -38,7 +38,7 @@ const styles = (theme) => ({
 	card: {
 		position: 'relative',
 		minWidth: 275,
-		border: '1px solid #F5F5F5'
+		border: '1px solid #E0E0E0'
 	},
 	grid: {
 		marginBottom: 10

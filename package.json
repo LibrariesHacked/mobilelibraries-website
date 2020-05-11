@@ -1,48 +1,50 @@
 {
-	"name": "mobilelibraries-website",
-	"version": "0.1.0",
-	"private": true,
-	"homepage": "https://www.mobilelibraries.org",
-	"dependencies": {
-		"@material-ui/core": "^4.9.9",
-		"@material-ui/icons": "^4.9.1",
-		"@material-ui/lab": "^4.0.0-alpha.48",
-		"axios": "^0.19.2",
-		"mapbox-gl": "^1.9.1",
-		"material-table": "^1.57.2",
-		"moment": "^2.24.0",
-		"react": "^16.13.1",
-		"react-dom": "^16.13.1",
-		"react-mapbox-gl": "^4.8.3",
-		"react-router-dom": "^5.1.2",
-		"react-scripts": "^3.4.1",
-		"recompose": "^0.30.0"
-	},
-	"scripts": {
-		"start": "react-scripts start",
-		"build": "react-scripts build",
-		"test": "react-scripts test",
-		"eject": "react-scripts eject",
-		"deploy": "gh-pages -d build"
-	},
-	"eslintConfig": {
-		"extends": "react-app"
-	},
-	"browserslist": {
-		"production": [
-			">0.2%",
-			"not dead",
-			"not op_mini all",
-			"ie 11"
-		],
-		"development": [
-			"last 1 chrome version",
-			"last 1 firefox version",
-			"last 1 safari version",
-			"ie 11"
-		]
-	},
-	"devDependencies": {
-		"gh-pages": "^2.2.0"
-	}
+  "name": "mobilelibraries-website",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://www.mobilelibraries.org",
+  "dependencies": {
+    "@material-ui/core": "^4.9.9",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.52",
+    "axios": "^0.19.2",
+    "mapbox-gl": "^1.10.0",
+    "material-table": "^1.57.2",
+    "moment": "^2.25.3",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-mapbox-gl": "^4.8.3",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.1",
+    "recompose": "^0.30.0",
+    "source-map-explorer": "^2.4.2"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "deploy": "gh-pages -d build",
+    "analyze": "source-map-explorer 'build/static/js/*.js'"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all",
+      "ie 11"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version",
+      "ie 11"
+    ]
+  },
+  "devDependencies": {
+    "gh-pages": "^2.2.0"
+  }
 }

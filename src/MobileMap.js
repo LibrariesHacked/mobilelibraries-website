@@ -11,8 +11,8 @@ import MapSettings from './MapSettings';
 import MobileAvatar from './MobileAvatar';
 
 // Mui Icons
-import SettingsIcon from '@material-ui/icons/Settings';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import SettingsIcon from '@material-ui/icons/SettingsTwoTone';
+import MoreVertIcon from '@material-ui/icons/MoreVertTwoTone';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';

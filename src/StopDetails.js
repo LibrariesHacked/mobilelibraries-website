@@ -17,9 +17,9 @@ import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
 import { withStyles } from '@material-ui/core/styles';
 
 // MUI Icons
-import EventIcon from '@material-ui/icons/Event';
-import PrintIcon from '@material-ui/icons/Print';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import EventIcon from '@material-ui/icons/EventTwoTone';
+import PrintIcon from '@material-ui/icons/PrintTwoTone';
+import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone';
 
 // Moment
 import moment from 'moment';
@@ -31,7 +31,7 @@ const styles = theme => ({
         margin: theme.spacing(1)
     },
     dialog: {
-        border: '1px solid #e5e5e5'
+        border: '1px solid #E0E0E0'
     },
     leftIcon: {
         marginRight: theme.spacing(1)

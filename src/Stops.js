@@ -18,18 +18,17 @@ import MaterialTable from 'material-table';
 import { withStyles } from '@material-ui/core/styles';
 
 // MUI Icons
-import ArrowUpward from '@material-ui/icons/ArrowUpward';
-import ChevronLeft from '@material-ui/icons/ChevronLeft';
-import ChevronRight from '@material-ui/icons/ChevronRight';
-import FirstPage from '@material-ui/icons/FirstPage';
-import FilterList from '@material-ui/icons/FilterList';
-import LastPage from '@material-ui/icons/LastPage';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowser';
-
-import EventIcon from '@material-ui/icons/Event';
-import PrintIcon from '@material-ui/icons/Print';
-import LocationOnIcon from '@material-ui/icons/LocationOn';
+import ArrowUpward from '@material-ui/icons/ArrowUpwardTwoTone';
+import ChevronLeft from '@material-ui/icons/ChevronLeftTwoTone';
+import ChevronRight from '@material-ui/icons/ChevronRightTwoTone';
+import FirstPage from '@material-ui/icons/FirstPageTwoTone';
+import FilterList from '@material-ui/icons/FilterListTwoTone';
+import LastPage from '@material-ui/icons/LastPageTwoTone';
+import MoreVertIcon from '@material-ui/icons/MoreVertTwoTone';
+import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowserTwoTone';
+import EventIcon from '@material-ui/icons/EventTwoTone';
+import PrintIcon from '@material-ui/icons/PrintTwoTone';
+import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone';
 
 // Our components
 import Filters from './Filters';
@@ -57,7 +56,7 @@ const styles = (theme) => ({
 	},
 	table: {
 		backgroundColor: 'rgba(0, 0, 0, 0)',
-		border: '1px solid #f5f5f5'
+		border: '1px solid #E0E0E0'
 	}
 });
 

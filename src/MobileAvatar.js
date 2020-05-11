@@ -7,7 +7,7 @@ import Fab from '@material-ui/core/Fab';
 import Tooltip from '@material-ui/core/Tooltip';
 
 // MUI Icons
-import DirectionBusIcon from '@material-ui/icons/DirectionsBus';
+import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
