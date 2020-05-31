@@ -33,7 +33,6 @@ const styles = (theme) => ({
 
 class Mobiles extends Component {
 	state = {
-		on_road: false,
 		open_tab: 0
 	};
 
@@ -70,13 +69,13 @@ class Mobiles extends Component {
 		});
 
 		// Apply filters
-		const display_mobiles = (this.state.open_tab === 1 ? active_mobiles : filtered_mobiles);
+		const display_mobiles = (this.state.open_tab === 0 ? active_mobiles : filtered_mobiles);
 
 		// Calculate title
 		const organisation_name = (organisation_filter.length > 0 ? organisation_lookup[organisation_filter[0]].name : '');
 		const mobile_name = (mobile_filter.length > 0 ? mobile_lookup[mobile_filter[0]].name : '');
 		const route_name = (route_filter.length > 0 ? route_lookup[route_filter[0]].name : '');
-		let title = 'Dashboard';
+		let title = 'Mobile vans';
 		// Filter stops
 		if (organisation_name !== '') title = 'Mobiles in ' + organisation_name;
 		if (mobile_name !== '') title = organisation_name + ' ' + mobile_name;
@@ -125,25 +124,24 @@ class Mobiles extends Component {
 					onChange={(e, value) => this.changeTab(value)}
 				>
 					<Tab
+						className={classes.tab}
+						label={
+							<Badge
+								className={classes.padding}
+								color={"secondary"}
+								badgeContent={active_mobiles.length}>
+								Out today
+							</Badge>
+						}
+					/>
+					<Tab
 						label={
 							<Badge
 								showZero
 								className={classes.padding}
 								color="secondary"
 								badgeContent={filtered_mobiles.length}>
-								Mobiles
-							</Badge>
-						}
-					/>
-					<Tab
-						className={classes.tab}
-						disabled={active_mobiles.length === 0}
-						label={
-							<Badge
-								className={classes.padding}
-								color={"secondary"}
-								badgeContent={active_mobiles.length}>
-								Active
+								All vans
 							</Badge>
 						}
 					/>

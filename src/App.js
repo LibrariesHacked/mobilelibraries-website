@@ -11,6 +11,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import IconButton from '@material-ui/core/IconButton';
 import Snackbar from '@material-ui/core/Snackbar';
 
+// Icons
 import CloseIcon from '@material-ui/icons/CloseTwoTone';
 
 // MUI Style
@@ -54,20 +55,13 @@ const theme = createMuiTheme({
       root: {
         borderBottom: 'none'
       }
-    },
+    }
   }
 });
 
 const styles = theme => ({
   root: {
     flexGrow: 1
-  },
-  toolbar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
-    ...theme.mixins.toolbar
   },
   content: {
     flexGrow: 1,
@@ -312,7 +306,6 @@ class App extends Component {
             />
             <Container maxWidth="lg">
               <main className={classes.content}>
-                <div className={classes.toolbar} />
                 <Route
                   path='/'
                   exact
@@ -440,7 +433,7 @@ class App extends Component {
                   onClick={this.closeSnackbar}
                 >
                   <CloseIcon />
-                </IconButton>,
+                </IconButton>
               ]}
             />
           </div>

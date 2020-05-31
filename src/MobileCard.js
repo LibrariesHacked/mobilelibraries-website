@@ -29,11 +29,10 @@ const styles = theme => ({
 	bullet: {
 		display: 'inline-block',
 		margin: '0 2px',
-		transform: 'scale(0.8)'
+		transform: 'scale(1.2)'
 	},
 	card: {
-		minWidth: 275,
-		border: '1px solid #E0E0E0'
+		minWidth: 275
 	},
 	leftIcon: {
 		marginRight: theme.spacing(1)
@@ -49,13 +48,11 @@ const styles = theme => ({
 		margin: 8
 	},
 	progress: {
-		margin: theme.spacing(2),
+		margin: theme.spacing(2)
 	}
 });
 
 class MobileCard extends Component {
-	state = {
-	};
 
 	stopButton = (stop) => {
 		return <Button color="secondary" onClick={() => this.props.viewStop({ id: stop.stop_id })}>{stop.stop_name}</Button>

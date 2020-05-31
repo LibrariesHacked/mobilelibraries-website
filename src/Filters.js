@@ -33,12 +33,11 @@ const styles = (theme) => ({
 	bullet: {
 		display: 'inline-block',
 		margin: '0 2px',
-		transform: 'scale(0.8)'
+		transform: 'scale(1.2)'
 	},
 	card: {
 		position: 'relative',
-		minWidth: 275,
-		border: '1px solid #E0E0E0'
+		minWidth: 275
 	},
 	grid: {
 		marginBottom: 10
@@ -114,7 +113,7 @@ class Filters extends Component {
 			<Grid className={classes.grid} container spacing={3}>
 				<Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
 				<Alert severity="warning">
-					<AlertTitle>In development</AlertTitle>
+					<AlertTitle>Work in progress</AlertTitle>
 					While this site is being developed you may see unexpected behaviour.
 				</Alert>
 				</Grid>
@@ -122,7 +121,7 @@ class Filters extends Component {
 					<Card className={classes.card} elevation={0}>
 						<CardContent>
 							<Typography className={classes.title} color="textSecondary" gutterBottom>
-								{Math.round(distance / 1609) + ' mile radius'}
+								{'Search radius: ' + Math.round(distance / 1609) + ' mile'}
 								{bull}
 								{'GPS tracking ' + (search_type === 'gps' ? 'on' : 'off')}
 							</Typography>
