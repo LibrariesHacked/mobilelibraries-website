@@ -38,9 +38,6 @@ const styles = theme => ({
   grow: {
     flexGrow: 1
   },
-  hide: {
-    display: 'none'
-  },
   leftIcon: {
     marginRight: theme.spacing(1)
   },
@@ -53,7 +50,7 @@ const styles = theme => ({
 })
 
 class AppHeader extends Component {
-  render () {
+  render() {
     const { loading, classes, searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance, location } = this.props
     return (
       <>
@@ -103,8 +100,10 @@ class AppHeader extends Component {
                   </IconButton>
                 </>
               </Hidden>
-              {location.pathname === '/map'
-                ? <PostcodeSearch
+              {loading ? <CircularProgress className={classes.progress} color='secondary' size={30} /> : null}
+              <span className={classes.grow} />
+              {location.pathname === '/map' ? (
+                <PostcodeSearch
                   postcode={postcode}
                   distance={distance}
                   searchType={searchType}
@@ -112,8 +111,8 @@ class AppHeader extends Component {
                   setDistance={setDistance}
                   postcodeSearch={postcodeSearch}
                   clearSearch={clearSearch}
-                /> : null}
-              {loading ? <CircularProgress className={classes.progress} color='secondary' size={30} /> : null}
+                />
+              ) : null}
             </Toolbar>
           </Container>
         </AppBar>

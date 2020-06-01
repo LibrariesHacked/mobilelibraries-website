@@ -2,6 +2,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+// Material UI
+import Fab from '@material-ui/core/Fab'
+import Tooltip from '@material-ui/core/Tooltip'
+
 // Mapbox GL
 import ReactMapboxGl, { ZoomControl, Source, Layer, Marker } from "react-mapbox-gl";
 
@@ -11,20 +15,15 @@ import MapSettings from './MapSettings';
 import MobileAvatar from './MobileAvatar';
 
 // Mui Icons
-import SettingsIcon from '@material-ui/icons/SettingsTwoTone';
-import MoreVertIcon from '@material-ui/icons/MoreVertTwoTone';
+import LayersIcon from '@material-ui/icons/LayersTwoTone';
 
 // Material UI Styles
 import { withStyles } from '@material-ui/core/styles';
 
-// lab
-import SpeedDial from '@material-ui/lab/SpeedDial';
-import SpeedDialAction from '@material-ui/lab/SpeedDialAction';
-
 import moment from 'moment';
 
 const styles = theme => ({
-  settingsDial: {
+  settings: {
     position: 'absolute',
     bottom: theme.spacing(4),
     right: theme.spacing(4),
@@ -49,7 +48,6 @@ class MobileMap extends Component {
     time_update_interval: null,
     current_time: null,
     map: null,
-    settings_dial_open: false,
     settings_dialog_open: false
   }
 
@@ -336,25 +334,22 @@ class MobileMap extends Component {
             : null}
           <ZoomControl position="bottom-left" />
         </Map>
-        <SpeedDial
-          ariaLabel="Settings"
-          FabProps={{
-            size: "small"
-          }}
-          className={classes.settingsDial}
-          icon={<SettingsIcon />}
-          onClose={() => this.setState({ settings_dial_open: false })}
-          onOpen={() => this.setState({ settings_dial_open: true })}
-          open={this.state.settings_dial_open}
-          direction={'left'}
+        <Tooltip
+          title={'Map settings'}
         >
-          <SpeedDialAction
-            key={'act_more'}
-            icon={<MoreVertIcon />}
-            tooltipTitle={'More settings'}
-            onClick={() => this.setState({ settings_dialog_open: true, settings_dial_open: false })}
-          />
-        </SpeedDial>
+          <Fab
+            size="small"
+            className={classes.settings}
+            color='primary'
+            style={{
+              color: 'white',
+              border: '1px solid #FFFFFF'
+            }}
+            onClick={() => this.setState({ settings_dialog_open: true })}
+          >
+            <LayersIcon />
+          </Fab>
+        </Tooltip>
         <MapSettings
           map_settings={map_settings}
           open={this.state.settings_dialog_open}

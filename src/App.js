@@ -60,12 +60,12 @@ const theme = createMuiTheme({
 });
 
 const styles = theme => ({
-  root: {
-    flexGrow: 1
-  },
   content: {
     flexGrow: 1,
-    padding: theme.spacing(3)
+    padding: theme.spacing(2)
+  },
+  root: {
+    flexGrow: 1
   }
 });
 
@@ -104,7 +104,6 @@ class App extends Component {
     search_type: '', // search types can be gps, postcode, service
     distance: 1609,
     postcode: '',
-    postcode_district: '',
     // GPS
     current_position: [],
     position_update_interval: '',
@@ -226,14 +225,14 @@ class App extends Component {
   setDistance = (distance) => this.setState({ distance: distance });
 
   clearSearch = () => {
-    this.setState({ postcode: '', postcode_district: '', current_position: [], search_type: '', organisation_filter: [], mobile_filter: [], route_filter: [] });
+    this.setState({ postcode: '', current_position: [], search_type: '', organisation_filter: [], mobile_filter: [], route_filter: [] });
   }
 
   // postcodeSearch
   postcodeSearch = (postcode) => {
 
     if (postcode === '') {
-      this.setState({ snackbar_open: true, snackbar_message: 'You must enter a postcode', postcode_district: '' });
+      this.setState({ snackbar_open: true, snackbar_message: 'You must enter a postcode' });
       return;
     }
 
@@ -253,11 +252,10 @@ class App extends Component {
         new_state.position = postcode_data.location;
         new_state.zoom = [11];
         new_state.loading_postcode = false;
-        new_state.postcode_district = postcode_data.admin_district;
         this.setState(new_state);
         this.getMobilesNearest();
       } else {
-        this.setState({ snackbar_open: true, snackbar_message: 'Could not find postcode', postcode_district: '' });
+        this.setState({ snackbar_open: true, snackbar_message: 'Could not find postcode' });
       }
     });
   }
@@ -310,36 +308,36 @@ class App extends Component {
                   path='/'
                   exact
                   render={() => {
-                    return (<Mobiles
-                      mobiles={this.state.mobiles}
-                      mobile_lookup={this.state.mobile_lookup}
-                      mobile_location_lookup={this.state.mobile_location_lookup}
-                      mobiles_nearest_lookup={this.state.mobiles_nearest_lookup}
-                      organisation_lookup={this.state.organisation_lookup}
-                      viewStop={this.viewStop}
-                      viewStopsByMobile={this.viewStopsByMobile}
-                      viewStopsByOrganisation={this.viewStopsByOrganisation}
-                      organisations={this.state.organisations}
-                      organisation_filter={this.state.organisation_filter}
-                      setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
-                      clearOrganisationFilter={this.clearOrganisationFilter}
-                      mobile_filter={this.state.mobile_filter}
-                      setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
-                      clearMobileFilter={this.clearMobileFilter}
-                      routes={this.state.routes}
-                      route_lookup={this.state.route_lookup}
-                      route_filter={this.state.route_filter}
-                      setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
-                      clearRouteFilter={this.clearRouteFilter}
-                      postcode={this.state.postcode}
-                      postcode_district={this.state.postcode_district}
-                      distance={this.state.distance}
-                      search_type={this.state.search_type}
-                      setDistance={this.setDistance}
-                      toggleGPS={this.toggleGPS}
-                      postcodeSearch={this.postcodeSearch}
-                      clearSearch={this.clearSearch}
-                    />)
+                    return (
+                      <Mobiles
+                        mobiles={this.state.mobiles}
+                        mobile_lookup={this.state.mobile_lookup}
+                        mobile_location_lookup={this.state.mobile_location_lookup}
+                        mobiles_nearest_lookup={this.state.mobiles_nearest_lookup}
+                        organisation_lookup={this.state.organisation_lookup}
+                        viewStop={this.viewStop}
+                        viewStopsByMobile={this.viewStopsByMobile}
+                        viewStopsByOrganisation={this.viewStopsByOrganisation}
+                        organisations={this.state.organisations}
+                        organisation_filter={this.state.organisation_filter}
+                        setOrganisationFilter={(organisation_id) => { this.setState({ organisation_filter: [organisation_id] }) }}
+                        clearOrganisationFilter={this.clearOrganisationFilter}
+                        mobile_filter={this.state.mobile_filter}
+                        setMobileFilter={(mobile_id) => { this.setState({ mobile_filter: [mobile_id] }) }}
+                        clearMobileFilter={this.clearMobileFilter}
+                        routes={this.state.routes}
+                        route_lookup={this.state.route_lookup}
+                        route_filter={this.state.route_filter}
+                        setRouteFilter={(route_id) => { this.setState({ route_filter: [route_id] }) }}
+                        clearRouteFilter={this.clearRouteFilter}
+                        postcode={this.state.postcode}
+                        distance={this.state.distance}
+                        search_type={this.state.search_type}
+                        setDistance={this.setDistance}
+                        toggleGPS={this.toggleGPS}
+                        postcodeSearch={this.postcodeSearch}
+                        clearSearch={this.clearSearch}
+                      />)
                   }}
                 />
                 <Route
@@ -366,7 +364,6 @@ class App extends Component {
                         viewMapStop={this.viewMapStop}
                         current_position={this.state.current_position}
                         postcode={this.state.postcode}
-                        postcode_district={this.state.postcode_district}
                         distance={this.state.distance}
                         search_type={this.state.search_type}
                         setDistance={this.setDistance}

@@ -39,6 +39,7 @@ class MobileAvatar extends Component {
           color='primary'
           style={{
             backgroundColor: utilsHelper.hextoRGBA(organisation.colour, 0.8),
+            color: 'white',
             border: (border + 'px solid #FFFFFF')
           }}
         >

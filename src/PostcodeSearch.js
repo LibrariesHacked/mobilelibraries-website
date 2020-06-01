@@ -14,8 +14,6 @@ import { withStyles } from '@material-ui/core/styles';
 
 // Material icons
 import ClearIcon from '@material-ui/icons/ClearTwoTone';
-import LocationSearchingIcon from '@material-ui/icons/LocationSearchingTwoTone';
-import MyLocationIcon from '@material-ui/icons/MyLocationTwoTone';
 import SearchIcon from '@material-ui/icons/SearchTwoTone';
 import SettingsIcon from '@material-ui/icons/SettingsTwoTone';
 
@@ -26,14 +24,12 @@ const styles = theme => ({
 	iconButton: {
 		padding: 10
 	},
-	inputRoot: {
-		color: 'inherit'
-	},
 	inputInput: {
 		paddingTop: theme.spacing(),
 		paddingRight: theme.spacing(),
 		paddingBottom: theme.spacing(),
-		paddingLeft: theme.spacing(2)
+		paddingLeft: theme.spacing(2),
+		fontWeight: 500
 	},
 	search: {
 		position: 'relative',
@@ -46,7 +42,7 @@ const styles = theme => ({
 		marginLeft: 0,
 		marginRight: theme.spacing(),
 		display: 'flex',
-		maxWidth: 300
+		maxWidth: 240
 	}
 });
 
@@ -69,13 +65,12 @@ class PostcodeSearch extends React.Component {
 	}
 
 	render() {
-		const { classes, search_type, postcodeSearch, clearSearch, toggleGPS } = this.props;
+		const { classes, search_type, postcodeSearch, clearSearch } = this.props;
 		return (
 			<div className={classes.search}>
 				<InputBase
 					placeholder="Postcode"
 					classes={{
-						root: classes.inputRoot,
 						input: classes.inputInput
 					}}
 					value={this.state.postcode}
@@ -85,7 +80,6 @@ class PostcodeSearch extends React.Component {
 				{search_type === 'postcode' ?
 					<Tooltip title={'Clear search'}>
 						<IconButton
-							color="secondary"
 							className={classes.iconButton}
 							onClick={() => clearSearch()}>
 							<ClearIcon />
@@ -98,15 +92,6 @@ class PostcodeSearch extends React.Component {
 						className={classes.iconButton}
 						onClick={() => postcodeSearch(this.state.postcode)}>
 						<SearchIcon />
-					</IconButton>
-				</Tooltip>
-				<Tooltip title={'Track my location'}>
-					<IconButton
-						className={classes.iconButton}
-						color={search_type === 'gps' ? 'primary' : 'secondary'}
-						onClick={() => { toggleGPS() }}
-					>
-						{search_type === 'gps' ? <MyLocationIcon /> : <LocationSearchingIcon />}
 					</IconButton>
 				</Tooltip>
 				<Tooltip title={'Change search settings'}>

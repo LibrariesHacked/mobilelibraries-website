@@ -5,13 +5,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 // Material UI
-import { Alert, AlertTitle } from '@material-ui/lab';
 import Button from '@material-ui/core/Button';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
 import Chip from '@material-ui/core/Chip';
-import Grid from '@material-ui/core/Grid';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -30,24 +25,29 @@ import DirectionsIcon from '@material-ui/icons/DirectionsTwoTone';
 import PostcodeSearch from './PostcodeSearch';
 
 const styles = (theme) => ({
-	bullet: {
-		display: 'inline-block',
-		margin: '0 2px',
-		transform: 'scale(1.2)'
+	button: {
+		marginRight: theme.spacing(1)
 	},
-	card: {
-		position: 'relative',
-		minWidth: 275
-	},
-	grid: {
-		marginBottom: 10
+	chip: {
+		marginRight: theme.spacing(1)
 	},
 	leftIcon: {
 		marginRight: theme.spacing(1)
 	},
+	search: {
+		alignContent: 'center',
+		textAlign: 'center',
+		display: 'table',
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		marginBottom: '10px'
+	},
+	subtitle: {
+		textAlign: 'center',
+		marginBottom: '5px'
+	},
 	title: {
-		fontSize: 12,
-		fontWeight: 500
+		textAlign: 'center'
 	}
 });
 
@@ -104,86 +104,58 @@ class Filters extends Component {
 			classes, organisations, organisation_lookup, organisation_filter,
 			clearOrganisationFilter, mobiles, mobile_lookup, mobile_filter, clearMobileFilter,
 			routes, route_lookup, route_filter, clearRouteFilter,
-			search_type, postcode, postcode_district, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
+			search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
 		} = this.props;
-		const bull = <span className={classes.bullet}>•</span>;
+
 		const countries = new Set(organisations.map(org => org.country));
 
 		return (
-			<Grid className={classes.grid} container spacing={3}>
-				<Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
-				<Alert severity="warning">
-					<AlertTitle>Work in progress</AlertTitle>
-					While this site is being developed you may see unexpected behaviour.
-				</Alert>
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
-					<Card className={classes.card} elevation={0}>
-						<CardContent>
-							<Typography className={classes.title} color="textSecondary" gutterBottom>
-								{'Search radius: ' + Math.round(distance / 1609) + ' mile'}
-								{bull}
-								{'GPS tracking ' + (search_type === 'gps' ? 'on' : 'off')}
-							</Typography>
-							<Typography variant="h6" component="h2" gutterBottom>Search by location</Typography>
-							<PostcodeSearch
-								postcode={postcode}
-								distance={distance}
-								search_type={search_type}
-								toggleGPS={toggleGPS}
-								setDistance={setDistance}
-								postcodeSearch={postcodeSearch}
-								clearSearch={clearSearch}
-							/>
-							{postcode_district !== '' ?
-								<Typography variant="caption" display="block">{'Searching around ' + postcode_district + '.'}</Typography>
-								: null}
-						</CardContent>
-					</Card>
-				</Grid>
-				<Grid item xs={12} sm={6} md={4} lg={4} xl={2}>
-					<Card className={classes.card} elevation={0}>
-						<CardContent>
-							<Typography className={classes.title} color="textSecondary" gutterBottom>
-								{organisations.length + ' library services'}
-								{bull}
-								{mobiles.length + ' mobile libraries'}
-								{bull}
-								{routes.length + ' routes'}
-							</Typography>
-							<Typography variant="h6" component="h2">Search by service</Typography>
-						</CardContent>
-						<CardActions>
-							{organisation_filter.length === 0 ? <Tooltip title="Choose library service">
-								<Button size="small" color="primary" className={classes.button} onClick={(e) => this.openOrganisationMenu(e.currentTarget)}>
-									<BusinessIcon className={classes.leftIcon} />Service
+			<>
+				<Typography component='h2' variant='h6' color='secondary' className={classes.title}>Your mobile service</Typography>
+				<Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Find services within {distance / 1609} mile(s)</Typography>
+				<div className={classes.search}>
+					<PostcodeSearch
+						postcode={postcode}
+						distance={distance}
+						search_type={search_type}
+						toggleGPS={toggleGPS}
+						setDistance={setDistance}
+						postcodeSearch={postcodeSearch}
+						clearSearch={clearSearch}
+					/>
+				</div>
+				<Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Or, choose your library service</Typography>
+				<div className={classes.search}>
+					{organisation_filter.length === 0 ? (
+						<Tooltip title="Choose library service">
+							<Button color="secondary" className={classes.button} onClick={(e) => this.openOrganisationMenu(e.currentTarget)}>
+								<BusinessIcon className={classes.leftIcon} />Select service
+						</Button>
+						</Tooltip>
+					) :
+						<Chip className={classes.chip} color="primary" variant="outlined" onDelete={clearOrganisationFilter} label={organisation_lookup[organisation_filter[0]].name} />
+					}
+					{organisation_filter.length > 0 ?
+						(mobile_filter.length === 0 ?
+							<Tooltip title="Choose mobile library">
+								<Button color="secondary" className={classes.button} onClick={(e) => this.openMobileMenu(e.currentTarget)}>
+									<DirectionBusIcon className={classes.leftIcon} />Select mobile
 								</Button>
 							</Tooltip> :
-								<Chip size="small" color="secondary" onDelete={clearOrganisationFilter} label={organisation_lookup[organisation_filter[0]].name} />
-							}
-							{organisation_filter.length > 0 ?
-								(mobile_filter.length === 0 ?
-									<Tooltip title="Choose mobile library">
-										<Button size="small" color="primary" className={classes.button} onClick={(e) => this.openMobileMenu(e.currentTarget)}>
-											<DirectionBusIcon className={classes.leftIcon} />Mobile
+							<Chip className={classes.chip} color="primary" variant="outlined" onDelete={(e) => clearMobileFilter()} label={mobile_lookup[mobile_filter[0]].name} />
+						)
+						: null}
+					{mobile_filter.length > 0 ?
+						(route_filter.length === 0 ?
+							<Tooltip title="Choose route">
+								<Button color="secondary" className={classes.button} onClick={(e) => this.openRouteMenu(e.currentTarget)}>
+									<DirectionsIcon className={classes.leftIcon} />Select route
 										</Button>
-									</Tooltip> :
-									<Chip size="small" color="secondary" onDelete={(e) => clearMobileFilter()} label={mobile_lookup[mobile_filter[0]].name} />
-								)
-								: null}
-							{mobile_filter.length > 0 ?
-								(route_filter.length === 0 ?
-									<Tooltip title="Choose route">
-										<Button size="small" color="primary" className={classes.button} onClick={(e) => this.openRouteMenu(e.currentTarget)}>
-											<DirectionsIcon className={classes.leftIcon} />Route
-										</Button>
-									</Tooltip> :
-									<Chip size="small" color="secondary" onDelete={(e) => clearRouteFilter()} label={route_lookup[route_filter[0]].name} />
-								)
-								: null}
-						</CardActions>
-					</Card>
-				</Grid>
+							</Tooltip> :
+							<Chip className={classes.chip} color="primary" variant="outlined" onDelete={(e) => clearRouteFilter()} label={route_lookup[route_filter[0]].name} />
+						)
+						: null}
+				</div>
 				<Menu
 					id="menu-library-service"
 					anchorEl={this.state.organisation_menu_anchor}
@@ -191,7 +163,6 @@ class Filters extends Component {
 					open={Boolean(this.state.organisation_menu_anchor)}
 					onClose={() => this.closeOrganisationMenu()}
 				>
-
 					{
 						Array.from(countries)
 							.sort((a, b) => a.localeCompare(b))
@@ -249,7 +220,7 @@ class Filters extends Component {
 							return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => this.chooseRoute(route.id)}>{route.name}</MenuItem>
 						})}
 				</Menu>
-			</Grid>
+			</>
 		);
 	}
 }

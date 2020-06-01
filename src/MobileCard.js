@@ -135,7 +135,7 @@ class MobileCard extends Component {
 				<CardActions>
 					<Tooltip title="Mobile library stops">
 						<Button component={Link} to="/stops" size="small" color="primary" className={classes.button} onClick={() => this.props.viewStopsByMobile(organisation.id, mobile.id)}>
-							<LocationOnIcon className={classes.leftIcon} />Stops
+							<LocationOnIcon className={classes.leftIcon} />View stops
 						</Button>
 					</Tooltip>
 					<Divider className={classes.verticalDivider} />
