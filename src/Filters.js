@@ -1,232 +1,205 @@
 // React
-import React, { Component } from 'react';
-
-// Other core stuff
-import PropTypes from 'prop-types';
+import React, { useState } from 'react'
 
 // Material UI
-import Button from '@material-ui/core/Button';
-import Chip from '@material-ui/core/Chip';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Tooltip from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
-
-// Material UI Styles
-import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button'
+import Chip from '@material-ui/core/Chip'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import Tooltip from '@material-ui/core/Tooltip'
+import Typography from '@material-ui/core/Typography'
 
 // MUI Icons
-import BusinessIcon from '@material-ui/icons/BusinessTwoTone';
-import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone';
-import DirectionsIcon from '@material-ui/icons/DirectionsTwoTone';
+import BusinessIcon from '@material-ui/icons/BusinessTwoTone'
+import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
+import DirectionsIcon from '@material-ui/icons/DirectionsTwoTone'
+
+// Material UI Styles
+import { makeStyles } from '@material-ui/core/styles'
 
 // Our components
-import PostcodeSearch from './PostcodeSearch';
+import PostcodeSearch from './PostcodeSearch'
 
-const styles = (theme) => ({
-	button: {
-		marginRight: theme.spacing(1)
-	},
-	chip: {
-		marginRight: theme.spacing(1)
-	},
-	leftIcon: {
-		marginRight: theme.spacing(1)
-	},
-	search: {
-		alignContent: 'center',
-		textAlign: 'center',
-		display: 'table',
-		marginLeft: 'auto',
-		marginRight: 'auto',
-		marginBottom: '10px'
-	},
-	subtitle: {
-		textAlign: 'center',
-		marginBottom: '5px'
-	},
-	title: {
-		textAlign: 'center'
-	}
-});
+const useStyles = makeStyles((theme) => ({
+  button: {
+    marginRight: theme.spacing(1)
+  },
+  chip: {
+    marginRight: theme.spacing(1)
+  },
+  leftIcon: {
+    marginRight: theme.spacing(1)
+  },
+  search: {
+    alignContent: 'center',
+    textAlign: 'center',
+    display: 'table',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: '10px'
+  },
+  subtitle: {
+    textAlign: 'center',
+    marginBottom: '5px'
+  },
+  title: {
+    textAlign: 'center'
+  }
+}))
 
-class Filters extends Component {
+function Filters (organisations, organisationLookup, organisationFilter, setOrganisationFilter,
+  clearOrganisationFilter, mobiles, mobileLookup, mobileFilter, setMobileFilter, clearMobileFilter,
+  routes, routeLookup, routeFilter, setRouteFilter, clearRouteFilter,
+  searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance) {
+  const [organisationMenuAnchor, setOrganisationMenuAnchor] = useState(null)
+  const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null)
+  const [routeMenuAnchor, setRouteMenuAnchor] = useState(null)
 
-	state = {
-		organisation_menu_anchor: null,
-		mobile_menu_anchor: null,
-		route_menu_anchor: null
-	};
+  const openOrganisationMenu = (element) => setOrganisationMenuAnchor(element)
 
-	openOrganisationMenu = (element) => {
-		this.setState({ organisation_menu_anchor: element });
-	}
+  const closeOrganisationMenu = () => setOrganisationMenuAnchor(null)
 
-	closeOrganisationMenu = () => {
-		this.setState({ organisation_menu_anchor: null });
-	}
+  const chooseOrganisation = (organisationId) => {
+    clearSearch()
+    setOrganisationFilter(organisationId)
+    closeOrganisationMenu()
+  }
 
-	chooseOrganisation = (organisationId) => {
-		this.props.clearSearch();
-		this.props.setOrganisationFilter(organisationId);
-		this.closeOrganisationMenu();
-	}
+  const openMobileMenu = (element) => setMobileMenuAnchor(element)
 
-	openMobileMenu = (element) => {
-		this.setState({ mobile_menu_anchor: element });
-	}
+  const closeMobileMenu = () => setMobileMenuAnchor(null)
 
-	closeMobileMenu = () => {
-		this.setState({ mobile_menu_anchor: null });
-	}
+  const chooseMobile = (mobileId) => {
+    setMobileFilter(mobileId)
+    closeMobileMenu()
+  }
 
-	chooseMobile = (mobileId) => {
-		this.props.setMobileFilter(mobileId);
-		this.closeMobileMenu();
-	}
+  const openRouteMenu = (element) => setRouteMenuAnchor(element)
 
-	openRouteMenu = (element) => {
-		this.setState({ route_menu_anchor: element });
-	}
+  const closeRouteMenu = () => setRouteMenuAnchor(null)
 
-	closeRouteMenu = () => {
-		this.setState({ route_menu_anchor: null });
-	}
+  const chooseRoute = (routeId) => {
+    setRouteFilter(routeId)
+    closeRouteMenu()
+  }
 
-	chooseRoute = (routeId) => {
-		this.props.setRouteFilter(routeId);
-		this.closeRouteMenu();
-	}
+  const countries = new Set(organisations.map(org => org.country))
 
-	render() {
-		const {
-			classes, organisations, organisationLookup, organisationFilter,
-			clearOrganisationFilter, mobiles, mobileLookup, mobileFilter, clearMobileFilter,
-			routes, routeLookup, routeFilter, clearRouteFilter,
-			searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
-		} = this.props;
+  const classes = useStyles()
 
-		const countries = new Set(organisations.map(org => org.country));
-
-		return (
-			<>
-				<Typography component='h2' variant='h6' color='secondary' className={classes.title}>Your mobile service</Typography>
-				<Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Find services within {distance / 1609} mile(s)</Typography>
-				<div className={classes.search}>
-					<PostcodeSearch
-						postcode={postcode}
-						distance={distance}
-						searchType={searchType}
-						toggleGPS={toggleGPS}
-						setDistance={setDistance}
-						postcodeSearch={postcodeSearch}
-						clearSearch={clearSearch}
-					/>
-				</div>
-				<Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Or, choose your library service</Typography>
-				<div className={classes.search}>
-					{organisationFilter.length === 0 ? (
-						<Tooltip title="Choose library service">
-							<Button color="secondary" className={classes.button} onClick={(e) => this.openOrganisationMenu(e.currentTarget)}>
-								<BusinessIcon className={classes.leftIcon} />Select service
-						</Button>
-						</Tooltip>
-					) :
-						<Chip className={classes.chip} color="primary" variant="outlined" onDelete={clearOrganisationFilter} label={organisationLookup[organisationFilter[0]].name} />
-					}
-					{organisationFilter.length > 0 ?
-						(mobileFilter.length === 0 ?
-							<Tooltip title="Choose mobile library">
-								<Button color="secondary" className={classes.button} onClick={(e) => this.openMobileMenu(e.currentTarget)}>
-									<DirectionBusIcon className={classes.leftIcon} />Select mobile
-								</Button>
-							</Tooltip> :
-							<Chip className={classes.chip} color="primary" variant="outlined" onDelete={(e) => clearMobileFilter()} label={mobileLookup[mobileFilter[0]].name} />
-						)
-						: null}
-					{mobileFilter.length > 0 ?
-						(routeFilter.length === 0 ?
-							<Tooltip title="Choose route">
-								<Button color="secondary" className={classes.button} onClick={(e) => this.openRouteMenu(e.currentTarget)}>
-									<DirectionsIcon className={classes.leftIcon} />Select route
-										</Button>
-							</Tooltip> :
-							<Chip className={classes.chip} color="primary" variant="outlined" onDelete={(e) => clearRouteFilter()} label={routeLookup[routeFilter[0]].name} />
-						)
-						: null}
-				</div>
-				<Menu
-					id="menu-library-service"
-					anchorEl={organisation_menu_anchor}
-					keepMounted
-					open={Boolean(organisation_menu_anchor)}
-					onClose={() => this.closeOrganisationMenu()}
-				>
-					{
-						Array.from(countries)
-							.sort((a, b) => a.localeCompare(b))
-							.map(country => {
-								let menu_items = [<ListSubheader disableSticky={true}>{country}</ListSubheader>];
-								const org_list = organisations
-									.sort((a, b) => a.name.localeCompare(b.name))
-									.filter(org => org.country === country)
-									.map(org => {
-										return <MenuItem key={'mnu_itm_org_' + org.id} onClick={() => this.chooseOrganisation(org.id)}>{org.name}</MenuItem>
-									})
-								return menu_items.concat(org_list);
-							})
-					}
-				</Menu>
-				<Menu
-					id="menu-mobile-library"
-					anchorEl={mobile_menu_anchor}
-					keepMounted
-					open={Boolean(mobile_menu_anchor)}
-					onClose={() => this.closeMobileMenu()}
-				>
-					{mobiles
-						.filter(mob => {
-							let display = true;
-							if (organisationFilter.length > 0 &&
-								organisationFilter.indexOf(mob.organisationId) === -1) {
-								display = false;
-							}
-							return display;
-						})
-						.sort((a, b) => a.name.localeCompare(b.name))
-						.map(mob => {
-							return <MenuItem key={'mnu_itm_mob_' + mob.id} onClick={() => this.chooseMobile(mob.id)}>{mob.name}</MenuItem>
-						})}
-				</Menu>
-				<Menu
-					id="menu-route"
-					anchorEl={route_menu_anchor}
-					keepMounted
-					open={Boolean(route_menu_anchor)}
-					onClose={() => this.closeRouteMenu()}
-				>
-					{routes
-						.filter(route => {
-							let display = true;
-							if (mobileFilter.length > 0 &&
-								mobileFilter.indexOf(route.mobileId) === -1) {
-								display = false;
-							}
-							return display;
-						})
-						.sort((a, b) => a.name.localeCompare(b.name))
-						.map(route => {
-							return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => this.chooseRoute(route.id)}>{route.name}</MenuItem>
-						})}
-				</Menu>
-			</>
-		);
-	}
+  return (
+    <>
+      <Typography component='h2' variant='h6' color='secondary' className={classes.title}>Your mobile service</Typography>
+      <Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Find services within {distance / 1609} mile(s)</Typography>
+      <div className={classes.search}>
+        <PostcodeSearch
+          postcode={postcode}
+          distance={distance}
+          searchType={searchType}
+          toggleGPS={toggleGPS}
+          setDistance={setDistance}
+          postcodeSearch={postcodeSearch}
+          clearSearch={clearSearch}
+        />
+      </div>
+      <Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Or, choose your library service</Typography>
+      <div className={classes.search}>
+        {organisationFilter.length === 0 ? (
+          <Tooltip title='Choose library service'>
+            <Button color='secondary' className={classes.button} onClick={(e) => openOrganisationMenu(e.currentTarget)}>
+              <BusinessIcon className={classes.leftIcon} />Select service
+            </Button>
+          </Tooltip>
+        ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={clearOrganisationFilter} label={organisationLookup[organisationFilter[0]].name} />}
+        {organisationFilter.length > 0
+          ? (mobileFilter.length === 0
+            ? (
+              <Tooltip title='Choose mobile library'>
+                <Button color='secondary' className={classes.button} onClick={(e) => openMobileMenu(e.currentTarget)}>
+                  <DirectionBusIcon className={classes.leftIcon} />Select mobile
+                </Button>
+              </Tooltip>
+            ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={(e) => clearMobileFilter()} label={mobileLookup[mobileFilter[0]].name} />
+          ) : null}
+        {mobileFilter.length > 0
+          ? (routeFilter.length === 0
+            ? (
+              <Tooltip title='Choose route'>
+                <Button color='secondary' className={classes.button} onClick={(e) => openRouteMenu(e.currentTarget)}>
+                  <DirectionsIcon className={classes.leftIcon} />Select route
+                </Button>
+              </Tooltip>
+            ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={(e) => clearRouteFilter()} label={routeLookup[routeFilter[0]].name} />
+          )
+          : null}
+      </div>
+      <Menu
+        id='menu-library-service'
+        anchorEl={organisationMenuAnchor}
+        keepMounted
+        open={Boolean(organisationMenuAnchor)}
+        onClose={() => closeOrganisationMenu()}
+      >
+        {
+          Array.from(countries)
+            .sort((a, b) => a.localeCompare(b))
+            .map((country, idx) => {
+              const menuItems = [<ListSubheader key={'lst_' + idx} disableSticky>{country}</ListSubheader>]
+              const orgList = organisations
+                .sort((a, b) => a.name.localeCompare(b.name))
+                .filter(org => org.country === country)
+                .map(org => {
+                  return <MenuItem key={'mnu_itm_org_' + org.id} onClick={() => chooseOrganisation(org.id)}>{org.name}</MenuItem>
+                })
+              return menuItems.concat(orgList)
+            })
+        }
+      </Menu>
+      <Menu
+        id='menu-mobile-library'
+        anchorEl={mobileMenuAnchor}
+        keepMounted
+        open={Boolean(mobileMenuAnchor)}
+        onClose={() => closeMobileMenu()}
+      >
+        {mobiles
+          .filter(mob => {
+            let display = true
+            if (organisationFilter.length > 0 &&
+              organisationFilter.indexOf(mob.organisationId) === -1) {
+              display = false
+            }
+            return display
+          })
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(mob => {
+            return <MenuItem key={'mnu_itm_mob_' + mob.id} onClick={() => chooseMobile(mob.id)}>{mob.name}</MenuItem>
+          })}
+      </Menu>
+      <Menu
+        id='menu-route'
+        anchorEl={routeMenuAnchor}
+        keepMounted
+        open={Boolean(routeMenuAnchor)}
+        onClose={() => closeRouteMenu()}
+      >
+        {routes
+          .filter(route => {
+            let display = true
+            if (mobileFilter.length > 0 &&
+              mobileFilter.indexOf(route.mobileId) === -1) {
+              display = false
+            }
+            return display
+          })
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map(route => {
+            return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => chooseRoute(route.id)}>{route.name}</MenuItem>
+          })}
+      </Menu>
+    </>
+  )
 }
 
-Filters.propTypes = {
-	classes: PropTypes.object.isRequired
-}
-
-export default withStyles(styles, { withTheme: true })(Filters);
+export default Filters

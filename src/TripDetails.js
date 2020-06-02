@@ -1,67 +1,55 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import compose from 'recompose/compose';
+import React from 'react'
 
-import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import ListSubheader from '@material-ui/core/ListSubheader';
-import Typography from '@material-ui/core/Typography';
+// Material UI
+import Button from '@material-ui/core/Button'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import ListSubheader from '@material-ui/core/ListSubheader'
+import Typography from '@material-ui/core/Typography'
 
-import withWidth, { isWidthDown } from '@material-ui/core/withWidth';
-import { withStyles } from '@material-ui/core/styles';
+// Material UI Styles
+import { makeStyles } from '@material-ui/core/styles'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-const styles = theme => ({
-    dialog: {
-        border: '1px solid #E0E0E0'
-    }
-});
+const useStyles = makeStyles((theme) => ({
+  dialog: {
+    border: '1px solid #E0E0E0'
+  }
+}))
 
-class TripDetails extends React.Component {
-    state = {}
+function TripDetails (trip, open, close) {
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const estimatedDuration = Math.round(trip.duration / 60) + ' mins journey time.'
+  const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)'
 
-    close = () => { this.props.close() }
+  const classes = useStyles()
 
-    render() {
-        const { classes, width, trip } = this.props;
-        const fullScreen = isWidthDown('sm', width);
-        const estimated_duration = Math.round(trip.duration / 60) + ' mins journey time.';
-        const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)';
-        return (
-            <Dialog
-                fullScreen={fullScreen}
-                disableBackdropClick={true}
-                open={this.props.open}
-                onClose={this.close}
-                BackdropProps={
-                    {
-                        invisible: true
-                    }
-                }
-                PaperProps={
-                    {
-                        elevation: 0,
-                        className: classes.dialog
-                    }
-                }
-            >
-                <DialogTitle>{'Trip details'}</DialogTitle>
-                <DialogContent>
-                <ListSubheader disableSticky>{'From ' + trip.origin_stop_name + ' to ' + trip.destination_stop_name}</ListSubheader>
-                <Typography variant="body2" component="p">{estimated_duration + ' ' + distance}</Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={() => this.close()} color="secondary">Close</Button>
-                </DialogActions>
-            </Dialog>
-        );
-    }
+  return (
+    <Dialog
+      fullScreen={fullScreen}
+      disableBackdropClick
+      open={open}
+      onClose={close}
+      BackdropProps={{ invisible: true }}
+      PaperProps={
+        {
+          elevation: 0,
+          className: classes.dialog
+        }
+      }
+    >
+      <DialogTitle>Trip details</DialogTitle>
+      <DialogContent>
+        <ListSubheader disableSticky>{'From ' + trip.origin_stop_name + ' to ' + trip.destination_stop_name}</ListSubheader>
+        <Typography variant='body2' component='p'>{estimatedDuration + ' ' + distance}</Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={close} color='secondary'>Close</Button>
+      </DialogActions>
+    </Dialog>
+  )
 }
 
-TripDetails.propTypes = {
-    classes: PropTypes.object.isRequired
-};
-
-export default compose(withWidth(), withStyles(styles, { withTheme: true }))(TripDetails);
+export default TripDetails

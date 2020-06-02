@@ -1,8 +1,5 @@
 // React
 import React, { useState, useEffect } from 'react'
-
-// Other core stuff
-import PropTypes from 'prop-types'
 import { BrowserRouter, Route } from 'react-router-dom'
 
 // Material UI
@@ -85,19 +82,14 @@ function App () {
   const [mobileFilter, setMobileFilter] = useState([])
   const [mobileLocations, setMobileLocations] = useState([])
   const [mobileLocationLookup, setMobileLocationLookup] = useState({})
-  const [mobilesNearest, setMobilesNearest] = useState([])
   const [mobilesNearestLookup, setMobilesNearestLookup] = useState({})
-  const [mobileLocationTimer, setMobileLocationTimer] = useState(null)
 
   const [routes, setRoutes] = useState([])
   const [routeLookup, setRouteLookup] = useState({})
   const [routeFilter, setRouteFilter] = useState([])
 
-  const [fitBounds, setFitBounds] = useState(null)
   const [position, setPosition] = useState([-2.1000, 53.6138])
   const [zoom, setZoom] = useState([7])
-  const [pitch, setPitch] = useState([0])
-  const [bearing, setBearing] = useState([0])
   const [searchType, setSearchType] = useState('')
   const [distance, setDistance] = useState(1609)
   const [postcode, setPostcode] = useState('')
@@ -130,16 +122,20 @@ function App () {
     mobilesHelper.getAllMobiles(mobiles => {
       const mobileLookup = {}
       mobiles.forEach(mobile => { mobileLookup[mobile.id] = mobile })
-      this.setState({ mobiles: mobiles, mobileLookup: mobileLookup, loadingMobiles: false })
+      setMobiles(mobiles)
+      setMobileLookup(mobileLookup)
+      setLoadingMobiles(false)
     })
   }
 
   const getRoutes = () => {
-    this.setState({ loadingRoutes: true })
+    loadingRoutes(true)
     routesHelper.getAllRoutes(routes => {
       const routeLookup = {}
       routes.forEach(route => { routeLookup[route.id] = route })
-      this.setState({ routes: routes, routeLookup: routeLookup, loadingRoutes: false })
+      setRoutes(routes)
+      setRouteLookup(routeLookup)
+      setLoadingRoutes(false)
     })
   }
 
@@ -147,7 +143,8 @@ function App () {
     mobilesHelper.getMobileLocations(locations => {
       const mobileLocationLookup = {}
       locations.forEach(location => { mobileLocationLookup[location.mobileId] = location })
-      this.setState({ mobileLocations: locations, mobileLocationLookup: mobileLocationLookup })
+      setMobileLocations(locations)
+      setMobileLocationLookup(mobileLocationLookup)
     })
   }
 
@@ -155,7 +152,7 @@ function App () {
     mobilesHelper.getMobilesNearest(currentPosition, distance, mobiles => {
       const mobilesNearestLookup = {}
       mobiles.forEach(mobile => { mobilesNearestLookup[mobile.mobileId] = mobile })
-      this.setState({ mobilesNearest: mobiles, mobilesNearestLookup: mobilesNearestLookup })
+      setMobilesNearestLookup(mobilesNearestLookup)
     })
   }
 
@@ -165,117 +162,165 @@ function App () {
     getRoutes()
     getMobileLocations()
 
-    const mobileLocationTimer = setInterval(() => {
+    setInterval(() => {
       getMobileLocations()
     }, 15000)
-
-    setMobileLocationTimer(mobileLocationTimer)
   }, [])
 
   const viewStop = (stop) => {
-    // First open the dialog
-    this.openStopDialog(stop)
-    // We may or may not have a complete stop object.
-    // If calling from the stop table we do - if not we don't, all we have is ID
+    openStopDialog(stop)
     if (!stop.name) {
       stopsHelper.getStopById(stop.id, stop => {
-        this.setState({ currentStop: stop })
+        setCurrentStop(stop)
       })
     }
   }
-  const openStopDialog = (stop) => this.setState({ currentStop: stop, stopDialogOpen: true })
-  const closeStopDialog = () => this.setState({ stopDialogOpen: false })
+
+  const openStopDialog = (stop) => {
+    setCurrentStop(stop)
+    setStopDialogOpen(true)
+  }
 
   const viewTrip = (trip) => {
-    // First open the dialog
-    this.openTripDialog(trip)
+    openTripDialog(trip)
     tripsHelper.getTripById(trip.id, trip => {
-      this.setState({ currentTrip: trip })
+      setCurrentTrip(trip)
     })
   }
-  const openTripDialog = (trip) => this.setState({ currentTrip: trip, tripDialogOpen: true })
-  const closeTripDialog = () => this.setState({ tripDialogOpen: false })
 
-  const viewStopsByOrganisation = (organisationId) => this.setState({ page: 'stops', organisationFilter: [organisationId], mobileFilter: [], routeFilter: [] })
-  const viewStopsByMobile = (organisationId, mobileId) => this.setState({ page: 'stops', organisationFilter: [organisationId], mobileFilter: [mobileId], routeFilter: [] })
-  const viewStopsByRoute = (organisationId, mobileId, routeId) => this.setState({ page: 'stops', organisationFilter: [organisationId], mobileFilter: [mobileId], routeFilter: [routeId] })
-  const clearMobileFilter = () => this.setState({ mobileFilter: [], routeFilter: [] })
-  const clearRouteFilter = () => this.setState({ routeFilter: [] })
-  const clearOrganisationFilter = () => this.setState({ organisationFilter: [], mobileFilter: [], routeFilter: [] })
+  const openTripDialog = (trip) => {
+    setCurrentTrip(trip)
+    setTripDialogOpen(true)
+  }
 
-  const viewMapStop = (longitude, latitude) => this.setState({ page: 'map', position: [longitude, latitude], zoom: [15], stopDialogOpen: false })
+  const viewStopsByOrganisation = (organisationId) => {
+    setOrganisationFilter([organisationId])
+    setMobileFilter([])
+    setRouteFilter()
+  }
+
+  const viewStopsByMobile = (organisationId, mobileId) => {
+    setOrganisationFilter([organisationId])
+    setMobileFilter([mobileId])
+    setRouteFilter([])
+  }
+
+  const viewStopsByRoute = (organisationId, mobileId, routeId) => {
+    setOrganisationFilter([organisationId])
+    setMobileFilter([mobileId])
+    setRouteFilter([routeId])
+  }
+
+  const clearMobileFilter = () => {
+    setMobileFilter([])
+    setRouteFilter([])
+  }
+
+  const clearRouteFilter = () => setRouteFilter([])
+
+  const clearOrganisationFilter = () => {
+    setOrganisationFilter([])
+    setMobileFilter([])
+    setRouteFilter([])
+  }
+
+  const viewMapStop = (longitude, latitude) => {
+    setPosition([longitude, latitude])
+    setZoom([15])
+    setStopDialogOpen(false)
+  }
 
   const logPosition = (fit = false) => {
-    this.setState({ loadingGPS: true })
+    setLoadingGPS(true)
     geoHelper.getCurrentPosition(position => {
       if (position.length === 2) {
-        this.getMobilesNearest()
-        this.setState({ currentPosition: position, position: position, zoom: [12], loadingGPS: false })
+        getMobilesNearest()
+        setCurrentPosition(position)
+        setPosition(position)
+        setZoom([12])
+        setLoadingGPS(false)
       } else {
         clearInterval(positionUpdateInterval)
-        this.setState({ searchType: '', postcode: '', currentPosition: [], positionUpdateInterval: null, snackbarOpen: true, snackbarMessage: 'Could not fetch current location' })
+        setSearchType('')
+        setPostcode('')
+        setCurrentPosition([])
+        setPositionUpdateInterval(null)
+        setSnackbarMessage('Could not fetch current location')
+        setSnackbarOpen(true)
       }
     })
   }
 
   const clearSearch = () => {
-    this.setState({ postcode: '', currentPosition: [], searchType: '', organisationFilter: [], mobileFilter: [], routeFilter: [] })
+    setPostcode('')
+    setCurrentPosition([])
+    setSearchType('')
+    setOrganisationFilter([])
+    setMobileFilter([])
+    setRouteFilter([])
   }
 
-  // postcodeSearch
   const postcodeSearch = (postcode) => {
     if (postcode === '') {
-      this.setState({ snackbarOpen: true, snackbarMessage: 'You must enter a postcode' })
+      setSnackbarOpen(true)
+      setSnackbarMessage('You must enter a postcode')
       return
     }
 
-    const newState = { searchType: 'postcode', loadingPostcode: true, postcode: postcode, organisationFilter: [], mobileFilter: [], routeFilter: [] }
+    setSearchType('postcode')
+    setLoadingPostcode(true)
+    setPostcode(postcode)
+    setOrganisationFilter([])
+    setMobileFilter([])
+    setRouteFilter([])
 
-    // If we're already tracking GPS then turn this off
     if (searchType === 'gps') {
       clearInterval(positionUpdateInterval)
-      newState.positionUpdateInterval = null
+      setPositionUpdateInterval(null)
     }
 
-    // Get the postcode
     geoHelper.getPostcode(postcode, postcodeData => {
       if (postcodeData.location && postcodeData.location.length === 2) {
-        newState.searchType = 'postcode'
-        newState.currentPosition = postcodeData.location
-        newState.position = postcodeData.location
-        newState.zoom = [11]
-        newState.loadingPostcode = false
-        this.setState(newState)
-        this.getMobilesNearest()
+        setCurrentPosition(postcodeData.location)
+        setPosition(postcodeData.location)
+        setZoom([11])
+        setLoadingPostcode(false)
+        getMobilesNearest()
       } else {
-        this.setState({ snackbarOpen: true, snackbarMessage: 'Could not find postcode' })
+        setSnackbarOpen(true)
+        setSnackbarMessage('Could not find postcode')
       }
     })
   }
 
-  // toggleGPS
   const toggleGPS = () => {
-    // If we're already tracking GPS then turn this off
     if (searchType === 'gps') {
       clearInterval(positionUpdateInterval)
-      this.setState({ searchType: '', postcode: '', currentPosition: [], positionUpdateInterval: null })
+      setSearchType('')
+      setCurrentPosition([])
+      setPositionUpdateInterval(null)
     } else {
-      const positionUpdateInterval = setInterval(this.logPosition, 10000)
-      this.setState({ positionUpdateInterval: positionUpdateInterval, searchType: 'gps', postcode: '', organisationFilter: [], mobileFilter: [], routeFilter: [] })
-      this.logPosition(true)
+      const positionUpdateInterval = setInterval(logPosition, 10000)
+      setPositionUpdateInterval(positionUpdateInterval)
+      setSearchType('gps')
+      setPostcode('')
+      setOrganisationFilter([])
+      setMobileFilter([])
+      setRouteFilter([])
+      logPosition(true)
     }
   }
 
   const toggleMapSetting = (setting) => {
-    const mapSettings = mapSettings
+    const newMapSettings = mapSettings
     const currentSetting = mapSettings[setting]
-    mapSettings[setting] = !currentSetting
-    this.setState({ mapSettings: mapSettings })
+    newMapSettings[setting] = !currentSetting
+    setMapSettings(newMapSettings)
   }
 
   const closeSnackbar = (event, reason) => {
     if (reason === 'clickaway') return
-    this.setState({ snackbarOpen: false })
+    setSnackbarOpen(false)
   }
 
   const classes = useStyles()
@@ -286,7 +331,7 @@ function App () {
         <div className={classes.root}>
           <CssBaseline />
           <AppHeader
-            loading={loadingMobiles || loadingOrganisations || loadingRoutes}
+            loading={loadingMobiles || loadingOrganisations || loadingRoutes || loadingPostcode || loadingGPS}
             postcode={postcode}
             distance={distance}
             searchType={searchType}
@@ -310,18 +355,19 @@ function App () {
                       organisationLookup={organisationLookup}
                       viewStop={viewStop}
                       viewStopsByMobile={viewStopsByMobile}
+                      viewStopsByRoute={viewStopsByRoute}
                       viewStopsByOrganisation={viewStopsByOrganisation}
                       organisations={organisations}
                       organisationFilter={organisationFilter}
-                      setOrganisationFilter={(organisationId) => { this.setState({ organisationFilter: [organisationId] }) }}
+                      setOrganisationFilter={(organisationId) => { setOrganisationFilter([organisationId]) }}
                       clearOrganisationFilter={clearOrganisationFilter}
                       mobileFilter={mobileFilter}
-                      setMobileFilter={(mobileId) => { this.setState({ mobileFilter: [mobileId] }) }}
+                      setMobileFilter={(mobileId) => setMobileFilter([mobileId])}
                       clearMobileFilter={clearMobileFilter}
                       routes={routes}
                       routeLookup={routeLookup}
                       routeFilter={routeFilter}
-                      setRouteFilter={(routeId) => { this.setState({ routeFilter: [routeId] }) }}
+                      setRouteFilter={(routeId) => { setRouteFilter([routeId]) }}
                       clearRouteFilter={clearRouteFilter}
                       postcode={postcode}
                       distance={distance}
@@ -341,17 +387,17 @@ function App () {
                       organisations={organisations}
                       organisationLookup={organisationLookup}
                       organisationFilter={organisationFilter}
-                      setOrganisationFilter={(organisationId) => { this.setState({ organisationFilter: [organisationId] }) }}
+                      setOrganisationFilter={(organisationId) => { setOrganisationFilter([organisationId]) }}
                       clearOrganisationFilter={clearOrganisationFilter}
                       mobiles={mobiles}
                       mobileLookup={mobileLookup}
                       mobileFilter={mobileFilter}
-                      setMobileFilter={(mobileId) => { this.setState({ mobileFilter: [mobileId] }) }}
+                      setMobileFilter={(mobileId) => { setMobileFilter([mobileId]) }}
                       clearMobileFilter={clearMobileFilter}
                       routes={routes}
                       routeLookup={routeLookup}
                       routeFilter={routeFilter}
-                      setRouteFilter={(routeId) => { this.setState({ routeFilter: [routeId] }) }}
+                      setRouteFilter={(routeId) => { setRouteFilter([routeId]) }}
                       clearRouteFilter={clearRouteFilter}
                       viewStop={viewStop}
                       viewMapStop={viewMapStop}
@@ -371,9 +417,6 @@ function App () {
                 render={() => {
                   return (
                     <MobileMap
-                      bearing={bearing}
-                      fitBounds={fitBounds}
-                      pitch={pitch}
                       position={position}
                       currentPosition={currentPosition}
                       zoom={zoom}
@@ -394,13 +437,13 @@ function App () {
           <StopDetails
             stop={currentStop}
             open={stopDialogOpen}
-            close={() => closeStopDialog()}
+            close={() => setStopDialogOpen(false)}
             viewMapStop={viewMapStop}
           />
           <TripDetails
             trip={currentTrip}
             open={tripDialogOpen}
-            close={() => closeTripDialog()}
+            close={() => setTripDialogOpen(false)}
           />
           <Snackbar
             anchorOrigin={{
@@ -418,7 +461,6 @@ function App () {
               <IconButton
                 key='close'
                 aria-label='close'
-                color='inherit'
                 className={classes.close}
                 onClick={closeSnackbar}
               >
@@ -430,10 +472,6 @@ function App () {
       </BrowserRouter>
     </ThemeProvider>
   )
-}
-
-App.propTypes = {
-  classes: PropTypes.object.isRequired
 }
 
 export default App
