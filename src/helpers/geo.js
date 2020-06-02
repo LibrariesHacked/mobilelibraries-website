@@ -28,5 +28,5 @@ export function getPostcode (postcode, callback) {
         callback([])
       }
     })
-    .catch(err => callback([]))
+    .catch(() => callback([]))
 };

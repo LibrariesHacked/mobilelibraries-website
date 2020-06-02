@@ -12,5 +12,5 @@ export function getAllRoutes (callback) {
         callback([])
       }
     })
-    .catch(err => callback([]))
+    .catch(() => callback([]))
 }

@@ -67,9 +67,9 @@ class Filters extends Component {
 		this.setState({ organisation_menu_anchor: null });
 	}
 
-	chooseOrganisation = (organisation_id) => {
+	chooseOrganisation = (organisationId) => {
 		this.props.clearSearch();
-		this.props.setOrganisationFilter(organisation_id);
+		this.props.setOrganisationFilter(organisationId);
 		this.closeOrganisationMenu();
 	}
 
@@ -81,8 +81,8 @@ class Filters extends Component {
 		this.setState({ mobile_menu_anchor: null });
 	}
 
-	chooseMobile = (mobile_id) => {
-		this.props.setMobileFilter(mobile_id);
+	chooseMobile = (mobileId) => {
+		this.props.setMobileFilter(mobileId);
 		this.closeMobileMenu();
 	}
 
@@ -94,17 +94,17 @@ class Filters extends Component {
 		this.setState({ route_menu_anchor: null });
 	}
 
-	chooseRoute = (route_id) => {
-		this.props.setRouteFilter(route_id);
+	chooseRoute = (routeId) => {
+		this.props.setRouteFilter(routeId);
 		this.closeRouteMenu();
 	}
 
 	render() {
 		const {
-			classes, organisations, organisation_lookup, organisation_filter,
-			clearOrganisationFilter, mobiles, mobile_lookup, mobile_filter, clearMobileFilter,
-			routes, route_lookup, route_filter, clearRouteFilter,
-			search_type, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
+			classes, organisations, organisationLookup, organisationFilter,
+			clearOrganisationFilter, mobiles, mobileLookup, mobileFilter, clearMobileFilter,
+			routes, routeLookup, routeFilter, clearRouteFilter,
+			searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
 		} = this.props;
 
 		const countries = new Set(organisations.map(org => org.country));
@@ -117,7 +117,7 @@ class Filters extends Component {
 					<PostcodeSearch
 						postcode={postcode}
 						distance={distance}
-						search_type={search_type}
+						searchType={searchType}
 						toggleGPS={toggleGPS}
 						setDistance={setDistance}
 						postcodeSearch={postcodeSearch}
@@ -126,41 +126,41 @@ class Filters extends Component {
 				</div>
 				<Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Or, choose your library service</Typography>
 				<div className={classes.search}>
-					{organisation_filter.length === 0 ? (
+					{organisationFilter.length === 0 ? (
 						<Tooltip title="Choose library service">
 							<Button color="secondary" className={classes.button} onClick={(e) => this.openOrganisationMenu(e.currentTarget)}>
 								<BusinessIcon className={classes.leftIcon} />Select service
 						</Button>
 						</Tooltip>
 					) :
-						<Chip className={classes.chip} color="primary" variant="outlined" onDelete={clearOrganisationFilter} label={organisation_lookup[organisation_filter[0]].name} />
+						<Chip className={classes.chip} color="primary" variant="outlined" onDelete={clearOrganisationFilter} label={organisationLookup[organisationFilter[0]].name} />
 					}
-					{organisation_filter.length > 0 ?
-						(mobile_filter.length === 0 ?
+					{organisationFilter.length > 0 ?
+						(mobileFilter.length === 0 ?
 							<Tooltip title="Choose mobile library">
 								<Button color="secondary" className={classes.button} onClick={(e) => this.openMobileMenu(e.currentTarget)}>
 									<DirectionBusIcon className={classes.leftIcon} />Select mobile
 								</Button>
 							</Tooltip> :
-							<Chip className={classes.chip} color="primary" variant="outlined" onDelete={(e) => clearMobileFilter()} label={mobile_lookup[mobile_filter[0]].name} />
+							<Chip className={classes.chip} color="primary" variant="outlined" onDelete={(e) => clearMobileFilter()} label={mobileLookup[mobileFilter[0]].name} />
 						)
 						: null}
-					{mobile_filter.length > 0 ?
-						(route_filter.length === 0 ?
+					{mobileFilter.length > 0 ?
+						(routeFilter.length === 0 ?
 							<Tooltip title="Choose route">
 								<Button color="secondary" className={classes.button} onClick={(e) => this.openRouteMenu(e.currentTarget)}>
 									<DirectionsIcon className={classes.leftIcon} />Select route
 										</Button>
 							</Tooltip> :
-							<Chip className={classes.chip} color="primary" variant="outlined" onDelete={(e) => clearRouteFilter()} label={route_lookup[route_filter[0]].name} />
+							<Chip className={classes.chip} color="primary" variant="outlined" onDelete={(e) => clearRouteFilter()} label={routeLookup[routeFilter[0]].name} />
 						)
 						: null}
 				</div>
 				<Menu
 					id="menu-library-service"
-					anchorEl={this.state.organisation_menu_anchor}
+					anchorEl={organisation_menu_anchor}
 					keepMounted
-					open={Boolean(this.state.organisation_menu_anchor)}
+					open={Boolean(organisation_menu_anchor)}
 					onClose={() => this.closeOrganisationMenu()}
 				>
 					{
@@ -180,16 +180,16 @@ class Filters extends Component {
 				</Menu>
 				<Menu
 					id="menu-mobile-library"
-					anchorEl={this.state.mobile_menu_anchor}
+					anchorEl={mobile_menu_anchor}
 					keepMounted
-					open={Boolean(this.state.mobile_menu_anchor)}
+					open={Boolean(mobile_menu_anchor)}
 					onClose={() => this.closeMobileMenu()}
 				>
 					{mobiles
 						.filter(mob => {
 							let display = true;
-							if (organisation_filter.length > 0 &&
-								organisation_filter.indexOf(mob.organisation_id) === -1) {
+							if (organisationFilter.length > 0 &&
+								organisationFilter.indexOf(mob.organisationId) === -1) {
 								display = false;
 							}
 							return display;
@@ -201,16 +201,16 @@ class Filters extends Component {
 				</Menu>
 				<Menu
 					id="menu-route"
-					anchorEl={this.state.route_menu_anchor}
+					anchorEl={route_menu_anchor}
 					keepMounted
-					open={Boolean(this.state.route_menu_anchor)}
+					open={Boolean(route_menu_anchor)}
 					onClose={() => this.closeRouteMenu()}
 				>
 					{routes
 						.filter(route => {
 							let display = true;
-							if (mobile_filter.length > 0 &&
-								mobile_filter.indexOf(route.mobile_id) === -1) {
+							if (mobileFilter.length > 0 &&
+								mobileFilter.indexOf(route.mobileId) === -1) {
 								display = false;
 							}
 							return display;

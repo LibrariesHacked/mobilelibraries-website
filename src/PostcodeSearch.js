@@ -65,7 +65,7 @@ class PostcodeSearch extends React.Component {
 	}
 
 	render() {
-		const { classes, search_type, postcodeSearch, clearSearch } = this.props;
+		const { classes, searchType, postcodeSearch, clearSearch } = this.props;
 		return (
 			<div className={classes.search}>
 				<InputBase
@@ -73,11 +73,11 @@ class PostcodeSearch extends React.Component {
 					classes={{
 						input: classes.inputInput
 					}}
-					value={this.state.postcode}
+					value={postcode}
 					onChange={(e) => this.setState({ postcode: e.target.value })}
 				/>
 				<div className={classes.grow} />
-				{search_type === 'postcode' ?
+				{searchType === 'postcode' ?
 					<Tooltip title={'Clear search'}>
 						<IconButton
 							className={classes.iconButton}
@@ -90,7 +90,7 @@ class PostcodeSearch extends React.Component {
 					<IconButton
 						color="primary"
 						className={classes.iconButton}
-						onClick={() => postcodeSearch(this.state.postcode)}>
+						onClick={() => postcodeSearch(postcode)}>
 						<SearchIcon />
 					</IconButton>
 				</Tooltip>
@@ -105,9 +105,9 @@ class PostcodeSearch extends React.Component {
 				</Tooltip>
 				<Menu
 					id="mnu-settings"
-					anchorEl={this.state.anchor}
+					anchorEl={anchor}
 					keepMounted
-					open={Boolean(this.state.anchor)}
+					open={Boolean(anchor)}
 					onClose={() => this.closeSettingsMenu()}
 				>
 					<ListSubheader disableSticky={true}>Search distance</ListSubheader>

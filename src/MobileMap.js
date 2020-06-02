@@ -72,7 +72,7 @@ class MobileMap extends Component {
   setCurrentTime = () => this.setState({ current_time: moment() });
 
   render() {
-    const { classes, position, zoom, pitch, bearing, fit_bounds, map_settings, mobile_locations, mobile_lookup, organisations, organisation_lookup, toggleMapSetting } = this.props;
+    const { classes, position, zoom, pitch, bearing, fitBounds, mapSettings, mobileLocations, mobileLookup, organisations, organisationLookup, toggleMapSetting } = this.props;
 
     // Build the colour match
     let organisation_colour_match = ['match', ['get', 'utla19cd']]
@@ -91,23 +91,23 @@ class MobileMap extends Component {
           maxZoom={17}
           pitch={pitch}
           bearing={bearing}
-          fitBounds={fit_bounds}
+          fitBounds={fitBounds}
           containerStyle={{ top: 0, bottom: 0, right: 0, left: 0, height: '100vh', width: '100vw', position: 'absolute' }}
           onStyleLoad={map => this.setState({ map: map })}
         >
           { // The mobile library locations
-            mobile_locations && mobile_locations.length > 0 ?
-              mobile_locations.map(l => {
+            mobileLocations && mobileLocations.length > 0 ?
+              mobileLocations.map(l => {
                 let location_point = [l.geox, l.geoy];
-                if (this.state.current_time && l.route_section && l.route_section.coordinates && l.updated) {
-                  const milliseconds_passed = moment(this.state.current_time).diff(l.updated);
+                if (current_time && l.route_section && l.route_section.coordinates && l.updated) {
+                  const milliseconds_passed = moment(current_time).diff(l.updated);
                   const index = Math.round(milliseconds_passed / 500);
                   const coords = l.route_section.coordinates;
                   if (coords.length > index && index > 0) location_point = coords[index];
                   if (coords.length <= index && index > 0) location_point = coords[coords.length - 1];
                 }
-                const mobile = mobile_lookup[l.mobile_id];
-                const organisation = (mobile ? organisation_lookup[mobile.organisation_id] : null);
+                const mobile = mobileLookup[l.mobileId];
+                const organisation = (mobile ? organisationLookup[mobile.organisationId] : null);
                 return <Marker
                   key={'mkr_' + l.id}
                   coordinates={location_point}
@@ -115,7 +115,7 @@ class MobileMap extends Component {
                   <MobileAvatar
                     organisation={organisation}
                     location={l}
-                    zoom={this.state.map ? this.state.map.getZoom() : 0}
+                    zoom={map ? map.getZoom() : 0}
                   />
                 </Marker>
               }) : null
@@ -284,7 +284,7 @@ class MobileMap extends Component {
             }}
             onClick={this.clickStop}
           />
-          {map_settings.authority_boundary ?
+          {mapSettings.authorityBoundary ?
             <React.Fragment>
               <Layer
                 id='lyr_library_authorities_lines'
@@ -325,11 +325,11 @@ class MobileMap extends Component {
               />
             </React.Fragment>
             : null}
-          {this.props.current_position && this.props.current_position.length > 1 ?
+          {this.props.currentPosition && this.props.currentPosition.length > 1 ?
             <Marker
               key={'mk_me'}
-              coordinates={[this.props.current_position[0], this.props.current_position[1]]}>
-              <MeAvatar search_type={this.props.search_type} />
+              coordinates={[this.props.currentPosition[0], this.props.currentPosition[1]]}>
+              <MeAvatar searchType={this.props.searchType} />
             </Marker>
             : null}
           <ZoomControl position="bottom-left" />
@@ -351,8 +351,8 @@ class MobileMap extends Component {
           </Fab>
         </Tooltip>
         <MapSettings
-          map_settings={map_settings}
-          open={this.state.settings_dialog_open}
+          mapSettings={mapSettings}
+          open={settings_dialog_open}
           toggleMapSetting={toggleMapSetting}
           close={() => this.setState({ settings_dialog_open: false, settings_dial_open: false })}
         />
@@ -362,7 +362,7 @@ class MobileMap extends Component {
 }
 
 MobileMap.propTypes = {
-  current_position: PropTypes.array
+  currentPosition: PropTypes.array
 }
 
 export default withStyles(styles, { withTheme: true })(MobileMap);

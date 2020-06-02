@@ -20,16 +20,15 @@ const styles = theme => ({
 });
 
 class MapSettings extends React.Component {
-    state = {}
 
     handleAuthorityBoundaryChange = () => {
-        this.props.toggleMapSetting('authority_boundary');
+        this.props.toggleMapSetting('authorityBoundary');
     }
 
     close = () => this.props.close()
 
     render() {
-        const { classes, width, map_settings } = this.props;
+        const { classes, width, mapSettings } = this.props;
         const fullScreen = isWidthDown('sm', width);
         return (
             <Dialog
@@ -52,9 +51,9 @@ class MapSettings extends React.Component {
                     <FormControlLabel
                         control={
                             <Switch
-                                checked={map_settings.authority_boundary}
+                                checked={mapSettings.authorityBoundary}
                                 onChange={this.handleAuthorityBoundaryChange}
-                                name="sw_authority_boundary"
+                                name="sw_authorityBoundary"
                                 color="primary"
                             />
                         }

@@ -47,7 +47,6 @@ const styles = theme => ({
 });
 
 class StopDetails extends React.Component {
-    state = {}
 
     getStopCalendar = () => window.open(config.api + '/stops/' + this.props.stop.id + '/ics');
     getStopPdf = () => window.open(config.api + '/stops/' + this.props.stop.id + '/pdf', '_blank');

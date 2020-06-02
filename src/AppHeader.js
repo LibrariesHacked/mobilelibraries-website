@@ -50,7 +50,7 @@ const styles = theme => ({
 })
 
 class AppHeader extends Component {
-  render() {
+  render () {
     const { loading, classes, searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance, location } = this.props
     return (
       <>

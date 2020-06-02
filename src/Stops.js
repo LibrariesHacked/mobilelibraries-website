@@ -69,11 +69,11 @@ class Stops extends Component {
 	goToWebsite = (stop) => window.open(stop.timetable, '_blank');
 
 	componentDidUpdate(prevProps) {
-		if (this.props.current_position !== prevProps.current_position || this.props.distance !== prevProps.distance) this.tableRef.current.onQueryChange();
+		if (this.props.currentPosition !== prevProps.currentPosition || this.props.distance !== prevProps.distance) this.tableRef.current.onQueryChange();
 	}
 
-	setOrganisationFilter = (organisation_id) => {
-		this.props.setOrganisationFilter(organisation_id);
+	setOrganisationFilter = (organisationId) => {
+		this.props.setOrganisationFilter(organisationId);
 		this.tableRef.current.onQueryChange();
 	}
 
@@ -82,8 +82,8 @@ class Stops extends Component {
 		this.tableRef.current.onQueryChange();
 	}
 
-	setMobileFilter = (mobile_id) => {
-		this.props.setMobileFilter(mobile_id);
+	setMobileFilter = (mobileId) => {
+		this.props.setMobileFilter(mobileId);
 		this.tableRef.current.onQueryChange();
 	}
 
@@ -92,8 +92,8 @@ class Stops extends Component {
 		this.tableRef.current.onQueryChange();
 	}
 
-	setRouteFilter = (route_id) => {
-		this.props.setRouteFilter(route_id);
+	setRouteFilter = (routeId) => {
+		this.props.setRouteFilter(routeId);
 		this.tableRef.current.onQueryChange();
 	}
 
@@ -106,15 +106,15 @@ class Stops extends Component {
 
 	render() {
 		const {
-			classes, organisations, organisation_lookup, organisation_filter, viewStopsByOrganisation,
-			mobiles, mobile_lookup, mobile_filter,
-			routes, route_lookup, route_filter, current_position, distance, width,
-			search_type, postcode, postcode_district, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
+			classes, organisations, organisationLookup, organisationFilter, viewStopsByOrganisation,
+			mobiles, mobileLookup, mobileFilter,
+			routes, routeLookup, routeFilter, currentPosition, distance, width,
+			searchType, postcode, postcode_district, toggleGPS, postcodeSearch, clearSearch, setDistance } = this.props;
 
 		// Calculate title
-		const organisation_name = (organisation_filter.length > 0 ? organisation_lookup[organisation_filter[0]].name : '');
-		const mobile_name = (mobile_filter.length > 0 ? mobile_lookup[mobile_filter[0]].name : '');
-		const route_name = (route_filter.length > 0 ? route_lookup[route_filter[0]].name : '');
+		const organisation_name = (organisationFilter.length > 0 ? organisationLookup[organisationFilter[0]].name : '');
+		const mobile_name = (mobileFilter.length > 0 ? mobileLookup[mobileFilter[0]].name : '');
+		const route_name = (routeFilter.length > 0 ? routeLookup[routeFilter[0]].name : '');
 		let title = 'All stops';
 		// Filter stops
 		if (organisation_name !== '') title = 'Stops in ' + organisation_name;
@@ -123,44 +123,44 @@ class Stops extends Component {
 		// Postcode search stops
 		if (postcode !== '') title = 'Stops within ' + Math.round(distance / 1609) + ' mile(s) of ' + postcode;
 		// GPS search stops
-		if (search_type === 'gps') title = 'Stops within ' + Math.round(distance / 1609) + ' mile(s) of your location';
+		if (searchType === 'gps') title = 'Stops within ' + Math.round(distance / 1609) + ' mile(s) of your location';
 
 		let orgText = {}
-		Object.keys(organisation_lookup).forEach(key => {
-			orgText[key] = organisation_lookup[key].name;
+		Object.keys(organisationLookup).forEach(key => {
+			orgText[key] = organisationLookup[key].name;
 		});
 		let mobileText = {}
-		Object.keys(mobile_lookup).forEach(key => {
-			mobileText[key] = mobile_lookup[key].name;
+		Object.keys(mobileLookup).forEach(key => {
+			mobileText[key] = mobileLookup[key].name;
 		});
 		let routeText = {}
-		Object.keys(route_lookup).forEach(key => {
-			routeText[key] = route_lookup[key].name;
+		Object.keys(routeLookup).forEach(key => {
+			routeText[key] = routeLookup[key].name;
 		});
 		return (
 			<div style={{ maxWidth: '100%' }}>
 				<Filters
 					displayStopLink={false}
 					organisations={organisations}
-					organisation_lookup={organisation_lookup}
-					organisation_filter={organisation_filter}
+					organisationLookup={organisationLookup}
+					organisationFilter={organisationFilter}
 					setOrganisationFilter={this.setOrganisationFilter}
 					clearOrganisationFilter={this.clearOrganisationFilter}
 					viewStopsByOrganisation={viewStopsByOrganisation}
 					mobiles={mobiles}
-					mobile_lookup={mobile_lookup}
-					mobile_filter={mobile_filter}
+					mobileLookup={mobileLookup}
+					mobileFilter={mobileFilter}
 					setMobileFilter={this.setMobileFilter}
 					clearMobileFilter={this.clearMobileFilter}
 					routes={routes}
-					route_lookup={route_lookup}
-					route_filter={route_filter}
+					routeLookup={routeLookup}
+					routeFilter={routeFilter}
 					setRouteFilter={this.setRouteFilter}
 					clearRouteFilter={this.clearRouteFilter}
 					postcode={postcode}
 					postcode_district={postcode_district}
 					distance={distance}
-					search_type={search_type}
+					searchType={searchType}
 					setDistance={setDistance}
 					toggleGPS={toggleGPS}
 					postcodeSearch={postcodeSearch}
@@ -287,7 +287,7 @@ class Stops extends Component {
 					]}
 					data={query =>
 						new Promise((resolve, reject) => {
-							stopsHelper.getQueryStops(query, organisation_filter, mobile_filter, route_filter, current_position, distance, stopData => {
+							stopsHelper.getQueryStops(query, organisationFilter, mobileFilter, routeFilter, currentPosition, distance, stopData => {
 								resolve({
 									data: stopData.stops,
 									page: (stopData.page - 1),

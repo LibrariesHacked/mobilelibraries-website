@@ -3,15 +3,15 @@ import axios from 'axios'
 
 const config = require('./config.json')
 
-export function getQueryStops (query, organisation_filters, mobile_filters, route_filters, current_position, distance, callback) {
+export function getQueryStops (query, organisationFilters, mobileFilters, routeFilters, currentPosition, distance, callback) {
   let url = config.api + '/stops?page=' + (query.page + 1) + '&limit=' + query.pageSize
   if (query.orderBy && query.orderBy.field) url = url + '&sort=' + query.orderBy.field + '&direction=' + query.orderDirection
 
-  if (mobile_filters.length > 0) url = url + '&mobile_ids=' + mobile_filters.join('|')
-  if (organisation_filters.length > 0) url = url + '&organisation_ids=' + organisation_filters.join('|')
-  if (route_filters.length > 0) url = url + '&route_ids=' + route_filters.join('|')
+  if (mobileFilters.length > 0) url = url + '&mobileIds=' + mobileFilters.join('|')
+  if (organisationFilters.length > 0) url = url + '&organisationIds=' + organisationFilters.join('|')
+  if (routeFilters.length > 0) url = url + '&routeIds=' + routeFilters.join('|')
 
-  if (current_position && current_position.length > 1) url = url + '&longitude=' + current_position[0] + '&latitude=' + current_position[1]
+  if (currentPosition && currentPosition.length > 1) url = url + '&longitude=' + currentPosition[0] + '&latitude=' + currentPosition[1]
   if (distance && distance !== '') url = url + '&distance=' + distance
 
   axios.get(url)
@@ -38,7 +38,7 @@ export function getAllStops (callback) {
         callback({})
       }
     })
-    .catch(err => callback({}))
+    .catch(() => callback({}))
 }
 
 export function getStopById (id, callback) {
