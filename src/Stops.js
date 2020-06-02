@@ -25,7 +25,6 @@ import FirstPage from '@material-ui/icons/FirstPageTwoTone';
 import FilterList from '@material-ui/icons/FilterListTwoTone';
 import LastPage from '@material-ui/icons/LastPageTwoTone';
 import MoreVertIcon from '@material-ui/icons/MoreVertTwoTone';
-import OpenInBrowserIcon from '@material-ui/icons/OpenInBrowserTwoTone';
 import EventIcon from '@material-ui/icons/EventTwoTone';
 import PrintIcon from '@material-ui/icons/PrintTwoTone';
 import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone';
@@ -228,13 +227,6 @@ class Stops extends Component {
 												</IconButton>
 											</Tooltip>
 										</Hidden>
-										<Hidden mdDown>
-											<Tooltip title="Go to the website for this stop">
-												<IconButton onClick={() => this.goToWebsite(rowData)}>
-													<OpenInBrowserIcon />
-												</IconButton>
-											</Tooltip>
-										</Hidden>
 									</React.Fragment>
 								)
 							},
@@ -268,7 +260,7 @@ class Stops extends Component {
 							}
 						},
 						{
-							title: 'Authority',
+							title: 'Library service',
 							field: 'organisation_name',
 							filtering: false,
 							hidden: isWidthDown('md', width),

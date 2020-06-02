@@ -58,7 +58,7 @@ class MapSettings extends React.Component {
                                 color="primary"
                             />
                         }
-                        label="Authority boundaries"
+                        label="Library service boundaries"
                     />
                 </DialogContent>
                 <DialogActions>

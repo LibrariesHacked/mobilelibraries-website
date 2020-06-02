@@ -172,7 +172,7 @@ class Mobiles extends Component {
 								return (
 									<Grid
 										key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
-										item xs={12} sm={6} md={4} lg={3} xl={2}>
+										item xs={12} sm={6} md={4} lg={3} xl={3}>
 										<MobileCard
 											mobile={mobile}
 											location={mobile_location_lookup[mobile.id]}
