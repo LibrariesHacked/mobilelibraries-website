@@ -12,5 +12,5 @@ export function getAllOrganisations (callback) {
         callback([])
       }
     })
-    .catch(err => callback([]))
+    .catch(() => callback([]))
 }

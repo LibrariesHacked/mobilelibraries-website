@@ -12,7 +12,8 @@ import Paper from '@material-ui/core/Paper'
 import MaterialTable from 'material-table'
 
 // Material UI Styles
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 // MUI Icons
 import ArrowUpward from '@material-ui/icons/ArrowUpwardTwoTone'
@@ -66,7 +67,7 @@ function usePrevious (value) {
 
 function Stops (currentPosition, distance, viewMapStop, organisations, organisationLookup, organisationFilter, viewStopsByOrganisation,
   mobiles, mobileLookup, mobileFilter,
-  routes, routeLookup, routeFilter, width,
+  routes, routeLookup, routeFilter,
   searchType, postcode, postcodeDistrict, toggleGPS, postcodeSearch, clearSearch, setDistance) {
   const tableRef = React.createRef()
 
@@ -86,44 +87,45 @@ function Stops (currentPosition, distance, viewMapStop, organisations, organisat
     tableRef.current.onQueryChange()
   }
 
-  clearOrganisationFilter = () => {
+  const clearOrganisationFilter = () => {
     clearOrganisationFilter()
     tableRef.current.onQueryChange()
   }
 
-  setMobileFilter = (mobileId) => {
+  const setMobileFilter = (mobileId) => {
     setMobileFilter(mobileId)
     tableRef.current.onQueryChange()
   }
 
-  clearMobileFilter = () => {
+  const clearMobileFilter = () => {
     clearMobileFilter()
     tableRef.current.onQueryChange()
   }
 
-  setRouteFilter = (routeId) => {
+  const setRouteFilter = (routeId) => {
     setRouteFilter(routeId)
     tableRef.current.onQueryChange()
   }
 
-  clearRouteFilter = () => {
+  const clearRouteFilter = () => {
     clearRouteFilter()
     tableRef.current.onQueryChange()
   }
 
-  displayStopInfo = (row) => viewStop(row)
+  const displayStopInfo = (row) => viewStop(row)
 
   const classes = useStyles()
+  const theme = useTheme()
 
   // Calculate title
-  const organisation_name = (organisationFilter.length > 0 ? organisationLookup[organisationFilter[0]].name : '')
-  const mobile_name = (mobileFilter.length > 0 ? mobileLookup[mobileFilter[0]].name : '')
-  const route_name = (routeFilter.length > 0 ? routeLookup[routeFilter[0]].name : '')
+  const organisationName = (organisationFilter.length > 0 ? organisationLookup[organisationFilter[0]].name : '')
+  const mobileName = (mobileFilter.length > 0 ? mobileLookup[mobileFilter[0]].name : '')
+  const routeName = (routeFilter.length > 0 ? routeLookup[routeFilter[0]].name : '')
   let title = 'All stops'
   // Filter stops
-  if (organisation_name !== '') title = 'Stops in ' + organisation_name
-  if (mobile_name !== '') title = 'Stops for ' + organisation_name + ' ' + mobile_name
-  if (route_name !== '') title = 'Stops for ' + organisation_name + ' ' + route_name
+  if (organisationName !== '') title = 'Stops in ' + organisationName
+  if (mobileName !== '') title = 'Stops for ' + organisationName + ' ' + mobileName
+  if (routeName !== '') title = 'Stops for ' + organisationName + ' ' + routeName
   // Postcode search stops
   if (postcode !== '') title = 'Stops within ' + Math.round(distance / 1609) + ' mile(s) of ' + postcode
   // GPS search stops
@@ -186,7 +188,7 @@ function Stops (currentPosition, distance, viewMapStop, organisations, organisat
           SortArrow: ArrowUpward
         }}
         options={{
-          padding: isWidthUp('sm', width) ? 'default' : 'dense',
+          padding: useMediaQuery(theme.breakpoints.up('sm')) ? 'default' : 'dense',
           search: false,
           loadingType: 'overlay',
           actionsColumnIndex: 0,
@@ -268,7 +270,7 @@ function Stops (currentPosition, distance, viewMapStop, organisations, organisat
             title: 'Library service',
             field: 'organisation_name',
             filtering: false,
-            hidden: isWidthDown('md', width),
+            hidden: useMediaQuery(theme.breakpoints.down('sm')),
             cellStyle: {
               borderBottom: '1px solid #f5f5f5',
               backgroundColor: '#ffffff'
@@ -276,9 +278,9 @@ function Stops (currentPosition, distance, viewMapStop, organisations, organisat
           },
           {
             title: 'Next due',
-            field: 'route_schedule',
+            field: 'routeSchedule',
             filtering: false,
-            hidden: isWidthDown('xs', width),
+            hidden: useMediaQuery(theme.breakpoints.down('xs')),
             render: (rowData) => {
               return (
                 rowData.route_schedule.length > 0 ? moment(rowData.route_schedule[0]).format('Do MMMM h:mma') : ''

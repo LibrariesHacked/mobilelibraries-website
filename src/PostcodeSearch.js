@@ -86,14 +86,16 @@ function PostcodeSearch (searchType, postcodeSearch, clearSearch, postcode, setD
       />
       <div className={classes.grow} />
       {searchType === 'postcode'
-        ? <Tooltip title='Clear search'>
-          <IconButton
-            className={classes.iconButton}
-            onClick={() => clearSearch()}
-          >
-            <ClearIcon />
-          </IconButton>
+        ? (
+          <Tooltip title='Clear search'>
+            <IconButton
+              className={classes.iconButton}
+              onClick={() => clearSearch()}
+            >
+              <ClearIcon />
+            </IconButton>
           </Tooltip>
+        )
         : null}
       <Tooltip title='Search by postcode'>
         <IconButton
@@ -108,7 +110,7 @@ function PostcodeSearch (searchType, postcodeSearch, clearSearch, postcode, setD
         <IconButton
           className={classes.iconButton}
           color='secondary'
-          onClick={(e) => { this.openSettingsMenu(e) }}
+          onClick={(e) => { openSettingsMenu(e) }}
         >
           <SettingsIcon />
         </IconButton>

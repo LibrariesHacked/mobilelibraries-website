@@ -1,5 +1,5 @@
 // React
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 // Material UI
 import Fab from '@material-ui/core/Fab'
@@ -39,17 +39,15 @@ const Map = ReactMapboxGl({
 
 const stopTiles = [config.stopTiles]
 const tripTiles = [config.tripTiles]
-const library_authority_tiles = [config.library_authority_tiles]
+const libraryAuthorityTiles = [config.libraryAuthorityTiles]
 
-function MobileMap (position, mapSettings, mobileLocations, mobileLookup, organisations, organisationLookup, toggleMapSetting) {
-  const [timeUpdateInterval, setTimeUpdateInterval] = useState(null)
+function MobileMap (zoom, position, mapSettings, mobileLocations, mobileLookup, organisations, organisationLookup, toggleMapSetting) {
   const [currentTime, setCurrentTime] = useState(null)
   const [map, setMap] = useState(null)
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
 
   useEffect(() => {
-    const timeUpdateInterval = setInterval(setTime, 500)
-    setTimeUpdateInterval(timeUpdateInterval)
+    setInterval(setTime, 500)
   }, [])
 
   const clickStop = (map) => {
@@ -87,32 +85,33 @@ function MobileMap (position, mapSettings, mobileLocations, mobileLookup, organi
         bearing={[0]}
         fitBounds={null}
         containerStyle={{ top: 0, bottom: 0, right: 0, left: 0, height: '100vh', width: '100vw', position: 'absolute' }}
-        onStyleLoad={map => this.setState({ map: map })}
+        onStyleLoad={map => setMap(map)}
       >
         {// The mobile library locations
           mobileLocations && mobileLocations.length > 0
             ? mobileLocations.map(l => {
-              let location_point = [l.geox, l.geoy]
-              if (current_time && l.route_section && l.route_section.coordinates && l.updated) {
-                const milliseconds_passed = moment(current_time).diff(l.updated)
-                const index = Math.round(milliseconds_passed / 500)
+              let locationPoint = [l.geox, l.geoy]
+              if (currentTime && l.route_section && l.route_section.coordinates && l.updated) {
+                const millisecondsPassed = moment(currentTime).diff(l.updated)
+                const index = Math.round(millisecondsPassed / 500)
                 const coords = l.route_section.coordinates
-                if (coords.length > index && index > 0) location_point = coords[index]
-                if (coords.length <= index && index > 0) location_point = coords[coords.length - 1]
+                if (coords.length > index && index > 0) locationPoint = coords[index]
+                if (coords.length <= index && index > 0) locationPoint = coords[coords.length - 1]
               }
               const mobile = mobileLookup[l.mobileId]
               const organisation = (mobile ? organisationLookup[mobile.organisationId] : null)
-              return <Marker
-                key={'mkr_' + l.id}
-                coordinates={location_point}
-                anchor='bottom'
-              >
-                <MobileAvatar
-                  organisation={organisation}
-                  location={l}
-                  zoom={map ? map.getZoom() : 0}
-                />
-                     </Marker>
+              return (
+                <Marker
+                  key={'mkr_' + l.id}
+                  coordinates={locationPoint}
+                  anchor='bottom'
+                >
+                  <MobileAvatar
+                    organisation={organisation}
+                    location={l}
+                    zoom={map ? map.getZoom() : 0}
+                  />
+                </Marker>)
             }) : null
         }
         <Source
@@ -133,7 +132,7 @@ function MobileMap (position, mapSettings, mobileLocations, mobileLookup, organi
           id='src_library_authorities'
           tileJsonSource={{
             type: 'vector',
-            tiles: library_authority_tiles
+            tiles: libraryAuthorityTiles
           }}
         />
         <Layer
@@ -184,7 +183,7 @@ function MobileMap (position, mapSettings, mobileLocations, mobileLookup, organi
               0.5
             ]
           }}
-          onClick={this.clickTrip}
+          onClick={clickTrip}
         />
         <Layer
           id='lyr_stops_circles'
@@ -212,7 +211,7 @@ function MobileMap (position, mapSettings, mobileLocations, mobileLookup, organi
             'circle-stroke-color': '#FFFFFF',
             'circle-opacity': 0.7
           }}
-          onClick={this.clickStop}
+          onClick={clickStop}
         />
         <Layer
           id='lyr_stops_labels'
@@ -246,7 +245,7 @@ function MobileMap (position, mapSettings, mobileLocations, mobileLookup, organi
             'text-halo-blur': 1,
             'text-color': '#6a6f73'
           }}
-          onClick={this.clickStop}
+          onClick={clickStop}
         />
         <Layer
           id='lyr_stops_next_visiting'
@@ -280,56 +279,59 @@ function MobileMap (position, mapSettings, mobileLocations, mobileLookup, organi
             'text-halo-blur': 1,
             'text-color': '#6a6f73'
           }}
-          onClick={this.clickStop}
+          onClick={clickStop}
         />
         {mapSettings.authorityBoundary
-          ? <>
-            <Layer
-              id='lyr_library_authorities_lines'
-              type='line'
-              sourceId='src_library_authorities'
-              sourceLayer='library_authority_boundaries'
-              minZoom={6}
-              layout={{
-                'line-join': 'round',
-                'line-cap': 'square'
-              }}
-              paint={{
-                'line-color': '#a7a39b',
-                'line-opacity': 1,
-                'line-width': [
-                  'interpolate',
-                  [
-                    'linear'
-                  ],
-                  [
-                    'zoom'
-                  ],
-                  6, 1,
-                  22, 4
-                ]
-              }}
-            />
-            <Layer
-              id='lyr_library_authorities_fill'
-              type='fill'
-              sourceId='src_library_authorities'
-              sourceLayer='library_authority_boundaries'
-              minZoom={6}
-              paint={{
-                'fill-color': organisationColourMatch,
-                'fill-opacity': 0.1
-              }}
-            />
+          ? (
+            <>
+              <Layer
+                id='lyr_library_authorities_lines'
+                type='line'
+                sourceId='src_library_authorities'
+                sourceLayer='library_authority_boundaries'
+                minZoom={6}
+                layout={{
+                  'line-join': 'round',
+                  'line-cap': 'square'
+                }}
+                paint={{
+                  'line-color': '#a7a39b',
+                  'line-opacity': 1,
+                  'line-width': [
+                    'interpolate',
+                    [
+                      'linear'
+                    ],
+                    [
+                      'zoom'
+                    ],
+                    6, 1,
+                    22, 4
+                  ]
+                }}
+              />
+              <Layer
+                id='lyr_library_authorities_fill'
+                type='fill'
+                sourceId='src_library_authorities'
+                sourceLayer='library_authority_boundaries'
+                minZoom={6}
+                paint={{
+                  'fill-color': organisationColourMatch,
+                  'fill-opacity': 0.1
+                }}
+              />
             </>
-          : null}
+          ) : null}
         {this.props.currentPosition && this.props.currentPosition.length > 1
-          ? <Marker
-            key='mk_me'
-            coordinates={[this.props.currentPosition[0], this.props.currentPosition[1]]}
-          >
-            <MeAvatar searchType={this.props.searchType} />
-          </Marker>
+          ? (
+            <Marker
+              key='mk_me'
+              coordinates={[this.props.currentPosition[0], this.props.currentPosition[1]]}
+            >
+              <MeAvatar searchType={this.props.searchType} />
+            </Marker>
+          )
           : null}
         <ZoomControl position='bottom-left' />
       </Map>
@@ -344,16 +346,16 @@ function MobileMap (position, mapSettings, mobileLocations, mobileLookup, organi
             color: 'white',
             border: '1px solid #FFFFFF'
           }}
-          onClick={() => this.setState({ settings_dialog_open: true })}
+          onClick={() => setSettingsDialogOpen(true)}
         >
           <LayersIcon />
         </Fab>
       </Tooltip>
       <MapSettings
         mapSettings={mapSettings}
-        open={settings_dialog_open}
+        open={settingsDialogOpen}
         toggleMapSetting={toggleMapSetting}
-        close={() => this.setState({ settings_dialog_open: false, settings_dial_open: false })}
+        close={() => setSettingsDialogOpen(false)}
       />
     </>
   )

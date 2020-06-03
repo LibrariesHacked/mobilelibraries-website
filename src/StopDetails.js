@@ -10,7 +10,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import Divider from '@material-ui/core/Divider'
 import ListSubheader from '@material-ui/core/ListSubheader'
 
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 // MUI Icons
@@ -52,9 +52,9 @@ function StopDetails (stop, open, close) {
 
   const goToWebsite = () => window.open(this.props.stop.timetable, '_blank')
 
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
-
+  const theme = useTheme()
   const classes = useStyles()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
 
   return (
     <Dialog
@@ -63,11 +63,7 @@ function StopDetails (stop, open, close) {
       open={open}
       onClose={close}
       aria-labelledby='dlg-title'
-      BackdropProps={
-        {
-          invisible: true
-        }
-      }
+      BackdropProps={{ invisible: true }}
       PaperProps={{ elevation: 0, className: classes.dialog }}
     >
       {stop && stop.route_days

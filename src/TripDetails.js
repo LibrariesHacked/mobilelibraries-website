@@ -10,7 +10,7 @@ import ListSubheader from '@material-ui/core/ListSubheader'
 import Typography from '@material-ui/core/Typography'
 
 // Material UI Styles
-import { makeStyles } from '@material-ui/core/styles'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 const useStyles = makeStyles((theme) => ({
@@ -20,11 +20,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function TripDetails (trip, open, close) {
+  const classes = useStyles()
+  const theme = useTheme()
+
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
   const estimatedDuration = Math.round(trip.duration / 60) + ' mins journey time.'
   const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)'
-
-  const classes = useStyles()
 
   return (
     <Dialog
@@ -33,12 +34,7 @@ function TripDetails (trip, open, close) {
       open={open}
       onClose={close}
       BackdropProps={{ invisible: true }}
-      PaperProps={
-        {
-          elevation: 0,
-          className: classes.dialog
-        }
-      }
+      PaperProps={{ elevation: 0, className: classes.dialog }}
     >
       <DialogTitle>Trip details</DialogTitle>
       <DialogContent>

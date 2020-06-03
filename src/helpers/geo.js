@@ -10,7 +10,7 @@ export function getCurrentPosition (callback) {
   }
   navigator.geolocation.getCurrentPosition((pos) => {
     callback([pos.coords.longitude, pos.coords.latitude])
-  }, err => {
+  }, () => {
     callback([])
   }, options)
 };

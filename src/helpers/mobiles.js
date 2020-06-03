@@ -27,7 +27,7 @@ export function getMobileLocations (callback) {
         callback([])
       }
     })
-    .catch(err => callback([]))
+    .catch(() => callback([]))
 }
 
 export function getMobilesNearest (location, distance, callback) {

@@ -1,5 +1,5 @@
 // React
-import React from 'react'
+import React, { useState } from 'react'
 
 // Material UI
 import Badge from '@material-ui/core/Badge'
@@ -51,7 +51,7 @@ function Mobiles (organisations, organisationLookup, organisationFilter, setOrga
       display = false
     }
     if (mobileFilter.length > 0 &&
-    mobileFilter.indexOf(mob.id) === -1) {
+      mobileFilter.indexOf(mob.id) === -1) {
       display = false
     }
     return display
@@ -75,8 +75,8 @@ function Mobiles (organisations, organisationLookup, organisationFilter, setOrga
   let title = 'Mobile vans'
   // Filter stops
   if (organisationName !== '') title = 'Mobiles in ' + organisationName
-  if (mobile_name !== '') title = organisation_name + ' ' + mobile_name
-  if (route_name !== '') title = organisation_name + ' ' + route_name
+  if (mobileName !== '') title = organisationName + ' ' + mobileName
+  if (routeName !== '') title = organisationName + ' ' + routeName
   // Postcode search stops
   if (postcode !== '') title = 'Mobiles with stops within ' + Math.round(distance / 1609) + ' mile(s) of ' + postcode
   // GPS search stops
@@ -118,7 +118,7 @@ function Mobiles (organisations, organisationLookup, organisationFilter, setOrga
         value={openTab}
         indicatorColor='secondary'
         textColor='secondary'
-        onChange={(e, value) => this.changeTab(value)}
+        onChange={(e, value) => changeTab(value)}
       >
         <Tab
           className={classes.tab}
@@ -126,9 +126,9 @@ function Mobiles (organisations, organisationLookup, organisationFilter, setOrga
             <Badge
               className={classes.padding}
               color='secondary'
-              badgeContent={active_mobiles.length}
+              badgeContent={activeMobiles.length}
             >
-							Out today
+              Out today
             </Badge>
           }
         />
@@ -138,56 +138,59 @@ function Mobiles (organisations, organisationLookup, organisationFilter, setOrga
               showZero
               className={classes.padding}
               color='secondary'
-              badgeContent={filtered_mobiles.length}
+              badgeContent={filteredMobiles.length}
             >
-							All vans
+              All vans
             </Badge>
           }
         />
       </Tabs>
       <br />
       {mobiles
-        ? <Grid container spacing={3}>
-          {display_mobiles
-            .filter(mob => {
-              let display = true
-              if (organisationFilter.length > 0 &&
-								organisationFilter.indexOf(mob.organisationId) === -1) {
-                display = false
-              }
-              if (mobileFilter.length > 0 &&
-								mobileFilter.indexOf(mob.id) === -1) {
-                display = false
-              }
-              return display
-            })
-            .filter(mob => {
-              if (searchType === 'gps' || searchType === 'postcode') {
-                return mobilesNearestLookup[mob.id]
-              }
-              return true
-            })
-            .map((mobile, idx) => {
-              return (
-                <Grid
-                  key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
-                  item xs={12} sm={6} md={4} lg={3} xl={3}
-                >
-                  <MobileCard
-                    mobile={mobile}
-                    location={mobileLocationLookup[mobile.id]}
-                    organisation={organisationLookup[mobile.organisationId]}
-                    viewStop={this.props.viewStop}
-                    viewStopsByMobile={this.props.viewStopsByMobile}
-                  />
-                </Grid>
-              )
-            })}
+        ? (
+          <Grid container spacing={3}>
+            {displayMobiles
+              .filter(mob => {
+                let display = true
+                if (organisationFilter.length > 0 &&
+                  organisationFilter.indexOf(mob.organisationId) === -1) {
+                  display = false
+                }
+                if (mobileFilter.length > 0 &&
+                  mobileFilter.indexOf(mob.id) === -1) {
+                  display = false
+                }
+                return display
+              })
+              .filter(mob => {
+                if (searchType === 'gps' || searchType === 'postcode') {
+                  return mobilesNearestLookup[mob.id]
+                }
+                return true
+              })
+              .map((mobile, idx) => {
+                return (
+                  <Grid
+                    key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
+                    item xs={12} sm={6} md={4} lg={3} xl={3}
+                  >
+                    <MobileCard
+                      mobile={mobile}
+                      location={mobileLocationLookup[mobile.id]}
+                      organisation={organisationLookup[mobile.organisationId]}
+                      viewStop={this.props.viewStop}
+                      viewStopsByMobile={this.props.viewStopsByMobile}
+                    />
+                  </Grid>
+                )
+              })}
           </Grid>
-        : <div>
-          <br />
-          <LinearProgress color='secondary' />
-          </div>}
+        ) : (
+          <div>
+            <br />
+            <LinearProgress color='secondary' />
+          </div>
+        )}
     </div>
   )
 }
