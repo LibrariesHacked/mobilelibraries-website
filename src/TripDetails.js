@@ -19,7 +19,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function TripDetails (trip, open, close) {
+function TripDetails (props) {
+  const { trip, open, close } = props
+
   const classes = useStyles()
   const theme = useTheme()
 

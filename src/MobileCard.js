@@ -51,9 +51,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function MobileCard (mobile, organisation, location) {
+function MobileCard (props) {
+  const { mobile, organisation, location, viewStop, viewStopsByMobile } = props
+
   const stopButton = (stop) => {
-    return <Button color='secondary' onClick={() => this.props.viewStop({ id: stop.stop_id })}>{stop.stop_name}</Button>
+    return <Button color='secondary' onClick={() => viewStop({ id: stop.stop_id })}>{stop.stop_name}</Button>
   }
 
   const offRoadMessage = (status) => {
@@ -127,7 +129,7 @@ function MobileCard (mobile, organisation, location) {
       </CardContent>
       <CardActions>
         <Tooltip title='Mobile library stops'>
-          <Button component={Link} to='/stops' size='small' color='primary' className={classes.button} onClick={() => this.props.viewStopsByMobile(organisation.id, mobile.id)}>
+          <Button component={Link} to='/stops' size='small' color='primary' className={classes.button} onClick={() => viewStopsByMobile(organisation.id, mobile.id)}>
             <LocationOnIcon className={classes.leftIcon} />View stops
           </Button>
         </Tooltip>

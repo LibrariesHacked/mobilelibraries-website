@@ -1,32 +1,26 @@
-// Axios for making requests
 import axios from 'axios'
 
-// getCurrentLocation:
-export function getCurrentPosition (callback) {
+export function getPosition (options = {}) {
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(resolve, reject, options)
+  })
+}
+
+export async function getCurrentPosition () {
   var options = {
     enableHighAccuracy: true,
     timeout: 10000,
     maximumAge: 0
   }
-  navigator.geolocation.getCurrentPosition((pos) => {
-    callback([pos.coords.longitude, pos.coords.latitude])
-  }, () => {
-    callback([])
-  }, options)
-};
 
-// Get postcode data
-export function getPostcode (postcode, callback) {
-  axios.get('https://api.postcodes.io/postcodes/' + postcode)
-    .then(response => {
-      if (response && response.data && response.data.result) {
-        callback({
-          location: [response.data.result.longitude, response.data.result.latitude],
-          admin_district: response.data.result.admin_district
-        })
-      } else {
-        callback([])
-      }
-    })
-    .catch(() => callback([]))
+  const position = await getPosition(options)
+  return [position.coords.longitude, position.coords.latitude]
+}
+
+export async function getPostcode (postcode) {
+  const response = await axios.get('https://api.postcodes.io/postcodes/' + postcode)
+  return {
+    location: [response.data.result.longitude, response.data.result.latitude],
+    admin_district: response.data.result.admin_district
+  }
 };

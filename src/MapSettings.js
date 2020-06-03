@@ -19,12 +19,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function MapSettings (mapSettings, toggleMapSetting, close, open) {
+function MapSettings (props) {
   const handleAuthorityBoundaryChange = () => toggleMapSetting('authorityBoundary')
 
   const classes = useStyles()
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+
+  const { mapSettings, toggleMapSetting, close, open } = props
 
   return (
     <Dialog

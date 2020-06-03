@@ -54,13 +54,14 @@ function usePrevious (value) {
   return ref.current
 }
 
-function PostcodeSearch (searchType, postcodeSearch, clearSearch, postcode, setDistance) {
+function PostcodeSearch (props) {
+  const { searchType, postcodeSearch, clearSearch, postcode, setDistance } = props
   const [tempPostcode, setTempPostcode] = useState(postcode)
   const [anchor, setAnchor] = useState(null)
 
   const prevProps = usePrevious({ postcode })
   useEffect(() => {
-    if (postcode !== prevProps.postcode) setTempPostcode(postcode)
+    if (prevProps && postcode !== prevProps.postcode) setTempPostcode(postcode)
   }, [postcode])
 
   const openSettingsMenu = (e) => setAnchor(e.currentTarget)

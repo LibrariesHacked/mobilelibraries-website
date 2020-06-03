@@ -46,9 +46,11 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function AppHeader (loading, searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance) {
+function AppHeader (props) {
   const location = useLocation()
   const classes = useStyles()
+
+  const { loading, searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance } = props
 
   return (
     <>

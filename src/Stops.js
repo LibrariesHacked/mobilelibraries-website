@@ -65,10 +65,13 @@ function usePrevious (value) {
   return ref.current
 }
 
-function Stops (currentPosition, distance, viewMapStop, organisations, organisationLookup, organisationFilter, viewStopsByOrganisation,
-  mobiles, mobileLookup, mobileFilter,
-  routes, routeLookup, routeFilter,
-  searchType, postcode, postcodeDistrict, toggleGPS, postcodeSearch, clearSearch, setDistance) {
+function Stops (props) {
+  const {
+    currentPosition, distance, viewMapStop, organisations, organisationLookup,
+    organisationFilter, viewStopsByOrganisation, mobiles, mobileLookup, mobileFilter,
+    routes, routeLookup, routeFilter, searchType, postcode, postcodeDistrict, toggleGPS,
+    postcodeSearch, clearSearch, setDistance
+  } = props
   const tableRef = React.createRef()
 
   const getStopCalendar = (stop) => window.open(config.api + '/stops/' + stop.id + '/ics')

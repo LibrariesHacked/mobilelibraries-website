@@ -21,13 +21,13 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function MeAvatar () {
+function MeAvatar (props) {
   const classes = useStyles()
 
   return (
     <Tooltip title='Me'>
       <Avatar
-        className={this.props.searchType === 'gps' ? classes.avatarOn : classes.avatar}
+        className={props.searchType === 'gps' ? classes.avatarOn : classes.avatar}
       >
         <Face />
       </Avatar>

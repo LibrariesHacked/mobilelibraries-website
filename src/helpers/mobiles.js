@@ -1,135 +1,129 @@
-// Axios for making requests
 import axios from 'axios'
-
-// Moment for time calculations
 import moment from 'moment'
 
 const config = require('./config.json')
 
-export function getAllMobiles (callback) {
-  axios.get(config.api + '/mobiles')
-    .then(response => {
-      if (response && response.data) {
-        callback(response.data)
-      } else {
-        callback([])
-      }
-    })
-    .catch(() => callback([]))
+export class Mobile {
+  constructor (json) {
+    this.id = json.id
+    this.organisationId = json.organisation_id
+    this.name = json.name
+    this.timetable = json.timetable
+    this.numberRoutes = json.number_routes
+    this.numberStops = json.number_stops
+  }
 }
 
-export function getMobileLocations (callback) {
-  axios.get(config.api + '/mobiles/locations')
-    .then(response => {
-      if (response && response.data) {
-        callback(response.data)
-      } else {
-        callback([])
+export class MobileLocation {
+  constructor (json) {
+    this.mobileId = json.mobile_id
+    this.currentStopId = json.current_stop_id
+    this.currentStopDeparture = moment(json.current_stop_departure)
+    this.currentStopName = json.current_stop_name
+    this.previousStopId = json.previous_stop_id
+    this.previousStopDeparture = moment(json.previous_stop_departure)
+    this.previousStopName = json.previous_stop_name
+    this.nextStopId = json.next_stop_id
+    this.nextStopArrival = moment(json.next_stop_arrival)
+    this.nextStopName = json.next_stop_name
+    this.updated = moment(json.updated)
+    this.updateType = json.update_type
+    this.geoX = json.geox
+    this.geoY = json.geoy
+    this.routeSection = json.route_section
+  }
+
+  getStatus () {
+    const now = moment()
+    const statuses = {
+      offRoad: 'Not out today',
+      preRoute: 'Arriving at ',
+      atStop: 'At ',
+      betweenStops: 'Arriving at ',
+      postRoute: 'Finished for the day'
+    }
+    // The mobile is not due out today
+    if (!this.currentStopId && !this.previousStopId && this.nextStopId && !this.nextStopArrival.isSame(now, 'day')) {
+      return {
+        type: 'off_road',
+        textFormat: statuses.offRoad,
+        message: statuses.offRoad
       }
-    })
-    .catch(() => callback([]))
+    }
+    // The mobile is due out today
+    if (!this.currentStopId && !this.previousStopId && this.nextStopId && this.nextStopArrival.isSame(now, 'day')) {
+      const arrival = this.nextStopArrival.fromNow()
+      return {
+        type: 'pre_route',
+        message: statuses.preRoute,
+        textFormat: statuses.preRoute + this.nextStopName + ' ' + arrival,
+        args: [
+          { stopName: this.nextStopName, stopId: this.nextStopId },
+          arrival
+        ]
+      }
+    }
+    // The mobile is at a stop, and will be for a certain amount of time
+    if (this.currentStopId) {
+      const stopRemaining = this.currentStopDeparture.fromNow(true)
+      return {
+        type: 'atStop',
+        message: statuses.atStop,
+        textFormat: statuses.atStop + this.currentStopName + ' for ' + stopRemaining,
+        args: [
+          { stopName: this.currentStopName, stopId: this.currentStopId },
+          stopRemaining
+        ]
+      }
+    }
+    // The mobile is between stops
+    if (!this.currentStopId && this.previousStopId && this.nextStopId && this.previousStopDeparture.isSame(now, 'day') && this.nextStopArrival.isSame(now, 'day')) {
+      const arrival = this.nextStopArrival.fromNow()
+      return {
+        type: 'between_stops',
+        message: statuses.betweenStops,
+        textFormat: statuses.betweenStops + this.nextStopName + ' ' + arrival,
+        args: [
+          { stopName: this.nextStopName, stopId: this.nextStopId },
+          arrival
+        ]
+      }
+    }
+    // The mobile has finished for the day
+    if (this.previousStopId && this.nextStopId && this.previousStopDeparture.isSame(now, 'day') && !this.nextStopArrival.isSame(now, 'day')) {
+      return {
+        type: 'post_route',
+        message: statuses.postRoute,
+        text_format: statuses.postRoute
+      }
+    }
+    return null
+  }
 }
 
-export function getMobilesNearest (location, distance, callback) {
-  axios.get(config.api + '/mobiles/nearest?longitude=' + location[0] + '&latitude=' + location[1] + '&distance=' + distance)
-    .then(response => {
-      if (response && response.data) {
-        callback(response.data)
-      } else {
-        callback([])
-      }
-    })
-    .catch(() => callback([]))
+export async function getAllMobiles () {
+  const response = await axios.get(config.api + '/mobiles')
+  if (response && response.data && response.data.length > 0) {
+    return response.data.map(m => new Mobile(m))
+  } else {
+    return []
+  }
 }
 
-export function getMobileStatus (location) {
-  const statuses = {
-    off_road: {
-      label: 'Not out today'
-    },
-    pre_route: {
-      label: 'Arriving at '
-    },
-    at_stop: {
-      label: 'At '
-    },
-    between_stops: {
-      label: 'Arriving at '
-    },
-    post_route: {
-      label: 'Finished for the day'
-    }
+export async function getMobileLocations () {
+  const response = axios.get(config.api + '/mobiles/locations')
+  if (response && response.data && response.data.length > 0) {
+    return response.data.map(ml => new MobileLocation(ml))
+  } else {
+    return []
   }
+}
 
-  // The mobile is not due out today
-  if (location && !location.currentStop_id &&
-    !location.previous_stop_id && location.next_stop_id &&
-    !moment(location.next_stop_arrival).isSame(moment(), 'day')) {
-    return {
-      type: 'off_road',
-      text_format: statuses.off_road.label,
-      message: statuses.off_road.label
-    }
+export function getMobilesNearest (location, distance) {
+  const response = axios.get(config.api + '/mobiles/nearest?longitude=' + location[0] + '&latitude=' + location[1] + '&distance=' + distance)
+  if (response && response.data && response.data.length > 0) {
+    return response.data.map(m => new Mobile(m))
+  } else {
+    return []
   }
-
-  // The mobile is due out today
-  if (location && !location.currentStop_id &&
-    !location.previous_stop_id && location.next_stop_id &&
-    moment(location.next_stop_arrival).isSame(moment(), 'day')) {
-    const arrival = moment(location.next_stop_arrival).fromNow()
-    return {
-      type: 'pre_route',
-      message: statuses.pre_route.label,
-      text_format: statuses.pre_route.label + location.next_stop_name + ' ' + arrival,
-      args: [
-        { stop_name: location.next_stop_name, stop_id: location.next_stop_id },
-        arrival
-      ]
-    }
-  }
-
-  // The mobile is at a stop, and will be for a certain amount of time
-  if (location && location.currentStop_id) {
-    const stopRemaining = moment(location.currentStop_departure).fromNow(true)
-    return {
-      type: 'at_stop',
-      message: statuses.at_stop.label,
-      text_format: statuses.at_stop.label + location.currentStop_name + ' for ' + stopRemaining,
-      args: [
-        { stop_name: location.currentStop_name, stop_id: location.currentStop_id },
-        stopRemaining
-      ]
-    }
-  }
-
-  // The mobile is between stops
-  if (location && !location.currentStop_id &&
-    location.previous_stop_id && location.next_stop_id &&
-    moment(location.previous_stop_departure).isSame(moment(), 'day') &&
-    moment(location.next_stop_arrival).isSame(moment(), 'day')) {
-    const arrival = moment(location.next_stop_arrival).fromNow()
-    return {
-      type: 'between_stops',
-      message: statuses.between_stops.label,
-      text_format: statuses.between_stops.label + location.next_stop_name + ' ' + arrival,
-      args: [
-        { stop_name: location.next_stop_name, stop_id: location.next_stop_id },
-        arrival
-      ]
-    }
-  }
-
-  // The mobile has finished for the day
-  if (location &&
-    location.previous_stop_id && location.next_stop_id &&
-    moment(location.previous_stop_departure).isSame(moment(), 'day') &&
-    !moment(location.next_stop_arrival).isSame(moment(), 'day')) {
-    return {
-      type: 'post_route',
-      message: statuses.post_route.label,
-      text_format: statuses.post_route.label
-    }
-  }
-
-  return null
 }

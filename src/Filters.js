@@ -48,13 +48,17 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function Filters (organisations, organisationLookup, organisationFilter, setOrganisationFilter,
-  clearOrganisationFilter, mobiles, mobileLookup, mobileFilter, setMobileFilter, clearMobileFilter,
-  routes, routeLookup, routeFilter, setRouteFilter, clearRouteFilter,
-  searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance) {
+function Filters (props) {
   const [organisationMenuAnchor, setOrganisationMenuAnchor] = useState(null)
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null)
   const [routeMenuAnchor, setRouteMenuAnchor] = useState(null)
+
+  const {
+    organisations, organisationLookup, organisationFilter, setOrganisationFilter,
+    clearOrganisationFilter, mobiles, mobileLookup, mobileFilter, setMobileFilter,
+    clearMobileFilter, routes, routeLookup, routeFilter, setRouteFilter, clearRouteFilter,
+    searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
+  } = props
 
   const openOrganisationMenu = (element) => setOrganisationMenuAnchor(element)
 

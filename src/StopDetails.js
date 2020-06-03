@@ -43,14 +43,14 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function StopDetails (stop, open, close) {
-  const getStopCalendar = () => window.open(config.api + '/stops/' + this.props.stop.id + '/ics')
+function StopDetails (props) {
+  const { stop, open, close, viewMapStop } = props
 
-  const getStopPdf = () => window.open(config.api + '/stops/' + this.props.stop.id + '/pdf', '_blank')
+  const getStopCalendar = () => window.open(config.api + '/stops/' + stop.id + '/ics')
 
-  const viewMapStop = () => this.props.viewMapStop(this.props.stop.longitude, this.props.stop.latitude)
+  const getStopPdf = () => window.open(config.api + '/stops/' + stop.id + '/pdf', '_blank')
 
-  const goToWebsite = () => window.open(this.props.stop.timetable, '_blank')
+  const goToWebsite = () => window.open(stop.timetable, '_blank')
 
   const theme = useTheme()
   const classes = useStyles()
@@ -77,7 +77,7 @@ function StopDetails (stop, open, close) {
               <br />
               <Button onClick={() => getStopCalendar()} className={classes.button} color='primary' startIcon={<EventIcon />}>Calendar</Button>
               <Button onClick={() => getStopPdf()} className={classes.button} color='primary' startIcon={<PrintIcon />}>Timetable</Button>
-              <Button onClick={() => viewMapStop()} className={classes.button} color='primary' startIcon={<LocationOnIcon />} component={Link} to='/map'>Map</Button>
+              <Button onClick={() => viewMapStop(stop.longitude, stop.latitude)} className={classes.button} color='primary' startIcon={<LocationOnIcon />} component={Link} to='/map'>Map</Button>
             </DialogContent>
           </>
         ) : <CircularProgress className={classes.progress} color='secondary' size={30} />}

@@ -22,7 +22,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function MobileAvatar (location, organisation, zoom) {
+function MobileAvatar (props) {
+  const { location, organisation, zoom } = props
+
   const status = mobilesHelper.getMobileStatus(location)
   const size = (zoom < 8 ? 'small' : (zoom < 12 ? 'medium' : 'large'))
   const border = (zoom < 8 ? 2 : (zoom < 12 ? 3 : 4))

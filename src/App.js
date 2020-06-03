@@ -129,7 +129,7 @@ function App () {
   }
 
   const getRoutes = () => {
-    loadingRoutes(true)
+    setLoadingRoutes(true)
     routesHelper.getAllRoutes(routes => {
       const routeLookup = {}
       routes.forEach(route => { routeLookup[route.id] = route })

@@ -30,10 +30,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function Mobiles (organisations, organisationLookup, organisationFilter, setOrganisationFilter, clearOrganisationFilter, viewStopsByOrganisation,
-  mobiles, mobileLookup, mobileLocationLookup, mobilesNearestLookup, mobileFilter, setMobileFilter, clearMobileFilter,
-  routes, routeLookup, routeFilter, setRouteFilter, clearRouteFilter,
-  searchType, postcode, postcodeDistrict, distance, toggleGPS, postcodeSearch, clearSearch, setDistance) {
+function Mobiles (props) {
+  const {
+    organisations, organisationLookup, organisationFilter, setOrganisationFilter,
+    clearOrganisationFilter, viewStopsByOrganisation, mobiles, mobileLookup,
+    mobileLocationLookup, mobilesNearestLookup, mobileFilter, setMobileFilter,
+    clearMobileFilter, routes, routeLookup, routeFilter, setRouteFilter,
+    clearRouteFilter, searchType, postcode, postcodeDistrict, distance, toggleGPS,
+    postcodeSearch, clearSearch, setDistance, viewStop, viewStopsByMobile
+  } = props
   const { openTab, setOpenTab } = useState(0)
 
   const changeTab = (value) => {
@@ -178,8 +183,8 @@ function Mobiles (organisations, organisationLookup, organisationFilter, setOrga
                       mobile={mobile}
                       location={mobileLocationLookup[mobile.id]}
                       organisation={organisationLookup[mobile.organisationId]}
-                      viewStop={this.props.viewStop}
-                      viewStopsByMobile={this.props.viewStopsByMobile}
+                      viewStop={viewStop}
+                      viewStopsByMobile={viewStopsByMobile}
                     />
                   </Grid>
                 )

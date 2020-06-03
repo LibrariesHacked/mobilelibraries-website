@@ -41,7 +41,12 @@ const stopTiles = [config.stopTiles]
 const tripTiles = [config.tripTiles]
 const libraryAuthorityTiles = [config.libraryAuthorityTiles]
 
-function MobileMap (zoom, position, mapSettings, mobileLocations, mobileLookup, organisations, organisationLookup, toggleMapSetting) {
+function MobileMap (props) {
+  const {
+    zoom, position, mapSettings, currentPosition, searchType, mobileLocations, mobileLookup,
+    organisations, organisationLookup, toggleMapSetting, viewStop, viewTrip
+  } = props
+
   const [currentTime, setCurrentTime] = useState(null)
   const [map, setMap] = useState(null)
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
@@ -52,13 +57,13 @@ function MobileMap (zoom, position, mapSettings, mobileLocations, mobileLookup, 
 
   const clickStop = (map) => {
     if (map && map.features && map.features.length > 0 && map.features[0].properties) {
-      this.props.viewStop({ id: map.features[0].properties.id })
+      viewStop({ id: map.features[0].properties.id })
     }
   }
 
   const clickTrip = (map) => {
     if (map && map.features && map.features.length > 0 && map.features[0].properties) {
-      this.props.viewTrip(map.features[0].properties)
+      viewTrip(map.features[0].properties)
     }
   }
 
@@ -323,13 +328,13 @@ function MobileMap (zoom, position, mapSettings, mobileLocations, mobileLookup, 
               />
             </>
           ) : null}
-        {this.props.currentPosition && this.props.currentPosition.length > 1
+        {currentPosition && currentPosition.length > 1
           ? (
             <Marker
               key='mk_me'
-              coordinates={[this.props.currentPosition[0], this.props.currentPosition[1]]}
+              coordinates={[currentPosition[0], currentPosition[1]]}
             >
-              <MeAvatar searchType={this.props.searchType} />
+              <MeAvatar searchType={searchType} />
             </Marker>
           )
           : null}
