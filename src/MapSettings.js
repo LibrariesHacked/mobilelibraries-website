@@ -46,7 +46,7 @@ function MapSettings (props) {
             <Switch
               checked={mapSettings.authorityBoundary}
               onChange={handleAuthorityBoundaryChange}
-              name='sw_authorityBoundary'
+              name='sw_authority_boundary'
               color='primary'
             />
           }

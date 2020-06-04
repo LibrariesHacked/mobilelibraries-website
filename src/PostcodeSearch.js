@@ -62,7 +62,7 @@ function PostcodeSearch (props) {
   const prevProps = usePrevious({ postcode })
   useEffect(() => {
     if (prevProps && postcode !== prevProps.postcode) setTempPostcode(postcode)
-  }, [postcode])
+  }, [postcode]) // eslint-disable-line
 
   const openSettingsMenu = (e) => setAnchor(e.currentTarget)
 
@@ -83,7 +83,7 @@ function PostcodeSearch (props) {
           input: classes.inputInput
         }}
         value={tempPostcode}
-        onChange={(e) => this.setState({ postcode: e.target.value })}
+        onChange={(e) => setTempPostcode(e.target.value)}
       />
       <div className={classes.grow} />
       {searchType === 'postcode'
@@ -102,7 +102,7 @@ function PostcodeSearch (props) {
         <IconButton
           color='primary'
           className={classes.iconButton}
-          onClick={() => postcodeSearch(postcode)}
+          onClick={() => postcodeSearch(tempPostcode)}
         >
           <SearchIcon />
         </IconButton>

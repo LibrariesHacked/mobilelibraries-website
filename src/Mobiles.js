@@ -16,8 +16,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Filters from './Filters'
 import MobileCard from './MobileCard'
 
-import { MobileLocation } from './helpers/mobiles'
-
 const useStyles = makeStyles((theme) => ({
   chip: {
     margin: theme.spacing(1)
@@ -39,7 +37,7 @@ function Mobiles (props) {
     clearRouteFilter, searchType, postcode, postcodeDistrict, distance, toggleGPS,
     postcodeSearch, clearSearch, setDistance, viewStop, viewStopsByMobile
   } = props
-  const { openTab, setOpenTab } = useState(0)
+  const [openTab, setOpenTab] = useState(0)
 
   const changeTab = (value) => {
     setOpenTab(value)
@@ -63,8 +61,11 @@ function Mobiles (props) {
   })
   // Then get those that are currently active
   const activeMobiles = filteredMobiles.filter(mob => {
-    const status = mobileLocationLookup[mob.id].getStatus()
-    return (status && status.type !== 'off_road' && status.type !== 'post_route')
+    if (mobileLocationLookup[mob.id]) {
+      const status = mobileLocationLookup[mob.id].getStatus()
+      return (status && status.type !== 'off_road' && status.type !== 'post_route')
+    }
+    return null
   })
 
   // Apply filters

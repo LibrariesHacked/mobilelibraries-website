@@ -158,12 +158,11 @@ function App () {
     }, 15000)
   }, [])
 
-  const viewStop = (stop) => {
+  const viewStop = async (stop) => {
     openStopDialog(stop)
     if (!stop.name) {
-      stopsHelper.getStopById(stop.id, stop => {
-        setCurrentStop(stop)
-      })
+      const stopData = await stopsHelper.getStopById(stop.id)
+      setCurrentStop(stopData)
     }
   }
 
@@ -172,11 +171,10 @@ function App () {
     setStopDialogOpen(true)
   }
 
-  const viewTrip = (trip) => {
+  const viewTrip = async (trip) => {
     openTripDialog(trip)
-    tripsHelper.getTripById(trip.id, trip => {
-      setCurrentTrip(trip)
-    })
+    const tripData = await tripsHelper.getTripById(trip.id)
+    setCurrentTrip(tripData)
   }
 
   const openTripDialog = (trip) => {
@@ -221,25 +219,24 @@ function App () {
     setStopDialogOpen(false)
   }
 
-  const logPosition = (fit = false) => {
+  const logPosition = async (fit = false) => {
     setLoadingGPS(true)
-    geoHelper.getCurrentPosition(position => {
-      if (position.length === 2) {
-        getMobilesNearest()
-        setCurrentPosition(position)
-        setPosition(position)
-        setZoom([12])
-        setLoadingGPS(false)
-      } else {
-        clearInterval(positionUpdateInterval)
-        setSearchType('')
-        setPostcode('')
-        setCurrentPosition([])
-        setPositionUpdateInterval(null)
-        setSnackbarMessage('Could not fetch current location')
-        setSnackbarOpen(true)
-      }
-    })
+    const position = await geoHelper.getCurrentPosition()
+    if (position.length === 2) {
+      getMobilesNearest()
+      setCurrentPosition(position)
+      setPosition(position)
+      setZoom([12])
+      setLoadingGPS(false)
+    } else {
+      clearInterval(positionUpdateInterval)
+      setSearchType('')
+      setPostcode('')
+      setCurrentPosition([])
+      setPositionUpdateInterval(null)
+      setSnackbarMessage('Could not fetch current location')
+      setSnackbarOpen(true)
+    }
   }
 
   const clearSearch = () => {
@@ -251,7 +248,7 @@ function App () {
     setRouteFilter([])
   }
 
-  const postcodeSearch = (postcode) => {
+  const postcodeSearch = async (postcode) => {
     if (postcode === '') {
       setSnackbarOpen(true)
       setSnackbarMessage('You must enter a postcode')
@@ -270,18 +267,17 @@ function App () {
       setPositionUpdateInterval(null)
     }
 
-    geoHelper.getPostcode(postcode, postcodeData => {
-      if (postcodeData.location && postcodeData.location.length === 2) {
-        setCurrentPosition(postcodeData.location)
-        setPosition(postcodeData.location)
-        setZoom([11])
-        setLoadingPostcode(false)
-        getMobilesNearest()
-      } else {
-        setSnackbarOpen(true)
-        setSnackbarMessage('Could not find postcode')
-      }
-    })
+    const postcodeData = await geoHelper.getPostcode(postcode)
+    if (postcodeData.location && postcodeData.location.length === 2) {
+      setCurrentPosition(postcodeData.location)
+      setPosition(postcodeData.location)
+      setZoom([11])
+      setLoadingPostcode(false)
+      getMobilesNearest()
+    } else {
+      setSnackbarOpen(true)
+      setSnackbarMessage('Could not find postcode')
+    }
   }
 
   const toggleGPS = () => {
@@ -291,7 +287,7 @@ function App () {
       setCurrentPosition([])
       setPositionUpdateInterval(null)
     } else {
-      const positionUpdateInterval = setInterval(logPosition, 10000)
+      const positionUpdateInterval = setInterval(logPosition, 15000)
       setPositionUpdateInterval(positionUpdateInterval)
       setSearchType('gps')
       setPostcode('')
@@ -413,7 +409,7 @@ function App () {
                       zoom={zoom}
                       searchType={searchType}
                       mobileLookup={mobileLookup}
-                      mobileLocations={mobileLocations.filter(l => l.geox !== null)}
+                      mobileLocations={mobileLocations.filter(l => l.geoX !== null && l.geoY !== null)}
                       organisations={organisations}
                       organisationLookup={organisationLookup}
                       mapSettings={mapSettings}

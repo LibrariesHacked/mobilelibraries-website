@@ -66,12 +66,12 @@ function StopDetails (props) {
       BackdropProps={{ invisible: true }}
       PaperProps={{ elevation: 0, className: classes.dialog }}
     >
-      {stop && stop.route_days
+      {stop && stop.routeDays
         ? (
           <>
             <DialogTitle id='dlg-title'>{stop.name + '. ' + stop.community}</DialogTitle>
             <DialogContent>
-              <ListSubheader>{(stop.route_schedule && stop.route_schedule.length > 0 ? moment(stop.route_schedule[0]).format('dddd Do MMMM h:mma') : '')}</ListSubheader>
+              <ListSubheader>{(stop.routeSchedule && stop.routeSchedule.length > 0 ? moment(stop.routeSchedule[0]).format('dddd Do MMMM h:mma') : '')}</ListSubheader>
               <br />
               <Divider />
               <br />

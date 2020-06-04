@@ -40,7 +40,7 @@ function TripDetails (props) {
     >
       <DialogTitle>Trip details</DialogTitle>
       <DialogContent>
-        <ListSubheader disableSticky>{'From ' + trip.origin_stop_name + ' to ' + trip.destination_stop_name}</ListSubheader>
+        <ListSubheader disableSticky>{'From ' + trip.originStopName + ' to ' + trip.destinationStopName}</ListSubheader>
         <Typography variant='body2' component='p'>{estimatedDuration + ' ' + distance}</Typography>
       </DialogContent>
       <DialogActions>

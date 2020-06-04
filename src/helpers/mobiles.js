@@ -40,6 +40,7 @@ export class MobileLocation {
     this.geoX = json.geox
     this.geoY = json.geoy
     this.routeSection = json.route_section
+    return this
   }
 
   getStatus () {
@@ -113,23 +114,25 @@ export class MobileLocation {
 export async function getAllMobiles () {
   const response = await axios.get(config.api + '/mobiles')
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(m => (new Mobile()).fromJson(m))
+    const mobiles = response.data.map(m => (new Mobile()).fromJson(m))
+    return mobiles
   } else {
     return []
   }
 }
 
 export async function getMobileLocations () {
-  const response = axios.get(config.api + '/mobiles/locations')
+  const response = await axios.get(config.api + '/mobiles/locations')
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(ml => (new MobileLocation()).fromJson(ml))
+    const locations = response.data.map(ml => (new MobileLocation()).fromJson(ml))
+    return locations
   } else {
     return []
   }
 }
 
-export function getMobilesNearest (location, distance) {
-  const response = axios.get(config.api + '/mobiles/nearest?longitude=' + location[0] + '&latitude=' + location[1] + '&distance=' + distance)
+export async function getMobilesNearest (location, distance) {
+  const response = await axios.get(config.api + '/mobiles/nearest?longitude=' + location[0] + '&latitude=' + location[1] + '&distance=' + distance)
   if (response && response.data && response.data.length > 0) {
     return response.data.map(m => (new Mobile()).fromJson(m))
   } else {

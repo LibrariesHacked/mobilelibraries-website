@@ -95,11 +95,11 @@ function MobileMap (props) {
         {// The mobile library locations
           mobileLocations && mobileLocations.length > 0
             ? mobileLocations.map(l => {
-              let locationPoint = [l.geox, l.geoy]
-              if (currentTime && l.route_section && l.route_section.coordinates && l.updated) {
+              let locationPoint = [l.geoX, l.geoY]
+              if (currentTime && l.routeSection && l.routeSection.coordinates && l.updated) {
                 const millisecondsPassed = moment(currentTime).diff(l.updated)
                 const index = Math.round(millisecondsPassed / 500)
-                const coords = l.route_section.coordinates
+                const coords = l.routeSection.coordinates
                 if (coords.length > index && index > 0) locationPoint = coords[index]
                 if (coords.length <= index && index > 0) locationPoint = coords[coords.length - 1]
               }

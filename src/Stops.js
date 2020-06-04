@@ -30,9 +30,6 @@ import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
 // Our components
 import Filters from './Filters'
 
-// Moment
-import moment from 'moment'
-
 // Our Helpers
 import * as stopsHelper from './helpers/stops'
 import { Tooltip } from '@material-ui/core'
@@ -67,10 +64,12 @@ function usePrevious (value) {
 
 function Stops (props) {
   const {
-    currentPosition, distance, viewMapStop, organisations, organisationLookup,
-    organisationFilter, viewStopsByOrganisation, mobiles, mobileLookup, mobileFilter,
-    routes, routeLookup, routeFilter, searchType, postcode, postcodeDistrict, toggleGPS,
-    postcodeSearch, clearSearch, setDistance
+    currentPosition, distance, viewStop, viewMapStop, organisations, organisationLookup,
+    organisationFilter, viewStopsByOrganisation, mobiles, mobileLookup,
+    mobileFilter, routes, routeLookup, routeFilter, searchType, postcode,
+    postcodeDistrict, toggleGPS, postcodeSearch, clearSearch, setDistance,
+    setOrganisationFilter, clearOrganisationFilter, setMobileFilter, clearMobileFilter,
+    setRouteFilter, clearRouteFilter
   } = props
   const tableRef = React.createRef()
 
@@ -78,39 +77,37 @@ function Stops (props) {
 
   const getStopPdf = (stop) => window.open(config.api + '/stops/' + stop.id + '/pdf', '_blank')
 
-  const viewStop = (stop) => viewMapStop(stop.longitude, stop.latitude)
-
   const prevProps = usePrevious({ currentPosition, distance })
   useEffect(() => {
     if (prevProps && (currentPosition !== prevProps.currentPosition || distance !== prevProps.distance)) tableRef.current.onQueryChange()
-  }, [currentPosition, distance])
+  }, [currentPosition, distance]) // eslint-disable-line
 
-  const setOrganisationFilter = (organisationId) => {
+  const setOrgFilter = (organisationId) => {
     setOrganisationFilter(organisationId)
     tableRef.current.onQueryChange()
   }
 
-  const clearOrganisationFilter = () => {
+  const clearOrgFilter = () => {
     clearOrganisationFilter()
     tableRef.current.onQueryChange()
   }
 
-  const setMobileFilter = (mobileId) => {
+  const setMobFilter = (mobileId) => {
     setMobileFilter(mobileId)
     tableRef.current.onQueryChange()
   }
 
-  const clearMobileFilter = () => {
+  const clearMobFilter = () => {
     clearMobileFilter()
     tableRef.current.onQueryChange()
   }
 
-  const setRouteFilter = (routeId) => {
+  const setRtFilter = (routeId) => {
     setRouteFilter(routeId)
     tableRef.current.onQueryChange()
   }
 
-  const clearRouteFilter = () => {
+  const clearRtFilter = () => {
     clearRouteFilter()
     tableRef.current.onQueryChange()
   }
@@ -154,19 +151,19 @@ function Stops (props) {
         organisations={organisations}
         organisationLookup={organisationLookup}
         organisationFilter={organisationFilter}
-        setOrganisationFilter={setOrganisationFilter}
-        clearOrganisationFilter={clearOrganisationFilter}
+        setOrganisationFilter={setOrgFilter}
+        clearOrganisationFilter={clearOrgFilter}
         viewStopsByOrganisation={viewStopsByOrganisation}
         mobiles={mobiles}
         mobileLookup={mobileLookup}
         mobileFilter={mobileFilter}
-        setMobileFilter={setMobileFilter}
-        clearMobileFilter={clearMobileFilter}
+        setMobileFilter={setMobFilter}
+        clearMobileFilter={clearMobFilter}
         routes={routes}
         routeLookup={routeLookup}
         routeFilter={routeFilter}
-        setRouteFilter={setRouteFilter}
-        clearRouteFilter={clearRouteFilter}
+        setRouteFilter={setRtFilter}
+        clearRouteFilter={clearRtFilter}
         postcode={postcode}
         postcodeDistrict={postcodeDistrict}
         distance={distance}
@@ -232,7 +229,7 @@ function Stops (props) {
                   </Hidden>
                   <Hidden mdDown>
                     <Tooltip title='See this stop on the map'>
-                      <IconButton onClick={() => viewStop(rowData)} component={Link} to='/map'>
+                      <IconButton onClick={() => viewMapStop(rowData.longitude, rowData.latitude)} component={Link} to='/map'>
                         <LocationOnIcon />
                       </IconButton>
                     </Tooltip>
@@ -271,7 +268,7 @@ function Stops (props) {
           },
           {
             title: 'Library service',
-            field: 'organisation_name',
+            field: 'organisationName',
             filtering: false,
             hidden: useMediaQuery(theme.breakpoints.down('sm')),
             cellStyle: {
@@ -286,7 +283,7 @@ function Stops (props) {
             hidden: useMediaQuery(theme.breakpoints.down('xs')),
             render: (rowData) => {
               return (
-                rowData.route_schedule.length > 0 ? moment(rowData.route_schedule[0]).format('Do MMMM h:mma') : ''
+                rowData.routeSchedule.length > 0 ? rowData.routeSchedule[0].format('Do MMMM h:mma') : ''
               )
             },
             cellStyle: {
@@ -297,13 +294,15 @@ function Stops (props) {
         ]}
         data={query =>
           new Promise((resolve, reject) => {
-            stopsHelper.getQueryStops(query, organisationFilter, mobileFilter, routeFilter, currentPosition, distance, stopData => {
+            async function getStops () {
+              const stopData = await stopsHelper.getQueryStops(query, organisationFilter, mobileFilter, routeFilter, currentPosition, distance)
               resolve({
                 data: stopData.stops,
                 page: (stopData.page - 1),
                 totalCount: stopData.total
               })
-            })
+            }
+            getStops()
           })}
       />
     </div>

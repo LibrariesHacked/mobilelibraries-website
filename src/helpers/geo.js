@@ -21,6 +21,6 @@ export async function getPostcode (postcode) {
   const response = await axios.get('https://api.postcodes.io/postcodes/' + postcode)
   return {
     location: [response.data.result.longitude, response.data.result.latitude],
-    admin_district: response.data.result.admin_district
+    adminDistrict: response.data.result.adminDistrict
   }
 };

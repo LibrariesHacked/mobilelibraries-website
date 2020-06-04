@@ -12,7 +12,6 @@ import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
 import { makeStyles } from '@material-ui/core/styles'
 
 // Helpers
-import { MobileLocation } from './helpers/mobiles'
 import * as utilsHelper from './helpers/utils'
 
 const useStyles = makeStyles((theme) => ({
@@ -25,14 +24,14 @@ const useStyles = makeStyles((theme) => ({
 function MobileAvatar (props) {
   const { location, organisation, zoom } = props
 
-  const status = Object.assign(MobileLocation, location).getStatus()
+  const status = location.getStatus()
   const size = (zoom < 8 ? 'small' : (zoom < 12 ? 'medium' : 'large'))
   const border = (zoom < 8 ? 2 : (zoom < 12 ? 3 : 4))
   const classes = useStyles()
 
   return (
     <Tooltip
-      title={(status ? status.text_format : '')}
+      title={(status ? status.textFormat : '')}
     >
       <Fab
         size={size}
