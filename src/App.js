@@ -106,57 +106,48 @@ function App () {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState(false)
 
-  const getOrganisations = () => {
-    setLoadingOrganisations(true)
-    organisationsHelper.getAllOrganisations(organisations => {
+  const getMobilesNearest = async () => {
+    const mobiles = await mobilesHelper.getMobilesNearest(currentPosition, distance)
+    const mobilesNearestLookup = {}
+    mobiles.forEach(mobile => { mobilesNearestLookup[mobile.mobileId] = mobile })
+    setMobilesNearestLookup(mobilesNearestLookup)
+  }
+
+  useEffect(() => {
+    async function getOrganisations () {
+      setLoadingOrganisations(true)
+      const organisations = await organisationsHelper.getAllOrganisations()
       const organisationLookup = {}
       organisations.forEach(organisation => { organisationLookup[organisation.id] = organisation })
       setOrganisations(organisations)
       setOrganisationLookup(organisationLookup)
       setLoadingOrganisations(false)
-    })
-  }
-
-  const getMobiles = () => {
-    setLoadingMobiles(true)
-    mobilesHelper.getAllMobiles(mobiles => {
+    }
+    async function getMobiles () {
+      setLoadingMobiles(true)
+      const mobiles = await mobilesHelper.getAllMobiles()
       const mobileLookup = {}
       mobiles.forEach(mobile => { mobileLookup[mobile.id] = mobile })
       setMobiles(mobiles)
       setMobileLookup(mobileLookup)
       setLoadingMobiles(false)
-    })
-  }
-
-  const getRoutes = () => {
-    setLoadingRoutes(true)
-    routesHelper.getAllRoutes(routes => {
+    }
+    async function getRoutes () {
+      setLoadingRoutes(true)
+      const routes = await routesHelper.getAllRoutes()
       const routeLookup = {}
       routes.forEach(route => { routeLookup[route.id] = route })
       setRoutes(routes)
       setRouteLookup(routeLookup)
       setLoadingRoutes(false)
-    })
-  }
-
-  const getMobileLocations = () => {
-    mobilesHelper.getMobileLocations(locations => {
+    }
+    async function getMobileLocations () {
+      const locations = await mobilesHelper.getMobileLocations()
       const mobileLocationLookup = {}
       locations.forEach(location => { mobileLocationLookup[location.mobileId] = location })
       setMobileLocations(locations)
       setMobileLocationLookup(mobileLocationLookup)
-    })
-  }
-
-  const getMobilesNearest = () => {
-    mobilesHelper.getMobilesNearest(currentPosition, distance, mobiles => {
-      const mobilesNearestLookup = {}
-      mobiles.forEach(mobile => { mobilesNearestLookup[mobile.mobileId] = mobile })
-      setMobilesNearestLookup(mobilesNearestLookup)
-    })
-  }
-
-  useEffect(() => {
+    }
     getOrganisations()
     getMobiles()
     getRoutes()

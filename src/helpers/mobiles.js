@@ -4,18 +4,27 @@ import moment from 'moment'
 const config = require('./config.json')
 
 export class Mobile {
-  constructor (json) {
+  constructor (obj) {
+    Object.assign(this, obj)
+  }
+
+  fromJson (json) {
     this.id = json.id
     this.organisationId = json.organisation_id
     this.name = json.name
     this.timetable = json.timetable
     this.numberRoutes = json.number_routes
     this.numberStops = json.number_stops
+    return this
   }
 }
 
 export class MobileLocation {
-  constructor (json) {
+  constructor (obj) {
+    Object.assign(this, obj)
+  }
+
+  fromJson (json) {
     this.mobileId = json.mobile_id
     this.currentStopId = json.current_stop_id
     this.currentStopDeparture = moment(json.current_stop_departure)
@@ -104,7 +113,7 @@ export class MobileLocation {
 export async function getAllMobiles () {
   const response = await axios.get(config.api + '/mobiles')
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(m => new Mobile(m))
+    return response.data.map(m => (new Mobile()).fromJson(m))
   } else {
     return []
   }
@@ -113,7 +122,7 @@ export async function getAllMobiles () {
 export async function getMobileLocations () {
   const response = axios.get(config.api + '/mobiles/locations')
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(ml => new MobileLocation(ml))
+    return response.data.map(ml => (new MobileLocation()).fromJson(ml))
   } else {
     return []
   }
@@ -122,7 +131,7 @@ export async function getMobileLocations () {
 export function getMobilesNearest (location, distance) {
   const response = axios.get(config.api + '/mobiles/nearest?longitude=' + location[0] + '&latitude=' + location[1] + '&distance=' + distance)
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(m => new Mobile(m))
+    return response.data.map(m => (new Mobile()).fromJson(m))
   } else {
     return []
   }

@@ -22,7 +22,7 @@ import WebIcon from '@material-ui/icons/WebTwoTone'
 import { makeStyles } from '@material-ui/core/styles'
 
 // Helpers
-import * as mobilesHelper from './helpers/mobiles'
+import { MobileLocation } from './helpers/mobiles'
 
 const useStyles = makeStyles((theme) => ({
   bullet: {
@@ -107,7 +107,7 @@ function MobileCard (props) {
 
   const classes = useStyles()
 
-  let status = mobilesHelper.getMobileStatus(location)
+  let status = Object.assign(MobileLocation, location)
   if (status && status.type === 'off_road') status = offRoadMessage(status)
   if (status && status.type === 'pre_route') status = preRouteMessage(status)
   if (status && status.type === 'at_stop') status = atStopMessage(status)

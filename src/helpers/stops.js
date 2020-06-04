@@ -4,7 +4,11 @@ import moment from 'moment'
 const config = require('./config.json')
 
 export class Stop {
-  constuctor (json) {
+  constructor (obj) {
+    Object.assign(this, obj)
+  }
+
+  fromJson (json) {
     this.id = json.id
     this.routeIds = json.route_ids
     this.routeNames = json.route_names
@@ -26,6 +30,7 @@ export class Stop {
     this.timetable = json.timetable
     this.longitude = json.longitude
     this.latitude = json.latitude
+    return this
   }
 }
 
@@ -43,7 +48,7 @@ export async function getQueryStops (query, organisationFilters, mobileFilters, 
   const response = await axios.get(url)
   if (response && response.data && response.data.length > 0) {
     return {
-      stops: response.data.map(s => new Stop(s)),
+      stops: response.data.map(s => (new Stop()).fromJson(s)),
       total: parseInt(response.headers['x-total-count']),
       page: parseInt(response.headers['x-page'])
     }
@@ -55,7 +60,7 @@ export async function getQueryStops (query, organisationFilters, mobileFilters, 
 export async function getAllStops () {
   const response = await axios.get(config.api + '/stops')
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(s => new Stop(s))
+    return response.data.map(s => (new Stop()).fromJson(s))
   } else {
     return []
   }
@@ -64,7 +69,7 @@ export async function getAllStops () {
 export async function getStopById (id) {
   const response = await axios.get(config.api + '/stops/' + id)
   if (response && response.data && response.data.length > 0) {
-    return new Stop(response.data)
+    return (new Stop()).fromJson(response.data)
   } else {
     return []
   }

@@ -82,7 +82,7 @@ function Stops (props) {
 
   const prevProps = usePrevious({ currentPosition, distance })
   useEffect(() => {
-    if (currentPosition !== prevProps.currentPosition || distance !== prevProps.distance) tableRef.current.onQueryChange()
+    if (prevProps && (currentPosition !== prevProps.currentPosition || distance !== prevProps.distance)) tableRef.current.onQueryChange()
   }, [currentPosition, distance])
 
   const setOrganisationFilter = (organisationId) => {
