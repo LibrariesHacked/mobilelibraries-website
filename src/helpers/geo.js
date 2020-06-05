@@ -1,5 +1,7 @@
 import axios from 'axios'
 
+const config = require('./config.json')
+
 export function getPosition (options = {}) {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(resolve, reject, options)
@@ -18,9 +20,9 @@ export async function getCurrentPosition () {
 }
 
 export async function getPostcode (postcode) {
-  const response = await axios.get('https://api.postcodes.io/postcodes/' + postcode)
+  const response = await axios.get(config.postcodeApi + postcode)
   return {
-    location: [response.data.result.longitude, response.data.result.latitude],
-    adminDistrict: response.data.result.adminDistrict
+    location: [response.data.longitude, response.data.latitude],
+    organisation: response.data.library_service_name
   }
 };

@@ -19,6 +19,20 @@ export class Mobile {
   }
 }
 
+export class MobileNearestStop {
+  constructor (obj) {
+    Object.assign(this, obj)
+  }
+
+  fromJson (json) {
+    this.mobileId = json.mobile_id
+    this.stopId = json.stop_id
+    this.stopName = json.stop_name
+    this.stopDistance = json.stop_distance
+    return this
+  }
+}
+
 export class MobileLocation {
   constructor (obj) {
     Object.assign(this, obj)
@@ -134,7 +148,7 @@ export async function getMobileLocations () {
 export async function getMobilesNearest (location, distance) {
   const response = await axios.get(config.api + '/mobiles/nearest?longitude=' + location[0] + '&latitude=' + location[1] + '&distance=' + distance)
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(m => (new Mobile()).fromJson(m))
+    return response.data.map(m => (new MobileNearestStop()).fromJson(m))
   } else {
     return []
   }

@@ -5,21 +5,17 @@ import { BrowserRouter, Route } from 'react-router-dom'
 // Material UI
 import Container from '@material-ui/core/Container'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import IconButton from '@material-ui/core/IconButton'
-import Snackbar from '@material-ui/core/Snackbar'
 
-// Icons
-import CloseIcon from '@material-ui/icons/CloseTwoTone'
-
-// MUI Style
-import lightBlue from '@material-ui/core/colors/lightBlue'
+// Styling
 import blueGrey from '@material-ui/core/colors/blueGrey'
+import lightBlue from '@material-ui/core/colors/lightBlue'
 import { createMuiTheme, ThemeProvider, makeStyles } from '@material-ui/core/styles'
 
 // Our components
 import AppHeader from './AppHeader'
 import Mobiles from './Mobiles'
 import MobileMap from './MobileMap'
+import Notification from './Notification'
 import Stops from './Stops'
 import StopDetails from './StopDetails'
 import TripDetails from './TripDetails'
@@ -67,11 +63,11 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function App () {
-  const [stopDialogOpen, setStopDialogOpen] = useState(false)
   const [currentStop, setCurrentStop] = useState({})
+  const [stopDialogOpen, setStopDialogOpen] = useState(false)
 
-  const [tripDialogOpen, setTripDialogOpen] = useState(false)
   const [currentTrip, setCurrentTrip] = useState({})
+  const [tripDialogOpen, setTripDialogOpen] = useState(false)
 
   const [organisations, setOrganisations] = useState([])
   const [organisationLookup, setOrganisationLookup] = useState({})
@@ -99,6 +95,7 @@ function App () {
 
   const [loadingGPS, setLoadingGPS] = useState(false)
   const [loadingMobiles, setLoadingMobiles] = useState(false)
+  const [loadingMobileLocations, setLoadingMobileLocations] = useState(false)
   const [loadingOrganisations, setLoadingOrganisations] = useState(false)
   const [loadingPostcode, setLoadingPostcode] = useState(false)
   const [loadingRoutes, setLoadingRoutes] = useState(false)
@@ -107,9 +104,9 @@ function App () {
   const [snackbarMessage, setSnackbarMessage] = useState(false)
 
   const getMobilesNearest = async () => {
-    const mobiles = await mobilesHelper.getMobilesNearest(currentPosition, distance)
+    const mobilesNearest = await mobilesHelper.getMobilesNearest(currentPosition, distance)
     const mobilesNearestLookup = {}
-    mobiles.forEach(mobile => { mobilesNearestLookup[mobile.mobileId] = mobile })
+    mobilesNearest.forEach(mobile => { mobilesNearestLookup[mobile.mobileId] = mobile })
     setMobilesNearestLookup(mobilesNearestLookup)
   }
 
@@ -141,12 +138,14 @@ function App () {
       setRouteLookup(routeLookup)
       setLoadingRoutes(false)
     }
-    async function getMobileLocations () {
+    async function getMobileLocations (showIndicator = true) {
+      if (showIndicator) setLoadingMobileLocations(true)
       const locations = await mobilesHelper.getMobileLocations()
       const mobileLocationLookup = {}
       locations.forEach(location => { mobileLocationLookup[location.mobileId] = location })
       setMobileLocations(locations)
       setMobileLocationLookup(mobileLocationLookup)
+      if (showIndicator) setLoadingMobileLocations(false)
     }
     getOrganisations()
     getMobiles()
@@ -154,7 +153,7 @@ function App () {
     getMobileLocations()
 
     setInterval(() => {
-      getMobileLocations()
+      getMobileLocations(false)
     }, 15000)
   }, [])
 
@@ -217,6 +216,12 @@ function App () {
     setPosition([longitude, latitude])
     setZoom([15])
     setStopDialogOpen(false)
+  }
+
+  const viewMapTrip = (longitude, latitude) => {
+    setPosition([longitude, latitude])
+    setZoom([14])
+    setTripDialogOpen(false)
   }
 
   const logPosition = async (fit = false) => {
@@ -318,7 +323,7 @@ function App () {
         <div className={classes.root}>
           <CssBaseline />
           <AppHeader
-            loading={loadingMobiles || loadingOrganisations || loadingRoutes || loadingPostcode || loadingGPS}
+            loading={loadingMobiles || loadingMobileLocations || loadingOrganisations || loadingRoutes || loadingPostcode || loadingGPS}
             postcode={postcode}
             distance={distance}
             searchType={searchType}
@@ -339,6 +344,7 @@ function App () {
                       mobileLookup={mobileLookup}
                       mobileLocationLookup={mobileLocationLookup}
                       mobilesNearestLookup={mobilesNearestLookup}
+                      loadingMobileLocations={loadingMobileLocations}
                       organisationLookup={organisationLookup}
                       viewStop={viewStop}
                       viewStopsByMobile={viewStopsByMobile}
@@ -431,29 +437,12 @@ function App () {
             trip={currentTrip}
             open={tripDialogOpen}
             close={() => setTripDialogOpen(false)}
+            viewMapTrip={viewMapTrip}
           />
-          <Snackbar
-            anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'left'
-            }}
+          <Notification
             open={snackbarOpen}
-            autoHideDuration={4000}
-            onClose={closeSnackbar}
-            ContentProps={{
-              'aria-describedby': 'message-id'
-            }}
-            message={<span id='message-id'>{snackbarMessage}</span>}
-            action={[
-              <IconButton
-                key='close'
-                aria-label='close'
-                className={classes.close}
-                onClick={closeSnackbar}
-              >
-                <CloseIcon />
-              </IconButton>
-            ]}
+            close={closeSnackbar}
+            message={snackbarMessage}
           />
         </div>
       </BrowserRouter>
