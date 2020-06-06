@@ -12,6 +12,8 @@ import Typography from '@material-ui/core/Typography'
 // Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
+import { useApplicationStateValue } from './context/state'
+
 // Our components
 import Filters from './Filters'
 import MobileCard from './MobileCard'
@@ -29,11 +31,15 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Mobiles (props) {
+  const [{
+    organisationLookup, mobiles, mobileLookup,
+    mobileLocationLookup, routes, routeLookup }, dispatch] = useApplicationStateValue() //eslint-disable-line
+
   const {
-    organisations, organisationLookup, organisationFilter, setOrganisationFilter,
-    clearOrganisationFilter, viewStopsByOrganisation, mobiles, mobileLookup,
-    mobileLocationLookup, loadingMobileLocations, mobilesNearestLookup, mobileFilter, setMobileFilter,
-    clearMobileFilter, routes, routeLookup, routeFilter, setRouteFilter,
+    organisationFilter, setOrganisationFilter,
+    clearOrganisationFilter, viewStopsByOrganisation,
+    loadingMobileLocations, mobilesNearestLookup, mobileFilter, setMobileFilter,
+    clearMobileFilter, routeFilter, setRouteFilter,
     clearRouteFilter, searchType, postcode, postcodeDistrict, distance, toggleGPS,
     postcodeSearch, clearSearch, setDistance, viewStop, viewStopsByMobile
   } = props
@@ -108,19 +114,13 @@ function Mobiles (props) {
     <div className={classes.root}>
       <Filters
         displayStopLink
-        organisations={organisations}
-        organisationLookup={organisationLookup}
         organisationFilter={organisationFilter}
         setOrganisationFilter={setOrganisationFilter}
         clearOrganisationFilter={clearOrganisationFilter}
         viewStopsByOrganisation={viewStopsByOrganisation}
-        mobiles={mobiles}
-        mobileLookup={mobileLookup}
         mobileFilter={mobileFilter}
         setMobileFilter={setMobileFilter}
         clearMobileFilter={clearMobileFilter}
-        routes={routes}
-        routeLookup={routeLookup}
         routeFilter={routeFilter}
         setRouteFilter={setRouteFilter}
         clearRouteFilter={clearRouteFilter}

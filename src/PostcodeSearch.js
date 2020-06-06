@@ -56,6 +56,7 @@ function usePrevious (value) {
 
 function PostcodeSearch (props) {
   const { searchType, postcodeSearch, clearSearch, postcode, setDistance } = props
+
   const [tempPostcode, setTempPostcode] = useState(postcode)
   const [anchor, setAnchor] = useState(null)
 

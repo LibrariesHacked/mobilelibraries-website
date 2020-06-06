@@ -21,6 +21,8 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import moment from 'moment'
 
+import { useApplicationStateValue } from './context/state'
+
 const useStyles = makeStyles((theme) => ({
   settings: {
     position: 'absolute',
@@ -43,9 +45,10 @@ const libraryAuthorityTiles = [config.libraryAuthorityTiles]
 
 function MobileMap (props) {
   const {
-    zoom, position, mapSettings, currentPosition, searchType, mobileLocations, mobileLookup,
-    organisations, organisationLookup, toggleMapSetting, viewStop, viewTrip
+    zoom, position, mapSettings, currentPosition, searchType,
+    toggleMapSetting, viewStop, viewTrip
   } = props
+  const [{ organisations, organisationLookup, mobileLookup, mobileLocations }, dispatch] = useApplicationStateValue() //eslint-disable-line
 
   const [currentTime, setCurrentTime] = useState(null)
   const [map, setMap] = useState(null)
@@ -79,6 +82,8 @@ function MobileMap (props) {
 
   const classes = useStyles()
 
+  const locations = mobileLocations.filter(l => l.geoX !== null && l.geoY !== null)
+
   return (
     <>
       <Map
@@ -93,8 +98,8 @@ function MobileMap (props) {
         onStyleLoad={map => setMap(map)}
       >
         {// The mobile library locations
-          mobileLocations && mobileLocations.length > 0
-            ? mobileLocations.map(l => {
+          locations && locations.length > 0
+            ? locations.map(l => {
               let locationPoint = [l.geoX, l.geoY]
               if (currentTime && l.routeSection && l.routeSection.coordinates && l.updated) {
                 const millisecondsPassed = moment(currentTime).diff(l.updated)

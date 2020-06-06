@@ -7,17 +7,7 @@ import Snackbar from '@material-ui/core/Snackbar'
 // Icons
 import CloseIcon from '@material-ui/icons/CloseTwoTone'
 
-// Styling
-import { makeStyles } from '@material-ui/core/styles'
-
-const useStyles = makeStyles((theme) => ({
-  close: {
-
-  }
-}))
-
 function Notification (props) {
-  const classes = useStyles()
 
   const handleClose = props.close
 
@@ -38,10 +28,9 @@ function Notification (props) {
         <IconButton
           key='close'
           aria-label='close'
-          className={classes.close}
           onClick={handleClose}
         >
-          <CloseIcon />
+          <CloseIcon color='inherit' />
         </IconButton>
       ]}
     />

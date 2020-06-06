@@ -34,6 +34,8 @@ import Filters from './Filters'
 import * as stopsHelper from './helpers/stops'
 import { Tooltip } from '@material-ui/core'
 
+import { useApplicationStateValue } from './context/state'
+
 const config = require('./helpers/config.json')
 
 const useStyles = makeStyles((theme) => ({
@@ -64,13 +66,15 @@ function usePrevious (value) {
 
 function Stops (props) {
   const {
-    currentPosition, distance, viewStop, viewMapStop, organisations, organisationLookup,
-    organisationFilter, viewStopsByOrganisation, mobiles, mobileLookup,
+    currentPosition, distance, viewStop, viewMapStop,
+    organisationFilter, viewStopsByOrganisation,
     mobileFilter, routes, routeLookup, routeFilter, searchType, postcode,
     postcodeDistrict, toggleGPS, postcodeSearch, clearSearch, setDistance,
     setOrganisationFilter, clearOrganisationFilter, setMobileFilter, clearMobileFilter,
     setRouteFilter, clearRouteFilter
   } = props
+  const [{ organisations, organisationLookup, mobiles, mobileLookup }, dispatch] = useApplicationStateValue() //eslint-disable-line
+
   const tableRef = React.createRef()
 
   const getStopCalendar = (stop) => window.open(config.api + '/stops/' + stop.id + '/ics')

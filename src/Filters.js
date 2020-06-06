@@ -18,6 +18,8 @@ import DirectionsIcon from '@material-ui/icons/DirectionsTwoTone'
 // Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
+import { useApplicationStateValue } from './context/state'
+
 // Our components
 import PostcodeSearch from './PostcodeSearch'
 
@@ -49,16 +51,17 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Filters (props) {
+  const {
+    organisationFilter, setOrganisationFilter,
+    clearOrganisationFilter, mobileFilter, setMobileFilter,
+    clearMobileFilter, routeFilter, setRouteFilter, clearRouteFilter,
+    searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
+  } = props
+  const [{ organisations, organisationLookup, mobiles, mobileLookup, routeLookup, routes }, dispatch] = useApplicationStateValue() //eslint-disable-line
+
   const [organisationMenuAnchor, setOrganisationMenuAnchor] = useState(null)
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null)
   const [routeMenuAnchor, setRouteMenuAnchor] = useState(null)
-
-  const {
-    organisations, organisationLookup, organisationFilter, setOrganisationFilter,
-    clearOrganisationFilter, mobiles, mobileLookup, mobileFilter, setMobileFilter,
-    clearMobileFilter, routes, routeLookup, routeFilter, setRouteFilter, clearRouteFilter,
-    searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
-  } = props
 
   const openOrganisationMenu = (element) => setOrganisationMenuAnchor(element)
 
