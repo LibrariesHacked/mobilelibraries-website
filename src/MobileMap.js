@@ -21,7 +21,7 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import moment from 'moment'
 
-import { useApplicationStateValue } from './context/state'
+import { useApplicationStateValue } from './context/applicationState'
 
 const useStyles = makeStyles((theme) => ({
   settings: {

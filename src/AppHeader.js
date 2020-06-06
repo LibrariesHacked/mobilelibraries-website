@@ -21,6 +21,8 @@ import MapIcon from '@material-ui/icons/MapTwoTone'
 // Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
+import { useViewStateValue } from './context/viewState'
+
 // Our components
 import PostcodeSearch from './PostcodeSearch'
 
@@ -47,7 +49,9 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function AppHeader (props) {
-  const { loading, searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance } = props
+  const [{ loadingOrganisations, loadingMobiles, loadingRoutes, loadingMobileLocations, loadingNearestMobiles, loadingPostcode }] = useViewStateValue()
+
+  const loading = loadingOrganisations || loadingMobiles || loadingRoutes || loadingMobileLocations || loadingNearestMobiles || loadingPostcode
 
   const location = useLocation()
   const classes = useStyles()
@@ -102,17 +106,7 @@ function AppHeader (props) {
             </Hidden>
             {loading ? <CircularProgress className={classes.progress} color='secondary' size={30} /> : null}
             <span className={classes.grow} />
-            {location.pathname === '/map' ? (
-              <PostcodeSearch
-                postcode={postcode}
-                distance={distance}
-                searchType={searchType}
-                toggleGPS={toggleGPS}
-                setDistance={setDistance}
-                postcodeSearch={postcodeSearch}
-                clearSearch={clearSearch}
-              />
-            ) : null}
+            {location.pathname === '/map' ? <PostcodeSearch /> : null}
           </Toolbar>
         </Container>
       </AppBar>

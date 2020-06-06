@@ -12,7 +12,7 @@ import Typography from '@material-ui/core/Typography'
 // Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
-import { useApplicationStateValue } from './context/state'
+import { useApplicationStateValue } from './context/applicationState'
 
 // Our components
 import Filters from './Filters'

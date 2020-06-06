@@ -18,7 +18,9 @@ import DirectionsIcon from '@material-ui/icons/DirectionsTwoTone'
 // Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
-import { useApplicationStateValue } from './context/state'
+import { useApplicationStateValue } from './context/applicationState'
+import { useSearchStateValue } from './context/searchState'
+import { useViewStateValue } from './context/viewState'
 
 // Our components
 import PostcodeSearch from './PostcodeSearch'
@@ -51,13 +53,8 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Filters (props) {
-  const {
-    organisationFilter, setOrganisationFilter,
-    clearOrganisationFilter, mobileFilter, setMobileFilter,
-    clearMobileFilter, routeFilter, setRouteFilter, clearRouteFilter,
-    searchType, postcode, distance, toggleGPS, postcodeSearch, clearSearch, setDistance
-  } = props
-  const [{ organisations, organisationLookup, mobiles, mobileLookup, routeLookup, routes }, dispatch] = useApplicationStateValue() //eslint-disable-line
+  const [{ organisations, organisationLookup, mobiles, mobileLookup, routeLookup, routes }] = useApplicationStateValue()
+  const [{ distance, organisationFilter, mobileFilter, routeFilter }, dispatchSearch] = useSearchStateValue()
 
   const [organisationMenuAnchor, setOrganisationMenuAnchor] = useState(null)
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null)
@@ -68,8 +65,7 @@ function Filters (props) {
   const closeOrganisationMenu = () => setOrganisationMenuAnchor(null)
 
   const chooseOrganisation = (organisationId) => {
-    clearSearch()
-    setOrganisationFilter(organisationId)
+    dispatchSearch('FilterByOrganisation', { organisationId: organisationId })
     closeOrganisationMenu()
   }
 
@@ -78,7 +74,7 @@ function Filters (props) {
   const closeMobileMenu = () => setMobileMenuAnchor(null)
 
   const chooseMobile = (mobileId) => {
-    setMobileFilter(mobileId)
+    dispatchSearch('FilterByMobile', { mobileId: mobileId })
     closeMobileMenu()
   }
 
@@ -87,7 +83,7 @@ function Filters (props) {
   const closeRouteMenu = () => setRouteMenuAnchor(null)
 
   const chooseRoute = (routeId) => {
-    setRouteFilter(routeId)
+    dispatchSearch('FilterByRoute', { routeId: routeId })
     closeRouteMenu()
   }
 
@@ -100,15 +96,7 @@ function Filters (props) {
       <Typography component='h2' variant='h6' color='secondary' className={classes.title}>Your mobile service</Typography>
       <Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Find services within {distance / 1609} mile(s)</Typography>
       <div className={classes.search}>
-        <PostcodeSearch
-          postcode={postcode}
-          distance={distance}
-          searchType={searchType}
-          toggleGPS={toggleGPS}
-          setDistance={setDistance}
-          postcodeSearch={postcodeSearch}
-          clearSearch={clearSearch}
-        />
+        <PostcodeSearch />
       </div>
       <Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Or, choose your library service</Typography>
       <div className={classes.search}>

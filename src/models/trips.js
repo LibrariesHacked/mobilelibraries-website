@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const config = require('./config.json')
+const config = require('../helpers/config.json')
 
 export class Trip {
   constructor (obj) {

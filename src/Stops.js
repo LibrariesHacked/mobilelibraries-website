@@ -34,7 +34,7 @@ import Filters from './Filters'
 import * as stopsHelper from './helpers/stops'
 import { Tooltip } from '@material-ui/core'
 
-import { useApplicationStateValue } from './context/state'
+import { useApplicationStateValue } from './context/applicationState'
 
 const config = require('./helpers/config.json')
 

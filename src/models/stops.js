@@ -1,7 +1,7 @@
 import axios from 'axios'
 import moment from 'moment'
 
-const config = require('./config.json')
+const config = require('../helpers/config.json')
 
 export class Stop {
   constructor (obj) {

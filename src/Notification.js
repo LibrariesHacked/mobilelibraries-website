@@ -8,7 +8,6 @@ import Snackbar from '@material-ui/core/Snackbar'
 import CloseIcon from '@material-ui/icons/CloseTwoTone'
 
 function Notification (props) {
-
   const handleClose = props.close
 
   return (

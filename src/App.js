@@ -9,11 +9,13 @@ import blueGrey from '@material-ui/core/colors/blueGrey'
 import lightBlue from '@material-ui/core/colors/lightBlue'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
-import { StateProvider } from './context/state'
+import { ApplicationStateProvider } from './context/applicationState'
+import { SearchStateProvider } from './context/searchState'
+import { ViewStateProvider } from './context/viewState'
 
 import MobilesApplication from './MobilesApplication'
 
-const initialState = {
+const initialApplicationState = {
   organisations: [],
   organisationLookup: {},
   organisationFilter: [],
@@ -22,12 +24,44 @@ const initialState = {
   mobileFilter: [],
   mobileLocations: [],
   mobileLocationLookup: {},
+  mobilesNearest: [],
+  mobilesNearestLookup: {},
   routes: [],
   routeLookup: {},
+  routeFilter: [],
+  stops: [],
+  trips: [],
+  currentStopId: null,
+  currentTripId: null
+}
+
+const initialSearchState = {
+  postcode: '',
+  searchType: '',
+  searchDistance: 1609,
+  searchPosition: [],
+  searchPositionUpdateInterval: null,
+  organisationFilter: [],
+  mobileFilter: [],
   routeFilter: []
 }
 
-const reducer = (state, action) => {
+const initialViewState = {
+  stopDialogOpen: false,
+  tripDialogOpen: false,
+  notificationOpen: false,
+  notificationMessage: '',
+  mapZoom: 12,
+  mapPosition: [],
+  loadingOrganisations: false,
+  loadingMobiles: false,
+  loadingRoutes: false,
+  loadingMobileLocations: false,
+  loadingNearestMobiles: false,
+  loadingPostcode: false
+}
+
+const applicationReducer = (state, action) => {
   switch (action.type) {
     case 'AddOrganisations':
       return {
@@ -53,6 +87,51 @@ const reducer = (state, action) => {
         mobiles: action.mobiles,
         mobileLookup: action.mobileLookup
       }
+    case 'UpdateMobilesNearest':
+      return {
+        ...state,
+        mobilesNearest: action.mobilesNearest,
+        mobilesNearestLookup: action.mobilesNearestLookup
+      }
+    default:
+      return state
+  }
+}
+
+const searchReducer = (state, action) => {
+  switch (action.type) {
+    case 'SearchByPostcode':
+      return {
+        ...state,
+        postcode: action.postcode
+      }
+    case 'FilterByOrganisation':
+      return {
+        ...state,
+        organisationFilter: [action.organisationId],
+        mobileFilter: [],
+        routeFilter: []
+      }
+    case 'FilterByMobile':
+      return {
+        ...state,
+        organisationFilter: [action.mobileId],
+        routeFilter: []
+      }
+    case 'FilterByRoute':
+      return {
+        ...state,
+        routeFilter: [action.routeId]
+      }
+    default:
+      return state
+  }
+}
+
+const viewReducer = (state, action) => {
+  switch (action.type) {
+    case 'SetStopDialog':
+      return { ...state, stopDialogOpen: action.stopDialogOpen }
     default:
       return state
   }
@@ -84,12 +163,16 @@ const theme = createMuiTheme({
 
 function App () {
   return (
-    <StateProvider initialState={initialState} reducer={reducer}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <MobilesApplication />
-      </ThemeProvider>
-    </StateProvider>
+    <ApplicationStateProvider initialState={initialApplicationState} reducer={applicationReducer}>
+      <SearchStateProvider initialState={initialSearchState} reducer={searchReducer}>
+        <ViewStateProvider initialState={initialViewState} reducer={viewReducer}>
+          <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <MobilesApplication />
+          </ThemeProvider>
+        </ViewStateProvider>
+      </SearchStateProvider>
+    </ApplicationStateProvider>
   )
 }
 
