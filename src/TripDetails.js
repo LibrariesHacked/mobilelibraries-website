@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 // Material UI
 import Button from '@material-ui/core/Button'
@@ -13,14 +13,35 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
+import { useApplicationStateValue } from './context/applicationState'
+import { useViewStateValue } from './context/viewState'
+
+import * as tripsModel from './models/trips'
+
 const useStyles = makeStyles((theme) => ({
   dialog: {
     border: '1px solid #E0E0E0'
   }
 }))
 
-function TripDetails (props) {
-  const { trip, open, close } = props
+function TripDetails () {
+  const [{ currentTripId }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [{ tripDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
+
+  const [trip, setTrip] = useState(null)
+
+  useEffect(() => {
+    async function getTrip (tripId) {
+      const trip = await tripsModel.getTripById(tripId)
+      setTrip(trip)
+    }
+    setTrip(null)
+    getTrip(currentTripId)
+  }, [currentTripId])
+
+  const close = () => {
+    dispatchView('SetTripDialog', { tripDialogOpen: false })
+  }
 
   const classes = useStyles()
   const theme = useTheme()
@@ -33,7 +54,7 @@ function TripDetails (props) {
     <Dialog
       fullScreen={fullScreen}
       disableBackdropClick
-      open={open}
+      open={tripDialogOpen}
       onClose={close}
       BackdropProps={{ invisible: true }}
       PaperProps={{ elevation: 0, className: classes.dialog }}

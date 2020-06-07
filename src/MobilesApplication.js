@@ -18,9 +18,9 @@ import StopDetails from './StopDetails'
 import TripDetails from './TripDetails'
 
 // Our helpers
-import * as mobilesHelper from './helpers/mobiles'
-import * as organisationsHelper from './helpers/organisations'
-import * as routesHelper from './helpers/routes'
+import * as mobilesModel from './models/mobiles'
+import * as organisationsModel from './models/organisations'
+import * as routesModel from './models/routes'
 
 import { useApplicationStateValue } from './context/applicationState'
 
@@ -35,29 +35,29 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MobilesApplication () {
-  const [applicationState, dispatchApplicationState] = useApplicationStateValue() //eslint-disable-line
+  const [{}, dispatchApplicationState] = useApplicationStateValue() //eslint-disable-line
 
   useEffect(() => {
     async function getOrganisations () {
-      const organisations = await organisationsHelper.getAllOrganisations()
+      const organisations = await organisationsModel.getAllOrganisations()
       const organisationLookup = {}
       organisations.forEach(organisation => { organisationLookup[organisation.id] = organisation })
       dispatchApplicationState({ type: 'AddOrganisations', organisations: organisations, organisationLookup: organisationLookup })
     }
     async function getMobiles () {
-      const mobiles = await mobilesHelper.getAllMobiles()
+      const mobiles = await mobilesModel.getAllMobiles()
       const mobileLookup = {}
       mobiles.forEach(mobile => { mobileLookup[mobile.id] = mobile })
       dispatchApplicationState({ type: 'AddMobiles', mobiles: mobiles, mobileLookup: mobileLookup })
     }
     async function getRoutes () {
-      const routes = await routesHelper.getAllRoutes()
+      const routes = await routesModel.getAllRoutes()
       const routeLookup = {}
       routes.forEach(route => { routeLookup[route.id] = route })
       dispatchApplicationState({ type: 'AddRoutes', routes: routes, routeLookup: routeLookup })
     }
     async function getMobileLocations (showIndicator = true) {
-      const locations = await mobilesHelper.getMobileLocations()
+      const locations = await mobilesModel.getMobileLocations()
       const mobileLocationLookup = {}
       locations.forEach(location => { mobileLocationLookup[location.mobileId] = location })
       dispatchApplicationState({ type: 'AddMobileLocations', mobileLocations: locations, mobileLocationLookup: mobileLocationLookup })
@@ -70,7 +70,7 @@ function MobilesApplication () {
     setInterval(() => {
       getMobileLocations(false)
     }, 15000)
-  }, [])
+  }, []) //eslint-disable-line
 
   const classes = useStyles()
 

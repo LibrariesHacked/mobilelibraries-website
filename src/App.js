@@ -30,35 +30,7 @@ const initialApplicationState = {
   routeLookup: {},
   routeFilter: [],
   stops: [],
-  trips: [],
-  currentStopId: null,
-  currentTripId: null
-}
-
-const initialSearchState = {
-  postcode: '',
-  searchType: '',
-  searchDistance: 1609,
-  searchPosition: [],
-  searchPositionUpdateInterval: null,
-  organisationFilter: [],
-  mobileFilter: [],
-  routeFilter: []
-}
-
-const initialViewState = {
-  stopDialogOpen: false,
-  tripDialogOpen: false,
-  notificationOpen: false,
-  notificationMessage: '',
-  mapZoom: 12,
-  mapPosition: [],
-  loadingOrganisations: false,
-  loadingMobiles: false,
-  loadingRoutes: false,
-  loadingMobileLocations: false,
-  loadingNearestMobiles: false,
-  loadingPostcode: false
+  trips: []
 }
 
 const applicationReducer = (state, action) => {
@@ -98,12 +70,49 @@ const applicationReducer = (state, action) => {
   }
 }
 
+const initialSearchState = {
+  postcode: '',
+  searchType: '',
+  searchDistance: 1609,
+  searchPosition: [],
+  searchPositionUpdateInterval: null,
+  organisationFilter: [],
+  mobileFilter: [],
+  routeFilter: [],
+  currentStopId: null,
+  currentTripId: null
+}
+
 const searchReducer = (state, action) => {
   switch (action.type) {
     case 'SearchByPostcode':
       return {
         ...state,
         postcode: action.postcode
+      }
+    case 'SetCurrentStop':
+      return {
+        ...state,
+        currentStopId: action.stopId
+      }
+    case 'SetCurrentTrip':
+      return {
+        ...state,
+        currentTripId: action.tripId
+      }
+    case 'SetSearchDistance':
+      return {
+        ...state,
+        searchDistance: action.searchDistance
+      }
+    case 'SetPostcodeSearch':
+      return {
+        ...state,
+        searchPostcode: action.searchPostcode,
+        searchPosition: action.searchPosition,
+        organisationFilter: [],
+        mobileFilter: [],
+        routeFilter: []
       }
     case 'FilterByOrganisation':
       return {
@@ -115,23 +124,84 @@ const searchReducer = (state, action) => {
     case 'FilterByMobile':
       return {
         ...state,
-        organisationFilter: [action.mobileId],
+        organisationFilter: [action.organisationId],
+        mobileFilter: [action.mobileId],
         routeFilter: []
       }
     case 'FilterByRoute':
       return {
         ...state,
+        organisationFilter: [action.organisationId],
+        mobileFilter: [action.mobileId],
         routeFilter: [action.routeId]
+      }
+    case 'ClearFilters':
+      return {
+        ...state,
+        organisationFilter: [],
+        mobileFilter: [],
+        routeFilter: []
+      }
+    case 'ClearMobileFilter':
+      return {
+        ...state,
+        mobileFilter: [],
+        routeFilter: []
+      }
+    case 'ClearRouteFilter':
+      return {
+        ...state,
+        routeFilter: []
       }
     default:
       return state
   }
 }
 
+const initialViewState = {
+  stopDialogOpen: false,
+  tripDialogOpen: false,
+  notificationOpen: false,
+  notificationMessage: '',
+  mapZoom: 12,
+  mapPosition: [],
+  mapSettings: {
+    authorityBoundary: false
+  },
+  mapSettingsDialogOpen: false,
+  loadingOrganisations: false,
+  loadingMobiles: false,
+  loadingRoutes: false,
+  loadingMobileLocations: false,
+  loadingNearestMobiles: false,
+  loadingPostcode: false
+}
+
 const viewReducer = (state, action) => {
   switch (action.type) {
+    case 'SetNotificationMessage':
+      return { ...state, notificationMessage: action.notificationMessage }
+    case 'SetNotification':
+      return { ...state, notificationOpen: action.notificationOpen }
+    case 'ShowNotification':
+      return { ...state, notificationOpen: true, notificationMessage: action.notificationMessage }
     case 'SetStopDialog':
       return { ...state, stopDialogOpen: action.stopDialogOpen }
+    case 'SetTripDialog':
+      return { ...state, tripDialogOpen: action.tripDialogOpen }
+    case 'SetMapSettingsDialog':
+      return { ...state, mapSettingsDialogOpen: action.mapSettingsDialogOpen }
+    case 'ToggleMapSetting': {
+      const settings = state.mapSettings
+      settings[action.mapSetting] = !settings[action.mapSetting]
+      return { ...state, mapSettings: settings }
+    }
+    case 'LoadingPostcode':
+      return { ...state, loadingPostcode: true }
+    case 'SetPostcodeSearch':
+      return { ...state, loadingPostcode: false, mapZoom: 11 }
+    case 'SetMapPosition':
+      return { ...state, mapPosition: action.mapPosition, mapZoom: action.mapZoom }
     default:
       return state
   }

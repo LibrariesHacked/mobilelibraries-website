@@ -22,6 +22,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import moment from 'moment'
 
 import { useApplicationStateValue } from './context/applicationState'
+import { useSearchStateValue } from './context/searchState'
+import { useViewStateValue } from './context/viewState'
 
 const useStyles = makeStyles((theme) => ({
   settings: {
@@ -44,11 +46,9 @@ const tripTiles = [config.tripTiles]
 const libraryAuthorityTiles = [config.libraryAuthorityTiles]
 
 function MobileMap (props) {
-  const {
-    zoom, position, mapSettings, currentPosition, searchType,
-    toggleMapSetting, viewStop, viewTrip
-  } = props
-  const [{ organisations, organisationLookup, mobileLookup, mobileLocations }, dispatch] = useApplicationStateValue() //eslint-disable-line
+  const [{ organisations, organisationLookup, mobileLookup, mobileLocations }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [{ searchType, searchPosition }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
+  const [{ mapZoom, mapPosition, mapSettings }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [currentTime, setCurrentTime] = useState(null)
   const [map, setMap] = useState(null)
@@ -60,13 +60,15 @@ function MobileMap (props) {
 
   const clickStop = (map) => {
     if (map && map.features && map.features.length > 0 && map.features[0].properties) {
-      viewStop({ id: map.features[0].properties.id })
+      dispatchSearch('SetCurrentStop', { stopId: map.features[0].properties.id })
+      dispatchView('SetStopDialog', { stopDialogOpen: true })
     }
   }
 
   const clickTrip = (map) => {
     if (map && map.features && map.features.length > 0 && map.features[0].properties) {
-      viewTrip(map.features[0].properties)
+      dispatchSearch('SetCurrentTrip', { tripId: map.features[0].properties.id })
+      dispatchView('SetStopDialog', { tripDialogOpen: true })
     }
   }
 
@@ -87,9 +89,9 @@ function MobileMap (props) {
   return (
     <>
       <Map
-        style='style.json' // eslint-disable-line react/style-prop-object
-        center={position}
-        zoom={zoom}
+        style='style.json' // eslint-disable-line
+        center={mapPosition}
+        zoom={mapZoom}
         maxZoom={17}
         pitch={[0]}
         bearing={[0]}
@@ -333,11 +335,11 @@ function MobileMap (props) {
               />
             </>
           ) : null}
-        {currentPosition && currentPosition.length > 1
+        {searchPosition && searchPosition.length > 1
           ? (
             <Marker
               key='mk_me'
-              coordinates={[currentPosition[0], currentPosition[1]]}
+              coordinates={[searchPosition[0], searchPosition[1]]}
             >
               <MeAvatar searchType={searchType} />
             </Marker>
@@ -364,8 +366,6 @@ function MobileMap (props) {
       <MapSettings
         mapSettings={mapSettings}
         open={settingsDialogOpen}
-        toggleMapSetting={toggleMapSetting}
-        close={() => setSettingsDialogOpen(false)}
       />
     </>
   )

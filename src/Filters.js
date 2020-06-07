@@ -20,7 +20,6 @@ import { makeStyles } from '@material-ui/core/styles'
 
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
-import { useViewStateValue } from './context/viewState'
 
 // Our components
 import PostcodeSearch from './PostcodeSearch'
@@ -52,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function Filters (props) {
+function Filters () {
   const [{ organisations, organisationLookup, mobiles, mobileLookup, routeLookup, routes }] = useApplicationStateValue()
   const [{ distance, organisationFilter, mobileFilter, routeFilter }, dispatchSearch] = useSearchStateValue()
 
@@ -69,22 +68,34 @@ function Filters (props) {
     closeOrganisationMenu()
   }
 
+  const clearOrganisationFilter = () => {
+    dispatchSearch('ClearFilters')
+  }
+
   const openMobileMenu = (element) => setMobileMenuAnchor(element)
 
   const closeMobileMenu = () => setMobileMenuAnchor(null)
 
-  const chooseMobile = (mobileId) => {
-    dispatchSearch('FilterByMobile', { mobileId: mobileId })
+  const chooseMobile = (organisationId, mobileId) => {
+    dispatchSearch('FilterByMobile', { organisationId: organisationId, mobileId: mobileId })
     closeMobileMenu()
+  }
+
+  const clearMobileFilter = () => {
+    dispatchSearch('ClearMobileFilter')
   }
 
   const openRouteMenu = (element) => setRouteMenuAnchor(element)
 
   const closeRouteMenu = () => setRouteMenuAnchor(null)
 
-  const chooseRoute = (routeId) => {
+  const chooseRoute = (organisationId, mobileId, routeId) => {
     dispatchSearch('FilterByRoute', { routeId: routeId })
     closeRouteMenu()
+  }
+
+  const clearRouteFilter = () => {
+    dispatchSearch('ClearRouteFilter')
   }
 
   const countries = new Set(organisations.map(org => org.country))
@@ -115,7 +126,7 @@ function Filters (props) {
                   <DirectionBusIcon className={classes.leftIcon} />Select mobile
                 </Button>
               </Tooltip>
-            ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={(e) => clearMobileFilter()} label={mobileLookup[mobileFilter[0]].name} />
+            ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={clearMobileFilter} label={mobileLookup[mobileFilter[0]].name} />
           ) : null}
         {mobileFilter.length > 0
           ? (routeFilter.length === 0
@@ -125,7 +136,7 @@ function Filters (props) {
                   <DirectionsIcon className={classes.leftIcon} />Select route
                 </Button>
               </Tooltip>
-            ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={(e) => clearRouteFilter()} label={routeLookup[routeFilter[0]].name} />
+            ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={clearRouteFilter} label={routeLookup[routeFilter[0]].name} />
           )
           : null}
       </div>
@@ -169,7 +180,7 @@ function Filters (props) {
           })
           .sort((a, b) => a.name.localeCompare(b.name))
           .map(mob => {
-            return <MenuItem key={'mnu_itm_mob_' + mob.id} onClick={() => chooseMobile(mob.id)}>{mob.name}</MenuItem>
+            return <MenuItem key={'mnu_itm_mob_' + mob.id} onClick={() => chooseMobile(mob.organisationId, mob.id)}>{mob.name}</MenuItem>
           })}
       </Menu>
       <Menu
@@ -190,7 +201,7 @@ function Filters (props) {
           })
           .sort((a, b) => a.name.localeCompare(b.name))
           .map(route => {
-            return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => chooseRoute(route.id)}>{route.name}</MenuItem>
+            return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => chooseRoute(route.organisationId, route.mobileId, route.id)}>{route.name}</MenuItem>
           })}
       </Menu>
     </>

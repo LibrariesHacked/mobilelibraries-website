@@ -17,6 +17,14 @@ import ClearIcon from '@material-ui/icons/ClearTwoTone'
 import SearchIcon from '@material-ui/icons/SearchTwoTone'
 import SettingsIcon from '@material-ui/icons/SettingsTwoTone'
 
+import { useApplicationStateValue } from './context/applicationState'
+import { useSearchStateValue } from './context/searchState'
+import { useViewStateValue } from './context/viewState'
+
+// Our helpers
+import * as geoHelper from './helpers/geo'
+import * as mobilesModel from './models/mobiles'
+
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1
@@ -54,16 +62,18 @@ function usePrevious (value) {
   return ref.current
 }
 
-function PostcodeSearch (props) {
-  const { searchType, postcodeSearch, clearSearch, postcode, setDistance } = props
+function PostcodeSearch () {
+  const [{ }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [{ searchType, searchPostcode }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
+  const [{ }, dispatchView] = useViewStateValue() //eslint-disable-line
 
-  const [tempPostcode, setTempPostcode] = useState(postcode)
+  const [tempPostcode, setTempPostcode] = useState(searchPostcode)
   const [anchor, setAnchor] = useState(null)
 
-  const prevProps = usePrevious({ postcode })
+  const prevProps = usePrevious({ searchPostcode })
   useEffect(() => {
-    if (prevProps && postcode !== prevProps.postcode) setTempPostcode(postcode)
-  }, [postcode]) // eslint-disable-line
+    if (prevProps && searchPostcode !== prevProps.searchPostcode) setTempPostcode(searchPostcode)
+  }, [searchPostcode]) // eslint-disable-line
 
   const openSettingsMenu = (e) => setAnchor(e.currentTarget)
 
@@ -71,7 +81,27 @@ function PostcodeSearch (props) {
 
   const setSearchDistance = (distance) => {
     closeSettingsMenu()
-    setDistance(distance)
+    dispatchSearch('SetSearchDistance', { searchDistance: distance })
+  }
+
+  const postcodeSearch = async () => {
+    if (tempPostcode === '') {
+      dispatchView('ShowNotification', { notificationMessage: 'You must enter a postcode' })
+      return
+    }
+
+    dispatchView('LoadingPostcode')
+    const postcodeData = await geoHelper.getPostcode(tempPostcode)
+    if (postcodeData.location && postcodeData.location.length === 2) {
+      dispatchSearch('SetPostcodeSearch', { searchPostcode: tempPostcode, searchPosition: postcodeData.location })
+      dispatchView('SetPostcodeSearch')
+      const mobilesNearest = await mobilesModel.getMobilesNearest(postcodeData.location)
+      const mobilesNearestLookup = {}
+      mobilesNearest.forEach(mobile => { mobilesNearestLookup[mobile.id] = mobile })
+      dispatchApplication({ type: 'UpdateMobilesNearest', mobilesNearest: mobilesNearest, mobilesNearestLookup: mobilesNearestLookup })
+    } else {
+      dispatchView('ShowNotification', { notificationMessage: 'Could not find postcode' })
+    }
   }
 
   const classes = useStyles()
@@ -92,7 +122,7 @@ function PostcodeSearch (props) {
           <Tooltip title='Clear search'>
             <IconButton
               className={classes.iconButton}
-              onClick={() => clearSearch()}
+              onClick={() => dispatchSearch('ClearPostcodeSearch')}
             >
               <ClearIcon />
             </IconButton>
@@ -103,7 +133,7 @@ function PostcodeSearch (props) {
         <IconButton
           color='primary'
           className={classes.iconButton}
-          onClick={() => postcodeSearch(tempPostcode)}
+          onClick={() => postcodeSearch()}
         >
           <SearchIcon />
         </IconButton>

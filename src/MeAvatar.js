@@ -7,6 +7,8 @@ import Tooltip from '@material-ui/core/Tooltip'
 // Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
+import { useSearchStateValue } from './context/searchState'
+
 // Icons
 import Face from '@material-ui/icons/FaceTwoTone'
 
@@ -22,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MeAvatar (props) {
-  const { searchType } = props
+  const [{ searchType }] = useSearchStateValue()
 
   const classes = useStyles()
 

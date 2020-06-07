@@ -7,8 +7,14 @@ import Snackbar from '@material-ui/core/Snackbar'
 // Icons
 import CloseIcon from '@material-ui/icons/CloseTwoTone'
 
-function Notification (props) {
-  const handleClose = props.close
+import { useViewStateValue } from './context/viewState'
+
+function Notification () {
+  const [{ notificationOpen, notificationMessage }, dispatchView] = useViewStateValue() //eslint-disable-line
+
+  const handleClose = () => {
+    dispatchView('SetNotification', { notificationOpen: false })
+  }
 
   return (
     <Snackbar
@@ -16,13 +22,13 @@ function Notification (props) {
         vertical: 'bottom',
         horizontal: 'left'
       }}
-      open={props.open}
+      open={notificationOpen}
       autoHideDuration={4000}
       onClose={handleClose}
       ContentProps={{
         'aria-describedby': 'message-id'
       }}
-      message={<span id='message-id'>{props.message}</span>}
+      message={<span id='message-id'>{notificationMessage}</span>}
       action={[
         <IconButton
           key='close'

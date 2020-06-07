@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import Button from '@material-ui/core/Button'
@@ -18,8 +18,10 @@ import EventIcon from '@material-ui/icons/EventTwoTone'
 import PrintIcon from '@material-ui/icons/PrintTwoTone'
 import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
 
-// Moment
-import moment from 'moment'
+import { useApplicationStateValue } from './context/applicationState'
+import { useViewStateValue } from './context/viewState'
+
+import * as stopsModel from './models/stops'
 
 const config = require('./helpers/config.json')
 
@@ -43,14 +45,34 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function StopDetails (props) {
-  const { stop, open, close, viewMapStop } = props
+function StopDetails () {
+  const [{ currentStopId }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [{ stopDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
+
+  const [stop, setStop] = useState(null)
+
+  useEffect(() => {
+    async function getStop (stopId) {
+      const stop = await stopsModel.getStopById(stopId)
+      setStop(stop)
+    }
+    setStop(null)
+    getStop(currentStopId)
+  }, [currentStopId])
 
   const getStopCalendar = () => window.open(config.api + '/stops/' + stop.id + '/ics')
 
   const getStopPdf = () => window.open(config.api + '/stops/' + stop.id + '/pdf', '_blank')
 
   const goToWebsite = () => window.open(stop.timetable, '_blank')
+
+  const viewMapStop = () => {
+    dispatchView('SetMapPosition', { mapPosition: [stop.longitude, stop.latitude], mapZoom: 14 })
+  }
+
+  const close = () => {
+    dispatchView('SetStopDialog', { stopDialogOpen: false })
+  }
 
   const theme = useTheme()
   const classes = useStyles()
@@ -60,7 +82,7 @@ function StopDetails (props) {
     <Dialog
       fullScreen={fullScreen}
       disableBackdropClick
-      open={open}
+      open={stopDialogOpen}
       onClose={close}
       aria-labelledby='dlg-title'
       BackdropProps={{ invisible: true }}
@@ -71,13 +93,13 @@ function StopDetails (props) {
           <>
             <DialogTitle id='dlg-title'>{stop.name + '. ' + stop.community}</DialogTitle>
             <DialogContent>
-              <ListSubheader>{(stop.routeSchedule && stop.routeSchedule.length > 0 ? moment(stop.routeSchedule[0]).format('dddd Do MMMM h:mma') : '')}</ListSubheader>
+              <ListSubheader>{(stop.routeSchedule && stop.routeSchedule.length > 0 ? stop.routeSchedule[0].format('dddd Do MMMM h:mma') : '')}</ListSubheader>
               <br />
               <Divider />
               <br />
-              <Button onClick={() => getStopCalendar()} className={classes.button} color='primary' startIcon={<EventIcon />}>Calendar</Button>
-              <Button onClick={() => getStopPdf()} className={classes.button} color='primary' startIcon={<PrintIcon />}>Timetable</Button>
-              <Button onClick={() => viewMapStop(stop.longitude, stop.latitude)} className={classes.button} color='primary' startIcon={<LocationOnIcon />} component={Link} to='/map'>Map</Button>
+              <Button onClick={getStopCalendar} className={classes.button} color='primary' startIcon={<EventIcon />}>Calendar</Button>
+              <Button onClick={getStopPdf} className={classes.button} color='primary' startIcon={<PrintIcon />}>Timetable</Button>
+              <Button onClick={viewMapStop} className={classes.button} color='primary' startIcon={<LocationOnIcon />} component={Link} to='/map'>Map</Button>
             </DialogContent>
           </>
         ) : <CircularProgress className={classes.progress} color='secondary' size={30} />}

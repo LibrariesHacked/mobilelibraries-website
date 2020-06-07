@@ -13,15 +13,14 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 
 import { useApplicationStateValue } from './context/applicationState'
+import { useSearchStateValue } from './context/searchState'
+import { useViewStateValue } from './context/viewState'
 
 // Our components
 import Filters from './Filters'
 import MobileCard from './MobileCard'
 
 const useStyles = makeStyles((theme) => ({
-  chip: {
-    margin: theme.spacing(1)
-  },
   padding: {
     padding: theme.spacing(0, 2)
   },
@@ -31,18 +30,10 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function Mobiles (props) {
-  const [{
-    organisationLookup, mobiles, mobileLookup,
-    mobileLocationLookup, routes, routeLookup }, dispatch] = useApplicationStateValue() //eslint-disable-line
+  const [{ organisationLookup, mobiles, mobileLookup, mobileLocationLookup, mobilesNearestLookup, routes, routeLookup }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [{ organisationFilter, mobileFilter, routeFilter, searchType, searchDistance, postcode }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
+  const [{ loadingMobileLocations }, dispatchView] = useViewStateValue() //eslint-disable-line
 
-  const {
-    organisationFilter, setOrganisationFilter,
-    clearOrganisationFilter, viewStopsByOrganisation,
-    loadingMobileLocations, mobilesNearestLookup, mobileFilter, setMobileFilter,
-    clearMobileFilter, routeFilter, setRouteFilter,
-    clearRouteFilter, searchType, postcode, postcodeDistrict, distance, toggleGPS,
-    postcodeSearch, clearSearch, setDistance, viewStop, viewStopsByMobile
-  } = props
   const [openTab, setOpenTab] = useState(0)
 
   const changeTab = (value) => {
@@ -85,8 +76,8 @@ function Mobiles (props) {
   if (organisationName !== '') title = 'Mobile library vans serving ' + organisationName
   if (mobileName !== '') title = organisationName + ' ' + mobileName
   if (routeName !== '') title = organisationName + ' ' + routeName
-  if (postcode !== '') title = 'Mobile library vans with stops within ' + Math.round(distance / 1609) + ' mile(s) of ' + postcode
-  if (searchType === 'gps') title = 'Mobile library vans with stops within ' + Math.round(distance / 1609) + ' mile(s) of your location'
+  if (postcode !== '') title = 'Mobile library vans with stops within ' + Math.round(searchDistance / 1609) + ' mile(s) of ' + postcode
+  if (searchType === 'gps') title = 'Mobile library vans with stops within ' + Math.round(searchDistance / 1609) + ' mile(s) of your location'
 
   const classes = useStyles()
 
@@ -110,29 +101,10 @@ function Mobiles (props) {
       }
       return true
     })
+
   return (
     <div className={classes.root}>
-      <Filters
-        displayStopLink
-        organisationFilter={organisationFilter}
-        setOrganisationFilter={setOrganisationFilter}
-        clearOrganisationFilter={clearOrganisationFilter}
-        viewStopsByOrganisation={viewStopsByOrganisation}
-        mobileFilter={mobileFilter}
-        setMobileFilter={setMobileFilter}
-        clearMobileFilter={clearMobileFilter}
-        routeFilter={routeFilter}
-        setRouteFilter={setRouteFilter}
-        clearRouteFilter={clearRouteFilter}
-        postcode={postcode}
-        postcodeDistrict={postcodeDistrict}
-        distance={distance}
-        searchType={searchType}
-        setDistance={setDistance}
-        toggleGPS={toggleGPS}
-        postcodeSearch={postcodeSearch}
-        clearSearch={clearSearch}
-      />
+      <Filters />
       <ListSubheader disableSticky>{title}</ListSubheader>
       <Tabs
         variant='standard'
@@ -183,8 +155,6 @@ function Mobiles (props) {
                         mobile={mobile}
                         location={mobileLocationLookup[mobile.id]}
                         organisation={organisationLookup[mobile.organisationId]}
-                        viewStop={viewStop}
-                        viewStopsByMobile={viewStopsByMobile}
                       />
                     </Grid>
                   )

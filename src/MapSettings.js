@@ -13,6 +13,8 @@ import useMediaQuery from '@material-ui/core/useMediaQuery'
 // Material UI Styles
 import { useTheme, makeStyles } from '@material-ui/core/styles'
 
+import { useViewStateValue } from './context/viewState'
+
 const useStyles = makeStyles((theme) => ({
   dialog: {
     border: '1px solid #E0E0E0'
@@ -20,9 +22,15 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MapSettings (props) {
-  const { mapSettings, toggleMapSetting, close, open } = props
+  const [{ mapSettings, mapSettingsDialogOpen }, dispatchView] = useViewStateValue()
 
-  const handleAuthorityBoundaryChange = () => toggleMapSetting('authorityBoundary')
+  const closeDialog = () => {
+    dispatchView('ToggleMapDialog')
+  }
+
+  const handleAuthorityBoundaryChange = () => {
+    dispatchView('SetMapSettingsDialog', { mapSettingsDialogOpen: false })
+  }
 
   const classes = useStyles()
   const theme = useTheme()
@@ -32,8 +40,8 @@ function MapSettings (props) {
     <Dialog
       fullScreen={fullScreen}
       disableBackdropClick
-      open={open}
-      onClose={close}
+      open={mapSettingsDialogOpen}
+      onClose={closeDialog}
       BackdropProps={{
         invisible: true
       }}
@@ -54,7 +62,7 @@ function MapSettings (props) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => close()} color='secondary'>Close</Button>
+        <Button onClick={() => closeDialog()} color='secondary'>Close</Button>
       </DialogActions>
     </Dialog>
   )

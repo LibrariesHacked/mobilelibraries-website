@@ -11,6 +11,8 @@ import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
 // Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
+import { useViewStateValue } from './context/viewState'
+
 // Helpers
 import * as utilsHelper from './helpers/utils'
 
@@ -22,11 +24,12 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MobileAvatar (props) {
-  const { location, organisation, zoom } = props
+  const [{ mapZoom }] = useViewStateValue()
+  const { location, organisation } = props
 
   const status = location.getStatus()
-  const size = (zoom < 8 ? 'small' : (zoom < 12 ? 'medium' : 'large'))
-  const border = (zoom < 8 ? 2 : (zoom < 12 ? 3 : 4))
+  const size = (mapZoom < 8 ? 'small' : (mapZoom < 12 ? 'medium' : 'large'))
+  const border = (mapZoom < 8 ? 2 : (mapZoom < 12 ? 3 : 4))
   const classes = useStyles()
 
   return (

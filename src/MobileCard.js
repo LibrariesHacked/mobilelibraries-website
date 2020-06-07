@@ -21,6 +21,9 @@ import WebIcon from '@material-ui/icons/WebTwoTone'
 // Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
+import { useSearchStateValue } from './context/searchState'
+import { useViewStateValue } from './context/viewState'
+
 const useStyles = makeStyles((theme) => ({
   bullet: {
     display: 'inline-block',
@@ -49,7 +52,18 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MobileCard (props) {
-  const { mobile, organisation, location, viewStop, viewStopsByMobile } = props
+  const { mobile, organisation, location } = props
+  const [searchState, dispatchSearch] = useSearchStateValue() // eslint-disable-line
+  const [viewState, dispatchView] = useViewStateValue() // eslint-disable-line
+
+  const viewStopsByMobile = (organisationId, mobileId) => {
+    dispatchSearch('FilterByMobile', { organisationId: organisationId, mobileId: mobileId })
+  }
+
+  const viewStop = (stopId) => {
+    dispatchSearch('SetCurrentStop', { stopId: stopId })
+    dispatchView('SetStopDialog', { stopDialogOpen: true })
+  }
 
   const stopButton = (stop) => {
     return <Button color='secondary' onClick={() => viewStop({ id: stop.stopId })}>{stop.stopName}</Button>

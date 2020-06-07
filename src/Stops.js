@@ -7,6 +7,7 @@ import Hidden from '@material-ui/core/Hidden'
 import IconButton from '@material-ui/core/IconButton'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import Paper from '@material-ui/core/Paper'
+import Tooltip from '@material-ui/core/Tooltip'
 
 // Material Table
 import MaterialTable from 'material-table'
@@ -31,10 +32,11 @@ import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
 import Filters from './Filters'
 
 // Our Helpers
-import * as stopsHelper from './helpers/stops'
-import { Tooltip } from '@material-ui/core'
+import * as stopsModel from './models/stops'
 
 import { useApplicationStateValue } from './context/applicationState'
+import { useSearchStateValue } from './context/searchState'
+import { useViewStateValue } from './context/viewState'
 
 const config = require('./helpers/config.json')
 
@@ -65,15 +67,9 @@ function usePrevious (value) {
 }
 
 function Stops (props) {
-  const {
-    currentPosition, distance, viewStop, viewMapStop,
-    organisationFilter, viewStopsByOrganisation,
-    mobileFilter, routes, routeLookup, routeFilter, searchType, postcode,
-    postcodeDistrict, toggleGPS, postcodeSearch, clearSearch, setDistance,
-    setOrganisationFilter, clearOrganisationFilter, setMobileFilter, clearMobileFilter,
-    setRouteFilter, clearRouteFilter
-  } = props
-  const [{ organisations, organisationLookup, mobiles, mobileLookup }, dispatch] = useApplicationStateValue() //eslint-disable-line
+  const [{ organisations, organisationLookup, mobiles, mobileLookup, routeLookup }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [{ searchType, searchPostcode, searchDistance, searchPosition, organisationFilter, mobileFilter, routeFilter }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
+  const [{ }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const tableRef = React.createRef()
 
@@ -81,42 +77,20 @@ function Stops (props) {
 
   const getStopPdf = (stop) => window.open(config.api + '/stops/' + stop.id + '/pdf', '_blank')
 
-  const prevProps = usePrevious({ currentPosition, distance })
+  const prevProps = usePrevious({ searchPosition, searchDistance })
+
   useEffect(() => {
-    if (prevProps && (currentPosition !== prevProps.currentPosition || distance !== prevProps.distance)) tableRef.current.onQueryChange()
+    if (prevProps && (searchPosition !== prevProps.currentPosition || searchDistance !== prevProps.distance)) tableRef.current.onQueryChange()
   }, [currentPosition, distance]) // eslint-disable-line
 
-  const setOrgFilter = (organisationId) => {
-    setOrganisationFilter(organisationId)
-    tableRef.current.onQueryChange()
+  const displayStopInfo = (stop) => {
+    dispatchSearch('SetCurrentStop', { stopId: stop.id })
+    dispatchView('SetStopDialog', { stopDialogOpen: true })
   }
 
-  const clearOrgFilter = () => {
-    clearOrganisationFilter()
-    tableRef.current.onQueryChange()
+  const displayMapStop = (longitude, latitude) => {
+    dispatchView('SetMapPosition', { mapPosition: [longitude, latitude], mapZoom: 15 })
   }
-
-  const setMobFilter = (mobileId) => {
-    setMobileFilter(mobileId)
-    tableRef.current.onQueryChange()
-  }
-
-  const clearMobFilter = () => {
-    clearMobileFilter()
-    tableRef.current.onQueryChange()
-  }
-
-  const setRtFilter = (routeId) => {
-    setRouteFilter(routeId)
-    tableRef.current.onQueryChange()
-  }
-
-  const clearRtFilter = () => {
-    clearRouteFilter()
-    tableRef.current.onQueryChange()
-  }
-
-  const displayStopInfo = (row) => viewStop(row)
 
   const classes = useStyles()
   const theme = useTheme()
@@ -131,9 +105,9 @@ function Stops (props) {
   if (mobileName !== '') title = 'Stops for ' + organisationName + ' ' + mobileName
   if (routeName !== '') title = 'Stops for ' + organisationName + ' ' + routeName
   // Postcode search stops
-  if (postcode !== '') title = 'Stops within ' + Math.round(distance / 1609) + ' mile(s) of ' + postcode
+  if (searchPostcode !== '') title = 'Stops within ' + Math.round(searchDistance / 1609) + ' mile(s) of ' + searchPostcode
   // GPS search stops
-  if (searchType === 'gps') title = 'Stops within ' + Math.round(distance / 1609) + ' mile(s) of your location'
+  if (searchType === 'gps') title = 'Stops within ' + Math.round(searchDistance / 1609) + ' mile(s) of your location'
 
   const orgText = {}
   Object.keys(organisationLookup).forEach(key => {
@@ -150,33 +124,7 @@ function Stops (props) {
 
   return (
     <div style={{ maxWidth: '100%' }}>
-      <Filters
-        displayStopLink={false}
-        organisations={organisations}
-        organisationLookup={organisationLookup}
-        organisationFilter={organisationFilter}
-        setOrganisationFilter={setOrgFilter}
-        clearOrganisationFilter={clearOrgFilter}
-        viewStopsByOrganisation={viewStopsByOrganisation}
-        mobiles={mobiles}
-        mobileLookup={mobileLookup}
-        mobileFilter={mobileFilter}
-        setMobileFilter={setMobFilter}
-        clearMobileFilter={clearMobFilter}
-        routes={routes}
-        routeLookup={routeLookup}
-        routeFilter={routeFilter}
-        setRouteFilter={setRtFilter}
-        clearRouteFilter={clearRtFilter}
-        postcode={postcode}
-        postcodeDistrict={postcodeDistrict}
-        distance={distance}
-        searchType={searchType}
-        setDistance={setDistance}
-        toggleGPS={toggleGPS}
-        postcodeSearch={postcodeSearch}
-        clearSearch={clearSearch}
-      />
+      <Filters />
       <ListSubheader disableSticky>{title}</ListSubheader>
       <MaterialTable
         tableRef={tableRef}
@@ -233,7 +181,7 @@ function Stops (props) {
                   </Hidden>
                   <Hidden mdDown>
                     <Tooltip title='See this stop on the map'>
-                      <IconButton onClick={() => viewMapStop(rowData.longitude, rowData.latitude)} component={Link} to='/map'>
+                      <IconButton onClick={() => displayMapStop(rowData.longitude, rowData.latitude)} component={Link} to='/map'>
                         <LocationOnIcon />
                       </IconButton>
                     </Tooltip>
@@ -299,7 +247,7 @@ function Stops (props) {
         data={query =>
           new Promise((resolve, reject) => {
             async function getStops () {
-              const stopData = await stopsHelper.getQueryStops(query, organisationFilter, mobileFilter, routeFilter, currentPosition, distance)
+              const stopData = await stopsModel.getQueryStops(query, organisationFilter, mobileFilter, routeFilter, searchPosition, searchDistance)
               resolve({
                 data: stopData.stops,
                 page: (stopData.page - 1),
