@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MapSettings (props) {
-  const [{ mapSettings, mapSettingsDialogOpen }, dispatchView] = useViewStateValue()
+  const [{ mapSettings }, dispatchView] = useViewStateValue()
 
   const closeDialog = () => {
     dispatchView({ type: 'ToggleMapDialog' })
@@ -40,7 +40,7 @@ function MapSettings (props) {
     <Dialog
       fullScreen={fullScreen}
       disableBackdropClick
-      open={mapSettingsDialogOpen}
+      open={props.mapSettingsDialogOpen}
       onClose={closeDialog}
       BackdropProps={{
         invisible: true

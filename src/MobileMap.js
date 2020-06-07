@@ -52,7 +52,7 @@ function MobileMap (props) {
 
   const [currentTime, setCurrentTime] = useState(null)
   const [map, setMap] = useState(null)
-  const [settingsDialogOpen, setSettingsDialogOpen] = useState(false)
+  const [mapSettingsDialogOpen, setSettingsDialogOpen] = useState(false)
 
   useEffect(() => {
     setInterval(setTime, 500)
@@ -365,7 +365,7 @@ function MobileMap (props) {
       </Tooltip>
       <MapSettings
         mapSettings={mapSettings}
-        open={settingsDialogOpen}
+        open={mapSettingsDialogOpen}
       />
     </>
   )

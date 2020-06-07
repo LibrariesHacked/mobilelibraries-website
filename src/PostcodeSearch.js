@@ -64,7 +64,7 @@ function usePrevious (value) {
 
 function PostcodeSearch () {
   const [{ }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
-  const [{ searchType, searchPostcode }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
+  const [{ searchType, searchPostcode, searchDistance }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [tempPostcode, setTempPostcode] = useState(searchPostcode)
@@ -82,6 +82,7 @@ function PostcodeSearch () {
   const setSearchDistance = (searchDistance) => {
     closeSettingsMenu()
     dispatchSearch({ type: 'SetSearchDistance', searchDistance: searchDistance })
+    if (searchType === 'postcode') postcodeSearch()
   }
 
   const postcodeSearch = async () => {
@@ -94,10 +95,10 @@ function PostcodeSearch () {
     const postcodeData = await geoHelper.getPostcode(tempPostcode)
     if (postcodeData.location && postcodeData.location.length === 2) {
       dispatchSearch({ type: 'SetPostcodeSearch', searchPostcode: tempPostcode, searchPosition: postcodeData.location })
-      dispatchView({ type: 'SetPostcodeSearch' })
-      const mobilesNearest = await mobilesModel.getMobilesNearest(postcodeData.location)
+      dispatchView({ type: 'SetPostcodeSearch', mapPosition: postcodeData.location })
+      const mobilesNearest = await mobilesModel.getMobilesNearest(postcodeData.location, searchDistance)
       const mobilesNearestLookup = {}
-      mobilesNearest.forEach(mobile => { mobilesNearestLookup[mobile.id] = mobile })
+      mobilesNearest.forEach(mobile => { mobilesNearestLookup[mobile.mobileId] = mobile })
       dispatchApplication({ type: 'UpdateMobilesNearest', mobilesNearest: mobilesNearest, mobilesNearestLookup: mobilesNearestLookup })
     } else {
       dispatchView({ type: 'ShowNotification', notificationMessage: 'Could not find postcode' })
@@ -122,7 +123,7 @@ function PostcodeSearch () {
           <Tooltip title='Clear search'>
             <IconButton
               className={classes.iconButton}
-              onClick={() => dispatchSearch('ClearPostcodeSearch')}
+              onClick={() => dispatchSearch({ type: 'ClearAll' })}
             >
               <ClearIcon />
             </IconButton>

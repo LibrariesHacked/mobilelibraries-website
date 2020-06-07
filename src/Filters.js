@@ -69,7 +69,7 @@ function Filters () {
   }
 
   const clearOrganisationFilter = () => {
-    dispatchSearch({ type: 'ClearFilters' })
+    dispatchSearch({ type: 'ClearAll' })
   }
 
   const openMobileMenu = (element) => setMobileMenuAnchor(element)

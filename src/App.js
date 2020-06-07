@@ -85,11 +85,6 @@ const initialSearchState = {
 
 const searchReducer = (state, action) => {
   switch (action.type) {
-    case 'SearchByPostcode':
-      return {
-        ...state,
-        searchPostcode: action.searchPostcode
-      }
     case 'SetCurrentStop':
       return {
         ...state,
@@ -110,6 +105,7 @@ const searchReducer = (state, action) => {
         ...state,
         searchPostcode: action.searchPostcode,
         searchPosition: action.searchPosition,
+        searchType: 'postcode',
         organisationFilter: [],
         mobileFilter: [],
         routeFilter: []
@@ -119,39 +115,51 @@ const searchReducer = (state, action) => {
         ...state,
         organisationFilter: [action.organisationId],
         mobileFilter: [],
-        routeFilter: []
+        routeFilter: [],
+        searchPostcode: '',
+        searchType: ''
       }
     case 'FilterByMobile':
       return {
         ...state,
         organisationFilter: [action.organisationId],
         mobileFilter: [action.mobileId],
-        routeFilter: []
+        routeFilter: [],
+        searchPostcode: '',
+        searchType: ''
       }
     case 'FilterByRoute':
       return {
         ...state,
         organisationFilter: [action.organisationId],
         mobileFilter: [action.mobileId],
-        routeFilter: [action.routeId]
+        routeFilter: [action.routeId],
+        searchPostcode: '',
+        searchType: ''
       }
-    case 'ClearFilters':
+    case 'ClearAll':
       return {
         ...state,
         organisationFilter: [],
         mobileFilter: [],
-        routeFilter: []
+        routeFilter: [],
+        searchPostcode: '',
+        searchType: ''
       }
     case 'ClearMobileFilter':
       return {
         ...state,
         mobileFilter: [],
-        routeFilter: []
+        routeFilter: [],
+        searchPostcode: '',
+        searchType: ''
       }
     case 'ClearRouteFilter':
       return {
         ...state,
-        routeFilter: []
+        routeFilter: [],
+        searchPostcode: '',
+        searchType: ''
       }
     default:
       return state
@@ -168,7 +176,6 @@ const initialViewState = {
   mapSettings: {
     authorityBoundary: false
   },
-  mapSettingsDialogOpen: false,
   loadingOrganisations: false,
   loadingMobiles: false,
   loadingRoutes: false,
@@ -189,8 +196,6 @@ const viewReducer = (state, action) => {
       return { ...state, stopDialogOpen: action.stopDialogOpen }
     case 'SetTripDialog':
       return { ...state, tripDialogOpen: action.tripDialogOpen }
-    case 'SetMapSettingsDialog':
-      return { ...state, mapSettingsDialogOpen: action.mapSettingsDialogOpen }
     case 'ToggleMapSetting': {
       const settings = state.mapSettings
       settings[action.mapSetting] = !settings[action.mapSetting]
@@ -199,7 +204,7 @@ const viewReducer = (state, action) => {
     case 'LoadingPostcode':
       return { ...state, loadingPostcode: true }
     case 'SetPostcodeSearch':
-      return { ...state, loadingPostcode: false, mapZoom: [11] }
+      return { ...state, loadingPostcode: false, mapPosition: action.mapPosition, mapZoom: [13] }
     case 'SetMapPosition':
       return { ...state, mapPosition: action.mapPosition, mapZoom: [action.mapZoom] }
     default:
