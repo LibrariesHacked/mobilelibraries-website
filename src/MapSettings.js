@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MapSettings (props) {
-  const [{ mapSettings }, dispatchView] = useViewStateValue()
+  const [{ mapSettings, mapSettingsDialogOpen }, dispatchView] = useViewStateValue()
 
   const closeDialog = () => {
     dispatchView({ type: 'ToggleMapDialog' })
@@ -62,7 +62,7 @@ function MapSettings (props) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => closeDialog()} color='secondary'>Close</Button>
+        <Button onClick={() => dispatchView({ type: 'SetMapSettingsDialog', mapSettingsDialogOpen: false })} color='secondary'>Close</Button>
       </DialogActions>
     </Dialog>
   )

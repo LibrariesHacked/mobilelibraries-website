@@ -48,11 +48,10 @@ const libraryAuthorityTiles = [config.libraryAuthorityTiles]
 function MobileMap (props) {
   const [{ organisations, organisationLookup, mobileLookup, mobileLocations }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
   const [{ searchType, searchPosition }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
-  const [{ mapZoom, mapPosition, mapSettings }, dispatchView] = useViewStateValue() //eslint-disable-line
+  const [{ mapZoom, mapPosition, mapSettings, mapSettingsDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [currentTime, setCurrentTime] = useState(null)
   const [map, setMap] = useState(null)
-  const [mapSettingsDialogOpen, setSettingsDialogOpen] = useState(false)
 
   useEffect(() => {
     setInterval(setTime, 500)
@@ -358,14 +357,14 @@ function MobileMap (props) {
             color: 'white',
             border: '1px solid #FFFFFF'
           }}
-          onClick={() => setSettingsDialogOpen(true)}
+          onClick={() => dispatchView({ type: 'SetMapSettingsDialog', mapSettingsDialogOpen: true })}
         >
           <LayersIcon />
         </Fab>
       </Tooltip>
       <MapSettings
         mapSettings={mapSettings}
-        open={mapSettingsDialogOpen}
+        mapSettingsDialogOpen={mapSettingsDialogOpen}
       />
     </>
   )

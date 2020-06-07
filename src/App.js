@@ -176,6 +176,7 @@ const initialViewState = {
   mapSettings: {
     authorityBoundary: false
   },
+  mapSettingsDialogOpen: false,
   loadingOrganisations: false,
   loadingMobiles: false,
   loadingRoutes: false,
@@ -196,6 +197,8 @@ const viewReducer = (state, action) => {
       return { ...state, stopDialogOpen: action.stopDialogOpen }
     case 'SetTripDialog':
       return { ...state, tripDialogOpen: action.tripDialogOpen }
+    case 'SetMapSettingsDialog':
+      return { ...state, mapSettingsDialogOpen: action.mapSettingsDialogOpen }
     case 'ToggleMapSetting': {
       const settings = state.mapSettings
       settings[action.mapSetting] = !settings[action.mapSetting]
