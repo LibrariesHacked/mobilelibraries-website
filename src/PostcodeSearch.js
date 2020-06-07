@@ -79,28 +79,28 @@ function PostcodeSearch () {
 
   const closeSettingsMenu = () => setAnchor(null)
 
-  const setSearchDistance = (distance) => {
+  const setSearchDistance = (searchDistance) => {
     closeSettingsMenu()
-    dispatchSearch('SetSearchDistance', { searchDistance: distance })
+    dispatchSearch({ type: 'SetSearchDistance', searchDistance: searchDistance })
   }
 
   const postcodeSearch = async () => {
     if (tempPostcode === '') {
-      dispatchView('ShowNotification', { notificationMessage: 'You must enter a postcode' })
+      dispatchView({ type: 'ShowNotification', notificationMessage: 'You must enter a postcode' })
       return
     }
 
-    dispatchView('LoadingPostcode')
+    dispatchView({ type: 'LoadingPostcode' })
     const postcodeData = await geoHelper.getPostcode(tempPostcode)
     if (postcodeData.location && postcodeData.location.length === 2) {
-      dispatchSearch('SetPostcodeSearch', { searchPostcode: tempPostcode, searchPosition: postcodeData.location })
-      dispatchView('SetPostcodeSearch')
+      dispatchSearch({ type: 'SetPostcodeSearch', searchPostcode: tempPostcode, searchPosition: postcodeData.location })
+      dispatchView({ type: 'SetPostcodeSearch' })
       const mobilesNearest = await mobilesModel.getMobilesNearest(postcodeData.location)
       const mobilesNearestLookup = {}
       mobilesNearest.forEach(mobile => { mobilesNearestLookup[mobile.id] = mobile })
       dispatchApplication({ type: 'UpdateMobilesNearest', mobilesNearest: mobilesNearest, mobilesNearestLookup: mobilesNearestLookup })
     } else {
-      dispatchView('ShowNotification', { notificationMessage: 'Could not find postcode' })
+      dispatchView({ type: 'ShowNotification', notificationMessage: 'Could not find postcode' })
     }
   }
 
@@ -152,7 +152,7 @@ function PostcodeSearch () {
         anchorEl={anchor}
         keepMounted
         open={Boolean(anchor)}
-        onClose={() => this.closeSettingsMenu()}
+        onClose={() => closeSettingsMenu()}
       >
         <ListSubheader disableSticky>Search distance</ListSubheader>
         <MenuItem onClick={() => setSearchDistance(1609)}>1 mile</MenuItem>

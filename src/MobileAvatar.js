@@ -28,8 +28,8 @@ function MobileAvatar (props) {
   const { location, organisation } = props
 
   const status = location.getStatus()
-  const size = (mapZoom < 8 ? 'small' : (mapZoom < 12 ? 'medium' : 'large'))
-  const border = (mapZoom < 8 ? 2 : (mapZoom < 12 ? 3 : 4))
+  const size = (mapZoom[0] < 8 ? 'small' : (mapZoom[0] < 12 ? 'medium' : 'large'))
+  const border = (mapZoom[0] < 8 ? 2 : (mapZoom[0] < 12 ? 3 : 4))
   const classes = useStyles()
 
   return (

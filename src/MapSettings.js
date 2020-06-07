@@ -25,11 +25,11 @@ function MapSettings (props) {
   const [{ mapSettings, mapSettingsDialogOpen }, dispatchView] = useViewStateValue()
 
   const closeDialog = () => {
-    dispatchView('ToggleMapDialog')
+    dispatchView({ type: 'ToggleMapDialog' })
   }
 
   const handleAuthorityBoundaryChange = () => {
-    dispatchView('SetMapSettingsDialog', { mapSettingsDialogOpen: false })
+    dispatchView({ type: 'SetMapSettingsDialog', mapSettingsDialogOpen: false })
   }
 
   const classes = useStyles()

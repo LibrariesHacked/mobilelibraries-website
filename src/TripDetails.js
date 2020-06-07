@@ -28,19 +28,18 @@ function TripDetails () {
   const [{ currentTripId }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
   const [{ tripDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
 
-  const [trip, setTrip] = useState(null)
+  const [trip, setTrip] = useState({})
 
   useEffect(() => {
     async function getTrip (tripId) {
       const trip = await tripsModel.getTripById(tripId)
       setTrip(trip)
     }
-    setTrip(null)
-    getTrip(currentTripId)
+    if (currentTripId != null) getTrip(currentTripId)
   }, [currentTripId])
 
   const close = () => {
-    dispatchView('SetTripDialog', { tripDialogOpen: false })
+    dispatchView({ type: 'SetTripDialog', tripDialogOpen: false })
   }
 
   const classes = useStyles()

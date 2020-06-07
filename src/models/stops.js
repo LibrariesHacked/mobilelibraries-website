@@ -34,7 +34,7 @@ export class Stop {
   }
 }
 
-export async function getQueryStops (query, organisationFilters, mobileFilters, routeFilters, currentPosition, distance) {
+export async function getQueryStops (query, organisationFilters, mobileFilters, routeFilters, searchPosition, distance) {
   let url = config.api + '/stops?page=' + (query.page + 1) + '&limit=' + query.pageSize
   if (query.orderBy && query.orderBy.field) url = url + '&sort=' + query.orderBy.field + '&direction=' + query.orderDirection
 
@@ -42,7 +42,7 @@ export async function getQueryStops (query, organisationFilters, mobileFilters, 
   if (organisationFilters.length > 0) url = url + '&organisation_ids=' + organisationFilters.join('|')
   if (routeFilters.length > 0) url = url + '&route_ids=' + routeFilters.join('|')
 
-  if (currentPosition && currentPosition.length > 1) url = url + '&longitude=' + currentPosition[0] + '&latitude=' + currentPosition[1]
+  if (searchPosition && searchPosition.length > 1) url = url + '&longitude=' + searchPosition[0] + '&latitude=' + searchPosition[1]
   if (distance && distance !== '') url = url + '&distance=' + distance
 
   const response = await axios.get(url)

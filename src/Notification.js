@@ -13,7 +13,7 @@ function Notification () {
   const [{ notificationOpen, notificationMessage }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const handleClose = () => {
-    dispatchView('SetNotification', { notificationOpen: false })
+    dispatchView({ type: 'SetNotification', notificationOpen: false })
   }
 
   return (

@@ -57,12 +57,12 @@ function MobileCard (props) {
   const [viewState, dispatchView] = useViewStateValue() // eslint-disable-line
 
   const viewStopsByMobile = (organisationId, mobileId) => {
-    dispatchSearch('FilterByMobile', { organisationId: organisationId, mobileId: mobileId })
+    dispatchSearch({ type: 'FilterByMobile', organisationId: organisationId, mobileId: mobileId })
   }
 
   const viewStop = (stopId) => {
-    dispatchSearch('SetCurrentStop', { stopId: stopId })
-    dispatchView('SetStopDialog', { stopDialogOpen: true })
+    dispatchSearch({ type: 'SetCurrentStop', stopId: stopId })
+    dispatchView({ type: 'SetStopDialog', stopDialogOpen: true })
   }
 
   const stopButton = (stop) => {

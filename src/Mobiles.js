@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Mobiles (props) {
   const [{ organisationLookup, mobiles, mobileLookup, mobileLocationLookup, mobilesNearestLookup, routes, routeLookup }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
-  const [{ organisationFilter, mobileFilter, routeFilter, searchType, searchDistance, postcode }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
+  const [{ organisationFilter, mobileFilter, routeFilter, searchType, searchDistance, searchPostcode }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ loadingMobileLocations }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [openTab, setOpenTab] = useState(0)
@@ -76,7 +76,7 @@ function Mobiles (props) {
   if (organisationName !== '') title = 'Mobile library vans serving ' + organisationName
   if (mobileName !== '') title = organisationName + ' ' + mobileName
   if (routeName !== '') title = organisationName + ' ' + routeName
-  if (postcode !== '') title = 'Mobile library vans with stops within ' + Math.round(searchDistance / 1609) + ' mile(s) of ' + postcode
+  if (searchPostcode !== '') title = 'Mobile library vans with stops within ' + Math.round(searchDistance / 1609) + ' mile(s) of ' + searchPostcode
   if (searchType === 'gps') title = 'Mobile library vans with stops within ' + Math.round(searchDistance / 1609) + ' mile(s) of your location'
 
   const classes = useStyles()

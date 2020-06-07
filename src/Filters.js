@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Filters () {
   const [{ organisations, organisationLookup, mobiles, mobileLookup, routeLookup, routes }] = useApplicationStateValue()
-  const [{ distance, organisationFilter, mobileFilter, routeFilter }, dispatchSearch] = useSearchStateValue()
+  const [{ searchDistance, organisationFilter, mobileFilter, routeFilter }, dispatchSearch] = useSearchStateValue()
 
   const [organisationMenuAnchor, setOrganisationMenuAnchor] = useState(null)
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null)
@@ -64,12 +64,12 @@ function Filters () {
   const closeOrganisationMenu = () => setOrganisationMenuAnchor(null)
 
   const chooseOrganisation = (organisationId) => {
-    dispatchSearch('FilterByOrganisation', { organisationId: organisationId })
+    dispatchSearch({ type: 'FilterByOrganisation', organisationId: organisationId })
     closeOrganisationMenu()
   }
 
   const clearOrganisationFilter = () => {
-    dispatchSearch('ClearFilters')
+    dispatchSearch({ type: 'ClearFilters' })
   }
 
   const openMobileMenu = (element) => setMobileMenuAnchor(element)
@@ -77,12 +77,12 @@ function Filters () {
   const closeMobileMenu = () => setMobileMenuAnchor(null)
 
   const chooseMobile = (organisationId, mobileId) => {
-    dispatchSearch('FilterByMobile', { organisationId: organisationId, mobileId: mobileId })
+    dispatchSearch({ type: 'FilterByMobile', organisationId: organisationId, mobileId: mobileId })
     closeMobileMenu()
   }
 
   const clearMobileFilter = () => {
-    dispatchSearch('ClearMobileFilter')
+    dispatchSearch({ type: 'ClearMobileFilter' })
   }
 
   const openRouteMenu = (element) => setRouteMenuAnchor(element)
@@ -90,12 +90,12 @@ function Filters () {
   const closeRouteMenu = () => setRouteMenuAnchor(null)
 
   const chooseRoute = (organisationId, mobileId, routeId) => {
-    dispatchSearch('FilterByRoute', { routeId: routeId })
+    dispatchSearch({ type: 'FilterByRoute', routeId: routeId })
     closeRouteMenu()
   }
 
   const clearRouteFilter = () => {
-    dispatchSearch('ClearRouteFilter')
+    dispatchSearch({ type: 'ClearRouteFilter' })
   }
 
   const countries = new Set(organisations.map(org => org.country))
@@ -105,7 +105,7 @@ function Filters () {
   return (
     <>
       <Typography component='h2' variant='h6' color='secondary' className={classes.title}>Your mobile service</Typography>
-      <Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Find services within {distance / 1609} mile(s)</Typography>
+      <Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Find services within {searchDistance / 1609} mile(s)</Typography>
       <div className={classes.search}>
         <PostcodeSearch />
       </div>

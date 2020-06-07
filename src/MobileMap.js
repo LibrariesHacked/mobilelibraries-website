@@ -60,15 +60,15 @@ function MobileMap (props) {
 
   const clickStop = (map) => {
     if (map && map.features && map.features.length > 0 && map.features[0].properties) {
-      dispatchSearch('SetCurrentStop', { stopId: map.features[0].properties.id })
-      dispatchView('SetStopDialog', { stopDialogOpen: true })
+      dispatchSearch({ type: 'SetCurrentStop', stopId: map.features[0].properties.id })
+      dispatchView({ type: 'SetStopDialog', stopDialogOpen: true })
     }
   }
 
   const clickTrip = (map) => {
     if (map && map.features && map.features.length > 0 && map.features[0].properties) {
-      dispatchSearch('SetCurrentTrip', { tripId: map.features[0].properties.id })
-      dispatchView('SetStopDialog', { tripDialogOpen: true })
+      dispatchSearch({ type: 'SetCurrentTrip', tripId: map.features[0].properties.id })
+      dispatchView({ type: 'SetStopDialog', tripDialogOpen: true })
     }
   }
 

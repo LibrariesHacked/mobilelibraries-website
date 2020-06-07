@@ -20,7 +20,7 @@ const initialApplicationState = {
   organisationLookup: {},
   organisationFilter: [],
   mobiles: [],
-  mobilesLookup: {},
+  mobileLookup: {},
   mobileFilter: [],
   mobileLocations: [],
   mobileLocationLookup: {},
@@ -71,7 +71,7 @@ const applicationReducer = (state, action) => {
 }
 
 const initialSearchState = {
-  postcode: '',
+  searchPostcode: '',
   searchType: '',
   searchDistance: 1609,
   searchPosition: [],
@@ -88,7 +88,7 @@ const searchReducer = (state, action) => {
     case 'SearchByPostcode':
       return {
         ...state,
-        postcode: action.postcode
+        searchPostcode: action.searchPostcode
       }
     case 'SetCurrentStop':
       return {
@@ -163,8 +163,8 @@ const initialViewState = {
   tripDialogOpen: false,
   notificationOpen: false,
   notificationMessage: '',
-  mapZoom: 12,
-  mapPosition: [],
+  mapZoom: [7],
+  mapPosition: [-1.155414, 52.691432],
   mapSettings: {
     authorityBoundary: false
   },
@@ -199,9 +199,9 @@ const viewReducer = (state, action) => {
     case 'LoadingPostcode':
       return { ...state, loadingPostcode: true }
     case 'SetPostcodeSearch':
-      return { ...state, loadingPostcode: false, mapZoom: 11 }
+      return { ...state, loadingPostcode: false, mapZoom: [11] }
     case 'SetMapPosition':
-      return { ...state, mapPosition: action.mapPosition, mapZoom: action.mapZoom }
+      return { ...state, mapPosition: action.mapPosition, mapZoom: [action.mapZoom] }
     default:
       return state
   }

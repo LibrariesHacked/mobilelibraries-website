@@ -80,16 +80,16 @@ function Stops (props) {
   const prevProps = usePrevious({ searchPosition, searchDistance })
 
   useEffect(() => {
-    if (prevProps && (searchPosition !== prevProps.currentPosition || searchDistance !== prevProps.distance)) tableRef.current.onQueryChange()
-  }, [currentPosition, distance]) // eslint-disable-line
+    if (prevProps && (searchPosition !== prevProps.searchPosition || searchDistance !== prevProps.distance)) tableRef.current.onQueryChange()
+  }, [searchPosition, searchDistance]) // eslint-disable-line
 
   const displayStopInfo = (stop) => {
-    dispatchSearch('SetCurrentStop', { stopId: stop.id })
-    dispatchView('SetStopDialog', { stopDialogOpen: true })
+    dispatchSearch({ type: 'SetCurrentStop', stopId: stop.id })
+    dispatchView({ type: 'SetStopDialog', stopDialogOpen: true })
   }
 
   const displayMapStop = (longitude, latitude) => {
-    dispatchView('SetMapPosition', { mapPosition: [longitude, latitude], mapZoom: 15 })
+    dispatchView({ type: 'SetMapPosition', mapPosition: [longitude, latitude], mapZoom: 15 })
   }
 
   const classes = useStyles()

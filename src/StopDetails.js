@@ -49,15 +49,14 @@ function StopDetails () {
   const [{ currentStopId }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
   const [{ stopDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
 
-  const [stop, setStop] = useState(null)
+  const [stop, setStop] = useState({})
 
   useEffect(() => {
     async function getStop (stopId) {
       const stop = await stopsModel.getStopById(stopId)
       setStop(stop)
     }
-    setStop(null)
-    getStop(currentStopId)
+    if (currentStopId != null) getStop(currentStopId)
   }, [currentStopId])
 
   const getStopCalendar = () => window.open(config.api + '/stops/' + stop.id + '/ics')
@@ -67,11 +66,11 @@ function StopDetails () {
   const goToWebsite = () => window.open(stop.timetable, '_blank')
 
   const viewMapStop = () => {
-    dispatchView('SetMapPosition', { mapPosition: [stop.longitude, stop.latitude], mapZoom: 14 })
+    dispatchView({ type: 'SetMapPosition', mapPosition: [stop.longitude, stop.latitude], mapZoom: 14 })
   }
 
   const close = () => {
-    dispatchView('SetStopDialog', { stopDialogOpen: false })
+    dispatchView({ type: 'SetStopDialog', stopDialogOpen: false })
   }
 
   const theme = useTheme()
