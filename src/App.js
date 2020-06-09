@@ -18,17 +18,14 @@ import MobilesApplication from './MobilesApplication'
 const initialApplicationState = {
   organisations: [],
   organisationLookup: {},
-  organisationFilter: [],
   mobiles: [],
   mobileLookup: {},
-  mobileFilter: [],
   mobileLocations: [],
   mobileLocationLookup: {},
   mobilesNearest: [],
   mobilesNearestLookup: {},
   routes: [],
   routeLookup: {},
-  routeFilter: [],
   stops: [],
   trips: []
 }
@@ -117,6 +114,7 @@ const searchReducer = (state, action) => {
         mobileFilter: [],
         routeFilter: [],
         searchPostcode: '',
+        searchPosition: [],
         searchType: ''
       }
     case 'FilterByMobile':
@@ -126,6 +124,7 @@ const searchReducer = (state, action) => {
         mobileFilter: [action.mobileId],
         routeFilter: [],
         searchPostcode: '',
+        searchPosition: [],
         searchType: ''
       }
     case 'FilterByRoute':
@@ -135,6 +134,7 @@ const searchReducer = (state, action) => {
         mobileFilter: [action.mobileId],
         routeFilter: [action.routeId],
         searchPostcode: '',
+        searchPosition: [],
         searchType: ''
       }
     case 'ClearAll':
@@ -144,6 +144,7 @@ const searchReducer = (state, action) => {
         mobileFilter: [],
         routeFilter: [],
         searchPostcode: '',
+        searchPosition: [],
         searchType: ''
       }
     case 'ClearMobileFilter':
@@ -152,6 +153,7 @@ const searchReducer = (state, action) => {
         mobileFilter: [],
         routeFilter: [],
         searchPostcode: '',
+        searchPosition: [],
         searchType: ''
       }
     case 'ClearRouteFilter':
@@ -159,6 +161,7 @@ const searchReducer = (state, action) => {
         ...state,
         routeFilter: [],
         searchPostcode: '',
+        searchPosition: [],
         searchType: ''
       }
     default:

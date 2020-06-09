@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-import { useApplicationStateValue } from './context/applicationState'
+import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
 import * as tripsModel from './models/trips'
@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function TripDetails () {
-  const [{ currentTripId }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [{ currentTripId }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ tripDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [trip, setTrip] = useState({})

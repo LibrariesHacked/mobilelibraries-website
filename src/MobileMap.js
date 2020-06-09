@@ -67,7 +67,7 @@ function MobileMap (props) {
   const clickTrip = (map) => {
     if (map && map.features && map.features.length > 0 && map.features[0].properties) {
       dispatchSearch({ type: 'SetCurrentTrip', tripId: map.features[0].properties.id })
-      dispatchView({ type: 'SetStopDialog', tripDialogOpen: true })
+      dispatchView({ type: 'SetTripDialog', tripDialogOpen: true })
     }
   }
 

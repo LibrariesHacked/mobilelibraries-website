@@ -1,5 +1,5 @@
 // React
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
 // Material UI
@@ -58,15 +58,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function usePrevious (value) {
-  const ref = useRef()
-  useEffect(() => {
-    ref.current = value
-  })
-  return ref.current
-}
-
-function Stops (props) {
+function Stops () {
   const [{ organisations, organisationLookup, mobiles, mobileLookup, routeLookup }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
   const [{ searchType, searchPostcode, searchDistance, searchPosition, organisationFilter, mobileFilter, routeFilter }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ }, dispatchView] = useViewStateValue() //eslint-disable-line
@@ -77,11 +69,9 @@ function Stops (props) {
 
   const getStopPdf = (stop) => window.open(config.api + '/stops/' + stop.id + '/pdf', '_blank')
 
-  const prevProps = usePrevious({ searchPosition, searchDistance })
-
   useEffect(() => {
-    if (prevProps && (searchPosition !== prevProps.searchPosition || searchDistance !== prevProps.distance)) tableRef.current.onQueryChange()
-  }, [searchPosition, searchDistance]) // eslint-disable-line
+    tableRef.current.onQueryChange()
+  }, [searchPosition, searchDistance, organisationFilter, mobileFilter, routeFilter ]) // eslint-disable-line
 
   const displayStopInfo = (stop) => {
     dispatchSearch({ type: 'SetCurrentStop', stopId: stop.id })

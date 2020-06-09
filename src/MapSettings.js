@@ -21,15 +21,15 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function MapSettings (props) {
+function MapSettings () {
   const [{ mapSettings, mapSettingsDialogOpen }, dispatchView] = useViewStateValue()
 
   const closeDialog = () => {
-    dispatchView({ type: 'ToggleMapDialog' })
+    dispatchView({ type: 'SetMapSettingsDialog', mapSettingsDialogOpen: false })
   }
 
   const handleAuthorityBoundaryChange = () => {
-    dispatchView({ type: 'SetMapSettingsDialog', mapSettingsDialogOpen: false })
+    dispatchView({ type: 'ToggleMapSetting', mapSetting: 'authorityBoundary' })
   }
 
   const classes = useStyles()
@@ -40,7 +40,7 @@ function MapSettings (props) {
     <Dialog
       fullScreen={fullScreen}
       disableBackdropClick
-      open={props.mapSettingsDialogOpen}
+      open={mapSettingsDialogOpen}
       onClose={closeDialog}
       BackdropProps={{
         invisible: true
@@ -62,7 +62,7 @@ function MapSettings (props) {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={() => dispatchView({ type: 'SetMapSettingsDialog', mapSettingsDialogOpen: false })} color='secondary'>Close</Button>
+        <Button onClick={closeDialog} color='secondary'>Close</Button>
       </DialogActions>
     </Dialog>
   )

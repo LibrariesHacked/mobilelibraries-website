@@ -66,7 +66,7 @@ function MobileCard (props) {
   }
 
   const stopButton = (stop) => {
-    return <Button color='secondary' onClick={() => viewStop({ id: stop.stopId })}>{stop.stopName}</Button>
+    return <Button color='secondary' onClick={() => viewStop(stop.stopId)}>{stop.stopName}</Button>
   }
 
   const offRoadMessage = (status) => {
@@ -118,17 +118,17 @@ function MobileCard (props) {
 
   const classes = useStyles()
 
-  let status = null
+  let statusMessage = null
   if (location) {
-    status = location.getStatus()
-    if (status && status.type === 'off_road') status = offRoadMessage(status)
-    if (status && status.type === 'pre_route') status = preRouteMessage(status)
-    if (status && status.type === 'at_stop') status = atStopMessage(status)
-    if (status && status.type === 'between_stops') status = betweenStopsMessage(status)
-    if (status && status.type === 'post_route') status = postRouteMessage(status)
+    const status = location.getStatus()
+    if (status && status.type === 'offRoad') statusMessage = offRoadMessage(status)
+    if (status && status.type === 'preRoute') statusMessage = preRouteMessage(status)
+    if (status && status.type === 'atStop') statusMessage = atStopMessage(status)
+    if (status && status.type === 'betweenStops') statusMessage = betweenStopsMessage(status)
+    if (status && status.type === 'postRoute') statusMessage = postRouteMessage(status)
   }
 
-  if (!status) status = <CircularProgress className={classes.progress} color='secondary' size={30} />
+  if (!statusMessage) statusMessage = <CircularProgress className={classes.progress} color='secondary' size={30} />
   const bull = <span className={classes.bullet}>•</span>
 
   return (
@@ -140,7 +140,7 @@ function MobileCard (props) {
           {mobile.numberStops + ' stop' + (mobile.numberStops > 1 ? 's' : '')}
         </Typography>
         <Typography variant='h6' component='h2'>{(organisation ? organisation.name + ' ' : '') + mobile.name}</Typography>
-        {status}
+        {statusMessage}
       </CardContent>
       <CardActions>
         <Tooltip title='Mobile library stops'>

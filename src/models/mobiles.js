@@ -69,7 +69,7 @@ export class MobileLocation {
     // The mobile is not due out today
     if (!this.currentStopId && !this.previousStopId && this.nextStopId && !this.nextStopArrival.isSame(now, 'day')) {
       return {
-        type: 'off_road',
+        type: 'offRoad',
         textFormat: statuses.offRoad,
         message: statuses.offRoad
       }
@@ -78,7 +78,7 @@ export class MobileLocation {
     if (!this.currentStopId && !this.previousStopId && this.nextStopId && this.nextStopArrival.isSame(now, 'day')) {
       const arrival = this.nextStopArrival.fromNow()
       return {
-        type: 'pre_route',
+        type: 'preRoute',
         message: statuses.preRoute,
         textFormat: statuses.preRoute + this.nextStopName + ' ' + arrival,
         args: [
@@ -104,7 +104,7 @@ export class MobileLocation {
     if (!this.currentStopId && this.previousStopId && this.nextStopId && this.previousStopDeparture.isSame(now, 'day') && this.nextStopArrival.isSame(now, 'day')) {
       const arrival = this.nextStopArrival.fromNow()
       return {
-        type: 'between_stops',
+        type: 'betweenStops',
         message: statuses.betweenStops,
         textFormat: statuses.betweenStops + this.nextStopName + ' ' + arrival,
         args: [
@@ -116,7 +116,7 @@ export class MobileLocation {
     // The mobile has finished for the day
     if (this.previousStopId && this.nextStopId && this.previousStopDeparture.isSame(now, 'day') && !this.nextStopArrival.isSame(now, 'day')) {
       return {
-        type: 'post_route',
+        type: 'postRoute',
         message: statuses.postRoute,
         text_format: statuses.postRoute
       }

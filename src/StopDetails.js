@@ -18,7 +18,7 @@ import EventIcon from '@material-ui/icons/EventTwoTone'
 import PrintIcon from '@material-ui/icons/PrintTwoTone'
 import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
 
-import { useApplicationStateValue } from './context/applicationState'
+import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
 import * as stopsModel from './models/stops'
@@ -46,15 +46,15 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function StopDetails () {
-  const [{ currentStopId }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [{ currentStopId }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ stopDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [stop, setStop] = useState({})
 
   useEffect(() => {
     async function getStop (stopId) {
-      const stop = await stopsModel.getStopById(stopId)
-      setStop(stop)
+      const stopData = await stopsModel.getStopById(stopId)
+      setStop(stopData)
     }
     if (currentStopId != null) getStop(currentStopId)
   }, [currentStopId])

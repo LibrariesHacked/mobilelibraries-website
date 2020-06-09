@@ -61,7 +61,7 @@ function Mobiles (props) {
   const activeMobiles = filteredMobiles.filter(mob => {
     if (mobileLocationLookup[mob.id]) {
       const status = mobileLocationLookup[mob.id].getStatus()
-      return (status && status.type !== 'off_road' && status.type !== 'post_route')
+      return (status && status.type !== 'offRoad' && status.type !== 'postRoute')
     }
     return null
   })

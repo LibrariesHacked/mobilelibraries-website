@@ -31,8 +31,8 @@ export async function getAllTrips () {
 
 export async function getTripById (id) {
   const response = await axios.get(config.api + '/trips/' + id)
-  if (response && response.data && response.data.length > 0) {
-    return response.data.map(t => (new Trip()).fromJson(t))
+  if (response && response.data) {
+    return (new Trip()).fromJson(response.data)
   } else {
     return []
   }
