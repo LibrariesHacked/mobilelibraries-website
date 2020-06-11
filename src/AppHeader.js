@@ -1,5 +1,5 @@
 // React
-import React from 'react'
+import React, { useState } from 'react'
 
 import { Link, useLocation } from 'react-router-dom'
 
@@ -10,11 +10,15 @@ import Container from '@material-ui/core/Container'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import Hidden from '@material-ui/core/Hidden'
 import IconButton from '@material-ui/core/IconButton'
+import Tab from '@material-ui/core/Tab'
+import Tabs from '@material-ui/core/Tabs'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 
 // Icons
+import AppsIcon from '@material-ui/icons/AppsTwoTone'
 import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
+import HomeWorkIcon from '@material-ui/icons/HomeWorkTwoTone'
 import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
 import MapIcon from '@material-ui/icons/MapTwoTone'
 
@@ -43,13 +47,21 @@ const useStyles = makeStyles((theme) => ({
   progress: {
     margin: theme.spacing(1)
   },
+  tabBar: {
+    borderBottom: '1px solid #e8e8e8'
+  },
   title: {
-    margin: theme.spacing(2)
+    margin: theme.spacing(2),
+    display: 'inline-block',
+    verticalAlign: 'middle'
   }
 }))
 
 function AppHeader (props) {
   const [{ loadingOrganisations, loadingMobiles, loadingRoutes, loadingMobileLocations, loadingNearestMobiles, loadingPostcode }] = useViewStateValue()
+
+  const [appsOpen, setAppsOpen] = useState(false);
+  const [tabValue] = useState(1);
 
   const loading = loadingOrganisations || loadingMobiles || loadingRoutes || loadingMobileLocations || loadingNearestMobiles || loadingPostcode
 
@@ -59,8 +71,30 @@ function AppHeader (props) {
   return (
     <>
       <Container maxWidth='lg'>
-        <Typography color='textSecondary' variant='h6' component='h1' className={classes.title}>Mobile libraries</Typography>
+        <IconButton onClick={() => { setAppsOpen(!appsOpen) }}>
+          <AppsIcon />
+        </IconButton>
+        <Typography color='textSecondary' variant='h6' component='h1' className={classes.title}>
+          Mobile libraries
+        </Typography>
       </Container>
+      {appsOpen ? (
+        <AppBar position="static" color='default' elevation={0}>
+          <Container maxWidth='lg'>
+            <Tabs
+              className={classes.tabBar}
+              value={tabValue}
+              onChange={() => { }}
+              variant="scrollable"
+              scrollButtons="on"
+              indicatorColor="primary"
+              textColor="primary">
+              <Tab label="Libraries at home" icon={<HomeWorkIcon />} href="https://www.librariesathome.co.uk?" />
+              <Tab label="Mobile libraries" icon={<DirectionBusIcon />} />
+            </Tabs>
+          </Container>
+        </AppBar>
+      ) : null}
       <AppBar
         position={(location.pathname === '/map' ? 'fixed' : 'static')}
         color='inherit'
