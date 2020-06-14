@@ -30,6 +30,19 @@ import { useViewStateValue } from './context/viewState'
 // Our components
 import PostcodeSearch from './PostcodeSearch'
 
+const sites = [
+  {
+    title: 'Libraries at home',
+    url: 'https://www.librariesathome.co.uk',
+    icon: <HomeWorkIcon />
+  },
+  {
+    title: 'Mobile libraries',
+    url: 'https://www.mobilelibraries.org',
+    icon: <DirectionBusIcon />
+  }
+]
+
 const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1
@@ -60,8 +73,8 @@ const useStyles = makeStyles((theme) => ({
 function AppHeader (props) {
   const [{ loadingOrganisations, loadingMobiles, loadingRoutes, loadingMobileLocations, loadingNearestMobiles, loadingPostcode }] = useViewStateValue()
 
-  const [appsOpen, setAppsOpen] = useState(false);
-  const [tabValue] = useState(1);
+  const [appsOpen, setAppsOpen] = useState(false)
+  const [tabValue] = useState(1)
 
   const loading = loadingOrganisations || loadingMobiles || loadingRoutes || loadingMobileLocations || loadingNearestMobiles || loadingPostcode
 
@@ -75,22 +88,26 @@ function AppHeader (props) {
           <AppsIcon />
         </IconButton>
         <Typography color='textSecondary' variant='h6' component='h1' className={classes.title}>
-          Mobile libraries
+          {sites[tabValue].title}
         </Typography>
       </Container>
       {appsOpen ? (
-        <AppBar position="static" color='default' elevation={0}>
+        <AppBar position='static' color='default' elevation={0}>
           <Container maxWidth='lg'>
             <Tabs
               className={classes.tabBar}
               value={tabValue}
               onChange={() => { }}
-              variant="scrollable"
-              scrollButtons="on"
-              indicatorColor="primary"
-              textColor="primary">
-              <Tab label="Libraries at home" icon={<HomeWorkIcon />} href="https://www.librariesathome.co.uk?" />
-              <Tab label="Mobile libraries" icon={<DirectionBusIcon />} />
+              variant='scrollable'
+              scrollButtons='on'
+              indicatorColor='primary'
+              textColor='primary'
+            >
+              {sites.map((site, idx) => {
+                return (
+                  <Tab key={'tb_site_' + idx} label={site.title} icon={site.icon} />
+                )
+              })}
             </Tabs>
           </Container>
         </AppBar>
