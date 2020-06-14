@@ -18,9 +18,10 @@ import Typography from '@material-ui/core/Typography'
 // Icons
 import AppsIcon from '@material-ui/icons/AppsTwoTone'
 import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
-import HomeWorkIcon from '@material-ui/icons/HomeWorkTwoTone'
+import HomeIcon from '@material-ui/icons/HomeTwoTone'
 import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
 import MapIcon from '@material-ui/icons/MapTwoTone'
+import BusinessIcon from '@material-ui/icons/BusinessTwoTone'
 
 // Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
@@ -29,19 +30,6 @@ import { useViewStateValue } from './context/viewState'
 
 // Our components
 import PostcodeSearch from './PostcodeSearch'
-
-const sites = [
-  {
-    title: 'Libraries at home',
-    url: 'https://www.librariesathome.co.uk',
-    icon: <HomeWorkIcon />
-  },
-  {
-    title: 'Mobile libraries',
-    url: 'https://www.mobilelibraries.org',
-    icon: <DirectionBusIcon />
-  }
-]
 
 const useStyles = makeStyles((theme) => ({
   appBar: {
@@ -61,6 +49,7 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1)
   },
   tabBar: {
+    borderTop: '1px solid #e8e8e8',
     borderBottom: '1px solid #e8e8e8'
   },
   title: {
@@ -80,6 +69,39 @@ function AppHeader (props) {
 
   const location = useLocation()
   const classes = useStyles()
+
+  const sites = [
+    {
+      title: 'Libraries at home',
+      url: 'https://www.librariesathome.co.uk',
+      icon: <HomeIcon />,
+      links: [
+
+      ]
+    },
+    {
+      title: 'Mobile libraries',
+      url: 'https://www.mobilelibraries.org',
+      icon: <DirectionBusIcon />,
+      links: [
+        {
+          title: 'Mobile vans',
+          icon: <DirectionBusIcon className={classes.leftIcon} />
+        }
+      ]
+    },
+    {
+      title: 'Libraries',
+      url: 'https://www.libraries.org',
+      icon: <BusinessIcon />,
+      links: [
+        {
+          title: 'Mobile vans',
+          icon: <DirectionBusIcon className={classes.leftIcon} />
+        }
+      ]
+    }
+  ]
 
   return (
     <>
@@ -144,15 +166,13 @@ function AppHeader (props) {
             </Hidden>
             <Hidden mdUp>
               <>
-                <IconButton component={Link} to='/' onClick={() => { }}>
-                  <DirectionBusIcon />
-                </IconButton>
-                <IconButton component={Link} to='/stops' onClick={() => { }}>
-                  <LocationOnIcon />
-                </IconButton>
-                <IconButton component={Link} to='/map' onClick={() => { }}>
-                  <MapIcon />
-                </IconButton>
+                {sites[tabValue].links.map((link, idx) => {
+                  return (
+                    <IconButton key={'icnb_menu_sml_' + idx} component={Link} to='/' onClick={() => { }}>
+                      {link.icon}
+                    </IconButton>
+                  )
+                })}
               </>
             </Hidden>
             {loading ? <CircularProgress className={classes.progress} color='secondary' size={30} /> : null}
