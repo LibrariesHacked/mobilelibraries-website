@@ -1,15 +1,12 @@
 import React from 'react'
 
-// Material UI
 import Avatar from '@material-ui/core/Avatar'
 import Tooltip from '@material-ui/core/Tooltip'
 
-// Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
 import { useSearchStateValue } from './context/searchState'
 
-// Icons
 import Face from '@material-ui/icons/FaceTwoTone'
 
 const useStyles = makeStyles((theme) => ({
@@ -23,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function MeAvatar (props) {
+function MeAvatar () {
   const [{ searchType }] = useSearchStateValue()
 
   const classes = useStyles()

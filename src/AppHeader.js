@@ -1,9 +1,7 @@
-// React
 import React, { useState } from 'react'
 
 import { Link, useLocation } from 'react-router-dom'
 
-// Material UI
 import AppBar from '@material-ui/core/AppBar'
 import Button from '@material-ui/core/Button'
 import Container from '@material-ui/core/Container'
@@ -15,7 +13,6 @@ import Tabs from '@material-ui/core/Tabs'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
 
-// Icons
 import AppsIcon from '@material-ui/icons/AppsTwoTone'
 import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
 import HomeIcon from '@material-ui/icons/HomeTwoTone'
@@ -23,12 +20,10 @@ import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
 import MapIcon from '@material-ui/icons/MapTwoTone'
 import BusinessIcon from '@material-ui/icons/BusinessTwoTone'
 
-// Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
 import { useViewStateValue } from './context/viewState'
 
-// Our components
 import PostcodeSearch from './PostcodeSearch'
 
 const useStyles = makeStyles((theme) => ({
@@ -42,8 +37,8 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1
   },
-  leftIcon: {
-    marginRight: theme.spacing(1)
+  iconTitle: {
+    marginLeft: theme.spacing(1)
   },
   progress: {
     margin: theme.spacing(1)
@@ -59,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function AppHeader (props) {
+function AppHeader () {
   const [{ loadingOrganisations, loadingMobiles, loadingRoutes, loadingMobileLocations, loadingNearestMobiles, loadingPostcode }] = useViewStateValue()
 
   const [appsOpen, setAppsOpen] = useState(false)
@@ -85,8 +80,19 @@ function AppHeader (props) {
       icon: <DirectionBusIcon />,
       links: [
         {
-          title: 'Mobile vans',
-          icon: <DirectionBusIcon className={classes.leftIcon} />
+          title: <span className={classes.iconTitle}>Mobile vans</span>,
+          icon: <DirectionBusIcon />,
+          to: '/'
+        },
+        {
+          title: <span className={classes.iconTitle}>Stop locations</span>,
+          icon: <LocationOnIcon />,
+          to: '/stops'
+        },
+        {
+          title: <span className={classes.iconTitle}>Map</span>,
+          icon: <MapIcon />,
+          to: '/map'
         }
       ]
     },
@@ -95,10 +101,7 @@ function AppHeader (props) {
       url: 'https://www.libraries.org',
       icon: <BusinessIcon />,
       links: [
-        {
-          title: 'Mobile vans',
-          icon: <DirectionBusIcon className={classes.leftIcon} />
-        }
+
       ]
     }
   ]
@@ -144,31 +147,33 @@ function AppHeader (props) {
           <Toolbar>
             <Hidden smDown>
               <>
-                <Button
-                  component={Link} to='/' color={(location.pathname === '/' ? 'primary' : 'secondary')} size='large'
-                  onClick={() => { }}
-                >
-                  <DirectionBusIcon className={classes.leftIcon} />Mobile vans
-                </Button>
-                <Button
-                  component={Link} to='/stops' color={(location.pathname === '/stops' ? 'primary' : 'secondary')} size='large'
-                  onClick={() => { }}
-                >
-                  <LocationOnIcon className={classes.leftIcon} />Stop locations
-                </Button>
-                <Button
-                  component={Link} to='/map' color={(location.pathname === '/map' ? 'primary' : 'secondary')} size='large'
-                  onClick={() => { }}
-                >
-                  <MapIcon className={classes.leftIcon} />Map
-                </Button>
+                {sites[tabValue].links.map((link, idx) => {
+                  return (
+                    <Button
+                      key={'icnb_menu_lg_' + idx}
+                      component={Link}
+                      to={link.to}
+                      color={(location.pathname === link.to ? 'primary' : 'secondary')}
+                      size='large'
+                      onClick={() => { }}
+                    >
+                      {link.icon}{link.title}
+                    </Button>
+                  )
+                })}
               </>
             </Hidden>
             <Hidden mdUp>
               <>
                 {sites[tabValue].links.map((link, idx) => {
                   return (
-                    <IconButton key={'icnb_menu_sml_' + idx} component={Link} to='/' onClick={() => { }}>
+                    <IconButton
+                      key={'icnb_menu_md_' + idx}
+                      component={Link}
+                      to={link.to}
+                      onClick={() => { }}
+                      color={(location.pathname === link.to ? 'primary' : 'secondary')}
+                    >
                       {link.icon}
                     </IconButton>
                   )

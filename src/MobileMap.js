@@ -1,22 +1,12 @@
-// React
 import React, { useEffect, useState } from 'react'
 
-// Material UI
 import Fab from '@material-ui/core/Fab'
 import Tooltip from '@material-ui/core/Tooltip'
 
-// Mapbox GL
 import ReactMapboxGl, { ZoomControl, Source, Layer, Marker } from 'react-mapbox-gl'
 
-// Our components
-import MeAvatar from './MeAvatar'
-import MapSettings from './MapSettings'
-import MobileAvatar from './MobileAvatar'
-
-// Mui Icons
 import LayersIcon from '@material-ui/icons/LayersTwoTone'
 
-// Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
 import moment from 'moment'
@@ -24,6 +14,10 @@ import moment from 'moment'
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
+
+import MeAvatar from './MeAvatar'
+import MapSettings from './MapSettings'
+import MobileAvatar from './MobileAvatar'
 
 const useStyles = makeStyles((theme) => ({
   settings: {
@@ -45,7 +39,7 @@ const stopTiles = [config.stopTiles]
 const tripTiles = [config.tripTiles]
 const libraryAuthorityTiles = [config.libraryAuthorityTiles]
 
-function MobileMap (props) {
+function MobileMap () {
   const [{ organisations, organisationLookup, mobileLookup, mobileLocations }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
   const [{ searchType, searchPosition }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ mapZoom, mapPosition, mapSettings, mapSettingsDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line

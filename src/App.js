@@ -1,10 +1,7 @@
-// React
 import React from 'react'
 
-// Material UI
 import CssBaseline from '@material-ui/core/CssBaseline'
 
-// Styling
 import blueGrey from '@material-ui/core/colors/blueGrey'
 import lightBlue from '@material-ui/core/colors/lightBlue'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'

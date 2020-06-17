@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 
-// Material UI
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -9,7 +8,6 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import Typography from '@material-ui/core/Typography'
 
-// Material UI Styles
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 

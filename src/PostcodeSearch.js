@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 
-// Material UI
 import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -8,11 +7,9 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Tooltip from '@material-ui/core/Tooltip'
 
-// Material UI Styles
 import { fade } from '@material-ui/core/styles/colorManipulator'
 import { makeStyles } from '@material-ui/core/styles'
 
-// Material icons
 import ClearIcon from '@material-ui/icons/ClearTwoTone'
 import SearchIcon from '@material-ui/icons/SearchTwoTone'
 import SettingsIcon from '@material-ui/icons/SettingsTwoTone'
@@ -21,7 +18,6 @@ import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
-// Our helpers
 import * as geoHelper from './helpers/geo'
 import * as mobilesModel from './models/mobiles'
 

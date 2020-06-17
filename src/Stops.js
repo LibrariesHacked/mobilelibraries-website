@@ -1,22 +1,17 @@
-// React
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-// Material UI
 import Hidden from '@material-ui/core/Hidden'
 import IconButton from '@material-ui/core/IconButton'
 import ListSubheader from '@material-ui/core/ListSubheader'
 import Paper from '@material-ui/core/Paper'
 import Tooltip from '@material-ui/core/Tooltip'
 
-// Material Table
 import MaterialTable from 'material-table'
 
-// Material UI Styles
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-// MUI Icons
 import ArrowUpward from '@material-ui/icons/ArrowUpwardTwoTone'
 import ChevronLeft from '@material-ui/icons/ChevronLeftTwoTone'
 import ChevronRight from '@material-ui/icons/ChevronRightTwoTone'
@@ -28,10 +23,8 @@ import EventIcon from '@material-ui/icons/EventTwoTone'
 import PrintIcon from '@material-ui/icons/PrintTwoTone'
 import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
 
-// Our components
 import Filters from './Filters'
 
-// Our Helpers
 import * as stopsModel from './models/stops'
 
 import { useApplicationStateValue } from './context/applicationState'
@@ -71,7 +64,7 @@ function Stops () {
 
   useEffect(() => {
     tableRef.current.onQueryChange()
-  }, [searchPosition, searchDistance, organisationFilter, mobileFilter, routeFilter ]) // eslint-disable-line
+  }, [searchPosition, searchDistance, organisationFilter, mobileFilter, routeFilter]) // eslint-disable-line
 
   const displayStopInfo = (stop) => {
     dispatchSearch({ type: 'SetCurrentStop', stopId: stop.id })

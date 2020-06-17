@@ -1,14 +1,10 @@
-// React
 import React, { useEffect } from 'react'
 import { BrowserRouter, Route } from 'react-router-dom'
 
-// Material UI
 import Container from '@material-ui/core/Container'
 
-// Styling
 import { makeStyles } from '@material-ui/core/styles'
 
-// Our components
 import AppHeader from './AppHeader'
 import Mobiles from './Mobiles'
 import MobileMap from './MobileMap'
@@ -17,7 +13,6 @@ import Stops from './Stops'
 import StopDetails from './StopDetails'
 import TripDetails from './TripDetails'
 
-// Our helpers
 import * as mobilesModel from './models/mobiles'
 import * as organisationsModel from './models/organisations'
 import * as routesModel from './models/routes'
@@ -35,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MobilesApplication () {
-  const [{}, dispatchApplicationState] = useApplicationStateValue() //eslint-disable-line
+  const [{ }, dispatchApplicationState] = useApplicationStateValue() //eslint-disable-line
 
   useEffect(() => {
     async function getOrganisations () {

@@ -1,7 +1,5 @@
-// React
 import React, { useState } from 'react'
 
-// Material UI
 import Button from '@material-ui/core/Button'
 import Chip from '@material-ui/core/Chip'
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -10,18 +8,15 @@ import MenuItem from '@material-ui/core/MenuItem'
 import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 
-// MUI Icons
 import BusinessIcon from '@material-ui/icons/BusinessTwoTone'
 import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
 import DirectionsIcon from '@material-ui/icons/DirectionsTwoTone'
 
-// Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 
-// Our components
 import PostcodeSearch from './PostcodeSearch'
 
 const useStyles = makeStyles((theme) => ({

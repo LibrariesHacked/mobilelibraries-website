@@ -1,7 +1,5 @@
-// React
 import React, { useState } from 'react'
 
-// Material UI
 import Badge from '@material-ui/core/Badge'
 import Grid from '@material-ui/core/Grid'
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -9,14 +7,12 @@ import Tab from '@material-ui/core/Tab'
 import Tabs from '@material-ui/core/Tabs'
 import Typography from '@material-ui/core/Typography'
 
-// Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
-// Our components
 import Filters from './Filters'
 import MobileCard from './MobileCard'
 
@@ -29,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-function Mobiles (props) {
+function Mobiles () {
   const [{ organisationLookup, mobiles, mobileLookup, mobileLocationLookup, mobilesNearestLookup, routes, routeLookup }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
   const [{ organisationFilter, mobileFilter, routeFilter, searchType, searchDistance, searchPostcode }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ loadingMobileLocations }, dispatchView] = useViewStateValue() //eslint-disable-line

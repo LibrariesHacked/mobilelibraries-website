@@ -1,10 +1,8 @@
 import React from 'react'
 
-// Material UI
 import IconButton from '@material-ui/core/IconButton'
 import Snackbar from '@material-ui/core/Snackbar'
 
-// Icons
 import CloseIcon from '@material-ui/icons/CloseTwoTone'
 
 import { useViewStateValue } from './context/viewState'
@@ -23,7 +21,7 @@ function Notification () {
         horizontal: 'left'
       }}
       open={notificationOpen}
-      autoHideDuration={4000}
+      autoHideDuration={3000}
       onClose={handleClose}
       ContentProps={{
         'aria-describedby': 'message-id'

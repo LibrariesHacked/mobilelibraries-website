@@ -1,19 +1,14 @@
-// React
 import React from 'react'
 
-// Material UI
 import Fab from '@material-ui/core/Fab'
 import Tooltip from '@material-ui/core/Tooltip'
 
-// MUI Icons
 import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
 
-// Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
 import { useViewStateValue } from './context/viewState'
 
-// Helpers
 import * as utilsHelper from './helpers/utils'
 
 const useStyles = makeStyles((theme) => ({

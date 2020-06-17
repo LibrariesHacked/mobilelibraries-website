@@ -26,7 +26,12 @@
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "react-app",
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
+    }
   },
   "browserslist": {
     "production": [

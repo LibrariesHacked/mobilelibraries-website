@@ -1,6 +1,5 @@
 import React from 'react'
 
-// Material UI
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
@@ -10,12 +9,11 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-// Material UI Styles
 import { useTheme, makeStyles } from '@material-ui/core/styles'
 
 import { useViewStateValue } from './context/viewState'
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   dialog: {
     border: '1px solid #E0E0E0'
   }

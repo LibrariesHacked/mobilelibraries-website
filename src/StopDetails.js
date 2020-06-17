@@ -13,7 +13,6 @@ import ListSubheader from '@material-ui/core/ListSubheader'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-// MUI Icons
 import EventIcon from '@material-ui/icons/EventTwoTone'
 import PrintIcon from '@material-ui/icons/PrintTwoTone'
 import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'

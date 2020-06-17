@@ -1,9 +1,7 @@
-// React
 import React from 'react'
 
 import { Link } from 'react-router-dom'
 
-// Material UI
 import Button from '@material-ui/core/Button'
 import Card from '@material-ui/core/Card'
 import CardActions from '@material-ui/core/CardActions'
@@ -14,11 +12,9 @@ import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 
-// MUI Icons
 import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
 import WebIcon from '@material-ui/icons/WebTwoTone'
 
-// Material UI Styles
 import { makeStyles } from '@material-ui/core/styles'
 
 import { useSearchStateValue } from './context/searchState'
@@ -53,8 +49,8 @@ const useStyles = makeStyles((theme) => ({
 
 function MobileCard (props) {
   const { mobile, organisation, location } = props
-  const [searchState, dispatchSearch] = useSearchStateValue() // eslint-disable-line
-  const [viewState, dispatchView] = useViewStateValue() // eslint-disable-line
+  const [{ }, dispatchSearch] = useSearchStateValue() // eslint-disable-line
+  const [{ }, dispatchView] = useViewStateValue() // eslint-disable-line
 
   const viewStopsByMobile = (organisationId, mobileId) => {
     dispatchSearch({ type: 'FilterByMobile', organisationId: organisationId, mobileId: mobileId })
