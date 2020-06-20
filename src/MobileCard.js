@@ -124,13 +124,13 @@ function MobileCard (props) {
     if (status && status.type === 'postRoute') statusMessage = postRouteMessage(status)
   }
 
-  if (!statusMessage) statusMessage = <CircularProgress className={classes.progress} color='secondary' size={30} />
+  if (!statusMessage) statusMessage = <CircularProgress className={classes.progress} color='primary' size={30} />
   const bull = <span className={classes.bullet}>•</span>
 
   return (
     <Card className={classes.card} elevation={0}>
       <CardContent>
-        <Typography className={classes.title} color='textSecondary' gutterBottom>
+        <Typography className={classes.title} gutterBottom>
           {mobile.numberRoutes + ' route' + (mobile.numberRoutes > 1 ? 's' : '')}
           {bull}
           {mobile.numberStops + ' stop' + (mobile.numberStops > 1 ? 's' : '')}

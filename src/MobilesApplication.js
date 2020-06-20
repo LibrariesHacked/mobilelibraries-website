@@ -78,6 +78,7 @@ function MobilesApplication () {
             <Route path='/' exact render={() => <Mobiles />} />
             <Route path='/stops' render={() => <Stops />} />
             <Route path='/map' render={() => <MobileMap />} />
+            <Route path={['/http:', '/https:']} component={props => { window.location.replace(props.location.pathname.substr(1)); return null }} />
           </main>
         </Container>
         <StopDetails />

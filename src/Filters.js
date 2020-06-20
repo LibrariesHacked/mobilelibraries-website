@@ -84,7 +84,7 @@ function Filters () {
 
   const closeRouteMenu = () => setRouteMenuAnchor(null)
 
-  const chooseRoute = (organisationId, mobileId, routeId) => {
+  const chooseRoute = (routeId) => {
     dispatchSearch({ type: 'FilterByRoute', routeId: routeId })
     closeRouteMenu()
   }
@@ -99,16 +99,16 @@ function Filters () {
 
   return (
     <>
-      <Typography component='h2' variant='h6' color='secondary' className={classes.title}>Your mobile service</Typography>
-      <Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Find services within {searchDistance / 1609} mile(s)</Typography>
+      <Typography component='h2' variant='h6' className={classes.title}>Your mobile service</Typography>
+      <Typography component='p' variant='body1' className={classes.subtitle}>Find services within {searchDistance / 1609} mile(s)</Typography>
       <div className={classes.search}>
         <PostcodeSearch />
       </div>
-      <Typography component='p' variant='body1' color='secondary' className={classes.subtitle}>Or, choose your library service</Typography>
+      <Typography component='p' variant='body1' className={classes.subtitle}>Or, choose your library service</Typography>
       <div className={classes.search}>
         {organisationFilter.length === 0 ? (
           <Tooltip title='Choose library service'>
-            <Button color='secondary' className={classes.button} onClick={(e) => openOrganisationMenu(e.currentTarget)}>
+            <Button color='primary' className={classes.button} onClick={(e) => openOrganisationMenu(e.currentTarget)}>
               <BusinessIcon className={classes.leftIcon} />Select service
             </Button>
           </Tooltip>
@@ -117,7 +117,7 @@ function Filters () {
           ? (mobileFilter.length === 0
             ? (
               <Tooltip title='Choose mobile library'>
-                <Button color='secondary' className={classes.button} onClick={(e) => openMobileMenu(e.currentTarget)}>
+                <Button color='primary' className={classes.button} onClick={(e) => openMobileMenu(e.currentTarget)}>
                   <DirectionBusIcon className={classes.leftIcon} />Select mobile
                 </Button>
               </Tooltip>
@@ -127,7 +127,7 @@ function Filters () {
           ? (routeFilter.length === 0
             ? (
               <Tooltip title='Choose route'>
-                <Button color='secondary' className={classes.button} onClick={(e) => openRouteMenu(e.currentTarget)}>
+                <Button color='primary' className={classes.button} onClick={(e) => openRouteMenu(e.currentTarget)}>
                   <DirectionsIcon className={classes.leftIcon} />Select route
                 </Button>
               </Tooltip>
@@ -196,7 +196,7 @@ function Filters () {
           })
           .sort((a, b) => a.name.localeCompare(b.name))
           .map(route => {
-            return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => chooseRoute(route.organisationId, route.mobileId, route.id)}>{route.name}</MenuItem>
+            return <MenuItem key={'mnu_itm_route_' + route.id} onClick={() => chooseRoute(route.id)}>{route.name}</MenuItem>
           })}
       </Menu>
     </>

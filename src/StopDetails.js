@@ -100,7 +100,7 @@ function StopDetails () {
               <Button onClick={viewMapStop} className={classes.button} color='primary' startIcon={<LocationOnIcon />} component={Link} to='/map'>Map</Button>
             </DialogContent>
           </>
-        ) : <CircularProgress className={classes.progress} color='secondary' size={30} />}
+        ) : <CircularProgress className={classes.progress} color='primary' size={30} />}
       <DialogActions>
         <Button onClick={() => goToWebsite()} color='primary'>Website</Button>
         <Button onClick={() => close()} color='secondary'>Close</Button>

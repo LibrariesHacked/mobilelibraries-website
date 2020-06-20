@@ -3,7 +3,7 @@ import React from 'react'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import blueGrey from '@material-ui/core/colors/blueGrey'
-import lightBlue from '@material-ui/core/colors/lightBlue'
+import red from '@material-ui/core/colors/red'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
 import { ApplicationStateProvider } from './context/applicationState'
@@ -127,8 +127,6 @@ const searchReducer = (state, action) => {
     case 'FilterByRoute':
       return {
         ...state,
-        organisationFilter: [action.organisationId],
-        mobileFilter: [action.mobileId],
         routeFilter: [action.routeId],
         searchPostcode: '',
         searchPosition: [],
@@ -217,8 +215,12 @@ const viewReducer = (state, action) => {
 
 const theme = createMuiTheme({
   palette: {
-    primary: lightBlue,
-    secondary: blueGrey
+    primary: {
+      main: red[900]
+    },
+    secondary: {
+      main: blueGrey[700]
+    }
   },
   overrides: {
     MuiButton: {

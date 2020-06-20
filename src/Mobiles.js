@@ -101,13 +101,12 @@ function Mobiles () {
   return (
     <div className={classes.root}>
       <Filters />
-      <ListSubheader disableSticky>{title}</ListSubheader>
+      <ListSubheader component='span' disableSticky>{title}</ListSubheader>
       <Tabs
         variant='standard'
         scrollButtons='off'
         value={openTab}
         indicatorColor='secondary'
-        textColor='secondary'
         onChange={(e, value) => changeTab(value)}
       >
         <Tab
@@ -158,7 +157,7 @@ function Mobiles () {
               }
             </Grid>) : (
             !loadingMobileLocations
-              ? <Typography component='p' variant='body1' color='secondary'>No mobile libraries currently on the road.</Typography>
+              ? <Typography component='p' variant='body1'>No mobile libraries currently on the road.</Typography>
               : null
           )
       }
