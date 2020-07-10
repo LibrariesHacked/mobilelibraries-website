@@ -18,6 +18,7 @@ import * as organisationsModel from './models/organisations'
 import * as routesModel from './models/routes'
 
 import { useApplicationStateValue } from './context/applicationState'
+import { useViewStateValue } from './context/viewState'
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme) => ({
 }))
 
 function MobilesApplication () {
+  const [{ loadingOrganisations, loadingMobiles, loadingRoutes, loadingMobileLocations, loadingNearestMobiles, loadingPostcode }] = useViewStateValue()
   const [{ }, dispatchApplicationState] = useApplicationStateValue() //eslint-disable-line
 
   useEffect(() => {
@@ -72,7 +74,10 @@ function MobilesApplication () {
   return (
     <BrowserRouter>
       <div className={classes.root}>
-        <AppHeader />
+        <AppHeader
+          loading={loadingOrganisations || loadingMobiles || loadingRoutes || loadingMobileLocations || loadingNearestMobiles || loadingPostcode}
+          site={1}
+        />
         <Container maxWidth='lg'>
           <main className={classes.content}>
             <Route path='/' exact render={() => <Mobiles />} />
