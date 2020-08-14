@@ -32,6 +32,11 @@ import PostcodeSearch from './PostcodeSearch'
 const useStyles = makeStyles((theme) => ({
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: 'white',
+    position: 'relative'
+  },
+  appBarTransparent: {
+    zIndex: theme.zIndex.drawer + 1,
     backgroundColor: 'rgba(250, 250, 250, 0.8)',
     position: 'relative'
   },
@@ -153,6 +158,8 @@ function AppHeader (props) {
     }
   ]
 
+  const appBarClass = (location.pathname === '/map' ? classes.appBarTransparent : classes.appBar)
+
   return (
     <>
       <Container maxWidth='lg' className={classes.topTitle}>
@@ -162,7 +169,7 @@ function AppHeader (props) {
         <Typography color='secondary' variant='h6' component='h1' className={classes.title}>{sites[site].title}</Typography>
       </Container>
       {appsOpen ? (
-        <AppBar position='static' color='default' elevation={0} className={classes.appBar}>
+        <AppBar position='static' color='default' elevation={0}>
           <Container maxWidth='lg'>
             <Tabs
               className={classes.tabBar}
@@ -186,7 +193,7 @@ function AppHeader (props) {
         position='static'
         color='inherit'
         elevation={0}
-        className={classes.appBar}
+        className={appBarClass}
       >
         <Container maxWidth='lg'>
           <Toolbar>
