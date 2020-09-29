@@ -233,6 +233,11 @@ const theme = createMuiTheme({
         textTransform: 'none'
       }
     },
+    MuiTypography: {
+      button: {
+        textTransform: 'none'
+      }
+    },
     MuiTableCell: {
       root: {
         borderBottom: 'none'

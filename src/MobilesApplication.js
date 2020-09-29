@@ -6,12 +6,18 @@ import Container from '@material-ui/core/Container'
 import { makeStyles } from '@material-ui/core/styles'
 
 import AppHeader from './AppHeader'
+import Footer from './Footer'
+import { MemoMarkdownPage } from './MarkdownPage'
 import Mobiles from './Mobiles'
 import MobileMap from './MobileMap'
 import Notification from './Notification'
 import Stops from './Stops'
 import StopDetails from './StopDetails'
 import TripDetails from './TripDetails'
+
+import Accessibility from './pages/accessibility.md'
+import Data from './pages/data.md'
+import Privacy from './pages/privacy.md'
 
 import * as mobilesModel from './models/mobiles'
 import * as organisationsModel from './models/organisations'
@@ -53,7 +59,7 @@ function MobilesApplication () {
       routes.forEach(route => { routeLookup[route.id] = route })
       dispatchApplicationState({ type: 'AddRoutes', routes: routes, routeLookup: routeLookup })
     }
-    async function getMobileLocations (showIndicator = true) {
+    async function getMobileLocations () {
       const locations = await mobilesModel.getMobileLocations()
       const mobileLocationLookup = {}
       locations.forEach(location => { mobileLocationLookup[location.mobileId] = location })
@@ -76,15 +82,21 @@ function MobilesApplication () {
       <div className={classes.root}>
         <AppHeader
           loading={loadingOrganisations || loadingMobiles || loadingRoutes || loadingMobileLocations || loadingNearestMobiles || loadingPostcode}
-          site={1}
+          site={2}
         />
         <Container maxWidth='lg'>
           <main className={classes.content}>
-            <Route path='/' exact render={() => <Mobiles />} />
-            <Route path='/stops' render={() => <Stops />} />
+            <Route path='/' exact render={() => <Stops />} />
+            <Route path='/mobiles' render={() => <Mobiles />} />
             <Route path='/map' render={() => <MobileMap />} />
+            <Route path='/accessibility' exact render={() => <MemoMarkdownPage page={Accessibility} />} />
+            <Route path='/data' exact render={() => <MemoMarkdownPage page={Data} />} />
+            <Route path='/privacy' exact render={() => <MemoMarkdownPage page={Privacy} />} />
             <Route path={['/http:', '/https:']} component={props => { window.location.replace(props.location.pathname.substr(1)); return null }} />
           </main>
+        </Container>
+        <Container maxWidth='lg'>
+          <Footer />
         </Container>
         <StopDetails />
         <TripDetails />
