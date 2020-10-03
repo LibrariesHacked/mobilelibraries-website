@@ -206,6 +206,8 @@ const viewReducer = (state, action) => {
       return { ...state, loadingPostcode: true }
     case 'SetPostcodeSearch':
       return { ...state, loadingPostcode: false, mapPosition: action.mapPosition, mapZoom: [13] }
+    case 'ToggleLoadingPostcode':
+      return { ...state, loadingPostcode: !state.loadingPostcode }
     case 'SetMapPosition':
       return { ...state, mapPosition: action.mapPosition, mapZoom: [action.mapZoom] }
     default:

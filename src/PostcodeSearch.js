@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 
+import CircularProgress from '@material-ui/core/CircularProgress'
 import IconButton from '@material-ui/core/IconButton'
 import InputBase from '@material-ui/core/InputBase'
 import ListSubheader from '@material-ui/core/ListSubheader'
@@ -26,14 +27,17 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1
   },
   iconButton: {
-    padding: 10
+    padding: theme.spacing()
+  },
+  iconProgress: {
+    margin: theme.spacing()
   },
   inputInput: {
     paddingTop: theme.spacing(),
     paddingRight: theme.spacing(),
     paddingBottom: theme.spacing(),
     paddingLeft: theme.spacing(2),
-    fontWeight: 500
+    fontWeight: theme.typography.fontWeightBold
   },
   search: {
     position: 'relative',
@@ -58,10 +62,11 @@ function usePrevious (value) {
   return ref.current
 }
 
-function PostcodeSearch () {
+function PostcodeSearch (props) {
+  const { settings } = props
   const [{ }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
   const [{ searchType, searchPostcode, searchDistance }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
-  const [{ }, dispatchView] = useViewStateValue() //eslint-disable-line
+  const [{ loadingPostcode }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [tempPostcode, setTempPostcode] = useState(searchPostcode)
   const [anchor, setAnchor] = useState(null)
@@ -82,23 +87,28 @@ function PostcodeSearch () {
   }
 
   const postcodeSearch = async () => {
+    dispatchView({ type: 'ToggleLoadingPostcode' })
     if (tempPostcode === '') {
       dispatchView({ type: 'ShowNotification', notificationMessage: 'You must enter a postcode' })
       return
     }
-
-    dispatchView({ type: 'LoadingPostcode' })
-    const postcodeData = await geoHelper.getPostcode(tempPostcode)
-    if (postcodeData.location && postcodeData.location.length === 2) {
-      dispatchSearch({ type: 'SetPostcodeSearch', searchPostcode: tempPostcode, searchPosition: postcodeData.location })
-      dispatchView({ type: 'SetPostcodeSearch', mapPosition: postcodeData.location })
-      const mobilesNearest = await mobilesModel.getMobilesNearest(postcodeData.location, searchDistance)
-      const mobilesNearestLookup = {}
-      mobilesNearest.forEach(mobile => { mobilesNearestLookup[mobile.mobileId] = mobile })
-      dispatchApplication({ type: 'UpdateMobilesNearest', mobilesNearest: mobilesNearest, mobilesNearestLookup: mobilesNearestLookup })
+    const validatePostcode = (pc) => /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/.test(pc)
+    if (validatePostcode(tempPostcode.trim())) {
+      const postcodeData = await geoHelper.getPostcode(tempPostcode)
+      if (postcodeData.location && postcodeData.location.length === 2) {
+        dispatchSearch({ type: 'SetPostcodeSearch', searchPostcode: tempPostcode, searchPosition: postcodeData.location })
+        dispatchView({ type: 'SetPostcodeSearch', mapPosition: postcodeData.location })
+        const mobilesNearest = await mobilesModel.getMobilesNearest(postcodeData.location, searchDistance)
+        const mobilesNearestLookup = {}
+        mobilesNearest.forEach(mobile => { mobilesNearestLookup[mobile.mobileId] = mobile })
+        dispatchApplication({ type: 'UpdateMobilesNearest', mobilesNearest: mobilesNearest, mobilesNearestLookup: mobilesNearestLookup })
+      } else {
+        dispatchView({ type: 'ShowNotification', notificationMessage: 'Could not find postcode' })
+      }
     } else {
-      dispatchView({ type: 'ShowNotification', notificationMessage: 'Could not find postcode' })
+      dispatchView({ type: 'ShowNotification', notificationMessage: 'Not a valid postcode' })
     }
+    dispatchView({ type: 'ToggleLoadingPostcode' })
   }
 
   const classes = useStyles()
@@ -111,13 +121,15 @@ function PostcodeSearch () {
           input: classes.inputInput
         }}
         value={tempPostcode}
-        onChange={(e) => setTempPostcode(e.target.value)}
+        onChange={(e) => setTempPostcode(e.target.value.toUpperCase())}
+        onKeyDown={(e) => { if (e.keyCode === 13) postcodeSearch() }}
       />
       <div className={classes.grow} />
       {searchType === 'postcode'
         ? (
           <Tooltip title='Clear search'>
             <IconButton
+              aria-label='Clear search'
               className={classes.iconButton}
               onClick={() => dispatchSearch({ type: 'ClearAll' })}
             >
@@ -127,23 +139,31 @@ function PostcodeSearch () {
         )
         : null}
       <Tooltip title='Search by postcode'>
-        <IconButton
-          color='primary'
-          className={classes.iconButton}
-          onClick={() => postcodeSearch()}
-        >
-          <SearchIcon />
-        </IconButton>
+        {!loadingPostcode
+          ? (
+            <IconButton
+              aria-label='Search'
+              color='primary'
+              className={classes.iconButton}
+              onClick={() => postcodeSearch()}
+            >
+              <SearchIcon />
+            </IconButton>
+          ) : <CircularProgress size={22} className={classes.iconProgress} />}
       </Tooltip>
-      <Tooltip title='Change search settings'>
-        <IconButton
-          className={classes.iconButton}
-          color='secondary'
-          onClick={(e) => { openSettingsMenu(e) }}
-        >
-          <SettingsIcon />
-        </IconButton>
-      </Tooltip>
+      {settings
+        ? (
+          <Tooltip title='Change search settings'>
+            <IconButton
+              aria-label='Open search settings menu'
+              className={classes.iconButton}
+              color='secondary'
+              onClick={(e) => { openSettingsMenu(e) }}
+            >
+              <SettingsIcon />
+            </IconButton>
+          </Tooltip>
+        ) : null}
       <Menu
         id='mnu-settings'
         anchorEl={anchor}

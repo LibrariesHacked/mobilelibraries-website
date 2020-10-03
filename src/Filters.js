@@ -37,7 +37,7 @@ function Filters () {
       <Typography component='h2' variant='h6' className={classes.title}>Your mobile service</Typography>
       <Typography component='p' variant='body1' className={classes.subtitle}>Search by postcode (within {searchDistance / 1609} mile/s) or select service</Typography>
       <div className={classes.search}>
-        <PostcodeSearch />
+        <PostcodeSearch settings />
       </div>
       <ServiceFilter />
     </>
