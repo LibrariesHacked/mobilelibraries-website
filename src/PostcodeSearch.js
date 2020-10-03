@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing()
   },
   iconProgress: {
-    margin: theme.spacing()
+    margin: 6
   },
   inputInput: {
     paddingTop: theme.spacing(),
@@ -88,12 +88,8 @@ function PostcodeSearch (props) {
 
   const postcodeSearch = async () => {
     dispatchView({ type: 'ToggleLoadingPostcode' })
-    if (tempPostcode === '') {
-      dispatchView({ type: 'ShowNotification', notificationMessage: 'You must enter a postcode' })
-      return
-    }
     const validatePostcode = (pc) => /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/.test(pc)
-    if (validatePostcode(tempPostcode.trim())) {
+    if (tempPostcode !== '' && validatePostcode(tempPostcode.trim())) {
       const postcodeData = await geoHelper.getPostcode(tempPostcode)
       if (postcodeData.location && postcodeData.location.length === 2) {
         dispatchSearch({ type: 'SetPostcodeSearch', searchPostcode: tempPostcode, searchPosition: postcodeData.location })
@@ -103,12 +99,12 @@ function PostcodeSearch (props) {
         mobilesNearest.forEach(mobile => { mobilesNearestLookup[mobile.mobileId] = mobile })
         dispatchApplication({ type: 'UpdateMobilesNearest', mobilesNearest: mobilesNearest, mobilesNearestLookup: mobilesNearestLookup })
       } else {
-        dispatchView({ type: 'ShowNotification', notificationMessage: 'Could not find postcode' })
+        dispatchView({ type: 'ShowNotification', notificationMessage: 'Could not find that postcode' })
       }
     } else {
-      dispatchView({ type: 'ShowNotification', notificationMessage: 'Not a valid postcode' })
+      dispatchView({ type: 'ShowNotification', notificationMessage: 'You must enter a valid postcode' })
     }
-    dispatchView({ type: 'ToggleLoadingPostcode' })
+    // dispatchView({ type: 'ToggleLoadingPostcode' })
   }
 
   const classes = useStyles()
@@ -149,7 +145,7 @@ function PostcodeSearch (props) {
             >
               <SearchIcon />
             </IconButton>
-          ) : <CircularProgress size={22} className={classes.iconProgress} />}
+          ) : <CircularProgress size={25} className={classes.iconProgress} />}
       </Tooltip>
       {settings
         ? (
