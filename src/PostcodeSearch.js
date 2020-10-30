@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing()
   },
   iconProgress: {
-    margin: 6
+    margin: theme.spacing()
   },
   inputInput: {
     paddingTop: theme.spacing(),
@@ -104,7 +104,7 @@ function PostcodeSearch (props) {
     } else {
       dispatchView({ type: 'ShowNotification', notificationMessage: 'You must enter a valid postcode' })
     }
-    // dispatchView({ type: 'ToggleLoadingPostcode' })
+    dispatchView({ type: 'ToggleLoadingPostcode' })
   }
 
   const classes = useStyles()
@@ -145,7 +145,7 @@ function PostcodeSearch (props) {
             >
               <SearchIcon />
             </IconButton>
-          ) : <CircularProgress size={25} className={classes.iconProgress} />}
+          ) : <CircularProgress size={22} className={classes.iconProgress} />}
       </Tooltip>
       {settings
         ? (
