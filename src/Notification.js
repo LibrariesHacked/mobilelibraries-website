@@ -32,8 +32,9 @@ function Notification () {
           key='close'
           aria-label='close'
           onClick={handleClose}
+          color='secondary'
         >
-          <CloseIcon color='inherit' />
+          <CloseIcon />
         </IconButton>
       ]}
     />

@@ -48,6 +48,7 @@ function MobileMap () {
   const [map, setMap] = useState(null)
 
   useEffect(() => {
+    const setTime = () => setCurrentTime(moment())
     setInterval(setTime, 500)
   }, [])
 
@@ -64,8 +65,6 @@ function MobileMap () {
       dispatchView({ type: 'SetTripDialog', tripDialogOpen: true })
     }
   }
-
-  const setTime = () => setCurrentTime(moment())
 
   // Build the colour match
   const organisationColourMatch = ['match', ['get', 'utla19cd']]

@@ -9,6 +9,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
+import CancelIcon from '@material-ui/icons/CancelTwoTone'
+
 import { useTheme, makeStyles } from '@material-ui/core/styles'
 
 import { useViewStateValue } from './context/viewState'
@@ -60,7 +62,7 @@ function MapSettings () {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={closeDialog} color='secondary'>Close</Button>
+        <Button onClick={closeDialog} color='secondary' endIcon={<CancelIcon />}>Close</Button>
       </DialogActions>
     </Dialog>
   )

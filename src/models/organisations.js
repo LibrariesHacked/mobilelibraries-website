@@ -10,7 +10,7 @@ export class Organisation {
   fromJson (json) {
     this.id = json.id
     this.country = json.country
-    this.code = json.code
+    this.code = json.service_code
     this.name = json.name
     this.timetable = json.timetable
     this.website = json.website

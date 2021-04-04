@@ -9,6 +9,7 @@ import AppHeader from './AppHeader'
 import Footer from './Footer'
 import { MemoMarkdownPage } from './MarkdownPage'
 import Mobiles from './Mobiles'
+import MobileLibraryDetails from './MobileLibraryDetails'
 import MobileMap from './MobileMap'
 import Notification from './Notification'
 import Stops from './Stops'
@@ -99,6 +100,7 @@ function MobilesApplication () {
           <Footer />
         </Container>
         <StopDetails />
+        <MobileLibraryDetails />
         <TripDetails />
         <Notification />
       </div>

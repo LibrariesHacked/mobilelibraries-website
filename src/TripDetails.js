@@ -11,6 +11,8 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
+import CancelIcon from '@material-ui/icons/CancelTwoTone'
+
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
@@ -62,7 +64,7 @@ function TripDetails () {
         <Typography variant='body2' component='p'>{estimatedDuration + ' ' + distance}</Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={close} color='secondary'>Close</Button>
+        <Button onClick={close} color='secondary' endIcon={<CancelIcon />}>Close</Button>
       </DialogActions>
     </Dialog>
   )

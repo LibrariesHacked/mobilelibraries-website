@@ -47,12 +47,12 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     backgroundColor: 'rgba(0, 0, 0, 0)',
-    border: '1px solid #E0E0E0'
+    border: '2px solid #c8e6c9'
   }
 }))
 
 function Stops () {
-  const [{ organisations, organisationLookup, mobiles, mobileLookup, routeLookup }, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [{ organisationLookup, mobileLookup, routeLookup }] = useApplicationStateValue() //eslint-disable-line
   const [{ searchType, searchPostcode, searchDistance, searchPosition, organisationFilter, mobileFilter, routeFilter }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ }, dispatchView] = useViewStateValue() //eslint-disable-line
 
@@ -130,8 +130,8 @@ function Stops () {
           filtering: false,
           toolbar: false,
           headerStyle: {
-            backgroundColor: '#fafafa',
-            color: '#737373',
+            backgroundColor: '#e8f5e9',
+            color: '#388e3c',
             border: '0px'
           }
         }}
@@ -144,27 +144,27 @@ function Stops () {
               return (
                 <>
                   <Tooltip title='See more stop details'>
-                    <IconButton onClick={() => displayStopInfo(rowData)}>
+                    <IconButton size='small' onClick={() => displayStopInfo(rowData)}>
                       <MoreVertIcon />
                     </IconButton>
                   </Tooltip>
                   <Hidden mdDown>
                     <Tooltip title='Add event to your device calendar'>
-                      <IconButton onClick={() => getStopCalendar(rowData)}>
+                      <IconButton size='small' color='primary' onClick={() => getStopCalendar(rowData)}>
                         <EventIcon />
                       </IconButton>
                     </Tooltip>
                   </Hidden>
                   <Hidden mdDown>
                     <Tooltip title='Download a PDF timetable for this stop'>
-                      <IconButton onClick={() => getStopPdf(rowData)}>
+                      <IconButton size='small' color='primary' onClick={() => getStopPdf(rowData)}>
                         <PrintIcon />
                       </IconButton>
                     </Tooltip>
                   </Hidden>
                   <Hidden mdDown>
                     <Tooltip title='See this stop on the map'>
-                      <IconButton onClick={() => displayMapStop(rowData.longitude, rowData.latitude)} component={Link} to='/map'>
+                      <IconButton size='small' color='primary' onClick={() => displayMapStop(rowData.longitude, rowData.latitude)} component={Link} to='/map'>
                         <LocationOnIcon />
                       </IconButton>
                     </Tooltip>
@@ -172,6 +172,15 @@ function Stops () {
                 </>
               )
             },
+            cellStyle: {
+              borderBottom: '1px solid #f5f5f5',
+              backgroundColor: '#ffffff'
+            }
+          },
+          {
+            title: 'Community',
+            field: 'community',
+            filtering: false,
             cellStyle: {
               borderBottom: '1px solid #f5f5f5',
               backgroundColor: '#ffffff'
@@ -187,15 +196,6 @@ function Stops () {
                 rowData.name
               )
             },
-            cellStyle: {
-              borderBottom: '1px solid #f5f5f5',
-              backgroundColor: '#ffffff'
-            }
-          },
-          {
-            title: 'Community',
-            field: 'community',
-            filtering: false,
             cellStyle: {
               borderBottom: '1px solid #f5f5f5',
               backgroundColor: '#ffffff'

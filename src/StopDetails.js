@@ -7,15 +7,16 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import CircularProgress from '@material-ui/core/CircularProgress'
-import Divider from '@material-ui/core/Divider'
 import ListSubheader from '@material-ui/core/ListSubheader'
 
 import { makeStyles, useTheme } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
+import CancelIcon from '@material-ui/icons/CancelTwoTone'
 import EventIcon from '@material-ui/icons/EventTwoTone'
-import PrintIcon from '@material-ui/icons/PrintTwoTone'
 import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
+import PrintIcon from '@material-ui/icons/PrintTwoTone'
+import WebIcon from '@material-ui/icons/WebTwoTone'
 
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
@@ -30,6 +31,12 @@ const useStyles = makeStyles((theme) => ({
   },
   dialog: {
     border: '1px solid #E0E0E0'
+  },
+  dialogContentActions: {
+    backgroundColor: '#e8f5e9',
+    border: '1px solid #c8e6c9',
+    borderRadius: 3,
+    padding: 4
   },
   leftIcon: {
     marginRight: theme.spacing(1)
@@ -91,19 +98,19 @@ function StopDetails () {
           <>
             <DialogTitle id='dlg-title'>{stop.name + '. ' + stop.community}</DialogTitle>
             <DialogContent>
-              <ListSubheader>{(stop.routeSchedule && stop.routeSchedule.length > 0 ? stop.routeSchedule[0].format('dddd Do MMMM h:mma') : '')}</ListSubheader>
-              <br />
-              <Divider />
-              <br />
-              <Button onClick={getStopCalendar} className={classes.button} color='primary' startIcon={<EventIcon />}>Calendar</Button>
-              <Button onClick={getStopPdf} className={classes.button} color='primary' startIcon={<PrintIcon />}>Timetable</Button>
-              <Button onClick={viewMapStop} className={classes.button} color='primary' startIcon={<LocationOnIcon />} component={Link} to='/map'>Map</Button>
+              <p>{(stop.routeSchedule && stop.routeSchedule.length > 0 ? stop.routeSchedule[0].format('dddd Do MMMM h:mma') : '')}</p>
+              <ListSubheader disableSticky>Actions</ListSubheader>
+              <div className={classes.dialogContentActions}>
+                <Button onClick={getStopCalendar} className={classes.button} color='primary' startIcon={<EventIcon />}>Calendar</Button>
+                <Button onClick={getStopPdf} className={classes.button} color='primary' startIcon={<PrintIcon />}>Timetable</Button>
+                <Button onClick={() => goToWebsite()} color='primary' startIcon={<WebIcon />}>Website</Button>
+                <Button onClick={viewMapStop} className={classes.button} color='primary' startIcon={<LocationOnIcon />} component={Link} to='/map'>Map</Button>
+              </div>
             </DialogContent>
           </>
         ) : <CircularProgress className={classes.progress} color='primary' size={30} />}
       <DialogActions>
-        <Button onClick={() => goToWebsite()} color='primary'>Website</Button>
-        <Button onClick={() => close()} color='secondary'>Close</Button>
+        <Button onClick={() => close()} color='secondary' endIcon={<CancelIcon />}>Close</Button>
       </DialogActions>
     </Dialog>
   )

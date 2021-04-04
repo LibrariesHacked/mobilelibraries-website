@@ -3,7 +3,7 @@ import React from 'react'
 import CssBaseline from '@material-ui/core/CssBaseline'
 
 import blueGrey from '@material-ui/core/colors/blueGrey'
-import red from '@material-ui/core/colors/red'
+import green from '@material-ui/core/colors/green'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles'
 
 import { ApplicationStateProvider } from './context/applicationState'
@@ -74,6 +74,7 @@ const initialSearchState = {
   mobileFilter: [],
   routeFilter: [],
   currentStopId: null,
+  currentMobileLibraryId: null,
   currentTripId: null
 }
 
@@ -83,6 +84,11 @@ const searchReducer = (state, action) => {
       return {
         ...state,
         currentStopId: action.stopId
+      }
+    case 'SetCurrentMobileLibrary':
+      return {
+        ...state,
+        currentMobileLibraryId: action.mobileLibraryId
       }
     case 'SetCurrentTrip':
       return {
@@ -166,6 +172,7 @@ const searchReducer = (state, action) => {
 
 const initialViewState = {
   stopDialogOpen: false,
+  mobileLibraryDialogOpen: false,
   tripDialogOpen: false,
   notificationOpen: false,
   notificationMessage: '',
@@ -193,6 +200,8 @@ const viewReducer = (state, action) => {
       return { ...state, notificationOpen: true, notificationMessage: action.notificationMessage }
     case 'SetStopDialog':
       return { ...state, stopDialogOpen: action.stopDialogOpen }
+    case 'SetMobileLibraryDialog':
+      return { ...state, mobileLibraryDialogOpen: action.mobileLibraryDialogOpen }
     case 'SetTripDialog':
       return { ...state, tripDialogOpen: action.tripDialogOpen }
     case 'SetMapSettingsDialog':
@@ -216,10 +225,13 @@ const viewReducer = (state, action) => {
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: red[900]
+      main: green[700]
     },
     secondary: {
       main: blueGrey[700]
+    },
+    outline: {
+      main: blueGrey[50]
     }
   },
   overrides: {

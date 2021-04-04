@@ -11,7 +11,8 @@ import IconButton from '@material-ui/core/IconButton'
 import Tooltip from '@material-ui/core/Tooltip'
 import Typography from '@material-ui/core/Typography'
 
-import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
+import GridOnIcon from '@material-ui/icons/GridOnTwoTone'
+import MoreVertIcon from '@material-ui/icons/MoreVertTwoTone'
 import WebIcon from '@material-ui/icons/WebTwoTone'
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -26,7 +27,12 @@ const useStyles = makeStyles((theme) => ({
     transform: 'scale(1.2)'
   },
   card: {
-    minWidth: 275
+    minWidth: 275,
+    border: '2px solid #c8e6c9'
+  },
+  cardHeader: {
+    backgroundColor: '#e8f5e9',
+    color: '#388e3c'
   },
   leftIcon: {
     marginRight: theme.spacing(1)
@@ -58,6 +64,11 @@ function MobileCard (props) {
   const viewStop = (stopId) => {
     dispatchSearch({ type: 'SetCurrentStop', stopId: stopId })
     dispatchView({ type: 'SetStopDialog', stopDialogOpen: true })
+  }
+
+  const displayMobileLibraryInfo = (mobileId) => {
+    dispatchSearch({ type: 'SetCurrentMobileLibrary', mobileLibraryId: mobileId })
+    dispatchView({ type: 'SetMobileLibraryDialog', mobileLibraryDialogOpen: true })
   }
 
   const stopButton = (stop) => {
@@ -127,28 +138,38 @@ function MobileCard (props) {
 
   return (
     <Card className={classes.card} elevation={0}>
-      <CardContent>
+      <CardContent className={classes.cardHeader}>
         <Typography className={classes.title} gutterBottom>
           {mobile.numberRoutes + ' route' + (mobile.numberRoutes > 1 ? 's' : '')}
           {bull}
           {mobile.numberStops + ' stop' + (mobile.numberStops > 1 ? 's' : '')}
         </Typography>
+      </CardContent>
+      <CardContent>
         <Typography variant='h6' component='h2'>{(organisation ? organisation.name + ' ' : '') + mobile.name}</Typography>
         {statusMessage}
       </CardContent>
       <CardActions>
-        <Tooltip title='Mobile library stops'>
-          <Button component={Link} to='/stops' size='small' color='primary' className={classes.button} onClick={() => viewStopsByMobile(organisation.id, mobile.id)}>
-            <LocationOnIcon className={classes.leftIcon} />View stops
-          </Button>
+        <Tooltip title='See more mobile details'>
+          <IconButton size='small' onClick={() => displayMobileLibraryInfo(mobile.id)}>
+            <MoreVertIcon />
+          </IconButton>
         </Tooltip>
         <Divider className={classes.verticalDivider} />
+        <Tooltip title='Mobile library stops'>
+          <Button component={Link} to='/' size='small' color='primary' className={classes.button} onClick={() => viewStopsByMobile(organisation.id, mobile.id)}>
+            <GridOnIcon className={classes.leftIcon} />View stops
+          </Button>
+        </Tooltip>
         {mobile.timetable ? (
-          <Tooltip title='Website timetable'>
-            <IconButton className={classes.button} onClick={() => this.goToWebsite()}>
-              <WebIcon />
-            </IconButton>
-          </Tooltip>
+          <>
+            <Divider className={classes.verticalDivider} />
+            <Tooltip title='Website timetable'>
+              <IconButton className={classes.button} onClick={() => this.goToWebsite()}>
+                <WebIcon />
+              </IconButton>
+            </Tooltip>
+          </>
         ) : null}
       </CardActions>
     </Card>
