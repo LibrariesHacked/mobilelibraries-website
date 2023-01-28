@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import ReactMarkdown from 'markdown-to-jsx'
 
-import { withStyles, makeStyles } from '@material-ui/core/styles'
+import withStyles from '@mui/styles/withStyles'
+import makeStyles from '@mui/styles/makeStyles'
 
-import Link from '@material-ui/core/Link'
-import Typography from '@material-ui/core/Typography'
+import Link from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
 
 const useStyles = makeStyles((theme) => ({
   listItem: {
@@ -26,12 +27,12 @@ const useStyles = makeStyles((theme) => ({
         fontFamily: 'Consolas, "Liberation Mono", Menlo, monospace'
       },
       '& .required': {
-        color: theme.palette.type === 'light' ? '#006500' : '#a5ffa5'
+        color: theme.palette.mode === 'light' ? '#006500' : '#a5ffa5'
       },
       '& .prop-type': {
         fontSize: 13,
         fontFamily: 'Consolas, "Liberation Mono", Menlo, monospace',
-        color: theme.palette.type === 'light' ? '#932981' : '#ffb6ec'
+        color: theme.palette.mode === 'light' ? '#932981' : '#ffb6ec'
       },
       '& .prop-default': {
         fontSize: 13,

@@ -4,18 +4,19 @@
   "private": true,
   "homepage": "https://www.mobilelibraries.org",
   "dependencies": {
-    "@material-table/core": "^4.3.44",
-    "@material-ui/core": "^4.12.4",
-    "@material-ui/icons": "^4.11.3",
-    "@material-ui/lab": "^4.0.0-alpha.61",
-    "axios": "^0.26.1",
-    "mapbox-gl": "^1.13.2",
-    "markdown-to-jsx": "^7.1.7",
+    "@emotion/react": "^11.10.5",
+    "@emotion/styled": "^11.10.5",
+    "@fontsource/roboto": "^4.5.8",
+    "@mui/icons-material": "^5.11.0",
+    "@mui/material": "^5.11.1",
+    "axios": "^1.2.1",
+    "mapbox-gl": "npm:empty-npm-package@^1.0.0",
+    "maplibre-gl": "^2.4.0",
+    "markdown-to-jsx": "^7.1.8",
     "moment": "^2.29.4",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-mapbox-gl": "^5.1.1",
-    "react-router-dom": "^5.3.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-map-gl": "^7.0.20",
     "react-scripts": "^5.0.1"
   },
   "scripts": {
@@ -34,22 +35,20 @@
       }
     }
   },
+  "devDependencies": {
+    "gh-pages": "^2.2.0",
+    "standard": "^16.0.4"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
       "not dead",
-      "not op_mini all",
-      "ie 11"
+      "not op_mini all"
     ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",
-      "last 1 safari version",
-      "ie 11"
+      "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "gh-pages": "^2.2.0",
-    "standard": "^16.0.4"
   }
 }

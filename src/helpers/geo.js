@@ -9,7 +9,7 @@ export const getPosition = (options = {}) => {
 }
 
 export const getCurrentPosition = async () => {
-  var options = {
+  const options = {
     enableHighAccuracy: true,
     timeout: 10000,
     maximumAge: 0

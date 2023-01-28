@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
 
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import ListSubheader from '@material-ui/core/ListSubheader'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import CircularProgress from '@mui/material/CircularProgress'
+import ListSubheader from '@mui/material/ListSubheader'
 
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
-import CancelIcon from '@material-ui/icons/CancelTwoTone'
+import CancelIcon from '@mui/icons-material/CancelTwoTone'
 
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
@@ -60,12 +61,11 @@ function MobileLibraryDetails () {
 
   const theme = useTheme()
   const classes = useStyles()
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   return (
     <Dialog
       fullScreen={fullScreen}
-      disableBackdropClick
       open={mobileLibraryDialogOpen}
       onClose={close}
       aria-labelledby='dlg-title'
@@ -81,7 +81,8 @@ function MobileLibraryDetails () {
               <div className={classes.dialogContentActions} />
             </DialogContent>
           </>
-        ) : <CircularProgress className={classes.progress} color='primary' size={30} />}
+          )
+        : <CircularProgress className={classes.progress} color='primary' size={30} />}
       <DialogActions>
         <Button onClick={() => close()} color='secondary' endIcon={<CancelIcon />}>Close</Button>
       </DialogActions>

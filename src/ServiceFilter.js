@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
 
-import Button from '@material-ui/core/Button'
-import Chip from '@material-ui/core/Chip'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import Tooltip from '@material-ui/core/Tooltip'
+import Button from '@mui/material/Button'
+import Chip from '@mui/material/Chip'
+import ListSubheader from '@mui/material/ListSubheader'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Tooltip from '@mui/material/Tooltip'
 
-import BusinessIcon from '@material-ui/icons/BusinessTwoTone'
-import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
-import DirectionsIcon from '@material-ui/icons/DirectionsTwoTone'
+import BusinessIcon from '@mui/icons-material/BusinessTwoTone'
+import DirectionBusIcon from '@mui/icons-material/DirectionsBusTwoTone'
+import DirectionsIcon from '@mui/icons-material/DirectionsTwoTone'
 
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
@@ -97,33 +97,38 @@ function Filters () {
   return (
     <>
       <div className={classes.search}>
-        {organisationFilter.length === 0 ? (
-          <Tooltip title='Choose library service'>
-            <Button color='primary' className={classes.button} onClick={(e) => openOrganisationMenu(e.currentTarget)}>
-              <BusinessIcon className={classes.leftIcon} />Select service
-            </Button>
-          </Tooltip>
-        ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={clearOrganisationFilter} label={organisationLookup[organisationFilter[0]].name} />}
+        {organisationFilter.length === 0
+          ? (
+            <Tooltip title='Choose library service'>
+              <Button color='primary' className={classes.button} onClick={(e) => openOrganisationMenu(e.currentTarget)}>
+                <BusinessIcon className={classes.leftIcon} />Select service
+              </Button>
+            </Tooltip>
+            )
+          : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={clearOrganisationFilter} label={organisationLookup[organisationFilter[0]].name} />}
         {organisationFilter.length > 0
           ? (mobileFilter.length === 0
-            ? (
-              <Tooltip title='Choose mobile library'>
-                <Button color='primary' className={classes.button} onClick={(e) => openMobileMenu(e.currentTarget)}>
-                  <DirectionBusIcon className={classes.leftIcon} />Select mobile
-                </Button>
-              </Tooltip>
-            ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={clearMobileFilter} label={mobileLookup[mobileFilter[0]].name} />
-          ) : null}
+              ? (
+                <Tooltip title='Choose mobile library'>
+                  <Button color='primary' className={classes.button} onClick={(e) => openMobileMenu(e.currentTarget)}>
+                    <DirectionBusIcon className={classes.leftIcon} />Select mobile
+                  </Button>
+                </Tooltip>
+                )
+              : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={clearMobileFilter} label={mobileLookup[mobileFilter[0]].name} />
+            )
+          : null}
         {mobileFilter.length > 0
           ? (routeFilter.length === 0
-            ? (
-              <Tooltip title='Choose route'>
-                <Button color='primary' className={classes.button} onClick={(e) => openRouteMenu(e.currentTarget)}>
-                  <DirectionsIcon className={classes.leftIcon} />Select route
-                </Button>
-              </Tooltip>
-            ) : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={clearRouteFilter} label={routeLookup[routeFilter[0]].name} />
-          )
+              ? (
+                <Tooltip title='Choose route'>
+                  <Button color='primary' className={classes.button} onClick={(e) => openRouteMenu(e.currentTarget)}>
+                    <DirectionsIcon className={classes.leftIcon} />Select route
+                  </Button>
+                </Tooltip>
+                )
+              : <Chip className={classes.chip} color='primary' variant='outlined' onDelete={clearRouteFilter} label={routeLookup[routeFilter[0]].name} />
+            )
           : null}
       </div>
       <Menu

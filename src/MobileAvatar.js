@@ -1,11 +1,11 @@
 import React from 'react'
 
-import Fab from '@material-ui/core/Fab'
-import Tooltip from '@material-ui/core/Tooltip'
+import Fab from '@mui/material/Fab'
+import Tooltip from '@mui/material/Tooltip'
 
-import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
+import DirectionBusIcon from '@mui/icons-material/DirectionsBusTwoTone'
 
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { useViewStateValue } from './context/viewState'
 

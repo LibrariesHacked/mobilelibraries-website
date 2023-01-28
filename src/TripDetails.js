@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react'
 
-import Button from '@material-ui/core/Button'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogTitle from '@material-ui/core/DialogTitle'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import Typography from '@material-ui/core/Typography'
+import Button from '@mui/material/Button'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+import ListSubheader from '@mui/material/ListSubheader'
+import Typography from '@mui/material/Typography'
 
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
-import CancelIcon from '@material-ui/icons/CancelTwoTone'
+import CancelIcon from '@mui/icons-material/CancelTwoTone'
 
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
@@ -45,14 +46,13 @@ function TripDetails () {
   const classes = useStyles()
   const theme = useTheme()
 
-  const fullScreen = useMediaQuery(theme.breakpoints.down('sm'))
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
   const estimatedDuration = Math.round(trip.duration / 60) + ' mins journey time.'
   const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)'
 
   return (
     <Dialog
       fullScreen={fullScreen}
-      disableBackdropClick
       open={tripDialogOpen}
       onClose={close}
       BackdropProps={{ invisible: true }}

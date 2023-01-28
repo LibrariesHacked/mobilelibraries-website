@@ -1,12 +1,12 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import Divider from '@material-ui/core/Divider'
-import Grid from '@material-ui/core/Grid'
-import MaterialLink from '@material-ui/core/Link'
-import Typography from '@material-ui/core/Typography'
+import Divider from '@mui/material/Divider'
+import Grid from '@mui/material/Grid'
+import MaterialLink from '@mui/material/Link'
+import Typography from '@mui/material/Typography'
 
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles'
 
 const useStyles = makeStyles((theme) => ({
   root: {

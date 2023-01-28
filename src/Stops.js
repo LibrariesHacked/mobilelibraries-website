@@ -1,27 +1,28 @@
 import React, { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 
-import Hidden from '@material-ui/core/Hidden'
-import IconButton from '@material-ui/core/IconButton'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import Paper from '@material-ui/core/Paper'
-import Tooltip from '@material-ui/core/Tooltip'
+import Hidden from '@mui/material/Hidden'
+import IconButton from '@mui/material/IconButton'
+import ListSubheader from '@mui/material/ListSubheader'
+import Paper from '@mui/material/Paper'
+import Tooltip from '@mui/material/Tooltip'
 
 import MaterialTable from '@material-table/core'
 
-import { makeStyles, useTheme } from '@material-ui/core/styles'
-import useMediaQuery from '@material-ui/core/useMediaQuery'
+import { useTheme } from '@mui/material/styles'
+import makeStyles from '@mui/styles/makeStyles'
+import useMediaQuery from '@mui/material/useMediaQuery'
 
-import ArrowUpward from '@material-ui/icons/ArrowUpwardTwoTone'
-import ChevronLeft from '@material-ui/icons/ChevronLeftTwoTone'
-import ChevronRight from '@material-ui/icons/ChevronRightTwoTone'
-import FirstPage from '@material-ui/icons/FirstPageTwoTone'
-import FilterList from '@material-ui/icons/FilterListTwoTone'
-import LastPage from '@material-ui/icons/LastPageTwoTone'
-import MoreVertIcon from '@material-ui/icons/MoreVertTwoTone'
-import EventIcon from '@material-ui/icons/EventTwoTone'
-import PrintIcon from '@material-ui/icons/PrintTwoTone'
-import LocationOnIcon from '@material-ui/icons/LocationOnTwoTone'
+import ArrowUpward from '@mui/icons-material/ArrowUpwardTwoTone'
+import ChevronLeft from '@mui/icons-material/ChevronLeftTwoTone'
+import ChevronRight from '@mui/icons-material/ChevronRightTwoTone'
+import FirstPage from '@mui/icons-material/FirstPageTwoTone'
+import FilterList from '@mui/icons-material/FilterListTwoTone'
+import LastPage from '@mui/icons-material/LastPageTwoTone'
+import MoreVertIcon from '@mui/icons-material/MoreVertTwoTone'
+import EventIcon from '@mui/icons-material/EventTwoTone'
+import PrintIcon from '@mui/icons-material/PrintTwoTone'
+import LocationOnIcon from '@mui/icons-material/LocationOnTwoTone'
 
 import Filters from './Filters'
 
@@ -148,21 +149,21 @@ function Stops () {
                       <MoreVertIcon />
                     </IconButton>
                   </Tooltip>
-                  <Hidden mdDown>
+                  <Hidden lgDown>
                     <Tooltip title='Add event to your device calendar'>
                       <IconButton size='small' color='primary' onClick={() => getStopCalendar(rowData)}>
                         <EventIcon />
                       </IconButton>
                     </Tooltip>
                   </Hidden>
-                  <Hidden mdDown>
+                  <Hidden lgDown>
                     <Tooltip title='Download a PDF timetable for this stop'>
                       <IconButton size='small' color='primary' onClick={() => getStopPdf(rowData)}>
                         <PrintIcon />
                       </IconButton>
                     </Tooltip>
                   </Hidden>
-                  <Hidden mdDown>
+                  <Hidden lgDown>
                     <Tooltip title='See this stop on the map'>
                       <IconButton size='small' color='primary' onClick={() => displayMapStop(rowData.longitude, rowData.latitude)} component={Link} to='/map'>
                         <LocationOnIcon />
@@ -205,7 +206,7 @@ function Stops () {
             title: 'Library service',
             field: 'organisationName',
             filtering: false,
-            hidden: useMediaQuery(theme.breakpoints.down('sm')),
+            hidden: useMediaQuery(theme.breakpoints.down('md')),
             cellStyle: {
               borderBottom: '1px solid #f5f5f5',
               backgroundColor: '#ffffff'
@@ -215,7 +216,7 @@ function Stops () {
             title: 'Next due',
             field: 'routeSchedule',
             filtering: false,
-            hidden: useMediaQuery(theme.breakpoints.down('xs')),
+            hidden: useMediaQuery(theme.breakpoints.down('sm')),
             render: (rowData) => {
               return (
                 rowData.routeSchedule.length > 0 ? rowData.routeSchedule[0].format('Do MMMM h:mma') : ''

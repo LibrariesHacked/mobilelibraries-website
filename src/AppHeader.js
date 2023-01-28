@@ -2,29 +2,29 @@ import React, { useState } from 'react'
 
 import { Link, useLocation } from 'react-router-dom'
 
-import AppBar from '@material-ui/core/AppBar'
-import Button from '@material-ui/core/Button'
-import Container from '@material-ui/core/Container'
-import Hidden from '@material-ui/core/Hidden'
-import IconButton from '@material-ui/core/IconButton'
-import Tab from '@material-ui/core/Tab'
-import Tabs from '@material-ui/core/Tabs'
-import Toolbar from '@material-ui/core/Toolbar'
-import Tooltip from '@material-ui/core/Tooltip'
+import AppBar from '@mui/material/AppBar'
+import Button from '@mui/material/Button'
+import Container from '@mui/material/Container'
+import Hidden from '@mui/material/Hidden'
+import IconButton from '@mui/material/IconButton'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
+import Toolbar from '@mui/material/Toolbar'
+import Tooltip from '@mui/material/Tooltip'
 
-import BookIcon from '@material-ui/icons/BookTwoTone'
-import CancelIcon from '@material-ui/icons/CancelTwoTone'
-import DirectionBusIcon from '@material-ui/icons/DirectionsBusTwoTone'
-import GridOnIcon from '@material-ui/icons/GridOnTwoTone'
-import HeadsetIcon from '@material-ui/icons/HeadsetTwoTone'
-import LocalLibraryIcon from '@material-ui/icons/LocalLibraryTwoTone'
-import MapIcon from '@material-ui/icons/MapTwoTone'
-import MovieIcon from '@material-ui/icons/MovieTwoTone'
-import SearchIcon from '@material-ui/icons/SearchTwoTone'
-import PetsIcon from '@material-ui/icons/PetsTwoTone'
-import WarningIcon from '@material-ui/icons/WarningTwoTone'
+import BookIcon from '@mui/icons-material/BookTwoTone'
+import CancelIcon from '@mui/icons-material/CancelTwoTone'
+import DirectionBusIcon from '@mui/icons-material/DirectionsBusTwoTone'
+import GridOnIcon from '@mui/icons-material/GridOnTwoTone'
+import HeadsetIcon from '@mui/icons-material/HeadsetTwoTone'
+import LocalLibraryIcon from '@mui/icons-material/LocalLibraryTwoTone'
+import MapIcon from '@mui/icons-material/MapTwoTone'
+import MovieIcon from '@mui/icons-material/MovieTwoTone'
+import SearchIcon from '@mui/icons-material/SearchTwoTone'
+import PetsIcon from '@mui/icons-material/PetsTwoTone'
+import WarningIcon from '@mui/icons-material/WarningTwoTone'
 
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import PostcodeSearch from './PostcodeSearch'
 import ServiceFilter from './ServiceFilter'
@@ -174,33 +174,42 @@ function AppHeader (props) {
     <>
       <Container maxWidth='lg' className={classes.topTitle}>
         <Toolbar>
-          <IconButton aria-label='Toggle site menu' className={classes.topIcon} color='primary' onClick={() => { setAppsOpen(!appsOpen); setTabValue(site) }}>
+          <IconButton
+            aria-label='Toggle site menu'
+            className={classes.topIcon}
+            color='primary'
+            onClick={() => { setAppsOpen(!appsOpen); setTabValue(site) }}
+            size='large'
+          >
             {appsOpen ? <CancelIcon /> : <PetsIcon />}
           </IconButton>
           <span className={classes.grow} />
           {location.pathname === '/map' ? <ServiceFilter /> : null}
         </Toolbar>
       </Container>
-      {appsOpen ? (
-        <AppBar position='static' color='transparent' elevation={0} className={appBarClass}>
-          <Container maxWidth='lg'>
-            <Tabs
-              value={tabValue}
-              onChange={(e, v) => { setTabValue(v) }}
-              variant='scrollable'
-              scrollButtons='on'
-              indicatorColor='primary'
-              textColor='secondary'
-            >
-              {sites.map((s, idx) => {
-                return (
-                  <Tab key={'tb_site_' + idx} label={s.title} icon={s.icon} />
-                )
-              })}
-            </Tabs>
-          </Container>
-        </AppBar>
-      ) : null}
+      {appsOpen
+        ? (
+          <AppBar position='static' color='transparent' elevation={0} className={appBarClass}>
+            <Container maxWidth='lg'>
+              <Tabs
+                value={tabValue}
+                onChange={(e, v) => { setTabValue(v) }}
+                variant='scrollable'
+                scrollButtons
+                indicatorColor='primary'
+                textColor='secondary'
+                allowScrollButtonsMobile
+              >
+                {sites.map((s, idx) => {
+                  return (
+                    <Tab key={'tb_site_' + idx} label={s.title} icon={s.icon} />
+                  )
+                })}
+              </Tabs>
+            </Container>
+          </AppBar>
+          )
+        : null}
       <AppBar
         position='static'
         color='transparent'
@@ -228,7 +237,7 @@ function AppHeader (props) {
                 )
               })}
             </Hidden>
-            <Hidden smDown>
+            <Hidden mdDown>
               {sites[tabValue].links.map((link, idx) => {
                 return (
                   <Tooltip title={link.title} key={'icnb_menu_lg_' + idx}>

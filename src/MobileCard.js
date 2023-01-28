@@ -2,20 +2,20 @@ import React from 'react'
 
 import { Link } from 'react-router-dom'
 
-import Button from '@material-ui/core/Button'
-import Card from '@material-ui/core/Card'
-import CardActions from '@material-ui/core/CardActions'
-import CardContent from '@material-ui/core/CardContent'
-import Divider from '@material-ui/core/Divider'
-import IconButton from '@material-ui/core/IconButton'
-import Tooltip from '@material-ui/core/Tooltip'
-import Typography from '@material-ui/core/Typography'
+import Button from '@mui/material/Button'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import Typography from '@mui/material/Typography'
 
-import GridOnIcon from '@material-ui/icons/GridOnTwoTone'
-import MoreVertIcon from '@material-ui/icons/MoreVertTwoTone'
-import WebIcon from '@material-ui/icons/WebTwoTone'
+import GridOnIcon from '@mui/icons-material/GridOnTwoTone'
+import MoreVertIcon from '@mui/icons-material/MoreVertTwoTone'
+import WebIcon from '@mui/icons-material/WebTwoTone'
 
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
@@ -161,16 +161,22 @@ function MobileCard (props) {
             <GridOnIcon className={classes.leftIcon} />View stops
           </Button>
         </Tooltip>
-        {mobile.timetable ? (
-          <>
-            <Divider className={classes.verticalDivider} />
-            <Tooltip title='Website timetable'>
-              <IconButton className={classes.button} onClick={() => this.goToWebsite()}>
-                <WebIcon />
-              </IconButton>
-            </Tooltip>
-          </>
-        ) : null}
+        {mobile.timetable
+          ? (
+            <>
+              <Divider className={classes.verticalDivider} />
+              <Tooltip title='Website timetable'>
+                <IconButton
+                  className={classes.button}
+                  onClick={() => this.goToWebsite()}
+                  size='large'
+                >
+                  <WebIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+            )
+          : null}
       </CardActions>
     </Card>
   )

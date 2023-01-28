@@ -1,23 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { withRouter } from 'react-router'
 
-import Box from '@material-ui/core/Box'
-import CircularProgress from '@material-ui/core/CircularProgress'
-import Divider from '@material-ui/core/Divider'
-import IconButton from '@material-ui/core/IconButton'
-import InputBase from '@material-ui/core/InputBase'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import Menu from '@material-ui/core/Menu'
-import MenuItem from '@material-ui/core/MenuItem'
-import Tooltip from '@material-ui/core/Tooltip'
+import Box from '@mui/material/Box'
+import CircularProgress from '@mui/material/CircularProgress'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import InputBase from '@mui/material/InputBase'
+import ListSubheader from '@mui/material/ListSubheader'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Tooltip from '@mui/material/Tooltip'
 
-import { fade } from '@material-ui/core/styles/colorManipulator'
-import { makeStyles } from '@material-ui/core/styles'
+import { alpha } from '@mui/material/styles'
 
-import ClearIcon from '@material-ui/icons/ClearTwoTone'
-import MyLocationIcon from '@material-ui/icons/MyLocationTwoTone'
-import SearchIcon from '@material-ui/icons/SearchTwoTone'
-import SettingsIcon from '@material-ui/icons/SettingsTwoTone'
+import makeStyles from '@mui/styles/makeStyles'
+
+import ClearIcon from '@mui/icons-material/ClearTwoTone'
+import MyLocationIcon from '@mui/icons-material/MyLocationTwoTone'
+import SearchIcon from '@mui/icons-material/SearchTwoTone'
+import SettingsIcon from '@mui/icons-material/SettingsTwoTone'
 
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
@@ -49,9 +50,9 @@ const useStyles = makeStyles((theme) => ({
     border: '1px solid #E0E0E0',
     borderColor: theme.palette.outline.main,
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.8),
+    backgroundColor: alpha(theme.palette.common.white, 0.8),
     '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.9)
+      backgroundColor: alpha(theme.palette.common.white, 0.9)
     },
     marginLeft: 0,
     marginRight: theme.spacing(),
@@ -161,11 +162,12 @@ function PostcodeSearch (props) {
               aria-label='Clear search'
               className={classes.iconButton}
               onClick={() => clearSearch()}
+              size='large'
             >
               <ClearIcon />
             </IconButton>
           </Tooltip>
-        )
+          )
         : null}
       <div className={classes.grow} />
       <Tooltip title='Search by postcode'>
@@ -176,10 +178,12 @@ function PostcodeSearch (props) {
               color='primary'
               className={classes.iconButton}
               onClick={() => postcodeSearch()}
+              size='large'
             >
               <SearchIcon />
             </IconButton>
-          ) : <Box position='relative' display='inline-flex' className={classes.iconProgress}><CircularProgress size={22} /></Box>}
+            )
+          : <Box position='relative' display='inline-flex' className={classes.iconProgress}><CircularProgress size={22} /></Box>}
       </Tooltip>
       <Divider orientation='vertical' flexItem />
       <Tooltip title='Use your current location'>
@@ -190,10 +194,12 @@ function PostcodeSearch (props) {
               color='primary'
               className={classes.iconButton}
               onClick={() => getLocation()}
+              size='large'
             >
               <MyLocationIcon />
             </IconButton>
-          ) : <Box position='relative' display='inline-flex' className={classes.iconProgress}><CircularProgress size={22} /></Box>}
+            )
+          : <Box position='relative' display='inline-flex' className={classes.iconProgress}><CircularProgress size={22} /></Box>}
       </Tooltip>
       {settings
         ? (
@@ -203,11 +209,13 @@ function PostcodeSearch (props) {
               className={classes.iconButton}
               color='secondary'
               onClick={(e) => { openSettingsMenu(e) }}
+              size='large'
             >
               <SettingsIcon />
             </IconButton>
           </Tooltip>
-        ) : null}
+          )
+        : null}
       <Menu
         id='mnu-settings'
         anchorEl={anchor}

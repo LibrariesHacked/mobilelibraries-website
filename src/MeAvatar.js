@@ -1,13 +1,13 @@
 import React from 'react'
 
-import Avatar from '@material-ui/core/Avatar'
-import Tooltip from '@material-ui/core/Tooltip'
+import Avatar from '@mui/material/Avatar'
+import Tooltip from '@mui/material/Tooltip'
 
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { useSearchStateValue } from './context/searchState'
 
-import Face from '@material-ui/icons/FaceTwoTone'
+import Face from '@mui/icons-material/FaceTwoTone'
 
 const useStyles = makeStyles((theme) => ({
   avatar: {

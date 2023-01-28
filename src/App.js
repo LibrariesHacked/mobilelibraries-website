@@ -1,6 +1,6 @@
 import React from 'react'
 
-import CssBaseline from '@material-ui/core/CssBaseline'
+import CssBaseline from '@mui/material/CssBaseline'
 
 import blueGrey from '@material-ui/core/colors/blueGrey'
 import green from '@material-ui/core/colors/green'
@@ -197,11 +197,18 @@ const viewReducer = (state, action) => {
     case 'SetNotification':
       return { ...state, notificationOpen: action.notificationOpen }
     case 'ShowNotification':
-      return { ...state, notificationOpen: true, notificationMessage: action.notificationMessage }
+      return {
+        ...state,
+        notificationOpen: true,
+        notificationMessage: action.notificationMessage
+      }
     case 'SetStopDialog':
       return { ...state, stopDialogOpen: action.stopDialogOpen }
     case 'SetMobileLibraryDialog':
-      return { ...state, mobileLibraryDialogOpen: action.mobileLibraryDialogOpen }
+      return {
+        ...state,
+        mobileLibraryDialogOpen: action.mobileLibraryDialogOpen
+      }
     case 'SetTripDialog':
       return { ...state, tripDialogOpen: action.tripDialogOpen }
     case 'SetMapSettingsDialog':
@@ -216,7 +223,11 @@ const viewReducer = (state, action) => {
     case 'ToggleLoadingPostcode':
       return { ...state, loadingPostcode: !state.loadingPostcode }
     case 'SetMapPosition':
-      return { ...state, mapPosition: action.mapPosition, mapZoom: [action.mapZoom] }
+      return {
+        ...state,
+        mapPosition: action.mapPosition,
+        mapZoom: [action.mapZoom]
+      }
     default:
       return state
   }
@@ -260,9 +271,18 @@ const theme = createMuiTheme({
 
 function App () {
   return (
-    <ApplicationStateProvider initialState={initialApplicationState} reducer={applicationReducer}>
-      <SearchStateProvider initialState={initialSearchState} reducer={searchReducer}>
-        <ViewStateProvider initialState={initialViewState} reducer={viewReducer}>
+    <ApplicationStateProvider
+      initialState={initialApplicationState}
+      reducer={applicationReducer}
+    >
+      <SearchStateProvider
+        initialState={initialSearchState}
+        reducer={searchReducer}
+      >
+        <ViewStateProvider
+          initialState={initialViewState}
+          reducer={viewReducer}
+        >
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <MobilesApplication />

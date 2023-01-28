@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 
-import Badge from '@material-ui/core/Badge'
-import Grid from '@material-ui/core/Grid'
-import ListSubheader from '@material-ui/core/ListSubheader'
-import Tab from '@material-ui/core/Tab'
-import Tabs from '@material-ui/core/Tabs'
-import Typography from '@material-ui/core/Typography'
+import Badge from '@mui/material/Badge'
+import Grid from '@mui/material/Grid'
+import ListSubheader from '@mui/material/ListSubheader'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
+import Typography from '@mui/material/Typography'
 
-import { makeStyles } from '@material-ui/core/styles'
+import makeStyles from '@mui/styles/makeStyles'
 
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
@@ -104,7 +104,7 @@ function Mobiles () {
       <ListSubheader component='span' disableSticky>{title}</ListSubheader>
       <Tabs
         variant='standard'
-        scrollButtons='off'
+        scrollButtons={false}
         value={openTab}
         indicatorColor='secondary'
         onChange={(e, value) => changeTab(value)}
@@ -155,11 +155,12 @@ function Mobiles () {
                   )
                 })
               }
-            </Grid>) : (
-            !loadingMobileLocations
-              ? <Typography component='p' variant='body1'>No mobile libraries currently on the road.</Typography>
-              : null
-          )
+            </Grid>)
+          : (
+              !loadingMobileLocations
+                ? <Typography component='p' variant='body1'>No mobile libraries currently on the road.</Typography>
+                : null
+            )
       }
     </div>
   )
