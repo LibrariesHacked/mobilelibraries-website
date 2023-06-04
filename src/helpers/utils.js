@@ -6,7 +6,13 @@ export function hextoRGBA (hex, alpha) {
       c = [c[0], c[0], c[1], c[1], c[2], c[2]]
     }
     c = '0x' + c.join('')
-    return 'rgba(' + [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') + ', ' + alpha + ')'
+    return (
+      'rgba(' +
+      [(c >> 16) & 255, (c >> 8) & 255, c & 255].join(',') +
+      ', ' +
+      alpha +
+      ')'
+    )
   }
   throw new Error('Bad Hex')
 }

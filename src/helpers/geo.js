@@ -34,7 +34,7 @@ export const getCurrentPostcode = async (lon, lat) => {
   }
 }
 
-export const getPostcode = async (postcode) => {
+export const getPostcode = async postcode => {
   const response = await axios.get(config.postcodeApi + postcode)
   return {
     location: [response.data.longitude, response.data.latitude],
@@ -45,21 +45,36 @@ export const getPostcode = async (postcode) => {
 
 export const getServiceDataFromPostcode = async (postcode, services) => {
   const postcodeData = await getPostcode(postcode)
-  const servicesFiltered = services.filter(s => s.code === postcodeData.library_service)
-  if (servicesFiltered.length > 0) return { service: servicesFiltered[0], location: postcodeData.location }
+  const servicesFiltered = services.filter(
+    s => s.code === postcodeData.library_service
+  )
+  if (servicesFiltered.length > 0)
+    return { service: servicesFiltered[0], location: postcodeData.location }
   return {}
 }
 
-export const getNearestLibrary = async (location) => {
-  const response = await axios.get(config.libraryApi + '?latitude=' + location[1] + '&longitude=' + location[0])
-  return (response && response.data && response.data.length > 0 ? response.data[0] : null)
+export const getNearestLibrary = async location => {
+  const response = await axios.get(
+    config.libraryApi + '?latitude=' + location[1] + '&longitude=' + location[0]
+  )
+  return response && response.data && response.data.length > 0
+    ? response.data[0]
+    : null
 }
 
-export const getNearestMobileLibrary = async (location) => {
-  const response = await axios.get(config.mobileLibraryApi + '?latitude=' + location[1] + '&longitude=' + location[0])
-  return (response && response.data && response.data.length > 0 ? response.data[0] : null)
+export const getNearestMobileLibrary = async location => {
+  const response = await axios.get(
+    config.mobileLibraryApi +
+      '?latitude=' +
+      location[1] +
+      '&longitude=' +
+      location[0]
+  )
+  return response && response.data && response.data.length > 0
+    ? response.data[0]
+    : null
 }
 
-export const validatePostcode = (postcode) => {
+export const validatePostcode = postcode => {
   return /^[A-Z]{1,2}\d[A-Z\d]? ?\d[A-Z]{2}$/.test(postcode.trim())
 }

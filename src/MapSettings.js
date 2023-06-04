@@ -13,15 +13,7 @@ import CancelIcon from '@mui/icons-material/CancelTwoTone'
 
 import { useTheme } from '@mui/material/styles'
 
-import makeStyles from '@mui/styles/makeStyles'
-
 import { useViewStateValue } from './context/viewState'
-
-const useStyles = makeStyles(() => ({
-  dialog: {
-    border: '1px solid #E0E0E0'
-  }
-}))
 
 function MapSettings () {
   const [{ mapSettings, mapSettingsDialogOpen }, dispatchView] =
@@ -35,7 +27,6 @@ function MapSettings () {
     dispatchView({ type: 'ToggleMapSetting', mapSetting: 'authorityBoundary' })
   }
 
-  const classes = useStyles()
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
@@ -47,7 +38,7 @@ function MapSettings () {
       BackdropProps={{
         invisible: true
       }}
-      PaperProps={{ elevation: 0, className: classes.dialog }}
+      PaperProps={{ elevation: 0 }}
     >
       <DialogTitle>Map settings</DialogTitle>
       <DialogContent>

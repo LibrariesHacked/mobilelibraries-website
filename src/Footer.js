@@ -1,66 +1,66 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
-import Divider from '@mui/material/Divider'
+import { Link, useMatch } from 'react-router-dom'
+
 import Grid from '@mui/material/Grid'
 import MaterialLink from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
 
-import makeStyles from '@mui/styles/makeStyles'
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    paddingTop: theme.spacing(5),
-    marginTop: theme.spacing(3),
-    marginBottom: theme.spacing(5),
-    width: '100%'
-  },
-  bullet: {
-    margin: theme.spacing(2)
-  },
-  grid: {
-    marginTop: theme.spacing(2)
-  },
-  footerText: {
-    verticalAlign: 'middle',
-    display: 'inline-flex'
-  },
-  footerRight: {
-    textAlign: 'right'
-  },
-  tapTarget: {
-    lineHeight: 2.2,
-    fontSize: 16
-  }
-}))
+import { Carbonbadge } from 'react-carbonbadge'
 
 function Footer () {
-  const classes = useStyles()
-
+  const mapPage = useMatch('/map')
   return (
-    <div className={classes.root}>
-      <Divider />
-      <Grid container spacing={3} className={classes.grid}>
-        <Grid item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Typography variant='button'>
-            <MaterialLink component={Link} to='/accessibility' title='How we make this site accessible' className={classes.tapTarget}>Accessibility</MaterialLink>
-            <span className={classes.bullet}> &#8226; </span>
-            <MaterialLink component={Link} to='/privacy' title='Your privacy on this site' className={classes.tapTarget}>Privacy</MaterialLink>
-            <span className={classes.bullet}> &#8226; </span>
-            <MaterialLink component={Link} to='/data' title='Data used on this site and licensing' className={classes.tapTarget}>Data</MaterialLink>
+    <>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          paddingTop: theme => theme.spacing(2),
+          paddingBottom: theme => theme.spacing(4)
+        }}
+      >
+        <Grid item xs={12} sm={12} md={5} lg={4} xl={4}>
+          <Typography variant='h6'>
+            <MaterialLink
+              component={Link}
+              to='/accessibility'
+              title='About the Accessibility of this site'
+            >
+              Accessibility
+            </MaterialLink>
+            <br />
+            <MaterialLink
+              component={Link}
+              to='/data'
+              title='Maintaining the data used on this site and licensing'
+            >
+              Data
+            </MaterialLink>
+            <br />
+            <MaterialLink
+              component={Link}
+              to='/privacy'
+              title='About your privacy on this site'
+            >
+              Privacy
+            </MaterialLink>
           </Typography>
-          <br />
-          <Typography variant='body2' className={classes.footerText}>A Library Lab project by Libraries Hacked.</Typography>
         </Grid>
-        <Grid className={classes.footerRight} item xs={12} sm={6} md={6} lg={6} xl={6}>
-          <Typography variant='button'>
-            <MaterialLink href='https://github.com/LibrariesHacked/mobilelibraries-website' target='_blank' title='Project on GitHub' className={classes.tapTarget}>Open Source on GitHub</MaterialLink>
-            <span className={classes.bullet}> &#8226; </span>
-            <MaterialLink href='https://www.librarylab.uk/docs/mobile-libraries' target='_blank' title='About the library lab projects and documentation for this project' className={classes.tapTarget}>About this project</MaterialLink>
-          </Typography>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          md={4}
+          lg={4}
+          xl={4}
+          sx={{ display: mapPage ? 'none' : 'block' }}
+        >
+          <Carbonbadge />
         </Grid>
+        <Grid item xs={12} sm={12} md={3} lg={4} xl={4}></Grid>
       </Grid>
-    </div>
+    </>
   )
 }
 

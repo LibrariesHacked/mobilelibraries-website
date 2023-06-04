@@ -67,7 +67,12 @@ export class MobileLocation {
       postRoute: 'Finished for the day'
     }
     // The mobile is not due out today
-    if (!this.currentStopId && !this.previousStopId && this.nextStopId && !this.nextStopArrival.isSame(now, 'day')) {
+    if (
+      !this.currentStopId &&
+      !this.previousStopId &&
+      this.nextStopId &&
+      !this.nextStopArrival.isSame(now, 'day')
+    ) {
       return {
         type: 'offRoad',
         textFormat: statuses.offRoad,
@@ -75,7 +80,12 @@ export class MobileLocation {
       }
     }
     // The mobile is due out today
-    if (!this.currentStopId && !this.previousStopId && this.nextStopId && this.nextStopArrival.isSame(now, 'day')) {
+    if (
+      !this.currentStopId &&
+      !this.previousStopId &&
+      this.nextStopId &&
+      this.nextStopArrival.isSame(now, 'day')
+    ) {
       const arrival = this.nextStopArrival.fromNow()
       return {
         type: 'preRoute',
@@ -93,7 +103,8 @@ export class MobileLocation {
       return {
         type: 'atStop',
         message: statuses.atStop,
-        textFormat: statuses.atStop + this.currentStopName + ' for ' + stopRemaining,
+        textFormat:
+          statuses.atStop + this.currentStopName + ' for ' + stopRemaining,
         args: [
           { stopName: this.currentStopName, stopId: this.currentStopId },
           stopRemaining
@@ -101,7 +112,13 @@ export class MobileLocation {
       }
     }
     // The mobile is between stops
-    if (!this.currentStopId && this.previousStopId && this.nextStopId && this.previousStopDeparture.isSame(now, 'day') && this.nextStopArrival.isSame(now, 'day')) {
+    if (
+      !this.currentStopId &&
+      this.previousStopId &&
+      this.nextStopId &&
+      this.previousStopDeparture.isSame(now, 'day') &&
+      this.nextStopArrival.isSame(now, 'day')
+    ) {
       const arrival = this.nextStopArrival.fromNow()
       return {
         type: 'betweenStops',
@@ -114,7 +131,12 @@ export class MobileLocation {
       }
     }
     // The mobile has finished for the day
-    if (this.previousStopId && this.nextStopId && this.previousStopDeparture.isSame(now, 'day') && !this.nextStopArrival.isSame(now, 'day')) {
+    if (
+      this.previousStopId &&
+      this.nextStopId &&
+      this.previousStopDeparture.isSame(now, 'day') &&
+      !this.nextStopArrival.isSame(now, 'day')
+    ) {
       return {
         type: 'postRoute',
         message: statuses.postRoute,
@@ -128,7 +150,7 @@ export class MobileLocation {
 export async function getAllMobiles () {
   const response = await axios.get(config.api + '/mobiles')
   if (response && response.data && response.data.length > 0) {
-    const mobiles = response.data.map(m => (new Mobile()).fromJson(m))
+    const mobiles = response.data.map(m => new Mobile().fromJson(m))
     return mobiles
   } else {
     return []
@@ -138,7 +160,7 @@ export async function getAllMobiles () {
 export async function getMobileLocations () {
   const response = await axios.get(config.api + '/mobiles/locations')
   if (response && response.data && response.data.length > 0) {
-    const locations = response.data.map(ml => (new MobileLocation()).fromJson(ml))
+    const locations = response.data.map(ml => new MobileLocation().fromJson(ml))
     return locations
   } else {
     return []
@@ -146,9 +168,17 @@ export async function getMobileLocations () {
 }
 
 export async function getMobilesNearest (location, distance) {
-  const response = await axios.get(config.api + '/mobiles/nearest?longitude=' + location[0] + '&latitude=' + location[1] + '&distance=' + distance)
+  const response = await axios.get(
+    config.api +
+      '/mobiles/nearest?longitude=' +
+      location[0] +
+      '&latitude=' +
+      location[1] +
+      '&distance=' +
+      distance
+  )
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(m => (new MobileNearestStop()).fromJson(m))
+    return response.data.map(m => new MobileNearestStop().fromJson(m))
   } else {
     return []
   }

@@ -9,7 +9,6 @@ import ListSubheader from '@mui/material/ListSubheader'
 import Typography from '@mui/material/Typography'
 
 import { useTheme } from '@mui/material/styles'
-import makeStyles from '@mui/styles/makeStyles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 import CancelIcon from '@mui/icons-material/CancelTwoTone'
@@ -18,12 +17,6 @@ import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
 import * as tripsModel from './models/trips'
-
-const useStyles = makeStyles((theme) => ({
-  dialog: {
-    border: '1px solid #E0E0E0'
-  }
-}))
 
 function TripDetails () {
   const [{ currentTripId }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
@@ -43,7 +36,6 @@ function TripDetails () {
     dispatchView({ type: 'SetTripDialog', tripDialogOpen: false })
   }
 
-  const classes = useStyles()
   const theme = useTheme()
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
@@ -56,7 +48,7 @@ function TripDetails () {
       open={tripDialogOpen}
       onClose={close}
       BackdropProps={{ invisible: true }}
-      PaperProps={{ elevation: 0, className: classes.dialog }}
+      PaperProps={{ elevation: 0 }}
     >
       <DialogTitle>Trip details</DialogTitle>
       <DialogContent>

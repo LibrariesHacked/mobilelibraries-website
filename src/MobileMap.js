@@ -3,14 +3,12 @@ import React, { useEffect, useState } from 'react'
 import Fab from '@mui/material/Fab'
 import Tooltip from '@mui/material/Tooltip'
 
-import Map, { Source, Layer, Marker, NavigationControl } from 'react-map-gl'
+import Map, { Source, Layer, Marker } from 'react-map-gl'
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 import maplibregl from '!maplibre-gl'
 
 import LayersIcon from '@mui/icons-material/LayersTwoTone'
-
-import makeStyles from '@mui/styles/makeStyles'
 
 import moment from 'moment'
 
@@ -21,14 +19,6 @@ import { useViewStateValue } from './context/viewState'
 import MeAvatar from './MeAvatar'
 import MapSettings from './MapSettings'
 import MobileAvatar from './MobileAvatar'
-
-const useStyles = makeStyles(theme => ({
-  settings: {
-    position: 'absolute',
-    bottom: theme.spacing(4),
-    right: theme.spacing(4)
-  }
-}))
 
 const config = require('./helpers/config.json')
 
@@ -95,8 +85,12 @@ function MobileMap () {
   const clickMap = async event => {
     const features = mapRef.current.queryRenderedFeatures(event.point)
     if (features && features.length > 0 && features[0].properties) {
-      if (features[0].sourceLayer === 'route') { clickTrip(features[0], event.point) }
-      if (features[0].sourceLayer === 'stop') { clickStop(features[0], event.point) }
+      if (features[0].sourceLayer === 'route') {
+        clickTrip(features[0], event.point)
+      }
+      if (features[0].sourceLayer === 'stop') {
+        clickStop(features[0], event.point)
+      }
     }
   }
 
@@ -106,8 +100,6 @@ function MobileMap () {
     organisationColourMatch.push(org.colour)
   })
   organisationColourMatch.push('#a7a39b')
-
-  const classes = useStyles()
 
   const locations = mobileLocations.filter(
     l => l.geoX !== null && l.geoY !== null
@@ -141,8 +133,12 @@ function MobileMap () {
                   const millisecondsPassed = moment(currentTime).diff(l.updated)
                   const index = Math.round(millisecondsPassed / 500)
                   const coords = l.routeSection.coordinates
-                  if (coords.length > index && index > 0) { locationPoint = coords[index] }
-                  if (coords.length <= index && index > 0) { locationPoint = coords[coords.length - 1] }
+                  if (coords.length > index && index > 0) {
+                    locationPoint = coords[index]
+                  }
+                  if (coords.length <= index && index > 0) {
+                    locationPoint = coords[coords.length - 1]
+                  }
                 }
                 const mobile = mobileLookup[l.mobileId]
                 const organisation = mobile
@@ -312,55 +308,49 @@ function MobileMap () {
           }}
           onClick={clickStop}
         />
-        {mapSettings.authorityBoundary
-          ? (
-            <>
-              <Layer
-                id='lyr_library_authorities_lines'
-                type='line'
-                sourceId='src_library_authorities'
-                sourceLayer='library_authority_boundaries'
-                minZoom={6}
-                layout={{
-                  'line-join': 'round',
-                  'line-cap': 'square'
-                }}
-                paint={{
-                  'line-color': '#a7a39b',
-                  'line-opacity': 1,
-                  'line-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 22, 4]
-                }}
-              />
-              <Layer
-                id='lyr_library_authorities_fill'
-                type='fill'
-                sourceId='src_library_authorities'
-                sourceLayer='library_authority_boundaries'
-                minZoom={6}
-                paint={{
-                  'fill-color': organisationColourMatch,
-                  'fill-opacity': 0.1
-                }}
-              />
-            </>
-            )
-          : null}
-        {searchPosition && searchPosition.length > 1
-          ? (
-            <Marker
-              key='mk_me'
-              coordinates={[searchPosition[0], searchPosition[1]]}
-            >
-              <MeAvatar searchType={searchType} />
-            </Marker>
-            )
-          : null}
-        <ZoomControl position='bottom-left' />
+        {mapSettings.authorityBoundary ? (
+          <>
+            <Layer
+              id='lyr_library_authorities_lines'
+              type='line'
+              sourceId='src_library_authorities'
+              sourceLayer='library_authority_boundaries'
+              minZoom={6}
+              layout={{
+                'line-join': 'round',
+                'line-cap': 'square'
+              }}
+              paint={{
+                'line-color': '#a7a39b',
+                'line-opacity': 1,
+                'line-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 22, 4]
+              }}
+            />
+            <Layer
+              id='lyr_library_authorities_fill'
+              type='fill'
+              sourceId='src_library_authorities'
+              sourceLayer='library_authority_boundaries'
+              minZoom={6}
+              paint={{
+                'fill-color': organisationColourMatch,
+                'fill-opacity': 0.1
+              }}
+            />
+          </>
+        ) : null}
+        {searchPosition && searchPosition.length > 1 ? (
+          <Marker
+            key='mk_me'
+            coordinates={[searchPosition[0], searchPosition[1]]}
+          >
+            <MeAvatar searchType={searchType} />
+          </Marker>
+        ) : null}
       </Map>
       <Tooltip title='Map settings'>
         <Fab
           size='small'
-          className={classes.settings}
           color='primary'
           style={{
             color: 'white',
@@ -370,7 +360,8 @@ function MobileMap () {
             dispatchView({
               type: 'SetMapSettingsDialog',
               mapSettingsDialogOpen: true
-            })}
+            })
+          }
         >
           <LayersIcon />
         </Fab>
