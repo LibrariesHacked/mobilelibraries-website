@@ -44,19 +44,23 @@ export async function getQueryStops (
   query,
   searchPosition,
   distance,
-  serviceFilter
+  organisationFilter
 ) {
-  let url = `${config.mobilesApi}/stops?page=${query.page + 1}&limit=${
-    query.pageSize
-  }`
+  let url = `${config.api}/stops?page=${query.page + 1}&limit=${query.pageSize}`
 
-  if (query.orderBy && query.orderBy.field) { url = `${url}&sort=${query.orderBy.field}&direction=${query.orderBy.direction}` }
+  if (query.orderBy && query.orderBy.field) {
+    url = `${url}&sort=${query.orderBy.field}&direction=${query.orderBy.direction}`
+  }
 
-  if (searchPosition && searchPosition.length > 1) { url = `${url}&longitude=${searchPosition[0]}&latitude=${searchPosition[1]}` }
+  if (searchPosition && searchPosition.length > 1) {
+    url = `${url}&longitude=${searchPosition[0]}&latitude=${searchPosition[1]}`
+  }
 
   if (distance && distance !== '') url = `${url}&distance=${distance}`
 
-  if (serviceFilter.length > 0) { url = `${url}&service_codes=${serviceFilter.join('|')}` }
+  if (organisationFilter.length > 0) {
+    url = `${url}&service_codes=${organisationFilter.join('|')}`
+  }
 
   const response = await axios.get(url)
   if (response && response.data && response.data.length > 0) {
@@ -71,7 +75,7 @@ export async function getQueryStops (
 }
 
 export async function getAllStops () {
-  const response = await axios.get(`${config.mobilesApi}/stops`)
+  const response = await axios.get(`${config.api}/stops`)
   if (response && response.data && response.data.length > 0) {
     return response.data.map(s => new Stop().fromJson(s))
   } else {
@@ -80,7 +84,7 @@ export async function getAllStops () {
 }
 
 export async function getStopById (id) {
-  const response = await axios.get(`${config.mobilesApi}/stops/${id}`)
+  const response = await axios.get(`${config.api}/stops/${id}`)
   if (response && response.data) {
     return new Stop().fromJson(response.data)
   } else {

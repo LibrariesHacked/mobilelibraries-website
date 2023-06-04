@@ -25,7 +25,7 @@ function MobileLibraries () {
       searchPosition,
       searchPostcode,
       searchType,
-      serviceFilter
+      organisationFilter
     },
     dispatchSearch
   ] = useSearchStateValue() //eslint-disable-line
@@ -91,7 +91,7 @@ function MobileLibraries () {
       sortModel: sortModel,
       searchPosition: searchPosition,
       searchDistance: mobileSearchDistance,
-      serviceFilter: serviceFilter
+      organisationFilter: organisationFilter
     })
     // eslint-disable-next-line
   }, [
@@ -100,7 +100,7 @@ function MobileLibraries () {
     sortModel,
     searchPosition,
     mobileSearchDistance,
-    serviceFilter
+    organisationFilter
   ])
 
   useEffect(() => fetchLibraries(), [fetchLibraries])

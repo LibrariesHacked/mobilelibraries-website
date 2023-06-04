@@ -53,10 +53,10 @@ function StopDetails () {
   }, [currentStopId])
 
   const getStopCalendar = () =>
-    window.open(config.mobilesApi + '/stops/' + stop.id + '/ics')
+    window.open(config.api + '/stops/' + stop.id + '/ics')
 
   const getStopPdf = () =>
-    window.open(config.mobilesApi + '/stops/' + stop.id + '/pdf', '_blank')
+    window.open(config.api + '/stops/' + stop.id + '/pdf', '_blank')
 
   const goToWebsite = () => window.open(stop.timetable, '_blank')
 
