@@ -8,7 +8,7 @@ import Face from '@mui/icons-material/FaceRounded'
 function MeAvatar () {
   return (
     <Tooltip title='Me'>
-      <Avatar>
+      <Avatar color='primary'>
         <Face />
       </Avatar>
     </Tooltip>

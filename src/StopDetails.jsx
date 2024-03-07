@@ -34,7 +34,7 @@ import { useViewStateValue } from './context/viewState'
 
 import * as stopModel from './models/stops'
 
-const config = require('./helpers/config.json')
+import config from './helpers/config.json'
 
 function StopDetails () {
   const [{ currentStopId }, dispatchSearch] = useSearchStateValue() //eslint-disable-line

@@ -9,6 +9,7 @@ import ListSubheader from '@mui/material/ListSubheader'
 import Typography from '@mui/material/Typography'
 
 import { useTheme } from '@mui/material/styles'
+
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 import CancelIcon from '@mui/icons-material/CancelTwoTone'
@@ -39,7 +40,8 @@ function TripDetails () {
   const theme = useTheme()
 
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const estimatedDuration = Math.round(trip.duration / 60) + ' mins journey time.'
+  const estimatedDuration =
+    Math.round(trip.duration / 60) + ' mins journey time.'
   const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)'
 
   return (
@@ -52,11 +54,17 @@ function TripDetails () {
     >
       <DialogTitle>Trip details</DialogTitle>
       <DialogContent>
-        <ListSubheader disableSticky>{'From ' + trip.originStopName + ' to ' + trip.destinationStopName}</ListSubheader>
-        <Typography variant='body2' component='p'>{estimatedDuration + ' ' + distance}</Typography>
+        <ListSubheader disableSticky>
+          {'From ' + trip.originStopName + ' to ' + trip.destinationStopName}
+        </ListSubheader>
+        <Typography variant='body2' component='p'>
+          {estimatedDuration + ' ' + distance}
+        </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={close} color='secondary' endIcon={<CancelIcon />}>Close</Button>
+        <Button onClick={close} color='secondary' endIcon={<CancelIcon />}>
+          Close
+        </Button>
       </DialogActions>
     </Dialog>
   )

@@ -3,7 +3,7 @@ import moment from 'moment'
 
 import { getText } from '../helpers/rrule'
 
-const config = require('../helpers/config.json')
+import config from '../helpers/config.json'
 
 export class Stop {
   constructor (obj) {

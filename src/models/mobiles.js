@@ -1,7 +1,7 @@
 import axios from 'axios'
 import moment from 'moment'
 
-const config = require('../helpers/config.json')
+import config from '../helpers/config.json'
 
 export class Mobile {
   constructor (obj) {

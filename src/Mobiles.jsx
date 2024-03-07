@@ -22,7 +22,6 @@ function Mobiles () {
       mobileLookup,
       mobileLocationLookup,
       mobilesNearestLookup,
-      routes,
       routeLookup
     },
     dispatchApplication

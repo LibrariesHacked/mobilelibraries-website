@@ -14,10 +14,7 @@ import Map, {
   Marker,
   NavigationControl,
   AttributionControl
-} from 'react-map-gl'
-
-// eslint-disable-next-line import/no-webpack-loader-syntax
-import maplibregl from '!maplibre-gl'
+} from 'react-map-gl/maplibre'
 
 import DirectionsBike from '@mui/icons-material/DirectionsBikeRounded'
 import DirectionsWalk from '@mui/icons-material/DirectionsWalkRounded'
@@ -36,7 +33,7 @@ import PostcodeSearch from './PostcodeSearch'
 import * as isochroneModel from './models/isochrone'
 import * as stopModel from './models/stops'
 
-const config = require('./helpers/config.json')
+import config from './helpers/config.json'
 
 const libraryTiles = config.libraryTiles
 const libraryBuildingsTiles = config.libraryBuildingsTiles

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const config = require('../helpers/config.json')
+import config from '../helpers/config.json'
 
 export class Trip {
   constructor (obj) {
@@ -23,7 +23,7 @@ export class Trip {
 export async function getAllTrips () {
   const response = await axios.get(config.api + '/trips')
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(t => (new Trip()).fromJson(t))
+    return response.data.map(t => new Trip().fromJson(t))
   } else {
     return []
   }
@@ -32,7 +32,7 @@ export async function getAllTrips () {
 export async function getTripById (id) {
   const response = await axios.get(config.api + '/trips/' + id)
   if (response && response.data) {
-    return (new Trip()).fromJson(response.data)
+    return new Trip().fromJson(response.data)
   } else {
     return []
   }

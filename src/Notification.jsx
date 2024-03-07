@@ -8,7 +8,8 @@ import CloseIcon from '@mui/icons-material/CloseTwoTone'
 import { useViewStateValue } from './context/viewState'
 
 function Notification () {
-  const [{ notificationOpen, notificationMessage }, dispatchView] = useViewStateValue() //eslint-disable-line
+  const [{ notificationOpen, notificationMessage }, dispatchView] =
+    useViewStateValue() //eslint-disable-line
 
   const handleClose = () => {
     dispatchView({ type: 'SetNotification', notificationOpen: false })

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react'
 
 import { useTheme } from '@mui/material/styles'
+
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 import ListSubheader from '@mui/material/ListSubheader'
@@ -17,11 +18,10 @@ import { useViewStateValue } from './context/viewState'
 import useMobileStopsQuery from './hooks/useMobileStopsQuery'
 import usePrevious from './hooks/usePrevious'
 
-function MobileLibraries () {
+function Stops () {
   const [
     {
-      currentService,
-      mobileSearchDistance,
+      searchDistance,
       searchPosition,
       searchPostcode,
       searchType,
@@ -43,8 +43,8 @@ function MobileLibraries () {
   const [filterModel, setFilterModel] = useState({
     items: [
       {
-        columnField: 'localAuthority',
-        operatorValue: 'contains',
+        field: 'localAuthority',
+        operator: 'contains',
         value: ''
       }
     ]
@@ -68,7 +68,7 @@ function MobileLibraries () {
     pageInfo?.totalRowCount || 0
   )
 
-  const fetchLibraries = useCallback(() => {
+  const fetchStops = useCallback(() => {
     if (
       prevPosition &&
       prevPosition.length === 0 &&
@@ -90,7 +90,7 @@ function MobileLibraries () {
       pageSize: pageSize,
       sortModel: sortModel,
       searchPosition: searchPosition,
-      searchDistance: mobileSearchDistance,
+      searchDistance: searchDistance,
       organisationFilter: organisationFilter
     })
     // eslint-disable-next-line
@@ -99,11 +99,11 @@ function MobileLibraries () {
     pageSize,
     sortModel,
     searchPosition,
-    mobileSearchDistance,
+    searchDistance,
     organisationFilter
   ])
 
-  useEffect(() => fetchLibraries(), [fetchLibraries])
+  // useEffect(() => fetchStops(), [fetchStops])
 
   React.useEffect(() => {
     setRowCountState(prevRowCountState =>
@@ -116,17 +116,6 @@ function MobileLibraries () {
   const selectStop = stop => {
     dispatchSearch({ type: 'SetCurrentStop', currentStopId: stop.id })
     dispatchView({ type: 'SetStopDialog', stopDialogOpen: true })
-  }
-
-  const mobilesHeader = () => {
-    switch (searchType) {
-      case 'postcode':
-        return `Mobile stops near ${searchPostcode}`
-      case 'service':
-        return `Mobile stops in ${currentService.name}`
-      default:
-        return 'Mobile stops'
-    }
   }
 
   const columns = [
@@ -167,7 +156,7 @@ function MobileLibraries () {
         disableSticky
         sx={{ textAlign: 'center', marginTop: theme => theme.spacing(3) }}
       >
-        {mobilesHeader()}
+        Stops
       </ListSubheader>
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ flexGrow: 1 }}>
@@ -232,4 +221,4 @@ function MobileLibraries () {
   )
 }
 
-export default MobileLibraries
+export default Stops

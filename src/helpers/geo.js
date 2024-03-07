@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const config = require('./config.json')
+import config from './config.json'
 
 export const getPosition = (options = {}) => {
   return new Promise((resolve, reject) => {
@@ -29,9 +29,7 @@ export const getCurrentPostcode = async (lon, lat) => {
         return postcodes[0].postcode
       }
     }
-  } catch (e) {
-    console.log(e)
-  }
+  } catch (e) {}
 }
 
 export const getPostcode = async postcode => {
