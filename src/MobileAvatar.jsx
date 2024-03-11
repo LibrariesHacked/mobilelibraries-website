@@ -3,13 +3,13 @@ import React from 'react'
 import Fab from '@mui/material/Fab'
 import Tooltip from '@mui/material/Tooltip'
 
-import DirectionBusIcon from '@mui/icons-material/DirectionsBusTwoTone'
+import DirectionBusIcon from '@mui/icons-material/DirectionsBusRounded'
 
 import { useViewStateValue } from './context/viewState'
 
 import * as utilsHelper from './helpers/utils'
 
-function MobileAvatar (props) {
+const MobileAvatar = props => {
   const [{ mapZoom }] = useViewStateValue()
   const { location, organisation } = props
 

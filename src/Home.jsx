@@ -5,7 +5,7 @@ import Box from '@mui/material/Box'
 import Search from './Search'
 import Stops from './Stops'
 
-function Home () {
+const Home = () => {
   return (
     <Box sx={{ maxWidth: '100%' }}>
       <Search />

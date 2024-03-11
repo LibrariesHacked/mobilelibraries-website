@@ -14,7 +14,7 @@ import DirectionsIcon from '@mui/icons-material/DirectionsTwoTone'
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 
-function Filters () {
+const Filters = () => {
   const [
     {
       organisations,

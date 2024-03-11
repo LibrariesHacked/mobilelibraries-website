@@ -5,7 +5,7 @@ import Tooltip from '@mui/material/Tooltip'
 
 import Face from '@mui/icons-material/FaceRounded'
 
-function MeAvatar () {
+const MeAvatar = () => {
   return (
     <Tooltip title='Me'>
       <Avatar color='primary'>

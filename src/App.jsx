@@ -12,7 +12,7 @@ import MobilesApplication from './MobilesApplication'
 
 import theme from './theme'
 
-function App () {
+const App = () => {
   return (
     <ApplicationStateProvider>
       <SearchStateProvider>

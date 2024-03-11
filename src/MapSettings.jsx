@@ -10,7 +10,7 @@ import Switch from '@mui/material/Switch'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
 
-import CancelIcon from '@mui/icons-material/CancelTwoTone'
+import CancelIcon from '@mui/icons-material/CancelRounded'
 
 import { useTheme } from '@mui/material/styles'
 
@@ -36,8 +36,10 @@ function MapSettings () {
       fullScreen={fullScreen}
       open={mapSettingsDialogOpen}
       onClose={closeDialog}
-      BackdropProps={{
-        invisible: true
+      slotProps={{
+        backdrop: {
+          invisible: true
+        }
       }}
       PaperProps={{ elevation: 0 }}
     >

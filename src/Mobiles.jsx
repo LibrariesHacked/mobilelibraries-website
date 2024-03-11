@@ -14,7 +14,7 @@ import { useViewStateValue } from './context/viewState'
 import Search from './Search'
 import MobileCard from './MobileCard'
 
-function Mobiles () {
+const Mobiles = () => {
   const [
     {
       organisationLookup,

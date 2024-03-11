@@ -36,7 +36,7 @@ import * as stopModel from './models/stops'
 
 import config from './helpers/config.json'
 
-function StopDetails () {
+const StopDetails = () => {
   const [{ currentStopId }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ stopDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
 

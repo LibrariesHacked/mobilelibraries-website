@@ -46,7 +46,7 @@ const SearchBox = ({ children }) => {
   )
 }
 
-function PostcodeSearch () {
+const PostcodeSearch = () => {
   const [{ searchType, searchPostcode, searchPosition }, dispatchSearch] =
     useSearchStateValue() //eslint-disable-line
   const [{ loadingPostcode, loadingLocation }, dispatchView] =

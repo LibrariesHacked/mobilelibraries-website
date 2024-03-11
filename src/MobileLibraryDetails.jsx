@@ -17,7 +17,7 @@ import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
-function MobileLibraryDetails () {
+const MobileLibraryDetails = () => {
   const [{ mobileLookup }] = useApplicationStateValue()
   const [{ currentMobileLibraryId }] = useSearchStateValue()
   const [{ mobileLibraryDialogOpen }, dispatchView] = useViewStateValue()

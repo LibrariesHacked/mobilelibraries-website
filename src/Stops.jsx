@@ -18,7 +18,7 @@ import { useViewStateValue } from './context/viewState'
 import useMobileStopsQuery from './hooks/useMobileStopsQuery'
 import usePrevious from './hooks/usePrevious'
 
-function Stops () {
+const Stops = () => {
   const [
     {
       searchDistance,
@@ -103,7 +103,7 @@ function Stops () {
     organisationFilter
   ])
 
-  // useEffect(() => fetchStops(), [fetchStops])
+  useEffect(() => fetchStops(), [fetchStops])
 
   React.useEffect(() => {
     setRowCountState(prevRowCountState =>

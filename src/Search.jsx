@@ -1,24 +1,30 @@
 import React from 'react'
 
+import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 
 import PostcodeSearch from './PostcodeSearch'
 import ServiceFilter from './ServiceFilter'
 
-function Search () {
+const Search = () => {
   return (
-    <>
-      <Typography color='secondary' component='h2' variant='h3'>
+    <Box sx={{ textAlign: 'center' }}>
+      <Typography
+        color='secondary'
+        component='h2'
+        variant='h2'
+        sx={{ marginTop: theme => theme.spacing(2) }}
+      >
         Mobile libraries
       </Typography>
-      <Typography component='p' variant='body1'>
-        Search by postcode or library service
+      <Typography component='p' variant='h6' color='primary'>
+        Find your nearest mobile library stop
       </Typography>
-      <div>
+      <Box sx={{ margin: theme => theme.spacing(2) }}>
         <PostcodeSearch settings />
-      </div>
+      </Box>
       <ServiceFilter />
-    </>
+    </Box>
   )
 }
 

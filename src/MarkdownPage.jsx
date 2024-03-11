@@ -46,7 +46,7 @@ const options = {
   }
 }
 
-export function MarkdownPage (props) {
+const MarkdownPage = props => {
   const { page } = props
   const [pageText, setPageText] = useState('')
 
@@ -66,4 +66,6 @@ export function MarkdownPage (props) {
   )
 }
 
-export const MemoMarkdownPage = React.memo(MarkdownPage)
+const MemoMarkdownPage = React.memo(MarkdownPage)
+
+export default MemoMarkdownPage

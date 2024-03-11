@@ -8,7 +8,7 @@ import Typography from '@mui/material/Typography'
 
 import { Carbonbadge } from 'react-carbonbadge'
 
-function Footer () {
+const Footer = () => {
   const mapPage = useMatch('/map')
   return (
     <>
@@ -25,7 +25,7 @@ function Footer () {
             <MaterialLink
               component={Link}
               to='/accessibility'
-              title='About the Accessibility of this site'
+              title='About the accessibility of this site'
             >
               Accessibility
             </MaterialLink>

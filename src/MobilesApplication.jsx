@@ -5,7 +5,7 @@ import Container from '@mui/material/Container'
 
 import Header from './Header'
 import Footer from './Footer'
-import { MemoMarkdownPage } from './MarkdownPage'
+import MemoMarkdownPage from './MarkdownPage'
 import Mobiles from './Mobiles'
 import MobileLibraryDetails from './MobileLibraryDetails'
 import MobileMap from './MobileMap'
@@ -25,7 +25,7 @@ import * as routesModel from './models/routes'
 import { useApplicationStateValue } from './context/applicationState'
 import { useViewStateValue } from './context/viewState'
 
-function MobilesApplication () {
+const MobilesApplication = () => {
   const [
     {
       loadingOrganisations,

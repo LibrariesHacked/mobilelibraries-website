@@ -18,7 +18,7 @@ import WebIcon from '@mui/icons-material/WebTwoTone'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
-function MobileCard (props) {
+const MobileCard = props => {
   const { mobile, organisation, location } = props
   const [{}, dispatchSearch] = useSearchStateValue() // eslint-disable-line
   const [{}, dispatchView] = useViewStateValue() // eslint-disable-line
