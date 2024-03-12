@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton'
 import InputBase from '@mui/material/InputBase'
 import Tooltip from '@mui/material/Tooltip'
 
-import { alpha } from '@mui/material/styles'
+import { alpha, lighten } from '@mui/material/styles'
 
 import ClearIcon from '@mui/icons-material/ClearRounded'
 import MyLocationIcon from '@mui/icons-material/MyLocationRounded'
@@ -139,17 +139,15 @@ const PostcodeSearch = () => {
       <Box
         sx={{
           position: 'relative',
-          borderRadius: 1,
-          backgroundColor: theme => alpha(theme.palette.primary.main, 1),
-          '&:hover': {
-            backgroundColor: theme => alpha(theme.palette.primary.main, 0.9)
-          },
+          backgroundColor: theme => alpha(theme.palette.primary.main, 0.05),
           marginLeft: 0,
           paddingLeft: 0,
           whitespace: 'nowrap',
           display: 'inline-flex',
-          color: 'white',
-          zIndex: 1000
+          color: theme => theme.palette.primary.main,
+          borderRadius: '6px',
+          border: theme =>
+            `2px solid ${lighten(theme.palette.primary.main, 0.5)}`
         }}
       >
         <InputBase
@@ -161,9 +159,10 @@ const PostcodeSearch = () => {
           }}
           inputProps={{ 'aria-label': 'search by postcode' }}
           sx={{
-            paddingLeft: theme => theme.spacing(1),
+            paddingLeft: theme => theme.spacing(2),
             maxWidth: 110,
-            color: 'white'
+            color: theme => theme.palette.secondary.main,
+            fontWeight: 700
           }}
         />
         {!loadingPostcode ? (
