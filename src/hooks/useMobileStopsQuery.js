@@ -21,7 +21,9 @@ const useMobileStopsQuery = () => {
       },
       queryOptions.searchPosition,
       queryOptions.searchDistance,
-      queryOptions.organisationFilter
+      queryOptions.organisationFilter,
+      queryOptions.mobileFilter,
+      queryOptions.routeFilter
     )
     setLoadingMobileStops(false)
     setMobileStops(response.stops)

@@ -44,7 +44,9 @@ export async function getQueryStops (
   query,
   searchPosition,
   distance,
-  organisationFilter
+  organisationFilter,
+  mobileFilter, 
+  routeFilter
 ) {
   let url = `${config.api}/stops?page=${query.page + 1}&limit=${query.pageSize}`
 
@@ -59,7 +61,15 @@ export async function getQueryStops (
   if (distance && distance !== '') url = `${url}&distance=${distance}`
 
   if (organisationFilter.length > 0) {
-    url = `${url}&service_codes=${organisationFilter.join('|')}`
+    url = `${url}&organisation_ids=${organisationFilter.join('|')}`
+  }
+
+  if (mobileFilter.length > 0) {
+    url = `${url}&mobile_ids=${mobileFilter.join('|')}`
+  }
+
+  if (routeFilter.length > 0) {
+    url = `${url}&route_ids=${routeFilter.join('|')}`
   }
 
   const response = await axios.get(url)

@@ -25,7 +25,9 @@ const Stops = () => {
       searchPosition,
       searchPostcode,
       searchType,
-      organisationFilter
+      organisationFilter,
+      mobileFilter,
+      routeFilter
     },
     dispatchSearch
   ] = useSearchStateValue() //eslint-disable-line
@@ -91,7 +93,9 @@ const Stops = () => {
       sortModel: sortModel,
       searchPosition: searchPosition,
       searchDistance: searchDistance,
-      organisationFilter: organisationFilter
+      organisationFilter: organisationFilter,
+      mobileFilter: mobileFilter,
+      routeFilter: routeFilter
     })
     // eslint-disable-next-line
   }, [
@@ -100,7 +104,9 @@ const Stops = () => {
     sortModel,
     searchPosition,
     searchDistance,
-    organisationFilter
+    organisationFilter,
+    mobileFilter,
+    routeFilter
   ])
 
   useEffect(() => fetchStops(), [fetchStops])
