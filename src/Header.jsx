@@ -15,7 +15,17 @@ const Header = () => {
   const location = useLocation()
 
   return (
-    <Box sx={{ flexGrow: 1, margin: theme => theme.spacing() }}>
+    <Box
+      sx={{
+        position: 'relative',
+        flexGrow: 1,
+        margin: theme => theme.spacing(1),
+        padding: theme => theme.spacing(1),
+        borderRadius: theme => theme.shape.borderRadius,
+        zIndex: 10000,
+        backgroundColor: 'white'
+      }}
+    >
       <Container>
         <Tabs value={location.pathname} centered>
           <Tab

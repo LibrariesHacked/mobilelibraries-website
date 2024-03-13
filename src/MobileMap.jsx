@@ -27,11 +27,9 @@ import * as stopModel from './models/stops'
 import config from './helpers/config.json'
 
 const libraryAuthorityTiles = config.libraryAuthorityTiles
-const stopTiles = config.stopTiles
-const tripTiles = config.tripTiles
+const mobileTiles = config.mobileTiles
 
-const MobileMap = props => {
-  const { containerStyle } = props
+const MobileMap = () => {
   const [
     {
       searchType,
@@ -101,7 +99,7 @@ const MobileMap = props => {
     const features = map.queryRenderedFeatures(event.point)
     if (features && features.length > 0) {
       for (const feature of features) {
-        if (feature.sourceLayer === 'stop') {
+        if (feature.sourceLayer === 'stops') {
           await clickStop(feature, event.point)
           break
         }
@@ -119,8 +117,14 @@ const MobileMap = props => {
       </Box>
       <Map
         ref={setMap}
-        style={containerStyle}
-        mapStyle='https://zoomstack.librarydata.uk/light.json'
+        style={{
+          width: '100vw',
+          height: '100vh',
+          position: 'absolute',
+          top: 0,
+          left: 0
+        }}
+        mapStyle='https://api.maptiler.com/maps/dataviz/style.json?key=1OK05AJqNta7xYzrG2kA'
         longitude={mapPosition[0]}
         latitude={mapPosition[1]}
         zoom={mapZoom}
@@ -128,8 +132,7 @@ const MobileMap = props => {
         onMove={evt => setViewState(evt.viewState)}
         onClick={clickMap}
       >
-        <AttributionControl customAttribution='Contains OS data © Crown copyright and database right 2023' />
-        {currentService && currentService.geojson ? (
+        {currentService && currentService.geojson && (
           <Source type='geojson' data={JSON.parse(currentService.geojson)}>
             <Layer
               type='line'
@@ -140,7 +143,7 @@ const MobileMap = props => {
               }}
             />
           </Source>
-        ) : null}
+        )}
 
         <Source type='vector' tiles={[libraryAuthorityTiles]}>
           {mapSettings.authorityBoundary ? (
@@ -171,10 +174,11 @@ const MobileMap = props => {
             />
           ) : null}
         </Source>
-        <Source type='vector' tiles={[tripTiles]}>
+
+        <Source type='vector' tiles={[mobileTiles]}>
           <Layer
             type='line'
-            source-layer='trip'
+            source-layer='trips'
             minzoom={14}
             layout={{
               'line-join': 'round',
@@ -197,112 +201,106 @@ const MobileMap = props => {
             }}
           />
         </Source>
-        <Source type='vector' tiles={[stopTiles]}>
-          {mapSettings.mobileLibraryStops ? (
-            <Layer
-              type='circle'
-              source-layer='stop'
-              minzoom={5}
-              layout={{}}
-              paint={{
-                'circle-radius': [
-                  'interpolate',
-                  ['linear'],
-                  ['zoom'],
-                  5,
-                  2,
-                  18,
-                  8
-                ],
-                'circle-color': '#455a64',
-                'circle-stroke-width': [
-                  'interpolate',
-                  ['linear'],
-                  ['zoom'],
-                  5,
-                  1,
-                  18,
-                  3
-                ],
-                'circle-stroke-color': '#ffffff',
-                'circle-opacity': 0.5
-              }}
-            />
-          ) : null}
-          {mapSettings.mobileLibraryStops ? (
-            <Layer
-              type='symbol'
-              source-layer='stop'
-              minzoom={13}
-              layout={{
-                'text-ignore-placement': false,
-                'text-field': ['concat', 'Mobile: ', ['get', 'name']],
-                'text-font': ['Source Sans Pro Bold'],
-                'text-line-height': 1,
-                'text-size': [
-                  'interpolate',
-                  ['linear'],
-                  ['zoom'],
-                  13,
-                  12,
-                  18,
-                  18
-                ],
-                'text-offset': [
-                  'interpolate',
-                  ['linear'],
-                  ['zoom'],
-                  13,
-                  ['literal', [0, 1.5]],
-                  18,
-                  ['literal', [0, 2]]
-                ]
-              }}
-              paint={{
-                'text-halo-color': 'hsl(0, 0%, 100%)',
-                'text-halo-width': 1,
-                'text-halo-blur': 1,
-                'text-color': '#6a6f73'
-              }}
-            />
-          ) : null}
-          {mapSettings.mobileLibraryStops ? (
-            <Layer
-              type='symbol'
-              source-layer='stop'
-              minzoom={14}
-              layout={{
-                'text-ignore-placement': false,
-                'text-field': ['to-string', ['get', 'next_visiting']],
-                'text-font': ['Source Sans Pro Bold'],
-                'text-line-height': 1,
-                'text-size': [
-                  'interpolate',
-                  ['linear'],
-                  ['zoom'],
-                  14,
-                  10,
-                  18,
-                  16
-                ],
-                'text-offset': [
-                  'interpolate',
-                  ['linear'],
-                  ['zoom'],
-                  13,
-                  ['literal', [0, -1.5]],
-                  18,
-                  ['literal', [0, -2]]
-                ]
-              }}
-              paint={{
-                'text-halo-color': 'hsl(0, 0%, 100%)',
-                'text-halo-width': 1,
-                'text-halo-blur': 1,
-                'text-color': '#6a6f73'
-              }}
-            />
-          ) : null}
+        <Source type='vector' tiles={[mobileTiles]} maxzoom={14}>
+          <Layer
+            type='circle'
+            source-layer='stops'
+            minzoom={5}
+            layout={{}}
+            paint={{
+              'circle-radius': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                5,
+                2,
+                18,
+                8
+              ],
+              'circle-color': '#455a64',
+              'circle-stroke-width': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                5,
+                1,
+                18,
+                3
+              ],
+              'circle-stroke-color': '#ffffff',
+              'circle-opacity': 0.5
+            }}
+          />
+          <Layer
+            type='symbol'
+            source-layer='stops'
+            minzoom={13}
+            layout={{
+              'text-ignore-placement': false,
+              'text-field': ['get', 'name'],
+              'text-font': ['Source Sans Pro Bold'],
+              'text-line-height': 1,
+              'text-size': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                13,
+                12,
+                18,
+                18
+              ],
+              'text-offset': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                13,
+                ['literal', [0, 1.5]],
+                18,
+                ['literal', [0, 2]]
+              ]
+            }}
+            paint={{
+              'text-halo-color': 'hsl(0, 0%, 100%)',
+              'text-halo-width': 1,
+              'text-halo-blur': 1,
+              'text-color': '#6a6f73'
+            }}
+          />
+          <Layer
+            type='symbol'
+            source-layer='stops'
+            minzoom={14}
+            layout={{
+              'text-ignore-placement': false,
+              'text-field': ['to-string', ['get', 'next_visiting']],
+              'text-font': ['Source Sans Pro Bold'],
+              'text-line-height': 1,
+              'text-size': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                14,
+                10,
+                18,
+                16
+              ],
+              'text-offset': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                13,
+                ['literal', [0, -1.5]],
+                18,
+                ['literal', [0, -2]]
+              ]
+            }}
+            paint={{
+              'text-halo-color': 'hsl(0, 0%, 100%)',
+              'text-halo-width': 1,
+              'text-halo-blur': 1,
+              'text-color': '#6a6f73'
+            }}
+          />
         </Source>
         {searchPosition && searchPosition.length > 1 ? (
           <Marker longitude={searchPosition[0]} latitude={searchPosition[1]}>

@@ -99,44 +99,41 @@ const MobilesApplication = () => {
 
   return (
     <BrowserRouter>
-      <div>
-        <Header
-          loading={
-            loadingOrganisations ||
-            loadingMobiles ||
-            loadingRoutes ||
-            loadingMobileLocations ||
-            loadingNearestMobiles ||
-            loadingPostcode
-          }
-          site={2}
-        />
-        <Container maxWidth='lg'>
-          <main>
-            <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='/mobiles' element={<Mobiles />} />
-              <Route path='/map' element={<MobileMap />} />
-              <Route
-                path='/accessibility'
-                element={<MemoMarkdownPage page={Accessibility} />}
-              />
-              <Route path='/data' element={<MemoMarkdownPage page={Data} />} />
-              <Route
-                path='/privacy'
-                element={<MemoMarkdownPage page={Privacy} />}
-              />
-            </Routes>
-          </main>
-        </Container>
-        <Container maxWidth='lg'>
-          <Footer />
-        </Container>
-        <StopDetails />
-        <MobileLibraryDetails />
-        <TripDetails />
-        <Notification />
-      </div>
+      <Header
+        loading={
+          loadingOrganisations ||
+          loadingMobiles ||
+          loadingRoutes ||
+          loadingMobileLocations ||
+          loadingNearestMobiles ||
+          loadingPostcode
+        }
+      />
+      <Container maxWidth='lg'>
+        <main>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/mobiles' element={<Mobiles />} />
+            <Route path='/map' element={<MobileMap />} />
+            <Route
+              path='/accessibility'
+              element={<MemoMarkdownPage page={Accessibility} />}
+            />
+            <Route path='/data' element={<MemoMarkdownPage page={Data} />} />
+            <Route
+              path='/privacy'
+              element={<MemoMarkdownPage page={Privacy} />}
+            />
+          </Routes>
+        </main>
+      </Container>
+      <Container maxWidth='lg'>
+        <Footer />
+      </Container>
+      <StopDetails />
+      <MobileLibraryDetails />
+      <TripDetails />
+      <Notification />
     </BrowserRouter>
   )
 }
