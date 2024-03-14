@@ -1,7 +1,9 @@
 import axios from 'axios'
 import moment from 'moment'
 
-const config = require('../helpers/config.json')
+import { getText } from '../helpers/rrule'
+
+import config from '../helpers/config.json'
 
 export class Stop {
   constructor (obj) {
@@ -26,50 +28,75 @@ export class Stop {
     this.routeEnd = moment(json.route_end)
     this.routeDays = json.route_days
     this.routeFrequencies = json.route_frequencies
+    this.routeFrequencyDescriptions = json.route_frequencies.map(f =>
+      getText(f)
+    )
     this.routeSchedule = json.route_schedule.map(s => moment(s))
     this.timetable = json.timetable
     this.longitude = json.longitude
     this.latitude = json.latitude
+    this.distance = json.distance
     return this
   }
 }
 
-export async function getQueryStops (query, organisationFilters, mobileFilters, routeFilters, searchPosition, distance) {
-  let url = config.api + '/stops?page=' + (query.page + 1) + '&limit=' + query.pageSize
-  if (query.orderBy && query.orderBy.field) url = url + '&sort=' + query.orderBy.field + '&direction=' + query.orderDirection
+export async function getQueryStops (
+  query,
+  searchPosition,
+  distance,
+  organisationFilter,
+  mobileFilter, 
+  routeFilter
+) {
+  let url = `${config.api}/stops?page=${query.page + 1}&limit=${query.pageSize}`
 
-  if (mobileFilters.length > 0) url = url + '&mobile_ids=' + mobileFilters.join('|')
-  if (organisationFilters.length > 0) url = url + '&organisation_ids=' + organisationFilters.join('|')
-  if (routeFilters.length > 0) url = url + '&route_ids=' + routeFilters.join('|')
+  if (query.orderBy && query.orderBy.field) {
+    url = `${url}&sort=${query.orderBy.field}&direction=${query.orderBy.direction}`
+  }
 
-  if (searchPosition && searchPosition.length > 1) url = url + '&longitude=' + searchPosition[0] + '&latitude=' + searchPosition[1]
-  if (distance && distance !== '') url = url + '&distance=' + distance
+  if (searchPosition && searchPosition.length > 1) {
+    url = `${url}&longitude=${searchPosition[0]}&latitude=${searchPosition[1]}`
+  }
+
+  if (distance && distance !== '') url = `${url}&distance=${distance}`
+
+  if (organisationFilter.length > 0) {
+    url = `${url}&organisation_ids=${organisationFilter.join('|')}`
+  }
+
+  if (mobileFilter.length > 0) {
+    url = `${url}&mobile_ids=${mobileFilter.join('|')}`
+  }
+
+  if (routeFilter.length > 0) {
+    url = `${url}&route_ids=${routeFilter.join('|')}`
+  }
 
   const response = await axios.get(url)
   if (response && response.data && response.data.length > 0) {
     return {
-      stops: response.data.map(s => (new Stop()).fromJson(s)),
-      total: parseInt(response.headers['x-total-count']),
-      page: parseInt(response.headers['x-page'])
+      stops: response.data.map(s => new Stop().fromJson(s)),
+      totalRowCount: parseInt(response.headers['x-total-count']),
+      currentPage: parseInt(response.headers['x-page'])
     }
   } else {
-    return { stops: [], total: 0, page: 1 }
+    return { stops: [], totalRowCount: 0, currentPage: 1 }
   }
 }
 
 export async function getAllStops () {
-  const response = await axios.get(config.api + '/stops')
+  const response = await axios.get(`${config.api}/stops`)
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(s => (new Stop()).fromJson(s))
+    return response.data.map(s => new Stop().fromJson(s))
   } else {
     return []
   }
 }
 
 export async function getStopById (id) {
-  const response = await axios.get(config.api + '/stops/' + id)
+  const response = await axios.get(`${config.api}/stops/${id}`)
   if (response && response.data) {
-    return (new Stop()).fromJson(response.data)
+    return new Stop().fromJson(response.data)
   } else {
     return {}
   }

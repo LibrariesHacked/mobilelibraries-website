@@ -1,7 +1,7 @@
 import axios from 'axios'
 import moment from 'moment'
 
-const config = require('../helpers/config.json')
+import config from '../helpers/config.json'
 
 export class Route {
   constructor (obj) {
@@ -25,7 +25,7 @@ export class Route {
 export async function getAllRoutes () {
   const response = await axios.get(config.api + '/routes')
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(r => (new Route()).fromJson(r))
+    return response.data.map(r => new Route().fromJson(r))
   } else {
     return []
   }

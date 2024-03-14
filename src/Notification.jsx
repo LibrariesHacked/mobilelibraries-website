@@ -1,14 +1,15 @@
 import React from 'react'
 
-import IconButton from '@material-ui/core/IconButton'
-import Snackbar from '@material-ui/core/Snackbar'
+import IconButton from '@mui/material/IconButton'
+import Snackbar from '@mui/material/Snackbar'
 
-import CloseIcon from '@material-ui/icons/CloseTwoTone'
+import CloseIcon from '@mui/icons-material/CloseTwoTone'
 
 import { useViewStateValue } from './context/viewState'
 
-function Notification () {
-  const [{ notificationOpen, notificationMessage }, dispatchView] = useViewStateValue() //eslint-disable-line
+const Notification = () => {
+  const [{ notificationOpen, notificationMessage }, dispatchView] =
+    useViewStateValue() //eslint-disable-line
 
   const handleClose = () => {
     dispatchView({ type: 'SetNotification', notificationOpen: false })
@@ -33,6 +34,7 @@ function Notification () {
           aria-label='close'
           onClick={handleClose}
           color='secondary'
+          size='large'
         >
           <CloseIcon />
         </IconButton>

@@ -4,7 +4,7 @@ export const addService = (history, systemName) => {
   history.push(window.location.pathname + '?' + currentUrlParams.toString())
 }
 
-export const clearService = (history) => {
+export const clearService = history => {
   const currentUrlParams = new URLSearchParams(window.location.search)
   currentUrlParams.delete('service')
   history.push(window.location.pathname)

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const config = require('../helpers/config.json')
+import config from '../helpers/config.json'
 
 export class Organisation {
   constructor (obj) {
@@ -27,7 +27,7 @@ export class Organisation {
 export async function getAllOrganisations () {
   const response = await axios.get(config.api + '/organisations')
   if (response && response.data && response.data.length > 0) {
-    return response.data.map(o => (new Organisation()).fromJson(o))
+    return response.data.map(o => new Organisation().fromJson(o))
   } else {
     return []
   }
