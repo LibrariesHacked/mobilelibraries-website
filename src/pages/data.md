@@ -9,11 +9,11 @@ This website is designed to display library data published in a standard data fo
 The website was created using the following data sources:
 
 - Northern Ireland mobile library stops from [LibrariesNI](https://www.librariesni.org.uk/)
-- Various mobile library stops from individual library service websites
+- Various mobile library stops from individual library authority websites
 
 ### Updating data
 
-Library services can maintain their own data, and publish it where they think best.
+Library authorities can maintain their own data, and publish it where they think best.
 
 1. The data should be published online as a spreadsheet in CSV (comma separated values) format.
 2. The data should conform to the schema for [mobile library stops](https://schema.librarydata.uk/mobile-library-stops). Help is available in getting this set up, and validating the data.

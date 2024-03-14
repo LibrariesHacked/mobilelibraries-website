@@ -8,8 +8,7 @@ import Map, {
   Source,
   Layer,
   Marker,
-  NavigationControl,
-  AttributionControl
+  NavigationControl
 } from 'react-map-gl/maplibre'
 
 import LayersIcon from '@mui/icons-material/LayersRounded'
@@ -83,11 +82,25 @@ const MobileMap = () => {
 
   const clickStop = async (feature, point) => {
     const id = feature.properties.id
-    const stop = await stopModel.getStopById(id)
     dispatchSearch({
       type: 'SetCurrentStop',
-      currentStopId: id,
-      currentPoint: [stop.longitude, stop.latitude]
+      currentStopId: id
+    })
+    dispatchView({
+      type: 'SetStopDialog',
+      stopDialogOpen: true
+    })
+  }
+
+  const clickTrip = (feature, point) => {
+    const id = feature.properties.id
+    dispatchSearch({
+      type: 'SetCurrentTrip',
+      currentTripId: id
+    })
+    dispatchView({
+      type: 'SetTripDialog',
+      tripDialogOpen: true
     })
   }
 
@@ -101,6 +114,10 @@ const MobileMap = () => {
       for (const feature of features) {
         if (feature.sourceLayer === 'stops') {
           await clickStop(feature, event.point)
+          break
+        }
+        if (feature.sourceLayer === 'trips') {
+          clickTrip(feature, event.point)
           break
         }
       }
@@ -175,7 +192,7 @@ const MobileMap = () => {
           ) : null}
         </Source>
 
-        <Source type='vector' tiles={[mobileTiles]}>
+        <Source type='vector' tiles={[mobileTiles]} maxzoom={14}>
           <Layer
             type='line'
             source-layer='trips'
@@ -200,8 +217,6 @@ const MobileMap = () => {
               'line-dasharray': [2, 0.5]
             }}
           />
-        </Source>
-        <Source type='vector' tiles={[mobileTiles]} maxzoom={14}>
           <Layer
             type='circle'
             source-layer='stops'

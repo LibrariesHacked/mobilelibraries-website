@@ -17,7 +17,7 @@ const Search = () => {
       >
         Mobile libraries
       </Typography>
-      <Typography component='p' variant='h6' color='primary'>
+      <Typography component='p' variant='h6' color='secondary'>
         Find your nearest mobile library stop
       </Typography>
       <Box sx={{ margin: theme => theme.spacing(2) }}>

@@ -32,7 +32,7 @@ const MobileCard = props => {
   }
 
   const viewStop = stopId => {
-    dispatchSearch({ type: 'SetCurrentStop', stopId: stopId })
+    dispatchSearch({ type: 'SetCurrentStop', currentStopId: stopId })
     dispatchView({ type: 'SetStopDialog', stopDialogOpen: true })
   }
 

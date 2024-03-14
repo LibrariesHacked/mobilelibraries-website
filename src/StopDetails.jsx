@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useMatch } from 'react-router-dom'
 
-import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
@@ -15,7 +15,6 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import Typography from '@mui/material/Typography'
 import Paper from '@mui/material/Paper'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -71,8 +70,7 @@ const StopDetails = () => {
   const close = () => {
     dispatchSearch({
       type: 'SetCurrentStop',
-      currentStopId: null,
-      currentPoint: null
+      currentStopId: null
     })
     dispatchView({ type: 'SetStopDialog', stopDialogOpen: false })
   }
@@ -87,7 +85,7 @@ const StopDetails = () => {
       onClose={close}
       aria-labelledby='dlg-title'
       slotProps={{
-        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.03)' } }
+        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } }
       }}
       PaperProps={{ elevation: 0, sx: { border: 1, borderColor: '#ccc' } }}
     >
@@ -95,106 +93,134 @@ const StopDetails = () => {
         <>
           <DialogTitle id='dlg-title'>{stop.name}</DialogTitle>
           <DialogContent>
-            <Typography component='h4' variant='subtitle1'>
-              {stop.address}
-            </Typography>
             <ListSubheader disableSticky sx={{ textAlign: 'center' }}>
-              Schedule
+              Quick info and schedule
             </ListSubheader>
-            <TableContainer
-              component={Paper}
-              elevation={0}
+            <Box
               sx={{
                 border: 2,
+                borderRadius: 2,
                 borderColor: theme =>
                   lighten(theme.palette.secondary.main, 0.5),
-                marginBottom: theme => theme.spacing(1)
+                marginBottom: theme => theme.spacing(1),
+                padding: theme => theme.spacing(1)
               }}
             >
-              <Table
-                size='small'
+              <TableContainer
+                component={Paper}
+                elevation={0}
                 sx={{
-                  [`& .${tableCellClasses.root}`]: { borderBottom: 'none' }
+                  marginBottom: theme => theme.spacing(3)
                 }}
               >
-                <TableHead
+                <Table size='small'>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell variant='head'>Address</TableCell>
+                      <TableCell>{stop.address}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell variant='head'>Authority</TableCell>
+                      <TableCell>{stop.organisationName}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TableContainer
+                component={Paper}
+                elevation={0}
+                sx={{
+                  backgroundColor: theme =>
+                    lighten(theme.palette.secondary.main, 0.9),
+                  marginBottom: theme => theme.spacing(2),
+                  border: 1,
+                  borderRadius: 2,
+                  borderColor: theme =>
+                    lighten(theme.palette.secondary.main, 0.8)
+                }}
+              >
+                <Table
+                  size='small'
                   sx={{
-                    backgroundColor: theme =>
-                      lighten(theme.palette.secondary.main, 0.8)
+                    [`& .${tableCellClasses.root}`]: { borderBottom: 'none' }
                   }}
                 >
-                  <TableRow>
-                    <TableCell>Frequency</TableCell>
-                    <TableCell align='right'>Next visit</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {stop.routeFrequencyDescriptions.map((rs, idx) => (
-                    <TableRow key={'tc_rs_' + idx}>
-                      <TableCell component='th' scope='row'>
-                        {`${stop.routeDays[0]}, ${rs}`}
+                  <TableHead>
+                    <TableRow>
+                      <TableCell
+                        sx={{
+                          color: theme => theme.palette.secondary.main
+                        }}
+                      >
+                        Frequency
                       </TableCell>
-                      <TableCell align='right'>
-                        {stop.routeSchedule[0].format('dddd Do MMMM h:mma')}
+                      <TableCell
+                        align='right'
+                        sx={{
+                          color: theme => theme.palette.secondary.main
+                        }}
+                      >
+                        Next visit
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <Alert
-              severity='warning'
-              action={
+                  </TableHead>
+                  <TableBody>
+                    {stop.routeFrequencyDescriptions.map((rs, idx) => (
+                      <TableRow key={'tc_rs_' + idx}>
+                        <TableCell component='th' scope='row'>
+                          {`${stop.routeDays[0]}, ${rs}`}
+                        </TableCell>
+                        <TableCell align='right'>
+                          {stop.routeSchedule[0].format('dddd Do MMMM h:mma')}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {config.displayWebLinks && (
                 <Button
-                  href='/data'
-                  color='warning'
-                  variant='text'
-                  disableElevation
-                  startIcon={<DataIcon />}
-                  size='small'
+                  onClick={() => goToWebsite()}
+                  color='secondary'
+                  startIcon={<WebIcon />}
+                  sx={{
+                    marginRight: theme => theme.spacing(1)
+                  }}
                 >
-                  Edit
+                  {urlHelper.getDomainFromUrl(stop.timetable)}
                 </Button>
-              }
-            >
-              Are these details incorrect? See the data page.
-            </Alert>
+              )}
+              <Button
+                onClick={getStopCalendar}
+                color='secondary'
+                startIcon={<SaveIcon />}
+                sx={{
+                  marginRight: theme => theme.spacing(1)
+                }}
+              >
+                Save calendar file
+              </Button>
+              <Button
+                onClick={getStopPdf}
+                color='secondary'
+                startIcon={<PrintIcon />}
+                sx={{
+                  marginRight: theme => theme.spacing(1)
+                }}
+              >
+                Print PDF
+              </Button>
+            </Box>
           </DialogContent>
         </>
       ) : (
-        <CircularProgress color='primary' size={30} />
+        <CircularProgress
+          color='primary'
+          size={30}
+          sx={{ margin: theme => theme.spacing(2) }}
+        />
       )}
       <DialogActions>
-        {config.displayWebLinks && (
-          <Button
-            onClick={() => goToWebsite()}
-            color='primary'
-            startIcon={<WebIcon />}
-          >
-            Web
-          </Button>
-        )}
-        <Button
-          onClick={getStopCalendar}
-          color='primary'
-          startIcon={<SaveIcon />}
-        >
-          Save
-        </Button>
-        <Button onClick={getStopPdf} color='primary' startIcon={<PrintIcon />}>
-          Print
-        </Button>
-        {!mapPage && (
-          <Button
-            onClick={viewMapStop}
-            color='primary'
-            startIcon={<LocationOnIcon />}
-            component={Link}
-            to='/map'
-          >
-            Map
-          </Button>
-        )}
         <Button
           onClick={() => close()}
           color='secondary'

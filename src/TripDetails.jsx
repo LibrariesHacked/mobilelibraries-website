@@ -1,18 +1,26 @@
 import React, { useEffect, useState } from 'react'
 
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import ListSubheader from '@mui/material/ListSubheader'
-import Typography from '@mui/material/Typography'
+import Paper from '@mui/material/Paper'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableRow from '@mui/material/TableRow'
+
+import { lighten } from '@mui/material'
 
 import { useTheme } from '@mui/material/styles'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
 
-import CancelIcon from '@mui/icons-material/CancelTwoTone'
+import CancelIcon from '@mui/icons-material/CancelRounded'
 
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
@@ -24,6 +32,9 @@ const TripDetails = () => {
   const [{ tripDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [trip, setTrip] = useState({})
+
+  const theme = useTheme()
+  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
   useEffect(() => {
     async function getTrip (tripId) {
@@ -37,11 +48,7 @@ const TripDetails = () => {
     dispatchView({ type: 'SetTripDialog', tripDialogOpen: false })
   }
 
-  const theme = useTheme()
-
-  const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
-  const estimatedDuration =
-    Math.round(trip.duration / 60) + ' mins journey time.'
+  const estimatedDuration = Math.round(trip.duration / 60) + ' minutes'
   const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)'
 
   return (
@@ -49,17 +56,53 @@ const TripDetails = () => {
       fullScreen={fullScreen}
       open={tripDialogOpen}
       onClose={close}
-      BackdropProps={{ invisible: true }}
-      PaperProps={{ elevation: 0 }}
+      slotProps={{
+        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.05)' } }
+      }}
+      PaperProps={{ elevation: 0, sx: { border: 1, borderColor: '#ccc' } }}
     >
-      <DialogTitle>Trip details</DialogTitle>
+      <DialogTitle>Mobile trip details</DialogTitle>
       <DialogContent>
-        <ListSubheader disableSticky>
-          {'From ' + trip.originStopName + ' to ' + trip.destinationStopName}
-        </ListSubheader>
-        <Typography variant='body2' component='p'>
-          {estimatedDuration + ' ' + distance}
-        </Typography>
+        <Box
+          sx={{
+            border: 2,
+            borderRadius: 2,
+            borderColor: theme => lighten(theme.palette.primary.main, 0.5),
+            padding: theme => theme.spacing(1)
+          }}
+        >
+          <ListSubheader disableSticky>
+            {trip.originStopName + ' to ' + trip.destinationStopName}
+          </ListSubheader>
+          <TableContainer
+            component={Paper}
+            elevation={0}
+            sx={{
+              marginBottom: theme => theme.spacing(1)
+            }}
+          >
+            <Table size='small'>
+              <TableBody>
+                <TableRow>
+                  <TableCell variant='head'>Origin</TableCell>
+                  <TableCell>{trip.originStopName}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell variant='head'>Destination</TableCell>
+                  <TableCell>{trip.destinationStopName}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell variant='head'>Trip length</TableCell>
+                  <TableCell>{distance}</TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell variant='head'>Trip duration</TableCell>
+                  <TableCell>{estimatedDuration}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       </DialogContent>
       <DialogActions>
         <Button onClick={close} color='secondary' endIcon={<CancelIcon />}>

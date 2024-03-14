@@ -21,7 +21,7 @@ const searchReducer = (state, action) => {
     case 'SetCurrentStop':
       return {
         ...state,
-        currentStopId: action.stopId
+        currentStopId: action.currentStopId
       }
     case 'SetCurrentMobileLibrary':
       return {
@@ -31,7 +31,7 @@ const searchReducer = (state, action) => {
     case 'SetCurrentTrip':
       return {
         ...state,
-        currentTripId: action.tripId
+        currentTripId: action.currentTripId
       }
     case 'SetSearchDistance':
       return {

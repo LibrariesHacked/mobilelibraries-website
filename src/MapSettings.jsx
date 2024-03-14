@@ -54,7 +54,7 @@ function MapSettings () {
               color='primary'
             />
           }
-          label='Library service boundaries'
+          label='Library authority boundaries'
         />
       </DialogContent>
       <DialogActions>

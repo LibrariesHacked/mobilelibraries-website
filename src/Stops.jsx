@@ -23,8 +23,6 @@ const Stops = () => {
     {
       searchDistance,
       searchPosition,
-      searchPostcode,
-      searchType,
       organisationFilter,
       mobileFilter,
       routeFilter
@@ -34,7 +32,6 @@ const Stops = () => {
   const [{}, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const theme = useTheme()
-
   const prevPosition = usePrevious(searchPosition)
 
   const initialSortModel = [{ field: 'name', sort: 'asc' }]
@@ -77,13 +74,10 @@ const Stops = () => {
       searchPosition.length > 0 &&
       sortModel[0].field !== 'distance'
     ) {
-      // In this case we need to switch to sorting by distance
-      // We can cancel the previous update as it will be out of date
       setSortModel([{ field: 'distance', sort: 'asc' }])
       return
     }
     if (sortModel[0].field === 'distance' && searchPosition.length === 0) {
-      // In this case we need to switch to sorting by name
       setSortModel(initialSortModel)
       return
     }
@@ -127,7 +121,7 @@ const Stops = () => {
   const columns = [
     { field: 'community', headerName: 'Community', flex: 1 },
     { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'organisationName', headerName: 'Library service', flex: 1 },
+    { field: 'organisationName', headerName: 'Library authority', flex: 1 },
     {
       field: 'distance',
       headerName: 'Distance',
@@ -172,6 +166,7 @@ const Stops = () => {
               border: 2,
               borderColor: lighten(theme.palette.secondary.main, 0.5),
               '& .MuiDataGrid-columnHeaders': {
+                color: theme.palette.secondary.main,
                 backgroundColor: lighten(theme.palette.secondary.main, 0.8)
               },
               '&.Mui-hovered': {
@@ -218,6 +213,7 @@ const Stops = () => {
                 setSortModel(newSortModel)
               }
             }}
+            onRowClick={params => selectStop(params.row)}
             columns={columns}
             initialState={initialState}
           />

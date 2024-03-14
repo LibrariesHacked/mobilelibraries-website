@@ -22,7 +22,7 @@ const Header = () => {
         margin: theme => theme.spacing(1),
         padding: theme => theme.spacing(1),
         borderRadius: theme => theme.shape.borderRadius,
-        zIndex: 10000,
+        zIndex: 1000,
         backgroundColor: 'white'
       }}
     >
