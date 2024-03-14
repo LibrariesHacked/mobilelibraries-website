@@ -33,7 +33,7 @@ const SearchBox = ({ children }) => {
       position='relative'
       display='inline-flex'
       sx={{
-        padding: theme => theme.spacing(1.5),
+        padding: theme => theme.spacing(1),
         textAlign: 'center',
         alignItems: 'center',
         justifyContent: 'center',
@@ -120,14 +120,14 @@ const PostcodeSearch = () => {
       } else {
         dispatchView({
           type: 'ShowNotification',
-          notificationMessage: 'We could not find that postcode',
+          notificationMessage: "We couldn't find that postcode",
           notificationSeverity: 'error'
         })
       }
     } else {
       dispatchView({
         type: 'ShowNotification',
-        notificationMessage: 'We could not find that postcode',
+        notificationMessage: "We couldn't find that postcode",
         notificationSeverity: 'error'
       })
     }
@@ -135,73 +135,70 @@ const PostcodeSearch = () => {
   }
 
   return (
-    <>
-      <Box
-        sx={{
-          position: 'relative',
-          backgroundColor: theme => alpha(theme.palette.primary.main, 0.05),
-          marginLeft: 0,
-          paddingLeft: 0,
-          whitespace: 'nowrap',
-          display: 'inline-flex',
-          color: theme => theme.palette.primary.main,
-          borderRadius: '6px',
-          border: theme =>
-            `2px solid ${lighten(theme.palette.primary.main, 0.5)}`
+    <Box
+      sx={{
+        position: 'relative',
+        backgroundColor: theme => alpha(theme.palette.primary.main, 0.05),
+        marginLeft: 0,
+        paddingLeft: 0,
+        whitespace: 'nowrap',
+        display: 'inline-flex',
+        color: theme => theme.palette.primary.main,
+        borderRadius: '6px',
+        border: theme => `2px solid ${lighten(theme.palette.primary.main, 0.5)}`
+      }}
+    >
+      <InputBase
+        placeholder='Postcode'
+        value={tempPostcode}
+        onChange={e => setTempPostcode(e.target.value.toUpperCase())}
+        onKeyDown={e => {
+          if (e.key === 'Enter') postcodeSearch()
         }}
-      >
-        <InputBase
-          placeholder='Postcode'
-          value={tempPostcode}
-          onChange={e => setTempPostcode(e.target.value.toUpperCase())}
-          onKeyDown={e => {
-            if (e.key === 'Enter') postcodeSearch()
-          }}
-          inputProps={{ 'aria-label': 'search by postcode' }}
-          sx={{
-            paddingLeft: theme => theme.spacing(2),
-            maxWidth: 110,
-            color: theme => theme.palette.secondary.main,
-            fontWeight: 700
-          }}
-        />
-        {!loadingPostcode ? (
-          <Tooltip title='Search by postcode'>
+        inputProps={{ 'aria-label': 'search by postcode' }}
+        sx={{
+          paddingLeft: theme => theme.spacing(2),
+          maxWidth: 110,
+          color: theme => theme.palette.secondary.main,
+          fontWeight: 700
+        }}
+      />
+      {!loadingPostcode && !loadingLocation ? (
+        <Tooltip title='Search by postcode'>
+          <IconButton
+            aria-label='Search'
+            color='inherit'
+            onClick={() => postcodeSearch()}
+            size='large'
+            disabled={loadingPostcode || loadingLocation}
+          >
+            <SearchIcon />
+          </IconButton>
+        </Tooltip>
+      ) : (
+        <SearchBox>
+          <CircularProgress color='inherit' size={22} />
+        </SearchBox>
+      )}
+      <Tooltip title='Use your current location'>
+        <>
+          {!loadingLocation && !loadingPostcode ? (
             <IconButton
-              aria-label='Search'
+              aria-label='Search by current location'
               color='inherit'
-              onClick={() => postcodeSearch()}
+              onClick={() => getLocation()}
               size='large'
               disabled={loadingPostcode || loadingLocation}
             >
-              <SearchIcon />
+              <MyLocationIcon />
             </IconButton>
-          </Tooltip>
-        ) : (
-          <SearchBox>
-            <CircularProgress color='inherit' size={22} />
-          </SearchBox>
-        )}
-        <Tooltip title='Use your current location'>
-          <>
-            {!loadingLocation ? (
-              <IconButton
-                aria-label='Search by current location'
-                color='inherit'
-                onClick={() => getLocation()}
-                size='large'
-                disabled={loadingPostcode || loadingLocation}
-              >
-                <MyLocationIcon />
-              </IconButton>
-            ) : (
-              <SearchBox>
-                <CircularProgress color='inherit' size={22} />
-              </SearchBox>
-            )}
-          </>
-        </Tooltip>
-      </Box>
+          ) : (
+            <SearchBox>
+              <CircularProgress color='inherit' size={22} />
+            </SearchBox>
+          )}
+        </>
+      </Tooltip>
       {searchType === 'postcode' ? (
         <Tooltip title='Clear search'>
           <IconButton
@@ -215,7 +212,7 @@ const PostcodeSearch = () => {
           </IconButton>
         </Tooltip>
       ) : null}
-    </>
+    </Box>
   )
 }
 

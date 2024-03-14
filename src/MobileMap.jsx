@@ -18,10 +18,9 @@ import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
 import MeAvatar from './MeAvatar'
+import MobileAvatar from './MobileAvatar'
 import MapSettings from './MapSettings'
 import PostcodeSearch from './PostcodeSearch'
-
-import * as stopModel from './models/stops'
 
 import config from './helpers/config.json'
 
@@ -29,17 +28,10 @@ const libraryAuthorityTiles = config.libraryAuthorityTiles
 const mobileTiles = config.mobileTiles
 
 const MobileMap = () => {
-  const [
-    {
-      searchType,
-      searchPosition,
-      currentStopId,
-      currentLibraryId,
-      currentPoint,
-      currentService
-    },
-    dispatchSearch
-  ] = useSearchStateValue() //eslint-disable-line
+  const [{ mobileLocations, mobileLookup, organisationLookup }] =
+    useApplicationStateValue() //eslint-disable-line
+  const [{ searchType, searchPosition, currentService }, dispatchSearch] =
+    useSearchStateValue() //eslint-disable-line
   const [
     {
       mapZoom,
@@ -80,7 +72,7 @@ const MobileMap = () => {
     })
   }
 
-  const clickStop = async (feature, point) => {
+  const clickStop = async feature => {
     const id = feature.properties.id
     dispatchSearch({
       type: 'SetCurrentStop',
@@ -92,7 +84,7 @@ const MobileMap = () => {
     })
   }
 
-  const clickTrip = (feature, point) => {
+  const clickTrip = feature => {
     const id = feature.properties.id
     dispatchSearch({
       type: 'SetCurrentTrip',
@@ -113,11 +105,11 @@ const MobileMap = () => {
     if (features && features.length > 0) {
       for (const feature of features) {
         if (feature.sourceLayer === 'stops') {
-          await clickStop(feature, event.point)
+          await clickStop(feature)
           break
         }
         if (feature.sourceLayer === 'trips') {
-          clickTrip(feature, event.point)
+          clickTrip(feature)
           break
         }
       }
@@ -149,6 +141,41 @@ const MobileMap = () => {
         onMove={evt => setViewState(evt.viewState)}
         onClick={clickMap}
       >
+        {
+          // The mobile library locations
+          mobileLocations && mobileLocations.length > 0
+            ? mobileLocations.map(l => {
+                if (!l.geoX || !l.geoY) return null
+                let locationPoint = [l.geoX, l.geoY]
+                if (l.routeSection && l.routeSection.coordinates && l.updated) {
+                  const millisecondsPassed = moment(Date.now()).diff(l.updated)
+                  const index = Math.round(millisecondsPassed / 500)
+                  const coords = l.routeSection.coordinates
+                  if (coords.length > index && index > 0)
+                    locationPoint = coords[index]
+                  if (coords.length <= index && index > 0)
+                    locationPoint = coords[coords.length - 1]
+                }
+                const mobile = mobileLookup[l.mobileId]
+                const organisation = mobile
+                  ? organisationLookup[mobile.organisationId]
+                  : null
+                return (
+                  <Marker
+                    key={'mkr_' + l.id}
+                    coordinates={locationPoint}
+                    anchor='bottom'
+                  >
+                    <MobileAvatar
+                      organisation={organisation}
+                      location={l}
+                      zoom={map ? map.getZoom() : 0}
+                    />
+                  </Marker>
+                )
+              })
+            : null
+        }
         {currentService && currentService.geojson && (
           <Source type='geojson' data={JSON.parse(currentService.geojson)}>
             <Layer

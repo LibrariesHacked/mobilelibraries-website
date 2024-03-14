@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 
 import Badge from '@mui/material/Badge'
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import ListSubheader from '@mui/material/ListSubheader'
 import Tab from '@mui/material/Tab'
@@ -83,20 +84,20 @@ const Mobiles = () => {
   const routeName =
     routeFilter.length > 0 ? routeLookup[routeFilter[0]].name : ''
 
-  let title = 'Mobile library vans'
+  let title = 'Mobile libraries'
   if (organisationName !== '')
-    title = 'Mobile library vans serving ' + organisationName
+    title = 'Mobile libraries serving ' + organisationName
   if (mobileName !== '') title = organisationName + ' ' + mobileName
   if (routeName !== '') title = organisationName + ' ' + routeName
   if (searchPostcode !== '')
     title =
-      'Mobile library vans with stops within ' +
+      'Mobile libraries with stops within ' +
       Math.round(searchDistance / 1609) +
       ' mile(s) of ' +
       searchPostcode
   if (searchType === 'gps')
     title =
-      'Mobile library vans with stops within ' +
+      'Mobile libraries with stops within ' +
       Math.round(searchDistance / 1609) +
       ' mile(s) of your location'
 
@@ -123,7 +124,7 @@ const Mobiles = () => {
     })
 
   return (
-    <div>
+    <>
       <Search />
       <ListSubheader component='span' disableSticky>
         {title}
@@ -134,11 +135,13 @@ const Mobiles = () => {
         value={openTab}
         indicatorColor='secondary'
         onChange={(e, value) => changeTab(value)}
+        centered
+        sx={{ marginBottom: theme => theme.spacing() }}
       >
         <Tab
           label={
             <Badge color='secondary' badgeContent={activeMobiles.length}>
-              On the road
+              <Box sx={{ minWidth: '50px' }}>On the road</Box>
             </Badge>
           }
         />
@@ -149,12 +152,11 @@ const Mobiles = () => {
               color='secondary'
               badgeContent={filteredMobiles.length}
             >
-              All vans
+              <Box sx={{ minWidth: '50px' }}>All</Box>
             </Badge>
           }
         />
       </Tabs>
-      <br />
       {mobilesView.length > 0 ? (
         <Grid container spacing={3}>
           {mobilesView.map((mobile, idx) => {
@@ -182,7 +184,7 @@ const Mobiles = () => {
           No mobile libraries currently on the road.
         </Typography>
       ) : null}
-    </div>
+    </>
   )
 }
 

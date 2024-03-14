@@ -87,8 +87,8 @@ const Filters = () => {
           <Button
             color='primary'
             onClick={e => openOrganisationMenu(e.currentTarget)}
+            startIcon={<BusinessIcon />}
           >
-            <BusinessIcon />
             Select service
           </Button>
         </Tooltip>

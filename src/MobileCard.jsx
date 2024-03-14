@@ -118,7 +118,7 @@ const MobileCard = props => {
   const bull = <span>•</span>
 
   return (
-    <Card elevation={0}>
+    <Card elevation={0} sx={{ border: '1px solid #ccc' }}>
       <CardContent>
         <Typography gutterBottom>
           {mobile.numberRoutes +
