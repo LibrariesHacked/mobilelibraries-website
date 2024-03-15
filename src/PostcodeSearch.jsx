@@ -144,7 +144,7 @@ const PostcodeSearch = () => {
         whitespace: 'nowrap',
         display: 'inline-flex',
         color: theme => theme.palette.primary.main,
-        borderRadius: '6px',
+        borderRadius: 2,
         border: theme => `2px solid ${lighten(theme.palette.primary.main, 0.5)}`
       }}
     >
