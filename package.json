@@ -26,6 +26,7 @@
     "start": "vite",
     "build": "vite build",
     "serve": "vite preview",
+    "predeploy": "vite build",
     "deploy": "gh-pages -d build",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
   },
