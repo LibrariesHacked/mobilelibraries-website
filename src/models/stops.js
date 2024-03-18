@@ -45,7 +45,7 @@ export async function getQueryStops (
   searchPosition,
   distance,
   organisationFilter,
-  mobileFilter, 
+  mobileFilter,
   routeFilter
 ) {
   let url = `${config.api}/stops?page=${query.page + 1}&limit=${query.pageSize}`

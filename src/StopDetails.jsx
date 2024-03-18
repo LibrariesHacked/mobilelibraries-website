@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useMatch } from 'react-router-dom'
+import { useMatch } from 'react-router-dom'
 
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
@@ -22,9 +22,7 @@ import { useTheme } from '@mui/material/styles'
 import { lighten } from '@mui/material'
 
 import CancelIcon from '@mui/icons-material/CancelRounded'
-import DataIcon from '@mui/icons-material/EditLocationAltRounded'
 import SaveIcon from '@mui/icons-material/SaveAltRounded'
-import LocationOnIcon from '@mui/icons-material/LocationOnRounded'
 import PrintIcon from '@mui/icons-material/PrintRounded'
 import WebIcon from '@mui/icons-material/WebRounded'
 
@@ -41,8 +39,6 @@ const StopDetails = () => {
 
   const [stop, setStop] = useState({})
 
-  const mapPage = useMatch('/map')
-
   useEffect(() => {
     async function getStop (stopId) {
       const stopData = await stopModel.getStopById(stopId)
@@ -58,14 +54,6 @@ const StopDetails = () => {
     window.open(config.api + '/stops/' + stop.id + '/pdf', '_blank')
 
   const goToWebsite = () => window.open(stop.timetable, '_blank')
-
-  const viewMapStop = () => {
-    dispatchView({
-      type: 'FlyTo',
-      mapFlyToPosition: [stop.longitude, stop.latitude],
-      mapZoom: 16
-    })
-  }
 
   const close = () => {
     dispatchSearch({
