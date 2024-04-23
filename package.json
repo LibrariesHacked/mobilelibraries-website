@@ -40,7 +40,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.1",
-    "gh-pages": "^2.2.0",
+    "gh-pages": "^5.0.0",
     "standard": "^16.0.4",
     "vite": "^5.1.7"
   },
