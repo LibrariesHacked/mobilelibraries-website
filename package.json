@@ -5,21 +5,21 @@
   "type": "module",
   "homepage": "https://www.mobilelibraries.org",
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^4.5.8",
-    "@mui/icons-material": "^5.15.13",
-    "@mui/material": "^5.15.13",
-    "@mui/x-data-grid": "^6.19.6",
-    "axios": "^1.7.4",
+    "@mui/icons-material": "^5.16.14",
+    "@mui/material": "^5.16.14",
+    "@mui/x-data-grid": "^6.20.4",
+    "axios": "^1.7.9",
     "maplibre-gl": "^2.4.0",
-    "markdown-to-jsx": "^7.4.3",
+    "markdown-to-jsx": "^7.7.3",
     "moment": "^2.30.1",
-    "react": "^18.2.0",
+    "react": "^18.3.1",
     "react-carbonbadge": "^2.0.0",
-    "react-dom": "^18.2.0",
-    "react-map-gl": "^7.1.7",
-    "react-router-dom": "^6.22.3",
+    "react-dom": "^18.3.1",
+    "react-map-gl": "^7.1.9",
+    "react-router-dom": "^6.29.0",
     "rrule": "^2.8.1"
   },
   "scripts": {
@@ -27,8 +27,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "predeploy": "vite build",
-    "deploy": "gh-pages -d build",
-    "analyze": "source-map-explorer 'build/static/js/*.js'"
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": "react-app",
@@ -39,7 +38,7 @@
     }
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^4.3.4",
     "gh-pages": "^5.0.0",
     "standard": "^16.0.4",
     "vite": "^5.4.14"

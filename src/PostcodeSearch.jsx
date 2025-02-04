@@ -163,55 +163,61 @@ const PostcodeSearch = () => {
           fontWeight: 700
         }}
       />
-      {!loadingPostcode && !loadingLocation ? (
-        <Tooltip title='Search by postcode'>
-          <IconButton
-            aria-label='Search'
-            color='inherit'
-            onClick={() => postcodeSearch()}
-            size='large'
-            disabled={loadingPostcode || loadingLocation}
-          >
-            <SearchIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <SearchBox>
-          <CircularProgress color='inherit' size={22} />
-        </SearchBox>
-      )}
-      <Tooltip title='Use your current location'>
-        <>
-          {!loadingLocation && !loadingPostcode ? (
+      {!loadingPostcode && !loadingLocation
+        ? (
+          <Tooltip title='Search by postcode'>
             <IconButton
-              aria-label='Search by current location'
+              aria-label='Search'
               color='inherit'
-              onClick={() => getLocation()}
+              onClick={() => postcodeSearch()}
               size='large'
               disabled={loadingPostcode || loadingLocation}
             >
-              <MyLocationIcon />
+              <SearchIcon />
             </IconButton>
-          ) : (
-            <SearchBox>
-              <CircularProgress color='inherit' size={22} />
-            </SearchBox>
+          </Tooltip>
+          )
+        : (
+          <SearchBox>
+            <CircularProgress color='inherit' size={22} />
+          </SearchBox>
           )}
+      <Tooltip title='Use your current location'>
+        <>
+          {!loadingLocation && !loadingPostcode
+            ? (
+              <IconButton
+                aria-label='Search by current location'
+                color='inherit'
+                onClick={() => getLocation()}
+                size='large'
+                disabled={loadingPostcode || loadingLocation}
+              >
+                <MyLocationIcon />
+              </IconButton>
+              )
+            : (
+              <SearchBox>
+                <CircularProgress color='inherit' size={22} />
+              </SearchBox>
+              )}
         </>
       </Tooltip>
-      {searchType === 'postcode' ? (
-        <Tooltip title='Clear search'>
-          <IconButton
-            color='inherit'
-            aria-label='Clear search'
-            onClick={() => clearSearch()}
-            size='large'
-            disabled={loadingPostcode || loadingLocation}
-          >
-            <ClearIcon />
-          </IconButton>
-        </Tooltip>
-      ) : null}
+      {searchType === 'postcode'
+        ? (
+          <Tooltip title='Clear search'>
+            <IconButton
+              color='inherit'
+              aria-label='Clear search'
+              onClick={() => clearSearch()}
+              size='large'
+              disabled={loadingPostcode || loadingLocation}
+            >
+              <ClearIcon />
+            </IconButton>
+          </Tooltip>
+          )
+        : null}
     </Box>
   )
 }

@@ -46,8 +46,7 @@ export const getServiceDataFromPostcode = async (postcode, services) => {
   const servicesFiltered = services.filter(
     s => s.code === postcodeData.library_service
   )
-  if (servicesFiltered.length > 0)
-    return { service: servicesFiltered[0], location: postcodeData.location }
+  if (servicesFiltered.length > 0) { return { service: servicesFiltered[0], location: postcodeData.location } }
   return {}
 }
 

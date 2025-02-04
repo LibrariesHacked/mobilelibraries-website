@@ -44,7 +44,7 @@ const Header = () => {
         <Tab
           icon={<ManageSearchRoundedIcon />}
           iconPosition='start'
-          label={'Search'}
+          label='Search'
           value='/'
           component={Link}
           to='/'
@@ -59,7 +59,7 @@ const Header = () => {
         <Tab
           icon={<AirportShuttleRoundedIcon />}
           iconPosition='start'
-          label={'Tracker'}
+          label='Tracker'
           value='/mobiles'
           component={Link}
           to='/mobiles'
@@ -74,7 +74,7 @@ const Header = () => {
         <Tab
           icon={<PlaceRoundedIcon />}
           iconPosition='start'
-          label={'Map'}
+          label='Map'
           value='/map'
           component={Link}
           to='/map'

@@ -82,67 +82,77 @@ const Filters = () => {
 
   return (
     <>
-      {organisationFilter.length === 0 ? (
-        <Tooltip title='Choose library authority'>
-          <Button
-            color='primary'
-            onClick={e => openOrganisationMenu(e.currentTarget)}
-            startIcon={<BusinessIcon />}
-          >
-            Select service
-          </Button>
-        </Tooltip>
-      ) : (
-        <Chip
-          color='primary'
-          variant='outlined'
-          onDelete={clearOrganisationFilter}
-          label={organisationLookup[organisationFilter[0]].name}
-          sx={{ mr: 1 }}
-        />
-      )}
-      {organisationFilter.length > 0 ? (
-        mobileFilter.length === 0 ? (
-          <Tooltip title='Choose mobile library'>
+      {organisationFilter.length === 0
+        ? (
+          <Tooltip title='Choose library authority'>
             <Button
               color='primary'
-              onClick={e => openMobileMenu(e.currentTarget)}
+              onClick={e => openOrganisationMenu(e.currentTarget)}
+              startIcon={<BusinessIcon />}
             >
-              <DirectionBusIcon />
-              Select mobile
+              Select service
             </Button>
           </Tooltip>
-        ) : (
+          )
+        : (
           <Chip
             color='primary'
             variant='outlined'
-            onDelete={clearMobileFilter}
-            label={mobileLookup[mobileFilter[0]].name}
+            onDelete={clearOrganisationFilter}
+            label={organisationLookup[organisationFilter[0]].name}
             sx={{ mr: 1 }}
           />
-        )
-      ) : null}
-      {mobileFilter.length > 0 ? (
-        routeFilter.length === 0 ? (
-          <Tooltip title='Choose route'>
-            <Button
-              color='primary'
-              onClick={e => openRouteMenu(e.currentTarget)}
-            >
-              <DirectionsIcon />
-              Select route
-            </Button>
-          </Tooltip>
-        ) : (
-          <Chip
-            color='primary'
-            variant='outlined'
-            onDelete={clearRouteFilter}
-            label={routeLookup[routeFilter[0]].name}
-            sx={{ mr: 1 }}
-          />
-        )
-      ) : null}
+          )}
+      {organisationFilter.length > 0
+        ? (
+            mobileFilter.length === 0
+              ? (
+                <Tooltip title='Choose mobile library'>
+                  <Button
+                    color='primary'
+                    onClick={e => openMobileMenu(e.currentTarget)}
+                  >
+                    <DirectionBusIcon />
+                    Select mobile
+                  </Button>
+                </Tooltip>
+                )
+              : (
+                <Chip
+                  color='primary'
+                  variant='outlined'
+                  onDelete={clearMobileFilter}
+                  label={mobileLookup[mobileFilter[0]].name}
+                  sx={{ mr: 1 }}
+                />
+                )
+          )
+        : null}
+      {mobileFilter.length > 0
+        ? (
+            routeFilter.length === 0
+              ? (
+                <Tooltip title='Choose route'>
+                  <Button
+                    color='primary'
+                    onClick={e => openRouteMenu(e.currentTarget)}
+                  >
+                    <DirectionsIcon />
+                    Select route
+                  </Button>
+                </Tooltip>
+                )
+              : (
+                <Chip
+                  color='primary'
+                  variant='outlined'
+                  onDelete={clearRouteFilter}
+                  label={routeLookup[routeFilter[0]].name}
+                  sx={{ mr: 1 }}
+                />
+                )
+          )
+        : null}
       <Menu
         id='menu-library-service'
         anchorEl={organisationMenuAnchor}
