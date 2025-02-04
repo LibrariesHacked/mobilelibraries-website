@@ -24,8 +24,7 @@ const Mobiles = () => {
       mobileLocationLookup,
       mobilesNearestLookup,
       routeLookup
-    },
-    dispatchApplication
+    }
   ] = useApplicationStateValue() //eslint-disable-line
   const [
     {
@@ -35,8 +34,7 @@ const Mobiles = () => {
       searchType,
       searchDistance,
       searchPostcode
-    },
-    dispatchSearch
+    }
   ] = useSearchStateValue() //eslint-disable-line
   const [{ loadingMobileLocations }, dispatchView] = useViewStateValue() //eslint-disable-line
 
@@ -85,21 +83,24 @@ const Mobiles = () => {
     routeFilter.length > 0 ? routeLookup[routeFilter[0]].name : ''
 
   let title = 'Mobile libraries'
-  if (organisationName !== '')
+  if (organisationName !== '') {
     title = 'Mobile libraries serving ' + organisationName
+  }
   if (mobileName !== '') title = organisationName + ' ' + mobileName
   if (routeName !== '') title = organisationName + ' ' + routeName
-  if (searchPostcode !== '')
+  if (searchPostcode !== '') {
     title =
       'Mobile libraries with stops within ' +
       Math.round(searchDistance / 1609) +
       ' mile(s) of ' +
       searchPostcode
-  if (searchType === 'gps')
+  }
+  if (searchType === 'gps') {
     title =
       'Mobile libraries with stops within ' +
       Math.round(searchDistance / 1609) +
       ' mile(s) of your location'
+  }
 
   const displayMobiles = openTab === 0 ? activeMobiles : filteredMobiles
   const mobilesView = displayMobiles

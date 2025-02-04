@@ -9,3 +9,8 @@ export const clearService = history => {
   currentUrlParams.delete('service')
   history.push(window.location.pathname)
 }
+
+export const getDomainFromUrl = url => {
+  const domain = new URL(url).hostname
+  return domain
+}

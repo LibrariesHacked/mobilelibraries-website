@@ -103,16 +103,11 @@ const MobileCard = props => {
   let statusMessage = null
   if (location) {
     const status = location.getStatus()
-    if (status && status.type === 'offRoad')
-      statusMessage = offRoadMessage(status)
-    if (status && status.type === 'preRoute')
-      statusMessage = preRouteMessage(status)
-    if (status && status.type === 'atStop')
-      statusMessage = atStopMessage(status)
-    if (status && status.type === 'betweenStops')
-      statusMessage = betweenStopsMessage(status)
-    if (status && status.type === 'postRoute')
-      statusMessage = postRouteMessage(status)
+    if (status && status.type === 'offRoad') { statusMessage = offRoadMessage(status) }
+    if (status && status.type === 'preRoute') { statusMessage = preRouteMessage(status) }
+    if (status && status.type === 'atStop') { statusMessage = atStopMessage(status) }
+    if (status && status.type === 'betweenStops') { statusMessage = betweenStopsMessage(status) }
+    if (status && status.type === 'postRoute') { statusMessage = postRouteMessage(status) }
   }
 
   const bull = <span>•</span>
@@ -156,16 +151,18 @@ const MobileCard = props => {
             View stops
           </Button>
         </Tooltip>
-        {mobile.timetable ? (
-          <>
-            <Divider />
-            <Tooltip title='Website timetable'>
-              <IconButton onClick={() => this.goToWebsite()} size='large'>
-                <WebIcon />
-              </IconButton>
-            </Tooltip>
-          </>
-        ) : null}
+        {mobile.timetable
+          ? (
+            <>
+              <Divider />
+              <Tooltip title='Website timetable'>
+                <IconButton onClick={() => this.goToWebsite()} size='large'>
+                  <WebIcon />
+                </IconButton>
+              </Tooltip>
+            </>
+            )
+          : null}
       </CardActions>
     </Card>
   )

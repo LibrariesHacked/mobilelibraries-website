@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 
+import moment from 'moment'
+
 import Box from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
 import Tooltip from '@mui/material/Tooltip'
@@ -151,10 +153,12 @@ const MobileMap = () => {
                   const millisecondsPassed = moment(Date.now()).diff(l.updated)
                   const index = Math.round(millisecondsPassed / 500)
                   const coords = l.routeSection.coordinates
-                  if (coords.length > index && index > 0)
+                  if (coords.length > index && index > 0) {
                     locationPoint = coords[index]
-                  if (coords.length <= index && index > 0)
+                  }
+                  if (coords.length <= index && index > 0) {
                     locationPoint = coords[coords.length - 1]
+                  }
                 }
                 const mobile = mobileLookup[l.mobileId]
                 const organisation = mobile
@@ -162,8 +166,9 @@ const MobileMap = () => {
                   : null
                 return (
                   <Marker
-                    key={'mkr_' + l.id}
-                    coordinates={locationPoint}
+                    key={'mkr_' + l.mobileId}
+                    longitude={locationPoint[0]}
+                    latitude={locationPoint[1]}
                     anchor='bottom'
                   >
                     <MobileAvatar
