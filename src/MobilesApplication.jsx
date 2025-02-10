@@ -127,9 +127,7 @@ const MobilesApplication = () => {
           </Routes>
         </main>
       </Container>
-      <Container maxWidth='lg'>
-        <Footer />
-      </Container>
+      <Footer />
       <StopDetails />
       <MobileLibraryDetails />
       <TripDetails />

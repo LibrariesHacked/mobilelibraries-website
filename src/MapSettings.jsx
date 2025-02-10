@@ -37,11 +37,9 @@ function MapSettings () {
       open={mapSettingsDialogOpen}
       onClose={closeDialog}
       slotProps={{
-        backdrop: {
-          invisible: true
-        }
+        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } }
       }}
-      PaperProps={{ elevation: 0 }}
+      PaperProps={{ elevation: 0, sx: { border: 1, borderColor: '#ccc' } }}
     >
       <DialogTitle>Map settings</DialogTitle>
       <DialogContent>

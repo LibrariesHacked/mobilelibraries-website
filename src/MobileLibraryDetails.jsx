@@ -25,7 +25,9 @@ const MobileLibraryDetails = () => {
   const [mobileLibrary, setMobileLibrary] = useState({})
 
   useEffect(() => {
-    if (currentMobileLibraryId != null && mobileLookup) { setMobileLibrary(mobileLookup[currentMobileLibraryId]) }
+    if (currentMobileLibraryId != null && mobileLookup) {
+      setMobileLibrary(mobileLookup[currentMobileLibraryId])
+    }
   }, [currentMobileLibraryId, mobileLookup])
 
   const close = () => {
@@ -44,22 +46,22 @@ const MobileLibraryDetails = () => {
       open={mobileLibraryDialogOpen}
       onClose={close}
       aria-labelledby='dlg-title'
-      BackdropProps={{ invisible: true }}
-      PaperProps={{ elevation: 0 }}
+      slotProps={{
+        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } }
+      }}
+      PaperProps={{ elevation: 0, sx: { border: 1, borderColor: '#ccc' } }}
     >
-      {mobileLibrary
-        ? (
-          <>
-            <DialogTitle id='dlg-title'>{mobileLibrary.name}</DialogTitle>
-            <DialogContent>
-              <ListSubheader disableSticky>Actions</ListSubheader>
-              <div />
-            </DialogContent>
-          </>
-          )
-        : (
-          <CircularProgress color='primary' size={30} />
-          )}
+      {mobileLibrary ? (
+        <>
+          <DialogTitle id='dlg-title'>{mobileLibrary.name}</DialogTitle>
+          <DialogContent>
+            <ListSubheader disableSticky>Actions</ListSubheader>
+            <div />
+          </DialogContent>
+        </>
+      ) : (
+        <CircularProgress color='primary' size={30} />
+      )}
       <DialogActions>
         <Button
           onClick={() => close()}

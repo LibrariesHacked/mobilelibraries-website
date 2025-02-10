@@ -57,7 +57,7 @@ const TripDetails = () => {
       open={tripDialogOpen}
       onClose={close}
       slotProps={{
-        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.05)' } }
+        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } }
       }}
       PaperProps={{ elevation: 0, sx: { border: 1, borderColor: '#ccc' } }}
     >

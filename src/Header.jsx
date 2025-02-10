@@ -25,7 +25,7 @@ const Header = () => {
         marginLeft: 'auto',
         marginRight: 'auto',
         border: '2px solid',
-        borderColor: theme => lighten(theme.palette.primary.main, 0.5),
+        borderColor: theme => theme.palette.primary.main,
         borderRadius: 2,
         zIndex: 1000,
         position: 'relative'
@@ -38,7 +38,8 @@ const Header = () => {
         sx={{
           '& .MuiTabs-indicator': {
             display: 'none'
-          }
+          },
+          padding: '2px'
         }}
       >
         <Tab
@@ -50,9 +51,7 @@ const Header = () => {
           to='/'
           sx={{
             '&.Mui-selected': {
-              backgroundColor: theme =>
-                lighten(theme.palette.primary.main, 0.9),
-              borderRadius: 2
+              backgroundColor: theme => lighten(theme.palette.primary.main, 0.9)
             }
           }}
         />
