@@ -1,5 +1,5 @@
 import axios from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import config from '../helpers/config.json'
 
@@ -41,15 +41,15 @@ export class MobileLocation {
   fromJson (json) {
     this.mobileId = json.mobile_id
     this.currentStopId = json.current_stop_id
-    this.currentStopDeparture = moment(json.current_stop_departure)
+    this.currentStopDeparture = dayjs(json.current_stop_departure)
     this.currentStopName = json.current_stop_name
     this.previousStopId = json.previous_stop_id
-    this.previousStopDeparture = moment(json.previous_stop_departure)
+    this.previousStopDeparture = dayjs(json.previous_stop_departure)
     this.previousStopName = json.previous_stop_name
     this.nextStopId = json.next_stop_id
-    this.nextStopArrival = moment(json.next_stop_arrival)
+    this.nextStopArrival = dayjs(json.next_stop_arrival)
     this.nextStopName = json.next_stop_name
-    this.updated = moment(json.updated)
+    this.updated = dayjs(json.updated)
     this.updateType = json.update_type
     this.geoX = json.geox
     this.geoY = json.geoy
@@ -58,7 +58,7 @@ export class MobileLocation {
   }
 
   getStatus () {
-    const now = moment()
+    const now = dayjs()
     const statuses = {
       offRoad: 'Not out today',
       preRoute: 'Arriving at ',

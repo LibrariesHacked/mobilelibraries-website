@@ -51,11 +51,11 @@ const Stops = () => {
 
   const initialState = {
     sorting: {
-      sortModel: sortModel
+      sortModel
     },
     pagination: {
-      page: page,
-      pageSize: pageSize
+      page,
+      pageSize
     },
     filter: filterModel
   }
@@ -82,14 +82,14 @@ const Stops = () => {
       return
     }
     getMobileStopsFromQuery({
-      page: page,
-      pageSize: pageSize,
-      sortModel: sortModel,
-      searchPosition: searchPosition,
-      searchDistance: searchDistance,
-      organisationFilter: organisationFilter,
-      mobileFilter: mobileFilter,
-      routeFilter: routeFilter
+      page,
+      pageSize,
+      sortModel,
+      searchPosition,
+      searchDistance,
+      organisationFilter,
+      mobileFilter,
+      routeFilter
     })
     // eslint-disable-next-line
   }, [

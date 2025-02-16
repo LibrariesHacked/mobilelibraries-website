@@ -47,21 +47,22 @@ const MobileLibraryDetails = () => {
       onClose={close}
       aria-labelledby='dlg-title'
       slotProps={{
-        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } }
+        paper: { backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } } }
       }}
-      PaperProps={{ elevation: 0, sx: { border: 1, borderColor: '#ccc' } }}
     >
-      {mobileLibrary ? (
-        <>
-          <DialogTitle id='dlg-title'>{mobileLibrary.name}</DialogTitle>
-          <DialogContent>
-            <ListSubheader disableSticky>Actions</ListSubheader>
-            <div />
-          </DialogContent>
-        </>
-      ) : (
-        <CircularProgress color='primary' size={30} />
-      )}
+      {mobileLibrary
+        ? (
+          <>
+            <DialogTitle id='dlg-title'>{mobileLibrary.name}</DialogTitle>
+            <DialogContent>
+              <ListSubheader disableSticky>Actions</ListSubheader>
+              <div />
+            </DialogContent>
+          </>
+          )
+        : (
+          <CircularProgress color='primary' size={30} />
+          )}
       <DialogActions>
         <Button
           onClick={() => close()}

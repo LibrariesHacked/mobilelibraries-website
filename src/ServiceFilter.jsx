@@ -39,7 +39,7 @@ const Filters = () => {
   const chooseOrganisation = organisationId => {
     dispatchSearch({
       type: 'FilterByOrganisation',
-      organisationId: organisationId
+      organisationId
     })
     closeOrganisationMenu()
   }
@@ -55,8 +55,8 @@ const Filters = () => {
   const chooseMobile = (organisationId, mobileId) => {
     dispatchSearch({
       type: 'FilterByMobile',
-      organisationId: organisationId,
-      mobileId: mobileId
+      organisationId,
+      mobileId
     })
     closeMobileMenu()
   }
@@ -70,7 +70,7 @@ const Filters = () => {
   const closeRouteMenu = () => setRouteMenuAnchor(null)
 
   const chooseRoute = routeId => {
-    dispatchSearch({ type: 'FilterByRoute', routeId: routeId })
+    dispatchSearch({ type: 'FilterByRoute', routeId })
     closeRouteMenu()
   }
 

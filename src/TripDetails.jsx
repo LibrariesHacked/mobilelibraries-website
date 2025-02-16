@@ -28,7 +28,7 @@ import { useViewStateValue } from './context/viewState'
 import * as tripsModel from './models/trips'
 
 const TripDetails = () => {
-  const [{ currentTripId }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
+  const [{ currentTripId }] = useSearchStateValue()
   const [{ tripDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [trip, setTrip] = useState({})

@@ -4,11 +4,9 @@ import { Link, useMatch } from 'react-router-dom'
 
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
-import Grid from '@mui/material/Grid'
+import Grid2 from '@mui/material/Grid2'
 import MaterialLink from '@mui/material/Link'
 import Typography from '@mui/material/Typography'
-
-import { Carbonbadge } from 'react-carbonbadge'
 
 const Footer = () => {
   const mapPage = useMatch('/map')
@@ -24,8 +22,8 @@ const Footer = () => {
           borderRadius: 2
         }}
       >
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={12} md={6} lg={6} xl={6}>
+        <Grid2 container spacing={2}>
+          <Grid2 item xs={12} sm={12} md={6} lg={6} xl={6}>
             <Typography variant='h6'>
               <MaterialLink
                 component={Link}
@@ -51,8 +49,8 @@ const Footer = () => {
                 Privacy
               </MaterialLink>
             </Typography>
-          </Grid>
-          <Grid
+          </Grid2>
+          <Grid2
             item
             xs={12}
             sm={12}
@@ -60,10 +58,8 @@ const Footer = () => {
             lg={6}
             xl={6}
             sx={{ display: mapPage ? 'none' : 'block' }}
-          >
-            <Carbonbadge />
-          </Grid>
-        </Grid>
+          />
+        </Grid2>
       </Box>
     </Container>
   )

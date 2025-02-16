@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import Badge from '@mui/material/Badge'
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
+import Grid2 from '@mui/material/Grid2'
 import ListSubheader from '@mui/material/ListSubheader'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
@@ -159,10 +159,10 @@ const Mobiles = () => {
         />
       </Tabs>
       {mobilesView.length > 0 ? (
-        <Grid container spacing={3}>
+        <Grid2 container spacing={3}>
           {mobilesView.map((mobile, idx) => {
             return (
-              <Grid
+              <Grid2
                 key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
                 item
                 xs={12}
@@ -176,10 +176,10 @@ const Mobiles = () => {
                   location={mobileLocationLookup[mobile.id]}
                   organisation={organisationLookup[mobile.organisationId]}
                 />
-              </Grid>
+              </Grid2>
             )
           })}
-        </Grid>
+        </Grid2>
       ) : !loadingMobileLocations ? (
         <Typography component='p' variant='body1'>
           No mobile libraries currently on the road.

@@ -138,32 +138,32 @@ const StopDetails = () => {
                     <TableHead>
                       <TableRow>
                         <TableCell
-                  sx={{
-                          color: theme => theme.palette.secondary.main
-                        }}
-                >
-                        Frequency
-                </TableCell>
+                          sx={{
+                            color: theme => theme.palette.secondary.main
+                          }}
+                        >
+                          Frequency
+                        </TableCell>
                         <TableCell
-                  align='right'
-                  sx={{
-                          color: theme => theme.palette.secondary.main
-                        }}
-                >
-                        Next visit
-                </TableCell>
+                          align='right'
+                          sx={{
+                            color: theme => theme.palette.secondary.main
+                          }}
+                        >
+                          Next visit
+                        </TableCell>
                       </TableRow>
                     </TableHead>
                     <TableBody>
                       {stop.routeFrequencyDescriptions.map((rs, idx) => (
                         <TableRow key={'tc_rs_' + idx}>
-                  <TableCell component='th' scope='row'>
-                          {`${stop.routeDays[0]}, ${rs}`}
-                        </TableCell>
-                  <TableCell align='right'>
-                          {stop.routeSchedule[0].format('dddd Do MMMM h:mma')}
-                        </TableCell>
-                </TableRow>
+                          <TableCell component='th' scope='row'>
+                            {`${stop.routeDays[0]}, ${rs}`}
+                          </TableCell>
+                          <TableCell align='right'>
+                            {stop.routeSchedule[0].format('dddd Do MMMM h:mma')}
+                          </TableCell>
+                        </TableRow>
                       ))}
                     </TableBody>
                   </Table>

@@ -7,19 +7,18 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
-    "@fontsource/roboto": "^4.5.8",
-    "@mui/icons-material": "^5.16.14",
-    "@mui/material": "^5.16.14",
-    "@mui/x-data-grid": "^6.20.4",
+    "@fontsource/roboto": "^5.1.1",
+    "@mui/icons-material": "^6.4.4",
+    "@mui/material": "^6.4.4",
+    "@mui/x-data-grid": "^7.26.0",
     "axios": "^1.7.9",
-    "maplibre-gl": "^2.4.0",
+    "dayjs": "^1.11.13",
+    "maplibre-gl": "^5.1.0",
     "markdown-to-jsx": "^7.7.3",
-    "moment": "^2.30.1",
-    "react": "^18.3.1",
-    "react-carbonbadge": "^2.0.0",
-    "react-dom": "^18.3.1",
-    "react-map-gl": "^7.1.9",
-    "react-router-dom": "^6.29.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-map-gl": "^8.0.1",
+    "react-router-dom": "^7.1.5",
     "rrule": "^2.8.1"
   },
   "scripts": {
@@ -39,9 +38,9 @@
   },
   "devDependencies": {
     "@vitejs/plugin-react": "^4.3.4",
-    "gh-pages": "^5.0.0",
-    "standard": "^16.0.4",
-    "vite": "^5.4.14"
+    "gh-pages": "^6.3.0",
+    "standard": "^17.1.2",
+    "vite": "^6.1.0"
   },
   "browserslist": {
     "production": [

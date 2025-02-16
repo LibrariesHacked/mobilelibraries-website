@@ -26,8 +26,8 @@ const MobileCard = props => {
   const viewStopsByMobile = (organisationId, mobileId) => {
     dispatchSearch({
       type: 'FilterByMobile',
-      organisationId: organisationId,
-      mobileId: mobileId
+      organisationId,
+      mobileId
     })
   }
 
