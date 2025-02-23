@@ -34,8 +34,6 @@ const Stops = () => {
 
   const initialSortModel = [{ field: 'name', sort: 'asc' }]
 
-  const [page, setPage] = useState(0)
-  const [pageSize, setPageSize] = useState(5)
   const [sortModel, setSortModel] = useState(initialSortModel)
   const [filterModel, setFilterModel] = useState({
     items: [
@@ -46,14 +44,18 @@ const Stops = () => {
       }
     ]
   })
+  const [paginationModel, setPaginationModel] = useState({
+    page: 0,
+    pageSize: 5
+  })
 
   const initialState = {
     sorting: {
       sortModel
     },
     pagination: {
-      page,
-      pageSize
+      paginationModel,
+      rowCount: 0
     },
     filter: filterModel
   }
@@ -80,8 +82,8 @@ const Stops = () => {
       return
     }
     getMobileStopsFromQuery({
-      page,
-      pageSize,
+      page: paginationModel.page,
+      pageSize: paginationModel.pageSize,
       sortModel,
       searchPosition,
       searchDistance,
@@ -91,8 +93,7 @@ const Stops = () => {
     })
     // eslint-disable-next-line
   }, [
-    page,
-    pageSize,
+    paginationModel,
     sortModel,
     searchPosition,
     searchDistance,
@@ -153,6 +154,7 @@ const Stops = () => {
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ flexGrow: 1 }}>
           <DataGrid
+            autoPageSize
             sx={{
               backgroundColor: 'white',
               border: 2,
@@ -177,19 +179,21 @@ const Stops = () => {
             filterMode='server'
             filterModel={filterModel}
             loading={loadingMobileStops}
-            page={page}
-            pageSize={pageSize}
+            page={paginationModel.page}
+            pageSize={paginationModel.pageSize}
+            pageSizeOptions={[5]}
             pagination
             paginationMode='server'
+            onPaginationModelChange={newPaginationModel => {
+              setPaginationModel(newPaginationModel)
+            }}
             rows={mobileStops}
             rowCount={rowCountState}
-            rowsPerPageOptions={[5]}
             sortingMode='server'
             sortModel={sortModel}
             onFilterModelChange={newFilterModel =>
-              setFilterModel(newFilterModel)}
-            onPageChange={newPage => setPage(newPage)}
-            onPageSizeChange={newPageSize => setPageSize(newPageSize)}
+              setFilterModel(newFilterModel)
+            }
             onSortModelChange={newSortModel => {
               if (newSortModel.length === 0) {
                 setSortModel(initialSortModel)
