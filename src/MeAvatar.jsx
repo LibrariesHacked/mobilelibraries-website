@@ -8,7 +8,12 @@ import Face from '@mui/icons-material/FaceRounded'
 const MeAvatar = () => {
   return (
     <Tooltip title='Me'>
-      <Avatar color='primary'>
+      <Avatar
+        sx={{
+          color: 'white',
+          backgroundColor: 'primary.main'
+        }}
+      >
         <Face />
       </Avatar>
     </Tooltip>

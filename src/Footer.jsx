@@ -11,17 +11,15 @@ import Typography from '@mui/material/Typography'
 const Footer = () => {
   const mapPage = useMatch('/map')
   return (
-    <Container maxWidth='lg'>
-      <Box
-        sx={{
-          backgroundColor: theme => theme.palette.background.paper,
-          border: theme => `1px solid ${theme.palette.divider}`,
-          marginTop: theme => theme.spacing(2),
-          marginBottom: theme => theme.spacing(2),
-          padding: theme => theme.spacing(2),
-          borderRadius: 2
-        }}
-      >
+    <Box
+      sx={{
+        backgroundColor: theme => theme.palette.background.paper,
+        border: theme => `1px solid ${theme.palette.divider}`,
+        marginTop: theme => theme.spacing(2),
+        padding: theme => theme.spacing(2)
+      }}
+    >
+      <Container maxWidth='lg'>
         <Grid2 container spacing={2}>
           <Grid2 item xs={12} sm={12} md={6} lg={6} xl={6}>
             <Typography variant='h6'>
@@ -60,8 +58,8 @@ const Footer = () => {
             sx={{ display: mapPage ? 'none' : 'block' }}
           />
         </Grid2>
-      </Box>
-    </Container>
+      </Container>
+    </Box>
   )
 }
 

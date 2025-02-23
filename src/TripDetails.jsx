@@ -14,8 +14,6 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 
-import { lighten } from '@mui/material'
-
 import { useTheme } from '@mui/material/styles'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -66,8 +64,8 @@ const TripDetails = () => {
         <Box
           sx={{
             border: 2,
-            borderRadius: 2,
-            borderColor: theme => lighten(theme.palette.primary.main, 0.5),
+            borderRadius: 4,
+            borderColor: 'primary.main',
             padding: theme => theme.spacing(1)
           }}
         >

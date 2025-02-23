@@ -89,9 +89,8 @@ const StopDetails = () => {
               <Box
                 sx={{
                   border: 2,
-                  borderRadius: 2,
-                  borderColor: theme =>
-                    lighten(theme.palette.secondary.main, 0.5),
+                  borderRadius: 4,
+                  borderColor: 'secondary.main',
                   marginBottom: theme => theme.spacing(1),
                   padding: theme => theme.spacing(1)
                 }}
@@ -124,9 +123,8 @@ const StopDetails = () => {
                       lighten(theme.palette.secondary.main, 0.9),
                     marginBottom: theme => theme.spacing(2),
                     border: 1,
-                    borderRadius: 2,
-                    borderColor: theme =>
-                      lighten(theme.palette.secondary.main, 0.8)
+                    borderRadius: 4,
+                    borderColor: 'secondary.main'
                   }}
                 >
                   <Table

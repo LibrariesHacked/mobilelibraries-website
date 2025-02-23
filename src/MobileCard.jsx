@@ -103,11 +103,21 @@ const MobileCard = props => {
   let statusMessage = null
   if (location) {
     const status = location.getStatus()
-    if (status && status.type === 'offRoad') { statusMessage = offRoadMessage(status) }
-    if (status && status.type === 'preRoute') { statusMessage = preRouteMessage(status) }
-    if (status && status.type === 'atStop') { statusMessage = atStopMessage(status) }
-    if (status && status.type === 'betweenStops') { statusMessage = betweenStopsMessage(status) }
-    if (status && status.type === 'postRoute') { statusMessage = postRouteMessage(status) }
+    if (status && status.type === 'offRoad') {
+      statusMessage = offRoadMessage(status)
+    }
+    if (status && status.type === 'preRoute') {
+      statusMessage = preRouteMessage(status)
+    }
+    if (status && status.type === 'atStop') {
+      statusMessage = atStopMessage(status)
+    }
+    if (status && status.type === 'betweenStops') {
+      statusMessage = betweenStopsMessage(status)
+    }
+    if (status && status.type === 'postRoute') {
+      statusMessage = postRouteMessage(status)
+    }
   }
 
   const bull = <span>•</span>
@@ -146,8 +156,8 @@ const MobileCard = props => {
             size='small'
             color='primary'
             onClick={() => viewStopsByMobile(organisation.id, mobile.id)}
+            startIcon={<GridOnIcon />}
           >
-            <GridOnIcon />
             View stops
           </Button>
         </Tooltip>

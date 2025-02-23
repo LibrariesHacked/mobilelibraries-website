@@ -15,6 +15,12 @@ import { useViewStateValue } from './context/viewState'
 import Search from './Search'
 import MobileCard from './MobileCard'
 
+const noResultTypography = (
+  <Typography component='p' variant='body1'>
+    No mobile libraries currently on the road.
+  </Typography>
+)
+
 const Mobiles = () => {
   const [
     {
@@ -25,7 +31,7 @@ const Mobiles = () => {
       mobilesNearestLookup,
       routeLookup
     }
-  ] = useApplicationStateValue() //eslint-disable-line
+  ] = useApplicationStateValue()
   const [
     {
       organisationFilter,
@@ -35,10 +41,13 @@ const Mobiles = () => {
       searchDistance,
       searchPostcode
     }
-  ] = useSearchStateValue() //eslint-disable-line
-  const [{ loadingMobileLocations }, dispatchView] = useViewStateValue() //eslint-disable-line
+  ] = useSearchStateValue()
+  const [{ loadingMobileLocations }] = useViewStateValue()
 
   const [openTab, setOpenTab] = useState(0)
+
+  const noResultsView = () =>
+    !loadingMobileLocations ? noResultTypography : null
 
   const changeTab = value => {
     setOpenTab(value)
@@ -158,33 +167,33 @@ const Mobiles = () => {
           }
         />
       </Tabs>
-      {mobilesView.length > 0 ? (
-        <Grid2 container spacing={3}>
-          {mobilesView.map((mobile, idx) => {
-            return (
-              <Grid2
-                key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
-                item
-                xs={12}
-                sm={6}
-                md={4}
-                lg={3}
-                xl={3}
-              >
-                <MobileCard
-                  mobile={mobile}
-                  location={mobileLocationLookup[mobile.id]}
-                  organisation={organisationLookup[mobile.organisationId]}
-                />
-              </Grid2>
-            )
-          })}
-        </Grid2>
-      ) : !loadingMobileLocations ? (
-        <Typography component='p' variant='body1'>
-          No mobile libraries currently on the road.
-        </Typography>
-      ) : null}
+      {mobilesView.length > 0
+        ? (
+          <Grid2 container spacing={3}>
+            {mobilesView.map((mobile, idx) => {
+              return (
+                <Grid2
+                  key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
+                  item
+                  xs={12}
+                  sm={6}
+                  md={4}
+                  lg={3}
+                  xl={3}
+                >
+                  <MobileCard
+                    mobile={mobile}
+                    location={mobileLocationLookup[mobile.id]}
+                    organisation={organisationLookup[mobile.organisationId]}
+                  />
+                </Grid2>
+              )
+            })}
+          </Grid2>
+          )
+        : (
+            noResultsView
+          )}
     </>
   )
 }
