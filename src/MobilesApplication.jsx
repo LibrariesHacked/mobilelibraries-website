@@ -47,8 +47,8 @@ const MobilesApplication = () => {
       })
       dispatchApplicationState({
         type: 'AddOrganisations',
-        organisations: organisations,
-        organisationLookup: organisationLookup
+        organisations,
+        organisationLookup
       })
     }
     async function getMobiles () {
@@ -59,8 +59,8 @@ const MobilesApplication = () => {
       })
       dispatchApplicationState({
         type: 'AddMobiles',
-        mobiles: mobiles,
-        mobileLookup: mobileLookup
+        mobiles,
+        mobileLookup
       })
     }
     async function getRoutes () {
@@ -71,8 +71,8 @@ const MobilesApplication = () => {
       })
       dispatchApplicationState({
         type: 'AddRoutes',
-        routes: routes,
-        routeLookup: routeLookup
+        routes,
+        routeLookup
       })
     }
     async function getMobileLocations () {
@@ -84,7 +84,7 @@ const MobilesApplication = () => {
       dispatchApplicationState({
         type: 'AddMobileLocations',
         mobileLocations: locations,
-        mobileLocationLookup: mobileLocationLookup
+        mobileLocationLookup
       })
     }
     getOrganisations()
@@ -127,9 +127,7 @@ const MobilesApplication = () => {
           </Routes>
         </main>
       </Container>
-      <Container maxWidth='lg'>
-        <Footer />
-      </Container>
+      <Footer />
       <StopDetails />
       <MobileLibraryDetails />
       <TripDetails />

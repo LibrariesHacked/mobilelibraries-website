@@ -7,11 +7,12 @@ import IconButton from '@mui/material/IconButton'
 import InputBase from '@mui/material/InputBase'
 import Tooltip from '@mui/material/Tooltip'
 
-import { alpha, lighten } from '@mui/material/styles'
+import { alpha } from '@mui/material/styles'
 
 import ClearIcon from '@mui/icons-material/ClearRounded'
-import MyLocationIcon from '@mui/icons-material/MyLocationRounded'
 import SearchIcon from '@mui/icons-material/SearchRounded'
+import GpsFixedIcon from '@mui/icons-material/GpsFixedRounded'
+import GpsNotFixedIcon from '@mui/icons-material/GpsNotFixedRounded'
 
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
@@ -49,7 +50,7 @@ const SearchBox = ({ children }) => {
 const PostcodeSearch = () => {
   const [{ searchType, searchPostcode, searchPosition }, dispatchSearch] =
     useSearchStateValue() //eslint-disable-line
-  const [{ loadingPostcode, loadingLocation }, dispatchView] =
+  const [{ loadingPostcode, loadingLocation, locationLoaded }, dispatchView] =
     useViewStateValue() //eslint-disable-line
 
   const [tempPostcode, setTempPostcode] = useState(searchPostcode || '')
@@ -138,14 +139,16 @@ const PostcodeSearch = () => {
     <Box
       sx={{
         position: 'relative',
-        backgroundColor: theme => alpha(theme.palette.primary.main, 0.05),
+        backgroundColor: theme => alpha(theme.palette.primary.main, 0.1),
         marginLeft: 0,
         paddingLeft: 0,
         whitespace: 'nowrap',
         display: 'inline-flex',
-        color: theme => theme.palette.primary.main,
-        borderRadius: 2,
-        border: theme => `2px solid ${lighten(theme.palette.primary.main, 0.5)}`
+        color: 'primary.main',
+        borderRadius: 4,
+        borderColor: 'primary.main',
+        borderWidth: 2,
+        borderStyle: 'solid'
       }}
     >
       <InputBase
@@ -163,7 +166,7 @@ const PostcodeSearch = () => {
           fontWeight: 700
         }}
       />
-      {!loadingPostcode && !loadingLocation
+      {!loadingPostcode
         ? (
           <Tooltip title='Search by postcode'>
             <IconButton
@@ -184,7 +187,7 @@ const PostcodeSearch = () => {
           )}
       <Tooltip title='Use your current location'>
         <>
-          {!loadingLocation && !loadingPostcode
+          {!loadingLocation
             ? (
               <IconButton
                 aria-label='Search by current location'
@@ -193,7 +196,7 @@ const PostcodeSearch = () => {
                 size='large'
                 disabled={loadingPostcode || loadingLocation}
               >
-                <MyLocationIcon />
+                {locationLoaded ? <GpsFixedIcon /> : <GpsNotFixedIcon />}
               </IconButton>
               )
             : (

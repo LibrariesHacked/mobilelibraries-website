@@ -14,8 +14,6 @@ import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableRow from '@mui/material/TableRow'
 
-import { lighten } from '@mui/material'
-
 import { useTheme } from '@mui/material/styles'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
@@ -28,7 +26,7 @@ import { useViewStateValue } from './context/viewState'
 import * as tripsModel from './models/trips'
 
 const TripDetails = () => {
-  const [{ currentTripId }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
+  const [{ currentTripId }] = useSearchStateValue()
   const [{ tripDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
 
   const [trip, setTrip] = useState({})
@@ -57,7 +55,7 @@ const TripDetails = () => {
       open={tripDialogOpen}
       onClose={close}
       slotProps={{
-        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.05)' } }
+        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } }
       }}
       PaperProps={{ elevation: 0, sx: { border: 1, borderColor: '#ccc' } }}
     >
@@ -66,8 +64,8 @@ const TripDetails = () => {
         <Box
           sx={{
             border: 2,
-            borderRadius: 2,
-            borderColor: theme => lighten(theme.palette.primary.main, 0.5),
+            borderRadius: 4,
+            borderColor: 'primary.main',
             padding: theme => theme.spacing(1)
           }}
         >

@@ -25,7 +25,9 @@ const MobileLibraryDetails = () => {
   const [mobileLibrary, setMobileLibrary] = useState({})
 
   useEffect(() => {
-    if (currentMobileLibraryId != null && mobileLookup) { setMobileLibrary(mobileLookup[currentMobileLibraryId]) }
+    if (currentMobileLibraryId != null && mobileLookup) {
+      setMobileLibrary(mobileLookup[currentMobileLibraryId])
+    }
   }, [currentMobileLibraryId, mobileLookup])
 
   const close = () => {
@@ -44,8 +46,9 @@ const MobileLibraryDetails = () => {
       open={mobileLibraryDialogOpen}
       onClose={close}
       aria-labelledby='dlg-title'
-      BackdropProps={{ invisible: true }}
-      PaperProps={{ elevation: 0 }}
+      slotProps={{
+        paper: { backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } } }
+      }}
     >
       {mobileLibrary
         ? (

@@ -19,7 +19,9 @@ const initialViewState = {
   loadingRoutes: false,
   loadingMobileLocations: false,
   loadingNearestMobiles: false,
-  loadingPostcode: false
+  loadingPostcode: false,
+  loadingLocation: false,
+  locationLoaded: false
 }
 
 const viewReducer = (state, action) => {
@@ -54,6 +56,12 @@ const viewReducer = (state, action) => {
       return { ...state, mapPosition: action.mapPosition, mapZoom: [13] }
     case 'ToggleLoadingPostcode':
       return { ...state, loadingPostcode: !state.loadingPostcode }
+    case 'ToggleLoadingLocation':
+      return {
+        ...state,
+        loadingLocation: !state.loadingLocation,
+        locationLoaded: true
+      }
     case 'SetMapPosition':
       return {
         ...state,

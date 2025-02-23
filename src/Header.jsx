@@ -9,7 +9,7 @@ import Tabs from '@mui/material/Tabs'
 import { lighten } from '@mui/material'
 
 import AirportShuttleRoundedIcon from '@mui/icons-material/AirportShuttleRounded'
-import ManageSearchRoundedIcon from '@mui/icons-material/ManageSearchRounded'
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded'
 
 const Header = () => {
@@ -25,8 +25,8 @@ const Header = () => {
         marginLeft: 'auto',
         marginRight: 'auto',
         border: '2px solid',
-        borderColor: theme => lighten(theme.palette.primary.main, 0.5),
-        borderRadius: 2,
+        borderColor: 'primary.main',
+        borderRadius: 4,
         zIndex: 1000,
         position: 'relative'
       }}
@@ -38,21 +38,21 @@ const Header = () => {
         sx={{
           '& .MuiTabs-indicator': {
             display: 'none'
-          }
+          },
+          padding: '2px'
         }}
       >
         <Tab
-          icon={<ManageSearchRoundedIcon />}
+          icon={<SearchRoundedIcon />}
           iconPosition='start'
           label='Search'
           value='/'
           component={Link}
           to='/'
           sx={{
+            borderRadius: 3,
             '&.Mui-selected': {
-              backgroundColor: theme =>
-                lighten(theme.palette.primary.main, 0.9),
-              borderRadius: 2
+              backgroundColor: theme => lighten(theme.palette.primary.main, 0.9)
             }
           }}
         />
@@ -67,7 +67,7 @@ const Header = () => {
             '&.Mui-selected': {
               backgroundColor: theme =>
                 lighten(theme.palette.primary.main, 0.9),
-              borderRadius: 2
+              borderRadius: 4
             }
           }}
         />
@@ -82,7 +82,7 @@ const Header = () => {
             '&.Mui-selected': {
               backgroundColor: theme =>
                 lighten(theme.palette.primary.main, 0.9),
-              borderRadius: 2
+              borderRadius: 4
             }
           }}
         />

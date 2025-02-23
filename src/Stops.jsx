@@ -8,9 +8,7 @@ import ListSubheader from '@mui/material/ListSubheader'
 
 import InfoIcon from '@mui/icons-material/InfoOutlined'
 
-import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'
-
-import { lighten } from '@mui/material'
+import { DataGrid, GridActionsCellItem, gridClasses } from '@mui/x-data-grid'
 
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
@@ -51,11 +49,11 @@ const Stops = () => {
 
   const initialState = {
     sorting: {
-      sortModel: sortModel
+      sortModel
     },
     pagination: {
-      page: page,
-      pageSize: pageSize
+      page,
+      pageSize
     },
     filter: filterModel
   }
@@ -82,14 +80,14 @@ const Stops = () => {
       return
     }
     getMobileStopsFromQuery({
-      page: page,
-      pageSize: pageSize,
-      sortModel: sortModel,
-      searchPosition: searchPosition,
-      searchDistance: searchDistance,
-      organisationFilter: organisationFilter,
-      mobileFilter: mobileFilter,
-      routeFilter: routeFilter
+      page,
+      pageSize,
+      sortModel,
+      searchPosition,
+      searchDistance,
+      organisationFilter,
+      mobileFilter,
+      routeFilter
     })
     // eslint-disable-next-line
   }, [
@@ -121,16 +119,13 @@ const Stops = () => {
   const columns = [
     { field: 'community', headerName: 'Community', flex: 1 },
     { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'organisationName', headerName: 'Library authority', flex: 1 },
+    { field: 'organisationName', headerName: 'Library service', flex: 1 },
     {
       field: 'distance',
       headerName: 'Distance',
       flex: 1,
       valueFormatter: params => {
-        if (params.value == null) {
-          return ''
-        }
-
+        if (params?.value == null) return ''
         const valueFormatted = Math.round(Number(params.value / 1608))
         return `${valueFormatted} mi`
       }
@@ -152,35 +147,25 @@ const Stops = () => {
 
   return (
     <>
-      <ListSubheader
-        disableSticky
-        sx={{ textAlign: 'center', marginTop: theme => theme.spacing(3) }}
-      >
+      <ListSubheader disableSticky disableGutters sx={{ textAlign: 'center' }}>
         Stops
       </ListSubheader>
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ flexGrow: 1 }}>
           <DataGrid
-            sx={theme => ({
+            sx={{
               backgroundColor: 'white',
               border: 2,
-              borderColor: lighten(theme.palette.secondary.main, 0.5),
-              '& .MuiDataGrid-columnHeaders': {
-                color: theme.palette.secondary.main,
-                backgroundColor: lighten(theme.palette.secondary.main, 0.8)
-              },
-              '&.Mui-hovered': {
-                backgroundColor: theme.palette.action.hover
-              },
-              '& .MuiDataGrid-cell:focus-within, & .MuiDataGrid-cell:focus': {
-                outline: 'none !important'
-              },
-              '& .MuiDataGrid-columnHeader:focus-within, & .MuiDataGrid-columnHeader:focus':
+              borderColor: 'secondary.main',
+              [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
                 {
-                  outline: 'none !important'
+                  outline: 'none'
+                },
+              [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
+                {
+                  outline: 'none'
                 }
-            })}
-            autoHeight
+            }}
             columnVisibilityModel={{
               community: true,
               name: useMediaQuery(theme.breakpoints.up('sm')),

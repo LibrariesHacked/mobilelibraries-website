@@ -39,7 +39,7 @@ const Filters = () => {
   const chooseOrganisation = organisationId => {
     dispatchSearch({
       type: 'FilterByOrganisation',
-      organisationId: organisationId
+      organisationId
     })
     closeOrganisationMenu()
   }
@@ -55,8 +55,8 @@ const Filters = () => {
   const chooseMobile = (organisationId, mobileId) => {
     dispatchSearch({
       type: 'FilterByMobile',
-      organisationId: organisationId,
-      mobileId: mobileId
+      organisationId,
+      mobileId
     })
     closeMobileMenu()
   }
@@ -70,7 +70,7 @@ const Filters = () => {
   const closeRouteMenu = () => setRouteMenuAnchor(null)
 
   const chooseRoute = routeId => {
-    dispatchSearch({ type: 'FilterByRoute', routeId: routeId })
+    dispatchSearch({ type: 'FilterByRoute', routeId })
     closeRouteMenu()
   }
 
@@ -84,7 +84,7 @@ const Filters = () => {
     <>
       {organisationFilter.length === 0
         ? (
-          <Tooltip title='Choose library authority'>
+          <Tooltip title='Choose library service'>
             <Button
               color='primary'
               onClick={e => openOrganisationMenu(e.currentTarget)}
@@ -97,7 +97,7 @@ const Filters = () => {
         : (
           <Chip
             color='primary'
-            variant='outlined'
+            variant='filled'
             onDelete={clearOrganisationFilter}
             label={organisationLookup[organisationFilter[0]].name}
             sx={{ mr: 1 }}
@@ -111,8 +111,8 @@ const Filters = () => {
                   <Button
                     color='primary'
                     onClick={e => openMobileMenu(e.currentTarget)}
+                    startIcon={<DirectionBusIcon />}
                   >
-                    <DirectionBusIcon />
                     Select mobile
                   </Button>
                 </Tooltip>
@@ -120,7 +120,7 @@ const Filters = () => {
               : (
                 <Chip
                   color='primary'
-                  variant='outlined'
+                  variant='filled'
                   onDelete={clearMobileFilter}
                   label={mobileLookup[mobileFilter[0]].name}
                   sx={{ mr: 1 }}
@@ -136,8 +136,8 @@ const Filters = () => {
                   <Button
                     color='primary'
                     onClick={e => openRouteMenu(e.currentTarget)}
+                    startIcon={<DirectionsIcon />}
                   >
-                    <DirectionsIcon />
                     Select route
                   </Button>
                 </Tooltip>
@@ -145,7 +145,7 @@ const Filters = () => {
               : (
                 <Chip
                   color='primary'
-                  variant='outlined'
+                  variant='filled'
                   onDelete={clearRouteFilter}
                   label={routeLookup[routeFilter[0]].name}
                   sx={{ mr: 1 }}

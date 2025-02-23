@@ -25,7 +25,9 @@ const MobileAvatar = props => {
         style={{
           backgroundColor: utilsHelper.hextoRGBA(organisation.colour, 0.8),
           color: 'white',
-          border: border + 'px solid #FFFFFF'
+          borderWidth: border,
+          borderColor: 'white',
+          borderStyle: 'solid'
         }}
       >
         <DirectionBusIcon />

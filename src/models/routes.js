@@ -1,5 +1,5 @@
 import axios from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import config from '../helpers/config.json'
 
@@ -14,8 +14,8 @@ export class Route {
     this.mobileId = json.mobile_id
     this.name = json.name
     this.frequency = json.frequency
-    this.start = moment(json.start)
-    this.end = moment(json.end)
+    this.start = dayjs(json.start)
+    this.end = dayjs(json.end)
     this.timetable = json.timetable
     this.numberStops = json.number_stops
     return this

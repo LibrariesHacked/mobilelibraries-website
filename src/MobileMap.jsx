@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import Box from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
@@ -147,38 +147,38 @@ const MobileMap = () => {
           // The mobile library locations
           mobileLocations && mobileLocations.length > 0
             ? mobileLocations.map(l => {
-                if (!l.geoX || !l.geoY) return null
-                let locationPoint = [l.geoX, l.geoY]
-                if (l.routeSection && l.routeSection.coordinates && l.updated) {
-                  const millisecondsPassed = moment(Date.now()).diff(l.updated)
-                  const index = Math.round(millisecondsPassed / 500)
-                  const coords = l.routeSection.coordinates
-                  if (coords.length > index && index > 0) {
-                    locationPoint = coords[index]
-                  }
-                  if (coords.length <= index && index > 0) {
-                    locationPoint = coords[coords.length - 1]
-                  }
+              if (!l.geoX || !l.geoY) return null
+              let locationPoint = [l.geoX, l.geoY]
+              if (l.routeSection && l.routeSection.coordinates && l.updated) {
+                const millisecondsPassed = dayjs(Date.now()).diff(l.updated)
+                const index = Math.round(millisecondsPassed / 500)
+                const coords = l.routeSection.coordinates
+                if (coords.length > index && index > 0) {
+                  locationPoint = coords[index]
                 }
-                const mobile = mobileLookup[l.mobileId]
-                const organisation = mobile
-                  ? organisationLookup[mobile.organisationId]
-                  : null
-                return (
-                  <Marker
-                    key={'mkr_' + l.mobileId}
-                    longitude={locationPoint[0]}
-                    latitude={locationPoint[1]}
-                    anchor='bottom'
-                  >
-                    <MobileAvatar
-                      organisation={organisation}
-                      location={l}
-                      zoom={map ? map.getZoom() : 0}
-                    />
-                  </Marker>
-                )
-              })
+                if (coords.length <= index && index > 0) {
+                  locationPoint = coords[coords.length - 1]
+                }
+              }
+              const mobile = mobileLookup[l.mobileId]
+              const organisation = mobile
+                ? organisationLookup[mobile.organisationId]
+                : null
+              return (
+                <Marker
+                  key={'mkr_' + l.mobileId}
+                  longitude={locationPoint[0]}
+                  latitude={locationPoint[1]}
+                  anchor='bottom'
+                >
+                  <MobileAvatar
+                    organisation={organisation}
+                    location={l}
+                    zoom={map ? map.getZoom() : 0}
+                  />
+                </Marker>
+              )
+            })
             : null
         }
         {currentService && currentService.geojson && (
@@ -195,33 +195,37 @@ const MobileMap = () => {
         )}
 
         <Source type='vector' tiles={[libraryAuthorityTiles]}>
-          {mapSettings.authorityBoundary ? (
-            <Layer
-              type='line'
-              source-layer='library_authority_boundaries'
-              minzoom={6}
-              layout={{
-                'line-join': 'round',
-                'line-cap': 'square'
-              }}
-              paint={{
-                'line-color': '#a7a39b',
-                'line-opacity': 1,
-                'line-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 18, 4]
-              }}
-            />
-          ) : null}
-          {mapSettings.authorityBoundary ? (
-            <Layer
-              type='fill'
-              source-layer='library_authority_boundaries'
-              minzoom={6}
-              paint={{
-                'fill-color': '#ccc',
-                'fill-opacity': 0.1
-              }}
-            />
-          ) : null}
+          {mapSettings.authorityBoundary
+            ? (
+              <Layer
+                type='line'
+                source-layer='library_authority_boundaries'
+                minzoom={6}
+                layout={{
+                  'line-join': 'round',
+                  'line-cap': 'square'
+                }}
+                paint={{
+                  'line-color': '#a7a39b',
+                  'line-opacity': 1,
+                  'line-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 18, 4]
+                }}
+              />
+              )
+            : null}
+          {mapSettings.authorityBoundary
+            ? (
+              <Layer
+                type='fill'
+                source-layer='library_authority_boundaries'
+                minzoom={6}
+                paint={{
+                  'fill-color': '#ccc',
+                  'fill-opacity': 0.1
+                }}
+              />
+              )
+            : null}
         </Source>
 
         <Source type='vector' tiles={[mobileTiles]} maxzoom={14}>
@@ -349,11 +353,13 @@ const MobileMap = () => {
             }}
           />
         </Source>
-        {searchPosition && searchPosition.length > 1 ? (
-          <Marker longitude={searchPosition[0]} latitude={searchPosition[1]}>
-            <MeAvatar searchType={searchType} />
-          </Marker>
-        ) : null}
+        {searchPosition && searchPosition.length > 1
+          ? (
+            <Marker longitude={searchPosition[0]} latitude={searchPosition[1]}>
+              <MeAvatar searchType={searchType} />
+            </Marker>
+            )
+          : null}
         <NavigationControl position='bottom-left' />
       </Map>
       <Tooltip title='Map settings'>
@@ -370,8 +376,7 @@ const MobileMap = () => {
             dispatchView({
               type: 'SetMapSettingsDialog',
               mapSettingsDialogOpen: true
-            })
-          }
+            })}
         >
           <LayersIcon />
         </Fab>

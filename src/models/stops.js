@@ -1,5 +1,5 @@
 import axios from 'axios'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 import { getText } from '../helpers/rrule'
 
@@ -24,14 +24,14 @@ export class Stop {
     this.postcode = json.postcode
     this.arrivalTimes = json.arrival_times
     this.departureTimes = json.departure_times
-    this.routeStart = moment(json.route_start)
-    this.routeEnd = moment(json.route_end)
+    this.routeStart = dayjs(json.route_start)
+    this.routeEnd = dayjs(json.route_end)
     this.routeDays = json.route_days
     this.routeFrequencies = json.route_frequencies
     this.routeFrequencyDescriptions = json.route_frequencies.map(f =>
       getText(f)
     )
-    this.routeSchedule = json.route_schedule.map(s => moment(s))
+    this.routeSchedule = json.route_schedule.map(s => dayjs(s))
     this.timetable = json.timetable
     this.longitude = json.longitude
     this.latitude = json.latitude

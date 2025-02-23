@@ -4,11 +4,14 @@ import { blueGrey, green } from '@mui/material/colors'
 
 const theme = createTheme({
   palette: {
+    background: {
+      default: '#FFFAFA'
+    },
     primary: {
-      main: green[700]
+      main: green[800]
     },
     secondary: {
-      main: blueGrey[500]
+      main: blueGrey[600]
     }
   },
   components: {

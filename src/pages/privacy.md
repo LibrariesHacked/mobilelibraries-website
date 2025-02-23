@@ -1,6 +1,6 @@
 ## Privacy
 
-These pages were created by Dave. You can [contact me via email](mailto:info@librarieshacked.org) should you have any questions.
+These pages were created by Dave, Founder of [Libraries Hacked](https://www.librarieshacked.org). You can [contact me via email](mailto:info@librarieshacked.org) should you have any questions.
 
 ### GitHub pages
 

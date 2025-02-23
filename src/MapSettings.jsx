@@ -20,7 +20,7 @@ function MapSettings () {
   const [{ mapSettings, mapSettingsDialogOpen }, dispatchView] =
     useViewStateValue()
 
-  const closeDialog = () => {
+  const handleCloseDialog = () => {
     dispatchView({ type: 'SetMapSettingsDialog', mapSettingsDialogOpen: false })
   }
 
@@ -35,13 +35,11 @@ function MapSettings () {
     <Dialog
       fullScreen={fullScreen}
       open={mapSettingsDialogOpen}
-      onClose={closeDialog}
+      onClose={handleCloseDialog}
       slotProps={{
-        backdrop: {
-          invisible: true
-        }
+        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
+        paper: { elevation: 0, sx: { border: 1, borderColor: '#ccc' } }
       }}
-      PaperProps={{ elevation: 0 }}
     >
       <DialogTitle>Map settings</DialogTitle>
       <DialogContent>
@@ -59,7 +57,7 @@ function MapSettings () {
       </DialogContent>
       <DialogActions>
         <Button
-          onClick={closeDialog}
+          onClick={handleCloseDialog}
           color='secondary'
           endIcon={<CancelIcon />}
         >
