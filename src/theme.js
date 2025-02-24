@@ -30,6 +30,11 @@ const theme = createTheme({
         }
       }
     }
+  },
+  mixins: {
+    MuiDataGrid: {
+      containerBackground: blueGrey[50]
+    }
   }
 })
 

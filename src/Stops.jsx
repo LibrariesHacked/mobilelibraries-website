@@ -136,7 +136,7 @@ const Stops = () => {
         Stops
       </ListSubheader>
       <div style={{ display: 'flex', height: '100%' }}>
-        <div style={{ flexGrow: 1 }}>
+        <div style={{ flexGrow: 1, width: '100%' }}>
           <DataGrid
             sx={{
               backgroundColor: 'white',
