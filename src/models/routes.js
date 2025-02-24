@@ -1,7 +1,10 @@
 import axios from 'axios'
 import dayjs from 'dayjs'
+import relativeTime from 'dayjs/plugin/relativeTime'
 
 import config from '../helpers/config.json'
+
+dayjs.extend(relativeTime)
 
 export class Route {
   constructor (obj) {

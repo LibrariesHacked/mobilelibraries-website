@@ -33,7 +33,6 @@ const Stops = () => {
   const prevPosition = usePrevious(searchPosition)
 
   const initialSortModel = [{ field: 'name', sort: 'asc' }]
-
   const [sortModel, setSortModel] = useState(initialSortModel)
   const [filterModel, setFilterModel] = useState({
     items: [
@@ -49,23 +48,8 @@ const Stops = () => {
     pageSize: 5
   })
 
-  const initialState = {
-    sorting: {
-      sortModel
-    },
-    pagination: {
-      paginationModel,
-      rowCount: 0
-    },
-    filter: filterModel
-  }
-
   const { loadingMobileStops, mobileStops, pageInfo, getMobileStopsFromQuery } =
     useMobileStopsQuery()
-
-  const [rowCountState, setRowCountState] = React.useState(
-    pageInfo?.totalRowCount || 0
-  )
 
   const fetchStops = useCallback(() => {
     if (
@@ -91,7 +75,6 @@ const Stops = () => {
       mobileFilter,
       routeFilter
     })
-    // eslint-disable-next-line
   }, [
     paginationModel,
     sortModel,
@@ -103,14 +86,6 @@ const Stops = () => {
   ])
 
   useEffect(() => fetchStops(), [fetchStops])
-
-  React.useEffect(() => {
-    setRowCountState(prevRowCountState =>
-      pageInfo?.totalRowCount !== undefined
-        ? pageInfo?.totalRowCount
-        : prevRowCountState
-    )
-  }, [pageInfo?.totalRowCount, setRowCountState])
 
   const selectStop = stop => {
     dispatchSearch({ type: 'SetCurrentStop', currentStopId: stop.id })
@@ -146,6 +121,15 @@ const Stops = () => {
     }
   ]
 
+  const rowCountRef = React.useRef(pageInfo?.totalRowCount || 0)
+
+  const rowCount = React.useMemo(() => {
+    if (pageInfo?.totalRowCount !== undefined) {
+      rowCountRef.current = pageInfo.totalRowCount
+    }
+    return rowCountRef.current
+  }, [pageInfo?.totalRowCount])
+
   return (
     <>
       <ListSubheader disableSticky disableGutters sx={{ textAlign: 'center' }}>
@@ -154,7 +138,6 @@ const Stops = () => {
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ flexGrow: 1 }}>
           <DataGrid
-            autoPageSize
             sx={{
               backgroundColor: 'white',
               border: 2,
@@ -179,16 +162,15 @@ const Stops = () => {
             filterMode='server'
             filterModel={filterModel}
             loading={loadingMobileStops}
-            page={paginationModel.page}
-            pageSize={paginationModel.pageSize}
             pageSizeOptions={[5]}
             pagination
             paginationMode='server'
+            paginationModel={paginationModel}
             onPaginationModelChange={newPaginationModel => {
               setPaginationModel(newPaginationModel)
             }}
             rows={mobileStops}
-            rowCount={rowCountState}
+            rowCount={rowCount}
             sortingMode='server'
             sortModel={sortModel}
             onFilterModelChange={newFilterModel =>
@@ -203,7 +185,6 @@ const Stops = () => {
             }}
             onRowClick={params => selectStop(params.row)}
             columns={columns}
-            initialState={initialState}
           />
         </div>
       </div>
