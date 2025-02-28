@@ -8,10 +8,10 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@fontsource/roboto": "^5.1.1",
-    "@mui/icons-material": "^6.4.5",
-    "@mui/material": "^6.4.5",
-    "@mui/x-data-grid": "^7.27.0",
-    "axios": "^1.7.9",
+    "@mui/icons-material": "^6.4.6",
+    "@mui/material": "^6.4.6",
+    "@mui/x-data-grid": "^7.27.2",
+    "axios": "^1.8.1",
     "dayjs": "^1.11.13",
     "maplibre-gl": "^5.1.1",
     "markdown-to-jsx": "^7.7.4",
@@ -40,7 +40,7 @@
     "@vitejs/plugin-react": "^4.3.4",
     "gh-pages": "^6.3.0",
     "standard": "^17.1.2",
-    "vite": "^6.1.1"
+    "vite": "^6.2.0"
   },
   "browserslist": {
     "production": [
