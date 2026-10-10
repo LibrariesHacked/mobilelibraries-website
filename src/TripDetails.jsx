@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import ListSubheader from '@mui/material/ListSubheader'
 import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -50,57 +48,37 @@ const TripDetails = () => {
   const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)'
 
   return (
-    <Dialog
-      fullScreen={fullScreen}
-      open={tripDialogOpen}
-      onClose={close}
-      slotProps={{
-        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
-        paper: { elevation: 0, sx: { border: 1, borderColor: '#ccc' } }
-      }}
-    >
-      <DialogTitle>Mobile trip details</DialogTitle>
-      <DialogContent>
-        <Box
-          sx={{
-            border: 2,
-            borderRadius: 4,
-            borderColor: 'primary.main',
-            padding: theme => theme.spacing(1)
-          }}
-        >
-          <ListSubheader disableSticky>
-            {trip.originStopName + ' to ' + trip.destinationStopName}
-          </ListSubheader>
-          <TableContainer
-            component={Paper}
-            elevation={0}
-            sx={{
-              marginBottom: theme => theme.spacing(1)
-            }}
-          >
-            <Table size='small'>
-              <TableBody>
-                <TableRow>
-                  <TableCell variant='head'>Origin</TableCell>
-                  <TableCell>{trip.originStopName}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell variant='head'>Destination</TableCell>
-                  <TableCell>{trip.destinationStopName}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell variant='head'>Trip length</TableCell>
-                  <TableCell>{distance}</TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell variant='head'>Trip duration</TableCell>
-                  <TableCell>{estimatedDuration}</TableCell>
-                </TableRow>
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
+    <Dialog fullScreen={fullScreen} open={tripDialogOpen} onClose={close}>
+      <DialogTitle>
+        {trip.originStopName && trip.destinationStopName
+          ? `${trip.originStopName} to ${trip.destinationStopName}`
+          : 'Mobile trip details'}
+      </DialogTitle>
+      <DialogContent dividers>
+        <TableContainer component={Paper} variant='outlined'>
+          <Table size='small'>
+            <TableBody>
+              <TableRow>
+                <TableCell variant='head'>Origin</TableCell>
+                <TableCell>{trip.originStopName}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell variant='head'>Destination</TableCell>
+                <TableCell>{trip.destinationStopName}</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell variant='head'>Trip length</TableCell>
+                <TableCell>{distance}</TableCell>
+              </TableRow>
+              <TableRow
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell variant='head'>Trip duration</TableCell>
+                <TableCell>{estimatedDuration}</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       </DialogContent>
       <DialogActions>
         <Button onClick={close} color='secondary' endIcon={<CancelIcon />}>

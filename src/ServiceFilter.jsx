@@ -5,6 +5,7 @@ import Chip from '@mui/material/Chip'
 import ListSubheader from '@mui/material/ListSubheader'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
+import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
 
 import BusinessIcon from '@mui/icons-material/BusinessTwoTone'
@@ -82,77 +83,89 @@ const Filters = () => {
 
   return (
     <>
-      {organisationFilter.length === 0
-        ? (
-          <Tooltip title='Choose library service'>
-            <Button
+      <Stack
+        direction='row'
+        spacing={1}
+        justifyContent='center'
+        alignItems='center'
+        flexWrap='wrap'
+        useFlexGap
+      >
+        {organisationFilter.length === 0
+          ? (
+            <Tooltip title='Choose library service'>
+              <Button
+                color='primary'
+                variant='outlined'
+                size='small'
+                onClick={e => openOrganisationMenu(e.currentTarget)}
+                startIcon={<BusinessIcon />}
+              >
+                Select service
+              </Button>
+            </Tooltip>
+            )
+          : (
+            <Chip
               color='primary'
-              onClick={e => openOrganisationMenu(e.currentTarget)}
-              startIcon={<BusinessIcon />}
-            >
-              Select service
-            </Button>
-          </Tooltip>
-          )
-        : (
-          <Chip
-            color='primary'
-            variant='filled'
-            onDelete={clearOrganisationFilter}
-            label={organisationLookup[organisationFilter[0]].name}
-            sx={{ mr: 1 }}
-          />
-          )}
-      {organisationFilter.length > 0
-        ? (
-            mobileFilter.length === 0
-              ? (
-                <Tooltip title='Choose mobile library'>
-                  <Button
+              variant='filled'
+              onDelete={clearOrganisationFilter}
+              label={organisationLookup[organisationFilter[0]]?.name}
+            />
+            )}
+        {organisationFilter.length > 0
+          ? (
+              mobileFilter.length === 0
+                ? (
+                  <Tooltip title='Choose mobile library'>
+                    <Button
+                      color='primary'
+                      variant='outlined'
+                      size='small'
+                      onClick={e => openMobileMenu(e.currentTarget)}
+                      startIcon={<DirectionBusIcon />}
+                    >
+                      Select mobile
+                    </Button>
+                  </Tooltip>
+                  )
+                : (
+                  <Chip
                     color='primary'
-                    onClick={e => openMobileMenu(e.currentTarget)}
-                    startIcon={<DirectionBusIcon />}
-                  >
-                    Select mobile
-                  </Button>
-                </Tooltip>
-                )
-              : (
-                <Chip
-                  color='primary'
-                  variant='filled'
-                  onDelete={clearMobileFilter}
-                  label={mobileLookup[mobileFilter[0]].name}
-                  sx={{ mr: 1 }}
-                />
-                )
-          )
-        : null}
-      {mobileFilter.length > 0
-        ? (
-            routeFilter.length === 0
-              ? (
-                <Tooltip title='Choose route'>
-                  <Button
+                    variant='filled'
+                    onDelete={clearMobileFilter}
+                    label={mobileLookup[mobileFilter[0]]?.name}
+                  />
+                  )
+            )
+          : null}
+        {mobileFilter.length > 0
+          ? (
+              routeFilter.length === 0
+                ? (
+                  <Tooltip title='Choose route'>
+                    <Button
+                      color='primary'
+                      variant='outlined'
+                      size='small'
+                      onClick={e => openRouteMenu(e.currentTarget)}
+                      startIcon={<DirectionsIcon />}
+                    >
+                      Select route
+                    </Button>
+                  </Tooltip>
+                  )
+                : (
+                  <Chip
                     color='primary'
-                    onClick={e => openRouteMenu(e.currentTarget)}
-                    startIcon={<DirectionsIcon />}
-                  >
-                    Select route
-                  </Button>
-                </Tooltip>
-                )
-              : (
-                <Chip
-                  color='primary'
-                  variant='filled'
-                  onDelete={clearRouteFilter}
-                  label={routeLookup[routeFilter[0]].name}
-                  sx={{ mr: 1 }}
-                />
-                )
-          )
-        : null}
+                    variant='filled'
+                    onDelete={clearRouteFilter}
+                    label={routeLookup[routeFilter[0]]?.name}
+                  />
+                  )
+            )
+          : null}
+      </Stack>
       <Menu
         id='menu-library-service'
         anchorEl={organisationMenuAnchor}

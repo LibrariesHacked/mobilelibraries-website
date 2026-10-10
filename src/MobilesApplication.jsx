@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
+import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 
 import Header from './Header'
@@ -99,18 +100,24 @@ const MobilesApplication = () => {
 
   return (
     <BrowserRouter>
-      <Header
-        loading={
-          loadingOrganisations ||
-          loadingMobiles ||
-          loadingRoutes ||
-          loadingMobileLocations ||
-          loadingNearestMobiles ||
-          loadingPostcode
-        }
-      />
-      <Container maxWidth='lg'>
-        <main>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          minHeight: '100vh'
+        }}
+      >
+        <Header
+          loading={
+            loadingOrganisations ||
+            loadingMobiles ||
+            loadingRoutes ||
+            loadingMobileLocations ||
+            loadingNearestMobiles ||
+            loadingPostcode
+          }
+        />
+        <Container component='main' maxWidth='lg' sx={{ flexGrow: 1, pb: 4 }}>
           <Routes>
             <Route path='/' element={<Home />} />
             <Route path='/mobiles' element={<Mobiles />} />
@@ -125,13 +132,13 @@ const MobilesApplication = () => {
               element={<MemoMarkdownPage page={Privacy} />}
             />
           </Routes>
-        </main>
-      </Container>
-      <Footer />
-      <StopDetails />
-      <MobileLibraryDetails />
-      <TripDetails />
-      <Notification />
+        </Container>
+        <Footer />
+        <StopDetails />
+        <MobileLibraryDetails />
+        <TripDetails />
+        <Notification />
+      </Box>
     </BrowserRouter>
   )
 }

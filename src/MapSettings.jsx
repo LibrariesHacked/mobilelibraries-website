@@ -36,13 +36,9 @@ function MapSettings () {
       fullScreen={fullScreen}
       open={mapSettingsDialogOpen}
       onClose={handleCloseDialog}
-      slotProps={{
-        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
-        paper: { elevation: 0, sx: { border: 1, borderColor: '#ccc' } }
-      }}
     >
       <DialogTitle>Map settings</DialogTitle>
-      <DialogContent>
+      <DialogContent dividers>
         <FormControlLabel
           control={
             <Switch

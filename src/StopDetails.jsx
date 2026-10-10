@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react'
 
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import CircularProgress from '@mui/material/CircularProgress'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import ListSubheader from '@mui/material/ListSubheader'
+import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
-import TableCell, { tableCellClasses } from '@mui/material/TableCell'
+import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
 
 import useMediaQuery from '@mui/material/useMediaQuery'
 import { useTheme } from '@mui/material/styles'
-import { lighten } from '@mui/material'
 
 import CancelIcon from '@mui/icons-material/CancelRounded'
 import SaveIcon from '@mui/icons-material/SaveAltRounded'
@@ -73,141 +71,99 @@ const StopDetails = () => {
       open={stopDialogOpen}
       onClose={close}
       aria-labelledby='dlg-title'
-      slotProps={{
-        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
-        paper: { elevation: 0, sx: { border: 1, borderColor: '#ccc' } }
-      }}
     >
       {Object.keys(stop).length > 0 && stop.routeDays
         ? (
           <>
             <DialogTitle id='dlg-title'>{stop.name}</DialogTitle>
-            <DialogContent>
-              <ListSubheader disableSticky sx={{ textAlign: 'center' }}>
-                Quick info and schedule
-              </ListSubheader>
-              <Box
-                sx={{
-                  border: 2,
-                  borderRadius: 4,
-                  borderColor: 'secondary.main',
-                  marginBottom: theme => theme.spacing(1),
-                  padding: theme => theme.spacing(1)
-                }}
+            <DialogContent dividers>
+              <TableContainer
+                component={Paper}
+                variant='outlined'
+                sx={{ mb: 2.5 }}
               >
-                <TableContainer
-                  component={Paper}
-                  elevation={0}
-                  sx={{
-                    marginBottom: theme => theme.spacing(3)
-                  }}
-                >
-                  <Table size='small'>
-                    <TableBody>
-                      <TableRow>
-                        <TableCell variant='head'>Address</TableCell>
-                        <TableCell>{stop.address}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell variant='head'>Authority</TableCell>
-                        <TableCell>{stop.organisationName}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                <TableContainer
-                  component={Paper}
-                  elevation={0}
-                  sx={{
-                    backgroundColor: theme =>
-                      lighten(theme.palette.secondary.main, 0.9),
-                    marginBottom: theme => theme.spacing(2),
-                    border: 1,
-                    borderRadius: 4,
-                    borderColor: 'secondary.main'
-                  }}
-                >
-                  <Table
-                    size='small'
-                    sx={{
-                      [`& .${tableCellClasses.root}`]: { borderBottom: 'none' }
-                    }}
-                  >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          sx={{
-                            color: theme => theme.palette.secondary.main
-                          }}
-                        >
-                          Frequency
+                <Table size='small'>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell variant='head'>Address</TableCell>
+                      <TableCell>{stop.address}</TableCell>
+                    </TableRow>
+                    <TableRow
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell variant='head'>Authority</TableCell>
+                      <TableCell>{stop.organisationName}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <TableContainer
+                component={Paper}
+                variant='outlined'
+                sx={{ mb: 2 }}
+              >
+                <Table size='small'>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Frequency</TableCell>
+                      <TableCell align='right'>Next visit</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {stop.routeFrequencyDescriptions.map((rs, idx) => (
+                      <TableRow
+                        key={'tc_rs_' + idx}
+                        sx={{
+                          '&:last-child td, &:last-child th': { border: 0 }
+                        }}
+                      >
+                        <TableCell component='th' scope='row'>
+                          {`${stop.routeDays[0]}, ${rs}`}
                         </TableCell>
-                        <TableCell
-                          align='right'
-                          sx={{
-                            color: theme => theme.palette.secondary.main
-                          }}
-                        >
-                          Next visit
+                        <TableCell align='right'>
+                          {stop.routeSchedule[0].format('dddd Do MMMM h:mma')}
                         </TableCell>
                       </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {stop.routeFrequencyDescriptions.map((rs, idx) => (
-                        <TableRow key={'tc_rs_' + idx}>
-                          <TableCell component='th' scope='row'>
-                            {`${stop.routeDays[0]}, ${rs}`}
-                          </TableCell>
-                          <TableCell align='right'>
-                            {stop.routeSchedule[0].format('dddd Do MMMM h:mma')}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              <Stack direction='row' spacing={1} flexWrap='wrap' useFlexGap>
                 {config.displayWebLinks && (
                   <Button
                     onClick={() => goToWebsite()}
-                    color='secondary'
+                    color='primary'
+                    variant='outlined'
+                    size='small'
                     startIcon={<WebIcon />}
-                    sx={{
-                      marginRight: theme => theme.spacing(1)
-                    }}
                   >
                     {urlHelper.getDomainFromUrl(stop.timetable)}
                   </Button>
                 )}
                 <Button
                   onClick={getStopCalendar}
-                  color='secondary'
+                  color='primary'
+                  variant='outlined'
+                  size='small'
                   startIcon={<SaveIcon />}
-                  sx={{
-                    marginRight: theme => theme.spacing(1)
-                  }}
                 >
                   Save calendar file
                 </Button>
                 <Button
                   onClick={getStopPdf}
-                  color='secondary'
+                  color='primary'
+                  variant='outlined'
+                  size='small'
                   startIcon={<PrintIcon />}
-                  sx={{
-                    marginRight: theme => theme.spacing(1)
-                  }}
                 >
                   Print PDF
                 </Button>
-              </Box>
+              </Stack>
             </DialogContent>
           </>
           )
         : (
-          <CircularProgress
-            color='primary'
-            size={30}
-            sx={{ margin: theme => theme.spacing(2) }}
-          />
+          <CircularProgress color='primary' size={30} sx={{ m: 3, mx: 'auto' }} />
           )}
       <DialogActions>
         <Button

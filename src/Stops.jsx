@@ -8,7 +8,7 @@ import ListSubheader from '@mui/material/ListSubheader'
 
 import InfoIcon from '@mui/icons-material/InfoOutlined'
 
-import { DataGrid, GridActionsCellItem, gridClasses } from '@mui/x-data-grid'
+import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'
 
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
@@ -138,19 +138,6 @@ const Stops = () => {
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ flexGrow: 1, width: '100%' }}>
           <DataGrid
-            sx={{
-              backgroundColor: 'white',
-              border: 2,
-              borderColor: 'secondary.main',
-              [`& .${gridClasses.cell}:focus, & .${gridClasses.cell}:focus-within`]:
-                {
-                  outline: 'none'
-                },
-              [`& .${gridClasses.columnHeader}:focus, & .${gridClasses.columnHeader}:focus-within`]:
-                {
-                  outline: 'none'
-                }
-            }}
             columnVisibilityModel={{
               community: true,
               name: useMediaQuery(theme.breakpoints.up('sm')),
@@ -173,9 +160,9 @@ const Stops = () => {
             rowCount={rowCount}
             sortingMode='server'
             sortModel={sortModel}
-            onFilterModelChange={newFilterModel =>
+            onFilterModelChange={newFilterModel => {
               setFilterModel(newFilterModel)
-            }
+            }}
             onSortModelChange={newSortModel => {
               if (newSortModel.length === 0) {
                 setSortModel(initialSortModel)

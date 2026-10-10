@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 
-import Badge from '@mui/material/Badge'
-import Box from '@mui/material/Box'
 import Grid2 from '@mui/material/Grid2'
 import ListSubheader from '@mui/material/ListSubheader'
 import Tab from '@mui/material/Tab'
@@ -16,7 +14,12 @@ import Search from './Search'
 import MobileCard from './MobileCard'
 
 const noResultTypography = (
-  <Typography component='p' variant='body1'>
+  <Typography
+    component='p'
+    variant='body1'
+    color='text.secondary'
+    sx={{ textAlign: 'center', mt: 4 }}
+  >
     No mobile libraries currently on the road.
   </Typography>
 )
@@ -140,40 +143,25 @@ const Mobiles = () => {
   return (
     <>
       <Search />
-      <ListSubheader component='span' disableSticky>
+      <ListSubheader disableSticky disableGutters sx={{ textAlign: 'center' }}>
         {title}
       </ListSubheader>
       <Tabs
         variant='standard'
         scrollButtons={false}
         value={openTab}
-        indicatorColor='secondary'
+        indicatorColor='primary'
+        textColor='primary'
         onChange={(e, value) => changeTab(value)}
         centered
-        sx={{ marginBottom: theme => theme.spacing() }}
+        sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}
       >
-        <Tab
-          label={
-            <Badge color='secondary' badgeContent={activeMobiles.length}>
-              <Box sx={{ minWidth: '50px' }}>On the road</Box>
-            </Badge>
-          }
-        />
-        <Tab
-          label={
-            <Badge
-              showZero
-              color='secondary'
-              badgeContent={filteredMobiles.length}
-            >
-              <Box sx={{ minWidth: '50px' }}>All</Box>
-            </Badge>
-          }
-        />
+        <Tab label={`On the road (${activeMobiles.length})`} />
+        <Tab label={`All (${filteredMobiles.length})`} />
       </Tabs>
       {mobilesView.length > 0
         ? (
-          <Grid2 container spacing={3}>
+          <Grid2 container spacing={2.5}>
             {mobilesView.map((mobile, idx) => {
               return (
                 <Grid2

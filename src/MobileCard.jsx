@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
 
-import { lighten } from '@mui/material/styles'
+import { alpha } from '@mui/material/styles'
 
 import GridOnIcon from '@mui/icons-material/GridOnTwoTone'
 import MoreVertIcon from '@mui/icons-material/MoreVertTwoTone'
@@ -54,56 +54,63 @@ const MobileCard = props => {
 
   const stopButton = stop => {
     return (
-      <Button color='secondary' onClick={() => viewStop(stop.stopId)}>
+      <Button
+        color='primary'
+        size='small'
+        onClick={() => viewStop(stop.stopId)}
+        sx={{ minWidth: 0, px: 0.5, py: 0, verticalAlign: 'baseline' }}
+      >
         {stop.stopName}
       </Button>
     )
   }
 
   const offRoadMessage = status => {
-    return <Typography>{status.message}</Typography>
+    return (
+      <Typography variant='body2' color='text.secondary'>
+        {status.message}
+      </Typography>
+    )
   }
 
   const preRouteMessage = status => {
     const button = stopButton(status.args[0])
     return (
-      <>
-        <Typography>
-          {status.message}
-          {button}
-          {status.args[1]}
-        </Typography>
-      </>
+      <Typography variant='body2' color='text.secondary'>
+        {status.message}
+        {button}
+        {status.args[1]}
+      </Typography>
     )
   }
 
   const atStopMessage = status => {
     const button = stopButton(status.args[0])
     return (
-      <>
-        <Typography>
-          {status.message}
-          {button}
-          {' for ' + status.args[1]}
-        </Typography>
-      </>
+      <Typography variant='body2' color='text.secondary'>
+        {status.message}
+        {button}
+        {' for ' + status.args[1]}
+      </Typography>
     )
   }
 
   const betweenStopsMessage = status => {
     const button = stopButton(status.args[0])
     return (
-      <>
-        <Typography>
-          {status.message}
-          {button}
-          {status.args[1]}
-        </Typography>
-      </>
+      <Typography variant='body2' color='text.secondary'>
+        {status.message}
+        {button}
+        {status.args[1]}
+      </Typography>
     )
   }
 
-  const postRouteMessage = status => <Typography>{status.message}</Typography>
+  const postRouteMessage = status => (
+    <Typography variant='body2' color='text.secondary'>
+      {status.message}
+    </Typography>
+  )
 
   let statusMessage = null
   if (location) {
@@ -126,57 +133,45 @@ const MobileCard = props => {
   }
 
   const bull = (
-    <Box
-      component='span'
-      sx={{ display: 'inline-block', mx: '4px', transform: 'scale(1.2)' }}
-    >
+    <Box component='span' sx={{ display: 'inline-block', mx: 0.75 }}>
       •
     </Box>
   )
 
   return (
     <Card
-      elevation={0}
       sx={{
-        border: '1px solid #ccc',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between'
       }}
     >
-      <CardContent
+      <Box
         sx={{
-          backgroundColor: theme => lighten(theme.palette.primary.main, 0.9),
-          color: 'primary.main',
-          py: 1,
-          '&:last-child': { pb: 1 }
+          backgroundColor: theme => alpha(theme.palette.primary.main, 0.06),
+          borderBottom: 1,
+          borderColor: 'divider',
+          px: 2,
+          py: 1
         }}
       >
-        <Typography sx={{ fontSize: 12, fontWeight: 500 }}>
+        <Typography variant='caption' color='primary.main' fontWeight={600}>
           {mobile.numberRoutes +
             ' route' +
             (mobile.numberRoutes > 1 ? 's' : '')}
           {bull}
           {mobile.numberStops + ' stop' + (mobile.numberStops > 1 ? 's' : '')}
         </Typography>
-      </CardContent>
+      </Box>
       <CardContent sx={{ flexGrow: 1 }}>
-        <Typography variant='h6' component='h2'>
+        <Typography variant='h6' component='h2' gutterBottom>
           {(organisation ? organisation.name + ' ' : '') + mobile.name}
         </Typography>
         {statusMessage}
       </CardContent>
-      <CardActions>
-        <Tooltip title='See more mobile details'>
-          <IconButton
-            size='small'
-            onClick={() => displayMobileLibraryInfo(mobile.id)}
-          >
-            <MoreVertIcon />
-          </IconButton>
-        </Tooltip>
-        <Divider orientation='vertical' flexItem sx={{ mx: 0.5 }} />
+      <Divider />
+      <CardActions sx={{ justifyContent: 'space-between' }}>
         <Tooltip title='Mobile library stops'>
           <Button
             component={Link}
@@ -189,18 +184,25 @@ const MobileCard = props => {
             View stops
           </Button>
         </Tooltip>
-        {mobile.timetable
-          ? (
-            <>
-              <Divider orientation='vertical' flexItem sx={{ mx: 0.5 }} />
+        <Box>
+          {mobile.timetable
+            ? (
               <Tooltip title='Website timetable'>
                 <IconButton onClick={() => goToWebsite()} size='small'>
-                  <WebIcon />
+                  <WebIcon fontSize='small' />
                 </IconButton>
               </Tooltip>
-            </>
-            )
-          : null}
+              )
+            : null}
+          <Tooltip title='See more mobile details'>
+            <IconButton
+              size='small'
+              onClick={() => displayMobileLibraryInfo(mobile.id)}
+            >
+              <MoreVertIcon fontSize='small' />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </CardActions>
     </Card>
   )

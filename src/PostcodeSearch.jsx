@@ -5,9 +5,8 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import IconButton from '@mui/material/IconButton'
 import InputBase from '@mui/material/InputBase'
+import Paper from '@mui/material/Paper'
 import Tooltip from '@mui/material/Tooltip'
-
-import { alpha } from '@mui/material/styles'
 
 import ClearIcon from '@mui/icons-material/ClearRounded'
 import SearchIcon from '@mui/icons-material/SearchRounded'
@@ -36,12 +35,10 @@ const SearchBox = ({ children }) => {
       position='relative'
       display='inline-flex'
       sx={{
-        padding: theme => theme.spacing(1),
+        p: 1,
         textAlign: 'center',
         alignItems: 'center',
-        justifyContent: 'center',
-        verticalAlign: 'middle',
-        boxSizing: 'border-box'
+        justifyContent: 'center'
       }}
     >
       {children}
@@ -172,23 +169,19 @@ const PostcodeSearch = () => {
   }
 
   return (
-    <Box
+    <Paper
+      variant='outlined'
       sx={{
         position: 'relative',
-        backgroundColor: theme => alpha(theme.palette.primary.main, 0.1),
-        marginLeft: 0,
-        paddingLeft: 0,
-        whitespace: 'nowrap',
         display: 'inline-flex',
-        color: 'primary.main',
-        borderRadius: 4,
-        borderColor: 'primary.main',
-        borderWidth: 2,
-        borderStyle: 'solid'
+        alignItems: 'center',
+        pl: 2,
+        pr: 0.5,
+        py: 0.25
       }}
     >
       <InputBase
-        placeholder='Postcode'
+        placeholder='Enter postcode'
         value={tempPostcode}
         onChange={e => setTempPostcode(e.target.value.toUpperCase())}
         onKeyDown={e => {
@@ -196,10 +189,8 @@ const PostcodeSearch = () => {
         }}
         inputProps={{ 'aria-label': 'search by postcode' }}
         sx={{
-          paddingLeft: theme => theme.spacing(2),
-          maxWidth: 110,
-          color: theme => theme.palette.secondary.main,
-          fontWeight: 700
+          width: 140,
+          fontWeight: 500
         }}
       />
       {!loadingPostcode
@@ -207,18 +198,17 @@ const PostcodeSearch = () => {
           <Tooltip title='Search by postcode'>
             <IconButton
               aria-label='Search'
-              color='inherit'
+              color='primary'
               onClick={() => postcodeSearch()}
-              size='large'
               disabled={loadingPostcode || loadingLocation}
             >
-              <SearchIcon />
+              <SearchIcon fontSize='small' />
             </IconButton>
           </Tooltip>
           )
         : (
           <SearchBox>
-            <CircularProgress color='inherit' size={22} />
+            <CircularProgress color='primary' size={20} />
           </SearchBox>
           )}
       {!loadingLocation
@@ -226,36 +216,40 @@ const PostcodeSearch = () => {
           <Tooltip title='Use your current location'>
             <IconButton
               aria-label='Search by current location'
-              color='inherit'
+              color='primary'
               onClick={() => getLocation()}
-              size='large'
               disabled={loadingPostcode || loadingLocation}
             >
-              {locationLoaded ? <GpsFixedIcon /> : <GpsNotFixedIcon />}
+              {locationLoaded
+                ? (
+                  <GpsFixedIcon fontSize='small' />
+                  )
+                : (
+                  <GpsNotFixedIcon fontSize='small' />
+                  )}
             </IconButton>
           </Tooltip>
           )
         : (
           <SearchBox>
-            <CircularProgress color='inherit' size={22} />
+            <CircularProgress color='primary' size={20} />
           </SearchBox>
           )}
       {searchType === 'postcode' || searchType === 'gps'
         ? (
           <Tooltip title='Clear search'>
             <IconButton
-              color='inherit'
+              color='secondary'
               aria-label='Clear search'
               onClick={() => clearSearch()}
-              size='large'
               disabled={loadingPostcode || loadingLocation}
             >
-              <ClearIcon />
+              <ClearIcon fontSize='small' />
             </IconButton>
           </Tooltip>
           )
         : null}
-    </Box>
+    </Paper>
   )
 }
 

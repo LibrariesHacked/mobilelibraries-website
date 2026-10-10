@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
-import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import CircularProgress from '@mui/material/CircularProgress'
-import ListSubheader from '@mui/material/ListSubheader'
 import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
-import TableCell, { tableCellClasses } from '@mui/material/TableCell'
+import TableCell from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 
-import { lighten, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 
 import CancelIcon from '@mui/icons-material/CancelRounded'
@@ -113,10 +112,6 @@ const MobileLibraryDetails = () => {
       open={mobileLibraryDialogOpen}
       onClose={close}
       aria-labelledby='dlg-title'
-      slotProps={{
-        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
-        paper: { elevation: 0, sx: { border: 1, borderColor: '#ccc' } }
-      }}
     >
       {mobileLibrary && mobileLibrary.id
         ? (
@@ -125,141 +120,100 @@ const MobileLibraryDetails = () => {
               {(organisation ? organisation.name + ' - ' : '') +
                 mobileLibrary.name}
             </DialogTitle>
-            <DialogContent>
-              <ListSubheader disableSticky sx={{ textAlign: 'center' }}>
-                Quick info and routes
-              </ListSubheader>
-              <Box
-                sx={{
-                  border: 2,
-                  borderRadius: 4,
-                  borderColor: 'secondary.main',
-                  marginBottom: theme => theme.spacing(1),
-                  padding: theme => theme.spacing(1)
-                }}
+            <DialogContent dividers>
+              <TableContainer
+                component={Paper}
+                variant='outlined'
+                sx={{ mb: 2.5 }}
               >
-                <TableContainer
-                  component={Paper}
-                  elevation={0}
-                  sx={{
-                    marginBottom: theme => theme.spacing(2)
-                  }}
-                >
-                  <Table size='small'>
-                    <TableBody>
-                      {organisation
-                        ? (
-                          <TableRow>
-                            <TableCell variant='head'>Authority</TableCell>
-                            <TableCell>{organisation.name}</TableCell>
-                          </TableRow>
-                          )
-                        : null}
-                      {status && status.textFormat
-                        ? (
-                          <TableRow>
-                            <TableCell variant='head'>Status</TableCell>
-                            <TableCell>{status.textFormat}</TableCell>
-                          </TableRow>
-                          )
-                        : null}
-                      <TableRow>
-                        <TableCell variant='head'>Routes</TableCell>
-                        <TableCell>{mobileLibrary.numberRoutes}</TableCell>
-                      </TableRow>
-                      <TableRow>
-                        <TableCell variant='head'>Stops</TableCell>
-                        <TableCell>{mobileLibrary.numberStops}</TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                {mobileRoutes.length > 0
-                  ? (
-                    <TableContainer
-                      component={Paper}
-                      elevation={0}
-                      sx={{
-                        backgroundColor: theme =>
-                          lighten(theme.palette.secondary.main, 0.9),
-                        marginBottom: theme => theme.spacing(2),
-                        border: 1,
-                        borderRadius: 4,
-                        borderColor: 'secondary.main'
-                      }}
+                <Table size='small'>
+                  <TableBody>
+                    {organisation
+                      ? (
+                        <TableRow>
+                          <TableCell variant='head'>Authority</TableCell>
+                          <TableCell>{organisation.name}</TableCell>
+                        </TableRow>
+                        )
+                      : null}
+                    {status && status.textFormat
+                      ? (
+                        <TableRow>
+                          <TableCell variant='head'>Status</TableCell>
+                          <TableCell>{status.textFormat}</TableCell>
+                        </TableRow>
+                        )
+                      : null}
+                    <TableRow>
+                      <TableCell variant='head'>Routes</TableCell>
+                      <TableCell>{mobileLibrary.numberRoutes}</TableCell>
+                    </TableRow>
+                    <TableRow
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
-                      <Table
-                        size='small'
-                        sx={{
-                          [`& .${tableCellClasses.root}`]: {
-                            borderBottom: 'none'
-                          }
-                        }}
-                      >
-                        <TableHead>
-                          <TableRow>
-                            <TableCell
-                              sx={{
-                                color: theme => theme.palette.secondary.main
-                              }}
-                            >
-                              Route
+                      <TableCell variant='head'>Stops</TableCell>
+                      <TableCell>{mobileLibrary.numberStops}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+              {mobileRoutes.length > 0
+                ? (
+                  <TableContainer
+                    component={Paper}
+                    variant='outlined'
+                    sx={{ mb: 2 }}
+                  >
+                    <Table size='small'>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell>Route</TableCell>
+                          <TableCell>Frequency</TableCell>
+                          <TableCell align='right'>Stops</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {mobileRoutes.map(route => (
+                          <TableRow
+                            key={'tc_rt_' + route.id}
+                            sx={{
+                              '&:last-child td, &:last-child th': { border: 0 }
+                            }}
+                          >
+                            <TableCell component='th' scope='row'>
+                              <Button
+                                component={Link}
+                                to='/'
+                                size='small'
+                                color='primary'
+                                onClick={() => viewStopsByRoute(route.id)}
+                                sx={{ minWidth: 0, px: 0.5 }}
+                              >
+                                {route.name}
+                              </Button>
                             </TableCell>
-                            <TableCell
-                              sx={{
-                                color: theme => theme.palette.secondary.main
-                              }}
-                            >
-                              Frequency
+                            <TableCell>
+                              {route.frequency ? getText(route.frequency) : ''}
                             </TableCell>
-                            <TableCell
-                              align='right'
-                              sx={{
-                                color: theme => theme.palette.secondary.main
-                              }}
-                            >
-                              Stops
+                            <TableCell align='right'>
+                              {route.numberStops}
                             </TableCell>
                           </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {mobileRoutes.map(route => (
-                            <TableRow key={'tc_rt_' + route.id}>
-                              <TableCell component='th' scope='row'>
-                                <Button
-                                  component={Link}
-                                  to='/'
-                                  size='small'
-                                  color='primary'
-                                  onClick={() => viewStopsByRoute(route.id)}
-                                >
-                                  {route.name}
-                                </Button>
-                              </TableCell>
-                              <TableCell>
-                                {route.frequency
-                                  ? getText(route.frequency)
-                                  : ''}
-                              </TableCell>
-                              <TableCell align='right'>
-                                {route.numberStops}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                    )
-                  : null}
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                  )
+                : null}
+              <Stack direction='row' spacing={1} flexWrap='wrap' useFlexGap>
                 <Button
                   component={Link}
                   to='/'
                   onClick={() => viewStopsByMobile()}
-                  color='secondary'
+                  color='primary'
+                  variant='outlined'
+                  size='small'
                   startIcon={<GridOnIcon />}
-                  sx={{
-                    marginRight: theme => theme.spacing(1)
-                  }}
                 >
                   View all stops
                 </Button>
@@ -267,26 +221,21 @@ const MobileLibraryDetails = () => {
                   ? (
                     <Button
                       onClick={() => goToWebsite(websiteUrl)}
-                      color='secondary'
+                      color='primary'
+                      variant='outlined'
+                      size='small'
                       startIcon={<WebIcon />}
-                      sx={{
-                        marginRight: theme => theme.spacing(1)
-                      }}
                     >
                       {urlHelper.getDomainFromUrl(websiteUrl)}
                     </Button>
                     )
                   : null}
-              </Box>
+              </Stack>
             </DialogContent>
           </>
           )
         : (
-          <CircularProgress
-            color='primary'
-            size={30}
-            sx={{ margin: theme => theme.spacing(2) }}
-          />
+          <CircularProgress color='primary' size={30} sx={{ m: 3, mx: 'auto' }} />
           )}
       <DialogActions>
         <Button

@@ -2,11 +2,11 @@ import React from 'react'
 
 import { Link, useLocation } from 'react-router-dom'
 
-import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 
-import { lighten } from '@mui/material'
+import { alpha } from '@mui/material/styles'
 
 import AirportShuttleRoundedIcon from '@mui/icons-material/AirportShuttleRounded'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
@@ -14,80 +14,71 @@ import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded'
 
 const Header = () => {
   const location = useLocation()
+  const tabValue = ['/', '/mobiles', '/map'].includes(location.pathname)
+    ? location.pathname
+    : false
 
   return (
-    <Box
+    <Paper
+      component='header'
+      variant='outlined'
       sx={{
-        backgroundColor: 'white',
-        marginTop: theme => theme.spacing(1),
-        marginBottom: theme => theme.spacing(1),
-        width: '320px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        border: '2px solid',
-        borderColor: 'primary.main',
-        borderRadius: 4,
+        mt: 2,
+        mb: 1,
+        mx: 'auto',
+        p: 0.5,
+        width: 'fit-content',
+        borderRadius: 3,
         zIndex: 1000,
         position: 'relative'
       }}
     >
       <Tabs
-        value={location.pathname}
+        value={tabValue}
         variant='scrollable'
         scrollButtons={false}
         sx={{
+          minHeight: 40,
           '& .MuiTabs-indicator': {
             display: 'none'
           },
-          padding: '2px'
+          '& .MuiTab-root': {
+            minHeight: 40,
+            py: 0.5,
+            px: 2,
+            borderRadius: 2.5,
+            '&.Mui-selected': {
+              backgroundColor: theme => alpha(theme.palette.primary.main, 0.1)
+            }
+          }
         }}
       >
         <Tab
-          icon={<SearchRoundedIcon />}
+          icon={<SearchRoundedIcon fontSize='small' />}
           iconPosition='start'
           label='Search'
           value='/'
           component={Link}
           to='/'
-          sx={{
-            borderRadius: 3,
-            '&.Mui-selected': {
-              backgroundColor: theme => lighten(theme.palette.primary.main, 0.9)
-            }
-          }}
         />
         <Tab
-          icon={<AirportShuttleRoundedIcon />}
+          icon={<AirportShuttleRoundedIcon fontSize='small' />}
           iconPosition='start'
           label='Tracker'
           value='/mobiles'
           component={Link}
           to='/mobiles'
-          sx={{
-            '&.Mui-selected': {
-              backgroundColor: theme =>
-                lighten(theme.palette.primary.main, 0.9),
-              borderRadius: 4
-            }
-          }}
         />
         <Tab
-          icon={<PlaceRoundedIcon />}
+          icon={<PlaceRoundedIcon fontSize='small' />}
           iconPosition='start'
           label='Map'
           value='/map'
           component={Link}
           to='/map'
-          sx={{
-            '&.Mui-selected': {
-              backgroundColor: theme =>
-                lighten(theme.palette.primary.main, 0.9),
-              borderRadius: 4
-            }
-          }}
         />
       </Tabs>
-    </Box>
+    </Paper>
   )
 }
 

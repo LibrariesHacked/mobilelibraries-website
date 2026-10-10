@@ -129,7 +129,7 @@ const MobileMap = () => {
 
   return (
     <>
-      <Box sx={{ position: 'absolute', marginTop: theme => theme.spacing(2) }}>
+      <Box sx={{ position: 'absolute', zIndex: 1, mt: 2 }}>
         <PostcodeSearch />
       </Box>
       <Map

@@ -11,17 +11,18 @@ const Search = () => {
     <Box
       sx={{
         textAlign: 'center',
-        marginTop: theme => theme.spacing(2),
+        mt: 2,
+        mb: 3,
         width: '100%'
       }}
     >
-      <Typography color='secondary' component='h2' variant='h2'>
+      <Typography color='text.primary' component='h1' variant='h4' gutterBottom>
         Mobile libraries
       </Typography>
-      <Typography component='p' variant='h6' color='secondary'>
+      <Typography component='p' variant='subtitle1' color='text.secondary'>
         Find your nearest mobile library
       </Typography>
-      <Box sx={{ margin: theme => theme.spacing(2) }}>
+      <Box sx={{ my: 2 }}>
         <PostcodeSearch settings />
       </Box>
       <ServiceFilter />
