@@ -55,9 +55,9 @@ const TripDetails = () => {
       open={tripDialogOpen}
       onClose={close}
       slotProps={{
-        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } }
+        backdrop: { sx: { backgroundColor: 'rgba(0, 0, 0, 0.1)' } },
+        paper: { elevation: 0, sx: { border: 1, borderColor: '#ccc' } }
       }}
-      PaperProps={{ elevation: 0, sx: { border: 1, borderColor: '#ccc' } }}
     >
       <DialogTitle>Mobile trip details</DialogTitle>
       <DialogContent>

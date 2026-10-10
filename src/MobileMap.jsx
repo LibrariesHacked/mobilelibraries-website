@@ -7,6 +7,8 @@ import Box from '@mui/material/Box'
 import Fab from '@mui/material/Fab'
 import Tooltip from '@mui/material/Tooltip'
 
+import { setWorkerUrl } from 'maplibre-gl'
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
 import Map, {
   Source,
   Layer,
@@ -28,6 +30,7 @@ import PostcodeSearch from './PostcodeSearch'
 import config from './helpers/config.json'
 
 dayjs.extend(relativeTime)
+setWorkerUrl(workerUrl)
 
 const libraryAuthorityTiles = config.libraryAuthorityTiles
 const mobileTiles = config.mobileTiles
@@ -141,7 +144,7 @@ const MobileMap = () => {
         mapStyle='https://api.maptiler.com/maps/dataviz/style.json?key=1OK05AJqNta7xYzrG2kA'
         longitude={mapPosition[0]}
         latitude={mapPosition[1]}
-        zoom={mapZoom}
+        zoom={mapZoom[0]}
         maxZoom={18}
         onMove={evt => setViewState(evt.viewState)}
         onClick={clickMap}

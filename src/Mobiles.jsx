@@ -81,15 +81,19 @@ const Mobiles = () => {
   })
 
   const organisationName =
-    organisationFilter.length > 0
+    organisationFilter.length > 0 && organisationLookup[organisationFilter[0]]
       ? organisationLookup[organisationFilter[0]].name
       : ''
 
   const mobileName =
-    mobileFilter.length > 0 ? mobileLookup[mobileFilter[0]].name : ''
+    mobileFilter.length > 0 && mobileLookup[mobileFilter[0]]
+      ? mobileLookup[mobileFilter[0]].name
+      : ''
 
   const routeName =
-    routeFilter.length > 0 ? routeLookup[routeFilter[0]].name : ''
+    routeFilter.length > 0 && routeLookup[routeFilter[0]]
+      ? routeLookup[routeFilter[0]].name
+      : ''
 
   let title = 'Mobile libraries'
   if (organisationName !== '') {
@@ -174,12 +178,7 @@ const Mobiles = () => {
               return (
                 <Grid2
                   key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
-                  item
-                  xs={12}
-                  sm={6}
-                  md={4}
-                  lg={3}
-                  xl={3}
+                  size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
                 >
                   <MobileCard
                     mobile={mobile}
@@ -192,7 +191,7 @@ const Mobiles = () => {
           </Grid2>
           )
         : (
-            noResultsView
+            noResultsView()
           )}
     </>
   )

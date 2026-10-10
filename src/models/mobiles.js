@@ -143,7 +143,7 @@ export class MobileLocation {
       return {
         type: 'postRoute',
         message: statuses.postRoute,
-        text_format: statuses.postRoute
+        textFormat: statuses.postRoute
       }
     }
     return null

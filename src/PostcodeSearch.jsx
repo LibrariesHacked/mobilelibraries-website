@@ -14,11 +14,13 @@ import SearchIcon from '@mui/icons-material/SearchRounded'
 import GpsFixedIcon from '@mui/icons-material/GpsFixedRounded'
 import GpsNotFixedIcon from '@mui/icons-material/GpsNotFixedRounded'
 
+import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
 import * as geoHelper from './helpers/geo'
 import * as urlHelper from './helpers/url'
+import * as mobilesModel from './models/mobiles'
 
 const usePrevious = value => {
   const ref = useRef()
@@ -48,8 +50,11 @@ const SearchBox = ({ children }) => {
 }
 
 const PostcodeSearch = () => {
-  const [{ searchType, searchPostcode, searchPosition }, dispatchSearch] =
-    useSearchStateValue() //eslint-disable-line
+  const [{}, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
+  const [
+    { searchType, searchPostcode, searchPosition, searchDistance },
+    dispatchSearch
+  ] = useSearchStateValue() //eslint-disable-line
   const [{ loadingPostcode, loadingLocation, locationLoaded }, dispatchView] =
     useViewStateValue() //eslint-disable-line
 
@@ -65,18 +70,44 @@ const PostcodeSearch = () => {
     }
   }, [searchPostcode, prevProps])
 
+  const updateNearestMobiles = async location => {
+    const mobilesNearest = await mobilesModel.getMobilesNearest(
+      location,
+      searchDistance
+    )
+    const mobilesNearestLookup = {}
+    mobilesNearest.forEach(mn => {
+      mobilesNearestLookup[mn.mobileId] = mn
+    })
+    dispatchApplication({
+      type: 'UpdateMobilesNearest',
+      mobilesNearest,
+      mobilesNearestLookup
+    })
+  }
+
   const getLocation = async () => {
     if (!loadingLocation) {
       dispatchView({ type: 'ToggleLoadingLocation' })
-      const pos =
-        searchPosition.length > 0
-          ? searchPosition
-          : await geoHelper.getCurrentPosition()
-      dispatchSearch({ type: 'SetLocation', searchPosition: pos })
-      const postcode = await getLocationPostcode(pos)
-      dispatchView({ type: 'SetLocationLoaded' })
-      dispatchView({ type: 'ToggleLoadingLocation' })
-      if (postcode && postcode !== '') postcodeSearch(postcode)
+      try {
+        const pos =
+          searchPosition.length > 0
+            ? searchPosition
+            : await geoHelper.getCurrentPosition()
+        dispatchSearch({ type: 'SetLocation', searchPosition: pos })
+        await updateNearestMobiles(pos)
+        const postcode = await getLocationPostcode(pos)
+        dispatchView({ type: 'SetLocationLoaded' })
+        dispatchView({ type: 'ToggleLoadingLocation' })
+        if (postcode && postcode !== '') postcodeSearch(postcode)
+      } catch (err) {
+        dispatchView({ type: 'ToggleLoadingLocation' })
+        dispatchView({
+          type: 'ShowNotification',
+          notificationMessage: 'Could not determine your current location',
+          notificationSeverity: 'error'
+        })
+      }
     }
   }
 
@@ -91,6 +122,11 @@ const PostcodeSearch = () => {
   const clearSearch = () => {
     setTempPostcode('')
     dispatchSearch({ type: 'ClearAll' })
+    dispatchApplication({
+      type: 'UpdateMobilesNearest',
+      mobilesNearest: [],
+      mobilesNearestLookup: {}
+    })
     urlHelper.clearService(navigate)
   }
 
@@ -104,10 +140,10 @@ const PostcodeSearch = () => {
       return
     }
     dispatchView({ type: 'ToggleLoadingPostcode' })
-    dispatchView({ type: 'LoadingPostcode' })
     if (geoHelper.validatePostcode(postcode)) {
       const service = await geoHelper.getPostcode(postcode.trim())
       if (service && service.location && service.location.length > 0) {
+        await updateNearestMobiles(service.location)
         dispatchSearch({
           type: 'SetPostcodeSearch',
           searchPostcode: postcode,
@@ -185,28 +221,26 @@ const PostcodeSearch = () => {
             <CircularProgress color='inherit' size={22} />
           </SearchBox>
           )}
-      <Tooltip title='Use your current location'>
-        <>
-          {!loadingLocation
-            ? (
-              <IconButton
-                aria-label='Search by current location'
-                color='inherit'
-                onClick={() => getLocation()}
-                size='large'
-                disabled={loadingPostcode || loadingLocation}
-              >
-                {locationLoaded ? <GpsFixedIcon /> : <GpsNotFixedIcon />}
-              </IconButton>
-              )
-            : (
-              <SearchBox>
-                <CircularProgress color='inherit' size={22} />
-              </SearchBox>
-              )}
-        </>
-      </Tooltip>
-      {searchType === 'postcode'
+      {!loadingLocation
+        ? (
+          <Tooltip title='Use your current location'>
+            <IconButton
+              aria-label='Search by current location'
+              color='inherit'
+              onClick={() => getLocation()}
+              size='large'
+              disabled={loadingPostcode || loadingLocation}
+            >
+              {locationLoaded ? <GpsFixedIcon /> : <GpsNotFixedIcon />}
+            </IconButton>
+          </Tooltip>
+          )
+        : (
+          <SearchBox>
+            <CircularProgress color='inherit' size={22} />
+          </SearchBox>
+          )}
+      {searchType === 'postcode' || searchType === 'gps'
         ? (
           <Tooltip title='Clear search'>
             <IconButton

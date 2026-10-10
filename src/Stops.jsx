@@ -100,9 +100,9 @@ const Stops = () => {
       field: 'distance',
       headerName: 'Distance',
       flex: 1,
-      valueFormatter: params => {
-        if (params?.value == null) return ''
-        const valueFormatted = Math.round(Number(params.value / 1608))
+      valueFormatter: value => {
+        if (value == null) return ''
+        const valueFormatted = Math.round(Number(value / 1609))
         return `${valueFormatted} mi`
       }
     },
@@ -113,7 +113,7 @@ const Stops = () => {
         <GridActionsCellItem
           key={`act_${params.id}`}
           icon={<InfoIcon />}
-          onClick={() => selectStop(params)}
+          onClick={() => selectStop(params.row)}
           label='Show more stop information'
         />
       ],
@@ -158,7 +158,7 @@ const Stops = () => {
               distance: searchPosition.length > 0
             }}
             density='standard'
-            disableSelectionOnClick
+            disableRowSelectionOnClick
             filterMode='server'
             filterModel={filterModel}
             loading={loadingMobileStops}

@@ -10,6 +10,8 @@ const initialViewState = {
   notificationMessage: '',
   mapZoom: [7],
   mapPosition: [-1.155414, 52.691432],
+  mapFlyToPosition: null,
+  mapBounds: null,
   mapSettings: {
     authorityBoundary: false
   },
@@ -19,6 +21,7 @@ const initialViewState = {
   loadingRoutes: false,
   loadingMobileLocations: false,
   loadingNearestMobiles: false,
+  loadingLibraryOrMobileLibrary: false,
   loadingPostcode: false,
   loadingLocation: false,
   locationLoaded: false
@@ -48,19 +51,37 @@ const viewReducer = (state, action) => {
     case 'SetMapSettingsDialog':
       return { ...state, mapSettingsDialogOpen: action.mapSettingsDialogOpen }
     case 'ToggleMapSetting': {
-      const settings = state.mapSettings
-      settings[action.mapSetting] = !settings[action.mapSetting]
+      const settings = {
+        ...state.mapSettings,
+        [action.mapSetting]: !state.mapSettings[action.mapSetting]
+      }
       return { ...state, mapSettings: settings }
     }
     case 'SetPostcodeSearch':
       return { ...state, mapPosition: action.mapPosition, mapZoom: [13] }
+    case 'FlyTo':
+      return {
+        ...state,
+        mapFlyToPosition: action.mapFlyToPosition,
+        mapPosition: action.mapFlyToPosition,
+        mapZoom: [action.mapZoom]
+      }
     case 'ToggleLoadingPostcode':
       return { ...state, loadingPostcode: !state.loadingPostcode }
     case 'ToggleLoadingLocation':
       return {
         ...state,
-        loadingLocation: !state.loadingLocation,
+        loadingLocation: !state.loadingLocation
+      }
+    case 'SetLocationLoaded':
+      return {
+        ...state,
         locationLoaded: true
+      }
+    case 'ToggleLoadingLibraryOrMobileLibrary':
+      return {
+        ...state,
+        loadingLibraryOrMobileLibrary: !state.loadingLibraryOrMobileLibrary
       }
     case 'SetMapPosition':
       return {

@@ -21,7 +21,7 @@ const Footer = () => {
     >
       <Container maxWidth='lg'>
         <Grid2 container spacing={2}>
-          <Grid2 item xs={12} sm={12} md={6} lg={6} xl={6}>
+          <Grid2 size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}>
             <Typography variant='h6'>
               <MaterialLink
                 component={Link}
@@ -49,12 +49,7 @@ const Footer = () => {
             </Typography>
           </Grid2>
           <Grid2
-            item
-            xs={12}
-            sm={12}
-            md={6}
-            lg={6}
-            xl={6}
+            size={{ xs: 12, sm: 12, md: 6, lg: 6, xl: 6 }}
             sx={{ display: mapPage ? 'none' : 'block' }}
           />
         </Grid2>

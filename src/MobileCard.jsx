@@ -2,6 +2,7 @@ import React from 'react'
 
 import { Link } from 'react-router-dom'
 
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
@@ -10,6 +11,8 @@ import Divider from '@mui/material/Divider'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import Typography from '@mui/material/Typography'
+
+import { lighten } from '@mui/material/styles'
 
 import GridOnIcon from '@mui/icons-material/GridOnTwoTone'
 import MoreVertIcon from '@mui/icons-material/MoreVertTwoTone'
@@ -46,6 +49,8 @@ const MobileCard = props => {
       mobileLibraryDialogOpen: true
     })
   }
+
+  const goToWebsite = () => window.open(mobile.timetable, '_blank')
 
   const stopButton = stop => {
     return (
@@ -120,12 +125,35 @@ const MobileCard = props => {
     }
   }
 
-  const bull = <span>•</span>
+  const bull = (
+    <Box
+      component='span'
+      sx={{ display: 'inline-block', mx: '4px', transform: 'scale(1.2)' }}
+    >
+      •
+    </Box>
+  )
 
   return (
-    <Card elevation={0} sx={{ border: '1px solid #ccc' }}>
-      <CardContent>
-        <Typography gutterBottom>
+    <Card
+      elevation={0}
+      sx={{
+        border: '1px solid #ccc',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+      }}
+    >
+      <CardContent
+        sx={{
+          backgroundColor: theme => lighten(theme.palette.primary.main, 0.9),
+          color: 'primary.main',
+          py: 1,
+          '&:last-child': { pb: 1 }
+        }}
+      >
+        <Typography sx={{ fontSize: 12, fontWeight: 500 }}>
           {mobile.numberRoutes +
             ' route' +
             (mobile.numberRoutes > 1 ? 's' : '')}
@@ -133,7 +161,7 @@ const MobileCard = props => {
           {mobile.numberStops + ' stop' + (mobile.numberStops > 1 ? 's' : '')}
         </Typography>
       </CardContent>
-      <CardContent>
+      <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant='h6' component='h2'>
           {(organisation ? organisation.name + ' ' : '') + mobile.name}
         </Typography>
@@ -148,7 +176,7 @@ const MobileCard = props => {
             <MoreVertIcon />
           </IconButton>
         </Tooltip>
-        <Divider />
+        <Divider orientation='vertical' flexItem sx={{ mx: 0.5 }} />
         <Tooltip title='Mobile library stops'>
           <Button
             component={Link}
@@ -164,9 +192,9 @@ const MobileCard = props => {
         {mobile.timetable
           ? (
             <>
-              <Divider />
+              <Divider orientation='vertical' flexItem sx={{ mx: 0.5 }} />
               <Tooltip title='Website timetable'>
-                <IconButton onClick={() => this.goToWebsite()} size='large'>
+                <IconButton onClick={() => goToWebsite()} size='small'>
                   <WebIcon />
                 </IconButton>
               </Tooltip>

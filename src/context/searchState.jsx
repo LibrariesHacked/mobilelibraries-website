@@ -48,6 +48,15 @@ const searchReducer = (state, action) => {
         mobileFilter: [],
         routeFilter: []
       }
+    case 'SetLocation':
+      return {
+        ...state,
+        searchPosition: action.searchPosition,
+        searchType: 'gps',
+        organisationFilter: [],
+        mobileFilter: [],
+        routeFilter: []
+      }
     case 'FilterByOrganisation':
       return {
         ...state,
