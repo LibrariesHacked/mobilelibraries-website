@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import Grid2 from '@mui/material/Grid2'
 import ListSubheader from '@mui/material/ListSubheader'
@@ -56,32 +56,50 @@ const Mobiles = () => {
     setOpenTab(value)
   }
 
+  const mobileStatusLookup = useMemo(() => {
+    const lookup = {}
+    Object.keys(mobileLocationLookup).forEach(mobileId => {
+      const loc = mobileLocationLookup[mobileId]
+      if (loc) {
+        lookup[mobileId] = loc.getStatus()
+      }
+    })
+    return lookup
+  }, [mobileLocationLookup])
+
   // Get all mobiles that are currently filtered
-  const filteredMobiles = mobiles.filter(mob => {
-    let display = true
-    if (searchType === 'gps' || searchType === 'postcode') {
-      display = mobilesNearestLookup[mob.id]
-    }
-    if (
-      organisationFilter.length > 0 &&
-      organisationFilter.indexOf(mob.organisationId) === -1
-    ) {
-      display = false
-    }
-    if (mobileFilter.length > 0 && mobileFilter.indexOf(mob.id) === -1) {
-      display = false
-    }
-    return display
-  })
+  const filteredMobiles = useMemo(() => {
+    return mobiles.filter(mob => {
+      let display = true
+      if (searchType === 'gps' || searchType === 'postcode') {
+        display = Boolean(mobilesNearestLookup[mob.id])
+      }
+      if (
+        organisationFilter.length > 0 &&
+        organisationFilter.indexOf(mob.organisationId) === -1
+      ) {
+        display = false
+      }
+      if (mobileFilter.length > 0 && mobileFilter.indexOf(mob.id) === -1) {
+        display = false
+      }
+      return display
+    })
+  }, [
+    mobiles,
+    searchType,
+    mobilesNearestLookup,
+    organisationFilter,
+    mobileFilter
+  ])
 
   // Then get those that are currently active
-  const activeMobiles = filteredMobiles.filter(mob => {
-    if (mobileLocationLookup[mob.id]) {
-      const status = mobileLocationLookup[mob.id].getStatus()
+  const activeMobiles = useMemo(() => {
+    return filteredMobiles.filter(mob => {
+      const status = mobileStatusLookup[mob.id]
       return status && status.type !== 'offRoad' && status.type !== 'postRoute'
-    }
-    return null
-  })
+    })
+  }, [filteredMobiles, mobileStatusLookup])
 
   const organisationName =
     organisationFilter.length > 0 && organisationLookup[organisationFilter[0]]
@@ -118,27 +136,7 @@ const Mobiles = () => {
       ' mile(s) of your location'
   }
 
-  const displayMobiles = openTab === 0 ? activeMobiles : filteredMobiles
-  const mobilesView = displayMobiles
-    .filter(mob => {
-      let display = true
-      if (
-        organisationFilter.length > 0 &&
-        organisationFilter.indexOf(mob.organisationId) === -1
-      ) {
-        display = false
-      }
-      if (mobileFilter.length > 0 && mobileFilter.indexOf(mob.id) === -1) {
-        display = false
-      }
-      return display
-    })
-    .filter(mob => {
-      if (searchType === 'gps' || searchType === 'postcode') {
-        return mobilesNearestLookup[mob.id]
-      }
-      return true
-    })
+  const mobilesView = openTab === 0 ? activeMobiles : filteredMobiles
 
   return (
     <>
@@ -165,12 +163,13 @@ const Mobiles = () => {
             {mobilesView.map((mobile, idx) => {
               return (
                 <Grid2
-                  key={'grd_' + mobile.name.replace(' ', '') + '_' + idx}
+                  key={'grd_' + mobile.id + '_' + idx}
                   size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
                 >
                   <MobileCard
                     mobile={mobile}
                     location={mobileLocationLookup[mobile.id]}
+                    status={mobileStatusLookup[mobile.id]}
                     organisation={organisationLookup[mobile.organisationId]}
                   />
                 </Grid2>

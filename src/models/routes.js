@@ -2,6 +2,7 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
+import { getText } from '../helpers/rrule'
 import config from '../helpers/config.json'
 
 dayjs.extend(relativeTime)
@@ -17,6 +18,7 @@ export class Route {
     this.mobileId = json.mobile_id
     this.name = json.name
     this.frequency = json.frequency
+    this.frequencyDescription = json.frequency ? getText(json.frequency) : ''
     this.start = dayjs(json.start)
     this.end = dayjs(json.end)
     this.timetable = json.timetable

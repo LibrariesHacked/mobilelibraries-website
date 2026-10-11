@@ -92,11 +92,17 @@ const PostcodeSearch = () => {
             ? searchPosition
             : await geoHelper.getCurrentPosition()
         dispatchSearch({ type: 'SetLocation', searchPosition: pos })
-        await updateNearestMobiles(pos)
-        const postcode = await getLocationPostcode(pos)
+        dispatchView({
+          type: 'FlyTo',
+          mapFlyToPosition: pos,
+          mapZoom: 14
+        })
+        await Promise.all([
+          updateNearestMobiles(pos),
+          getLocationPostcode(pos)
+        ])
         dispatchView({ type: 'SetLocationLoaded' })
         dispatchView({ type: 'ToggleLoadingLocation' })
-        if (postcode && postcode !== '') postcodeSearch(postcode)
       } catch (err) {
         dispatchView({ type: 'ToggleLoadingLocation' })
         dispatchView({

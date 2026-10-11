@@ -19,6 +19,18 @@ const initialApplicationState = {
 
 const applicationReducer = (state, action) => {
   switch (action.type) {
+    case 'InitializeApplicationData':
+      return {
+        ...state,
+        organisations: action.organisations,
+        organisationLookup: action.organisationLookup,
+        mobiles: action.mobiles,
+        mobileLookup: action.mobileLookup,
+        routes: action.routes,
+        routeLookup: action.routeLookup,
+        mobileLocations: action.mobileLocations,
+        mobileLocationLookup: action.mobileLocationLookup
+      }
     case 'AddOrganisations':
       return {
         ...state,

@@ -22,7 +22,7 @@ import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
 const MobileCard = props => {
-  const { mobile, organisation, location } = props
+  const { mobile, organisation, location, status: statusProp } = props
   const [{}, dispatchSearch] = useSearchStateValue() // eslint-disable-line
   const [{}, dispatchView] = useViewStateValue() // eslint-disable-line
 
@@ -113,21 +113,21 @@ const MobileCard = props => {
   )
 
   let statusMessage = null
-  if (location) {
-    const status = location.getStatus()
-    if (status && status.type === 'offRoad') {
+  const status = statusProp || (location ? location.getStatus() : null)
+  if (status) {
+    if (status.type === 'offRoad') {
       statusMessage = offRoadMessage(status)
     }
-    if (status && status.type === 'preRoute') {
+    if (status.type === 'preRoute') {
       statusMessage = preRouteMessage(status)
     }
-    if (status && status.type === 'atStop') {
+    if (status.type === 'atStop') {
       statusMessage = atStopMessage(status)
     }
-    if (status && status.type === 'betweenStops') {
+    if (status.type === 'betweenStops') {
       statusMessage = betweenStopsMessage(status)
     }
-    if (status && status.type === 'postRoute') {
+    if (status.type === 'postRoute') {
       statusMessage = postRouteMessage(status)
     }
   }
@@ -178,7 +178,11 @@ const MobileCard = props => {
             to='/'
             size='small'
             color='primary'
-            onClick={() => viewStopsByMobile(organisation.id, mobile.id)}
+            onClick={() =>
+              viewStopsByMobile(
+                organisation ? organisation.id : mobile.organisationId,
+                mobile.id
+              )}
             startIcon={<GridOnIcon />}
           >
             View stops
@@ -208,4 +212,4 @@ const MobileCard = props => {
   )
 }
 
-export default MobileCard
+export default React.memo(MobileCard)

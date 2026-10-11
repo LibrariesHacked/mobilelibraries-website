@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 import Button from '@mui/material/Button'
@@ -94,12 +94,12 @@ const MobileLibraryDetails = () => {
 
   const status = location ? location.getStatus() : null
 
-  const mobileRoutes =
-    mobileLibrary && mobileLibrary.id && routes
-      ? routes
-        .filter(r => r.mobileId === mobileLibrary.id)
-        .sort((a, b) => a.name.localeCompare(b.name))
-      : []
+  const mobileRoutes = useMemo(() => {
+    if (!mobileLibrary || !mobileLibrary.id || !routes) return []
+    return routes
+      .filter(r => r.mobileId === mobileLibrary.id)
+      .sort((a, b) => a.name.localeCompare(b.name))
+  }, [mobileLibrary, routes])
 
   const websiteUrl =
     (mobileLibrary && mobileLibrary.timetable) ||
@@ -193,7 +193,8 @@ const MobileLibraryDetails = () => {
                               </Button>
                             </TableCell>
                             <TableCell>
-                              {route.frequency ? getText(route.frequency) : ''}
+                              {route.frequencyDescription ||
+                                (route.frequency ? getText(route.frequency) : '')}
                             </TableCell>
                             <TableCell align='right'>
                               {route.numberStops}

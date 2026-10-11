@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
@@ -32,8 +32,106 @@ import config from './helpers/config.json'
 dayjs.extend(relativeTime)
 setWorkerUrl(workerUrl)
 
-const libraryAuthorityTiles = config.libraryAuthorityTiles
-const mobileTiles = config.mobileTiles
+const MAP_STYLE =
+  'https://api.maptiler.com/maps/dataviz/style.json?key=1OK05AJqNta7xYzrG2kA'
+const LIBRARY_AUTHORITY_TILES = [config.libraryAuthorityTiles]
+const MOBILE_TILES = [config.mobileTiles]
+const INTERACTIVE_LAYER_IDS = ['stops-circle', 'trips-line']
+
+const MAP_CONTAINER_STYLE = {
+  width: '100vw',
+  height: '100vh',
+  position: 'absolute',
+  top: 0,
+  left: 0
+}
+
+const SERVICE_GEOJSON_PAINT = {
+  'line-opacity': 0.4,
+  'line-width': 2,
+  'line-color': '#455a64'
+}
+
+const AUTHORITY_LINE_LAYOUT = {
+  'line-join': 'round',
+  'line-cap': 'square'
+}
+
+const AUTHORITY_LINE_PAINT = {
+  'line-color': '#a7a39b',
+  'line-opacity': 1,
+  'line-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 18, 4]
+}
+
+const AUTHORITY_FILL_PAINT = {
+  'fill-color': '#ccc',
+  'fill-opacity': 0.1
+}
+
+const TRIPS_LINE_LAYOUT = {
+  'line-join': 'round',
+  'line-cap': 'square'
+}
+
+const TRIPS_LINE_PAINT = {
+  'line-color': '#a7a39b',
+  'line-offset': ['interpolate', ['linear'], ['zoom'], 14, 1, 18, 4],
+  'line-opacity': 1,
+  'line-width': ['interpolate', ['linear'], ['zoom'], 14, 1, 18, 4],
+  'line-dasharray': [2, 0.5]
+}
+
+const STOPS_CIRCLE_PAINT = {
+  'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 2, 18, 8],
+  'circle-color': '#455a64',
+  'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 18, 3],
+  'circle-stroke-color': '#ffffff',
+  'circle-opacity': 0.5
+}
+
+const STOPS_NAME_LAYOUT = {
+  'text-ignore-placement': false,
+  'text-field': ['get', 'name'],
+  'text-font': ['Source Sans Pro Bold'],
+  'text-line-height': 1,
+  'text-size': ['interpolate', ['linear'], ['zoom'], 13, 12, 18, 18],
+  'text-offset': [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    13,
+    ['literal', [0, 1.5]],
+    18,
+    ['literal', [0, 2]]
+  ]
+}
+
+const STOPS_TEXT_PAINT = {
+  'text-halo-color': 'hsl(0, 0%, 100%)',
+  'text-halo-width': 1,
+  'text-halo-blur': 1,
+  'text-color': '#6a6f73'
+}
+
+const STOPS_NEXT_VISITING_LAYOUT = {
+  'text-ignore-placement': false,
+  'text-field': ['to-string', ['get', 'next_visiting']],
+  'text-font': ['Source Sans Pro Bold'],
+  'text-line-height': 1,
+  'text-size': ['interpolate', ['linear'], ['zoom'], 14, 10, 18, 16],
+  'text-offset': [
+    'interpolate',
+    ['linear'],
+    ['zoom'],
+    13,
+    ['literal', [0, -1.5]],
+    18,
+    ['literal', [0, -2]]
+  ]
+}
+
+const getMarkerSizeForZoom = zoom =>
+  zoom < 8 ? 'small' : zoom < 12 ? 'medium' : 'large'
 
 const MobileMap = () => {
   const [{ mobileLocations, mobileLookup, organisationLookup }] =
@@ -47,13 +145,25 @@ const MobileMap = () => {
       mapSettings,
       mapSettingsDialogOpen,
       mapFlyToPosition,
-      mapBounds,
-      loadingLibraryOrMobileLibrary
+      mapBounds
     },
     dispatchView
   ] = useViewStateValue() //eslint-disable-line
 
   const [map, setMap] = useState(null)
+  const [cursor, setCursor] = useState('grab')
+  const [markerSize, setMarkerSize] = useState(() =>
+    getMarkerSizeForZoom(mapZoom[0])
+  )
+
+  const initialViewState = useMemo(
+    () => ({
+      longitude: mapPosition[0],
+      latitude: mapPosition[1],
+      zoom: mapZoom[0]
+    }),
+    [] // eslint-disable-line
+  )
 
   useEffect(() => {
     if (mapBounds && map) {
@@ -72,60 +182,105 @@ const MobileMap = () => {
     }
   }, [mapFlyToPosition, map])
 
-  const setViewState = viewState => {
-    dispatchView({
-      type: 'SetMapPosition',
-      mapZoom: viewState.zoom,
-      mapPosition: [viewState.longitude, viewState.latitude]
-    })
-  }
+  const handleZoom = useCallback(evt => {
+    const nextSize = getMarkerSizeForZoom(evt.viewState.zoom)
+    setMarkerSize(prev => (prev === nextSize ? prev : nextSize))
+  }, [])
 
-  const clickStop = async feature => {
-    const id = feature.properties.id
-    dispatchSearch({
-      type: 'SetCurrentStop',
-      currentStopId: id
-    })
-    dispatchView({
-      type: 'SetStopDialog',
-      stopDialogOpen: true
-    })
-  }
+  const handleMoveEnd = useCallback(
+    evt => {
+      const { zoom, longitude, latitude } = evt.viewState
+      setMarkerSize(prev => {
+        const nextSize = getMarkerSizeForZoom(zoom)
+        return prev === nextSize ? prev : nextSize
+      })
+      dispatchView({
+        type: 'SetMapPosition',
+        mapZoom: zoom,
+        mapPosition: [longitude, latitude]
+      })
+    },
+    [dispatchView]
+  )
 
-  const clickTrip = feature => {
-    const id = feature.properties.id
-    dispatchSearch({
-      type: 'SetCurrentTrip',
-      currentTripId: id
-    })
-    dispatchView({
-      type: 'SetTripDialog',
-      tripDialogOpen: true
-    })
-  }
-
-  const clickMap = async event => {
-    if (loadingLibraryOrMobileLibrary) return
-    dispatchView({
-      type: 'ToggleLoadingLibraryOrMobileLibrary'
-    })
-    const features = map.queryRenderedFeatures(event.point)
-    if (features && features.length > 0) {
-      for (const feature of features) {
-        if (feature.sourceLayer === 'stops') {
-          await clickStop(feature)
-          break
-        }
-        if (feature.sourceLayer === 'trips') {
-          clickTrip(feature)
-          break
+  const clickMap = useCallback(
+    event => {
+      const features = event.features
+      if (features && features.length > 0) {
+        for (const feature of features) {
+          if (feature.sourceLayer === 'stops') {
+            dispatchSearch({
+              type: 'SetCurrentStop',
+              currentStopId: feature.properties.id
+            })
+            dispatchView({
+              type: 'SetStopDialog',
+              stopDialogOpen: true
+            })
+            break
+          }
+          if (feature.sourceLayer === 'trips') {
+            dispatchSearch({
+              type: 'SetCurrentTrip',
+              currentTripId: feature.properties.id
+            })
+            dispatchView({
+              type: 'SetTripDialog',
+              tripDialogOpen: true
+            })
+            break
+          }
         }
       }
-    }
-    dispatchView({
-      type: 'ToggleLoadingLibraryOrMobileLibrary'
+    },
+    [dispatchSearch, dispatchView]
+  )
+
+  const handleMouseEnter = useCallback(() => setCursor('pointer'), [])
+  const handleMouseLeave = useCallback(() => setCursor('grab'), [])
+
+  const serviceGeoJsonData = useMemo(() => {
+    if (!currentService || !currentService.geojson) return null
+    return JSON.parse(currentService.geojson)
+  }, [currentService])
+
+  const markers = useMemo(() => {
+    if (!mobileLocations || mobileLocations.length === 0) return null
+    const now = dayjs()
+    return mobileLocations.map(l => {
+      if (!l.geoX || !l.geoY) return null
+      let locationPoint = [l.geoX, l.geoY]
+      if (l.routeSection && l.routeSection.coordinates && l.updated) {
+        const millisecondsPassed = now.diff(l.updated)
+        const index = Math.round(millisecondsPassed / 500)
+        const coords = l.routeSection.coordinates
+        if (coords.length > index && index > 0) {
+          locationPoint = coords[index]
+        }
+        if (coords.length <= index && index > 0) {
+          locationPoint = coords[coords.length - 1]
+        }
+      }
+      const mobile = mobileLookup[l.mobileId]
+      const organisation = mobile
+        ? organisationLookup[mobile.organisationId]
+        : null
+      return (
+        <Marker
+          key={'mkr_' + l.mobileId}
+          longitude={locationPoint[0]}
+          latitude={locationPoint[1]}
+          anchor='bottom'
+        >
+          <MobileAvatar
+            organisation={organisation}
+            location={l}
+            size={markerSize}
+          />
+        </Marker>
+      )
     })
-  }
+  }, [mobileLocations, mobileLookup, organisationLookup, markerSize])
 
   return (
     <>
@@ -134,232 +289,100 @@ const MobileMap = () => {
       </Box>
       <Map
         ref={setMap}
-        style={{
-          width: '100vw',
-          height: '100vh',
-          position: 'absolute',
-          top: 0,
-          left: 0
-        }}
-        mapStyle='https://api.maptiler.com/maps/dataviz/style.json?key=1OK05AJqNta7xYzrG2kA'
-        longitude={mapPosition[0]}
-        latitude={mapPosition[1]}
-        zoom={mapZoom[0]}
+        style={MAP_CONTAINER_STYLE}
+        mapStyle={MAP_STYLE}
+        initialViewState={initialViewState}
         maxZoom={18}
-        onMove={evt => setViewState(evt.viewState)}
+        cursor={cursor}
+        interactiveLayerIds={INTERACTIVE_LAYER_IDS}
+        onZoom={handleZoom}
+        onMoveEnd={handleMoveEnd}
         onClick={clickMap}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
-        {
-          // The mobile library locations
-          mobileLocations && mobileLocations.length > 0
-            ? mobileLocations.map(l => {
-                if (!l.geoX || !l.geoY) return null
-                let locationPoint = [l.geoX, l.geoY]
-                if (l.routeSection && l.routeSection.coordinates && l.updated) {
-                  const millisecondsPassed = dayjs(Date.now()).diff(l.updated)
-                  const index = Math.round(millisecondsPassed / 500)
-                  const coords = l.routeSection.coordinates
-                  if (coords.length > index && index > 0) {
-                    locationPoint = coords[index]
-                  }
-                  if (coords.length <= index && index > 0) {
-                    locationPoint = coords[coords.length - 1]
-                  }
-                }
-                const mobile = mobileLookup[l.mobileId]
-                const organisation = mobile
-                  ? organisationLookup[mobile.organisationId]
-                  : null
-                return (
-                  <Marker
-                    key={'mkr_' + l.mobileId}
-                    longitude={locationPoint[0]}
-                    latitude={locationPoint[1]}
-                    anchor='bottom'
-                  >
-                    <MobileAvatar
-                      organisation={organisation}
-                      location={l}
-                      zoom={map ? map.getZoom() : 0}
-                    />
-                  </Marker>
-                )
-              })
-            : null
-        }
-        {currentService && currentService.geojson && (
-          <Source type='geojson' data={JSON.parse(currentService.geojson)}>
+        {markers}
+        {serviceGeoJsonData && (
+          <Source id='service-geojson' type='geojson' data={serviceGeoJsonData}>
             <Layer
+              id='service-geojson-line'
               type='line'
-              paint={{
-                'line-opacity': 0.4,
-                'line-width': 2,
-                'line-color': '#455a64'
-              }}
+              paint={SERVICE_GEOJSON_PAINT}
             />
           </Source>
         )}
 
-        <Source type='vector' tiles={[libraryAuthorityTiles]}>
-          {mapSettings.authorityBoundary ? (
-            <Layer
-              type='line'
-              source-layer='library_authority_boundaries'
-              minzoom={6}
-              layout={{
-                'line-join': 'round',
-                'line-cap': 'square'
-              }}
-              paint={{
-                'line-color': '#a7a39b',
-                'line-opacity': 1,
-                'line-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 18, 4]
-              }}
-            />
-          ) : null}
-          {mapSettings.authorityBoundary ? (
-            <Layer
-              type='fill'
-              source-layer='library_authority_boundaries'
-              minzoom={6}
-              paint={{
-                'fill-color': '#ccc',
-                'fill-opacity': 0.1
-              }}
-            />
-          ) : null}
-        </Source>
+        {mapSettings.authorityBoundary
+          ? (
+            <Source
+              id='authority-tiles'
+              type='vector'
+              tiles={LIBRARY_AUTHORITY_TILES}
+            >
+              <Layer
+                id='authority-boundary-line'
+                type='line'
+                source-layer='library_authority_boundaries'
+                minzoom={6}
+                layout={AUTHORITY_LINE_LAYOUT}
+                paint={AUTHORITY_LINE_PAINT}
+              />
+              <Layer
+                id='authority-boundary-fill'
+                type='fill'
+                source-layer='library_authority_boundaries'
+                minzoom={6}
+                paint={AUTHORITY_FILL_PAINT}
+              />
+            </Source>
+            )
+          : null}
 
-        <Source type='vector' tiles={[mobileTiles]} maxzoom={14}>
+        <Source
+          id='mobile-tiles'
+          type='vector'
+          tiles={MOBILE_TILES}
+          maxzoom={14}
+        >
           <Layer
+            id='trips-line'
             type='line'
             source-layer='trips'
             minzoom={14}
-            layout={{
-              'line-join': 'round',
-              'line-cap': 'square'
-            }}
-            paint={{
-              'line-color': '#a7a39b',
-              'line-offset': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                14,
-                1,
-                18,
-                4
-              ],
-              'line-opacity': 1,
-              'line-width': ['interpolate', ['linear'], ['zoom'], 14, 1, 18, 4],
-              'line-dasharray': [2, 0.5]
-            }}
+            layout={TRIPS_LINE_LAYOUT}
+            paint={TRIPS_LINE_PAINT}
           />
           <Layer
+            id='stops-circle'
             type='circle'
             source-layer='stops'
             minzoom={5}
-            layout={{}}
-            paint={{
-              'circle-radius': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                5,
-                2,
-                18,
-                8
-              ],
-              'circle-color': '#455a64',
-              'circle-stroke-width': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                5,
-                1,
-                18,
-                3
-              ],
-              'circle-stroke-color': '#ffffff',
-              'circle-opacity': 0.5
-            }}
+            paint={STOPS_CIRCLE_PAINT}
           />
           <Layer
+            id='stops-name'
             type='symbol'
             source-layer='stops'
             minzoom={13}
-            layout={{
-              'text-ignore-placement': false,
-              'text-field': ['get', 'name'],
-              'text-font': ['Source Sans Pro Bold'],
-              'text-line-height': 1,
-              'text-size': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                13,
-                12,
-                18,
-                18
-              ],
-              'text-offset': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                13,
-                ['literal', [0, 1.5]],
-                18,
-                ['literal', [0, 2]]
-              ]
-            }}
-            paint={{
-              'text-halo-color': 'hsl(0, 0%, 100%)',
-              'text-halo-width': 1,
-              'text-halo-blur': 1,
-              'text-color': '#6a6f73'
-            }}
+            layout={STOPS_NAME_LAYOUT}
+            paint={STOPS_TEXT_PAINT}
           />
           <Layer
+            id='stops-next-visiting'
             type='symbol'
             source-layer='stops'
             minzoom={14}
-            layout={{
-              'text-ignore-placement': false,
-              'text-field': ['to-string', ['get', 'next_visiting']],
-              'text-font': ['Source Sans Pro Bold'],
-              'text-line-height': 1,
-              'text-size': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                14,
-                10,
-                18,
-                16
-              ],
-              'text-offset': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                13,
-                ['literal', [0, -1.5]],
-                18,
-                ['literal', [0, -2]]
-              ]
-            }}
-            paint={{
-              'text-halo-color': 'hsl(0, 0%, 100%)',
-              'text-halo-width': 1,
-              'text-halo-blur': 1,
-              'text-color': '#6a6f73'
-            }}
+            layout={STOPS_NEXT_VISITING_LAYOUT}
+            paint={STOPS_TEXT_PAINT}
           />
         </Source>
-        {searchPosition && searchPosition.length > 1 ? (
-          <Marker longitude={searchPosition[0]} latitude={searchPosition[1]}>
-            <MeAvatar searchType={searchType} />
-          </Marker>
-        ) : null}
+        {searchPosition && searchPosition.length > 1
+          ? (
+            <Marker longitude={searchPosition[0]} latitude={searchPosition[1]}>
+              <MeAvatar searchType={searchType} />
+            </Marker>
+            )
+          : null}
         <NavigationControl position='bottom-left' />
       </Map>
       <Tooltip title='Map settings'>
@@ -376,8 +399,7 @@ const MobileMap = () => {
             dispatchView({
               type: 'SetMapSettingsDialog',
               mapSettingsDialogOpen: true
-            })
-          }
+            })}
         >
           <LayersIcon />
         </Fab>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useEffect, useState, useCallback, useMemo } from 'react'
 
 import { useTheme } from '@mui/material/styles'
 
@@ -87,39 +87,45 @@ const Stops = () => {
 
   useEffect(() => fetchStops(), [fetchStops])
 
-  const selectStop = stop => {
-    dispatchSearch({ type: 'SetCurrentStop', currentStopId: stop.id })
-    dispatchView({ type: 'SetStopDialog', stopDialogOpen: true })
-  }
-
-  const columns = [
-    { field: 'community', headerName: 'Community', flex: 1 },
-    { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'organisationName', headerName: 'Library service', flex: 1 },
-    {
-      field: 'distance',
-      headerName: 'Distance',
-      flex: 1,
-      valueFormatter: value => {
-        if (value == null) return ''
-        const valueFormatted = Math.round(Number(value / 1609))
-        return `${valueFormatted} mi`
-      }
+  const selectStop = useCallback(
+    stop => {
+      dispatchSearch({ type: 'SetCurrentStop', currentStopId: stop.id })
+      dispatchView({ type: 'SetStopDialog', stopDialogOpen: true })
     },
-    {
-      field: 'actions',
-      type: 'actions',
-      getActions: params => [
-        <GridActionsCellItem
-          key={`act_${params.id}`}
-          icon={<InfoIcon />}
-          onClick={() => selectStop(params.row)}
-          label='Show more stop information'
-        />
-      ],
-      width: 50
-    }
-  ]
+    [dispatchSearch, dispatchView]
+  )
+
+  const columns = useMemo(
+    () => [
+      { field: 'community', headerName: 'Community', flex: 1 },
+      { field: 'name', headerName: 'Name', flex: 1 },
+      { field: 'organisationName', headerName: 'Library service', flex: 1 },
+      {
+        field: 'distance',
+        headerName: 'Distance',
+        flex: 1,
+        valueFormatter: value => {
+          if (value == null) return ''
+          const valueFormatted = Math.round(Number(value / 1609))
+          return `${valueFormatted} mi`
+        }
+      },
+      {
+        field: 'actions',
+        type: 'actions',
+        getActions: params => [
+          <GridActionsCellItem
+            key={`act_${params.id}`}
+            icon={<InfoIcon />}
+            onClick={() => selectStop(params.row)}
+            label='Show more stop information'
+          />
+        ],
+        width: 50
+      }
+    ],
+    [selectStop]
+  )
 
   const rowCountRef = React.useRef(pageInfo?.totalRowCount || 0)
 

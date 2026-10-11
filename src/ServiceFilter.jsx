@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
@@ -79,7 +79,38 @@ const Filters = () => {
     dispatchSearch({ type: 'ClearRouteFilter' })
   }
 
-  const countries = new Set(organisations.map(org => org.country))
+  const organisationsByCountry = useMemo(() => {
+    const countries = Array.from(
+      new Set(organisations.map(org => org.country))
+    ).sort((a, b) => a.localeCompare(b))
+    const sortedOrgs = [...organisations].sort((a, b) =>
+      a.name.localeCompare(b.name)
+    )
+    return countries.map(country => ({
+      country,
+      organisations: sortedOrgs.filter(org => org.country === country)
+    }))
+  }, [organisations])
+
+  const filteredMobiles = useMemo(() => {
+    return mobiles
+      .filter(
+        mob =>
+          organisationFilter.length === 0 ||
+          organisationFilter.indexOf(mob.organisationId) !== -1
+      )
+      .sort((a, b) => a.name.localeCompare(b.name))
+  }, [mobiles, organisationFilter])
+
+  const filteredRoutes = useMemo(() => {
+    return routes
+      .filter(
+        route =>
+          mobileFilter.length === 0 ||
+          mobileFilter.indexOf(route.mobileId) !== -1
+      )
+      .sort((a, b) => a.name.localeCompare(b.name))
+  }, [routes, mobileFilter])
 
   return (
     <>
@@ -169,93 +200,52 @@ const Filters = () => {
       <Menu
         id='menu-library-service'
         anchorEl={organisationMenuAnchor}
-        keepMounted
         open={Boolean(organisationMenuAnchor)}
-        onClose={() => closeOrganisationMenu()}
+        onClose={closeOrganisationMenu}
       >
-        {Array.from(countries)
-          .sort((a, b) => a.localeCompare(b))
-          .map((country, idx) => {
-            const menuItems = [
-              <ListSubheader key={'lst_' + idx} disableSticky>
-                {country}
-              </ListSubheader>
-            ]
-            const orgList = organisations
-              .sort((a, b) => a.name.localeCompare(b.name))
-              .filter(org => org.country === country)
-              .map(org => {
-                return (
-                  <MenuItem
-                    key={'mnu_itm_org_' + org.id}
-                    onClick={() => chooseOrganisation(org.id)}
-                  >
-                    {org.name}
-                  </MenuItem>
-                )
-              })
-            return menuItems.concat(orgList)
-          })}
+        {organisationsByCountry.map(({ country, organisations: orgList }, idx) => [
+          <ListSubheader key={'lst_' + idx} disableSticky>
+            {country}
+          </ListSubheader>,
+          ...orgList.map(org => (
+            <MenuItem
+              key={'mnu_itm_org_' + org.id}
+              onClick={() => chooseOrganisation(org.id)}
+            >
+              {org.name}
+            </MenuItem>
+          ))
+        ])}
       </Menu>
       <Menu
         id='menu-mobile-library'
         anchorEl={mobileMenuAnchor}
-        keepMounted
         open={Boolean(mobileMenuAnchor)}
-        onClose={() => closeMobileMenu()}
+        onClose={closeMobileMenu}
       >
-        {mobiles
-          .filter(mob => {
-            let display = true
-            if (
-              organisationFilter.length > 0 &&
-              organisationFilter.indexOf(mob.organisationId) === -1
-            ) {
-              display = false
-            }
-            return display
-          })
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map(mob => {
-            return (
-              <MenuItem
-                key={'mnu_itm_mob_' + mob.id}
-                onClick={() => chooseMobile(mob.organisationId, mob.id)}
-              >
-                {mob.name}
-              </MenuItem>
-            )
-          })}
+        {filteredMobiles.map(mob => (
+          <MenuItem
+            key={'mnu_itm_mob_' + mob.id}
+            onClick={() => chooseMobile(mob.organisationId, mob.id)}
+          >
+            {mob.name}
+          </MenuItem>
+        ))}
       </Menu>
       <Menu
         id='menu-route'
         anchorEl={routeMenuAnchor}
-        keepMounted
         open={Boolean(routeMenuAnchor)}
-        onClose={() => closeRouteMenu()}
+        onClose={closeRouteMenu}
       >
-        {routes
-          .filter(route => {
-            let display = true
-            if (
-              mobileFilter.length > 0 &&
-              mobileFilter.indexOf(route.mobileId) === -1
-            ) {
-              display = false
-            }
-            return display
-          })
-          .sort((a, b) => a.name.localeCompare(b.name))
-          .map(route => {
-            return (
-              <MenuItem
-                key={'mnu_itm_route_' + route.id}
-                onClick={() => chooseRoute(route.id)}
-              >
-                {route.name}
-              </MenuItem>
-            )
-          })}
+        {filteredRoutes.map(route => (
+          <MenuItem
+            key={'mnu_itm_route_' + route.id}
+            onClick={() => chooseRoute(route.id)}
+          >
+            {route.name}
+          </MenuItem>
+        ))}
       </Menu>
     </>
   )

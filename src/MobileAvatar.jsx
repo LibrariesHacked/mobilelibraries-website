@@ -1,29 +1,36 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import Fab from '@mui/material/Fab'
 import Tooltip from '@mui/material/Tooltip'
 
 import DirectionBusIcon from '@mui/icons-material/DirectionsBusRounded'
 
-import { useViewStateValue } from './context/viewState'
-
 import * as utilsHelper from './helpers/utils'
 
 const MobileAvatar = props => {
-  const [{ mapZoom }] = useViewStateValue()
-  const { location, organisation } = props
+  const { location, organisation, size = 'small' } = props
 
-  const status = location.getStatus()
-  const size = mapZoom[0] < 8 ? 'small' : mapZoom[0] < 12 ? 'medium' : 'large'
-  const border = mapZoom[0] < 8 ? 2 : mapZoom[0] < 12 ? 3 : 4
+  const statusText = useMemo(() => {
+    const status = location ? location.getStatus() : null
+    return status ? status.textFormat : ''
+  }, [location])
+
+  const backgroundColor = useMemo(() => {
+    const colour = organisation && organisation.colour
+      ? organisation.colour
+      : '#2e7d32'
+    return utilsHelper.hextoRGBA(colour, 0.8)
+  }, [organisation])
+
+  const border = size === 'small' ? 2 : size === 'medium' ? 3 : 4
 
   return (
-    <Tooltip title={status ? status.textFormat : ''}>
+    <Tooltip title={statusText}>
       <Fab
         size={size}
         color='primary'
         style={{
-          backgroundColor: utilsHelper.hextoRGBA(organisation.colour, 0.8),
+          backgroundColor,
           color: 'white',
           borderWidth: border,
           borderColor: 'white',
@@ -36,4 +43,4 @@ const MobileAvatar = props => {
   )
 }
 
-export default MobileAvatar
+export default React.memo(MobileAvatar)
