@@ -27,6 +27,12 @@ const initialViewState = {
   locationLoaded: false
 }
 
+/**
+ * Reducer for managing UI view state (dialogs, notifications, map camera, loading indicators).
+ * @param {Object} state - Current view state.
+ * @param {Object} action - Dispatched reducer action.
+ * @returns {Object} Updated view state.
+ */
 const viewReducer = (state, action) => {
   switch (action.type) {
     case 'SetNotificationMessage':
@@ -94,10 +100,19 @@ const viewReducer = (state, action) => {
   }
 }
 
+/**
+ * Context provider for UI view state.
+ * @param {{ children: React.ReactNode }} props - Component props.
+ * @returns {JSX.Element} Provider element.
+ */
 export const ViewStateProvider = ({ children }) => (
   <ViewStateContext.Provider value={useReducer(viewReducer, initialViewState)}>
     {children}
   </ViewStateContext.Provider>
 )
 
+/**
+ * Hook to access the UI view state and dispatch function.
+ * @returns {[Object, Function]} Tuple of `[viewState, dispatchView]`.
+ */
 export const useViewStateValue = () => useContext(ViewStateContext)

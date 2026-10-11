@@ -13,9 +13,16 @@ import { DataGrid, GridActionsCellItem } from '@mui/x-data-grid'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
+import { metersToMiles } from './helpers/utils'
 import useMobileStopsQuery from './hooks/useMobileStopsQuery'
 import usePrevious from './hooks/usePrevious'
 
+const initialSortModel = [{ field: 'name', sort: 'asc' }]
+
+/**
+ * Paginated, server-sorted DataGrid displaying mobile library stops matching the current search/filter state.
+ * @returns {JSX.Element} Stops table component.
+ */
 const Stops = () => {
   const [
     {
@@ -32,7 +39,6 @@ const Stops = () => {
   const theme = useTheme()
   const prevPosition = usePrevious(searchPosition)
 
-  const initialSortModel = [{ field: 'name', sort: 'asc' }]
   const [sortModel, setSortModel] = useState(initialSortModel)
   const [filterModel, setFilterModel] = useState({
     items: [
@@ -82,7 +88,9 @@ const Stops = () => {
     searchDistance,
     organisationFilter,
     mobileFilter,
-    routeFilter
+    routeFilter,
+    prevPosition,
+    getMobileStopsFromQuery
   ])
 
   useEffect(() => fetchStops(), [fetchStops])
@@ -106,8 +114,7 @@ const Stops = () => {
         flex: 1,
         valueFormatter: value => {
           if (value == null) return ''
-          const valueFormatted = Math.round(Number(value / 1609))
-          return `${valueFormatted} mi`
+          return `${metersToMiles(Number(value))} mi`
         }
       },
       {
@@ -138,9 +145,7 @@ const Stops = () => {
 
   return (
     <>
-      <ListSubheader disableSticky disableGutters sx={{ textAlign: 'center' }}>
-        Stops
-      </ListSubheader>
+      <ListSubheader>Stops</ListSubheader>
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ flexGrow: 1, width: '100%' }}>
           <DataGrid

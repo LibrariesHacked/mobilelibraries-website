@@ -16,6 +16,10 @@ import { useTheme } from '@mui/material/styles'
 
 import { useViewStateValue } from './context/viewState'
 
+/**
+ * Dialog modal for toggling map overlay layers (e.g., library authority boundaries).
+ * @returns {JSX.Element} MapSettings dialog component.
+ */
 function MapSettings () {
   const [{ mapSettings, mapSettingsDialogOpen }, dispatchView] =
     useViewStateValue()
@@ -36,16 +40,16 @@ function MapSettings () {
       fullScreen={fullScreen}
       open={mapSettingsDialogOpen}
       onClose={handleCloseDialog}
+      aria-labelledby='map-settings-dlg-title'
     >
-      <DialogTitle>Map settings</DialogTitle>
-      <DialogContent dividers>
+      <DialogTitle id='map-settings-dlg-title'>Map settings</DialogTitle>
+      <DialogContent>
         <FormControlLabel
           control={
             <Switch
               checked={mapSettings.authorityBoundary}
               onChange={handleAuthorityBoundaryChange}
               name='sw_authority_boundary'
-              color='primary'
             />
           }
           label='Library authority boundaries'

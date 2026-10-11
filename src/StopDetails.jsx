@@ -6,7 +6,6 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -32,6 +31,10 @@ import * as urlHelper from './helpers/url'
 
 import config from './helpers/config.json'
 
+/**
+ * Dialog modal displaying address, schedule, and export links (ICS, PDF, timetable) for a selected stop.
+ * @returns {JSX.Element} StopDetails dialog component.
+ */
 const StopDetails = () => {
   const [{ currentStopId }, dispatchSearch] = useSearchStateValue() //eslint-disable-line
   const [{ stopDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
@@ -46,13 +49,9 @@ const StopDetails = () => {
     if (currentStopId != null) getStop(currentStopId)
   }, [currentStopId])
 
-  const getStopCalendar = () =>
-    window.open(config.api + '/stops/' + stop.id + '/ics')
-
-  const getStopPdf = () =>
-    window.open(config.api + '/stops/' + stop.id + '/pdf', '_blank')
-
-  const goToWebsite = () => window.open(stop.timetable, '_blank')
+  const getStopCalendar = () => urlHelper.openUrl(stop.icsUrl)
+  const getStopPdf = () => urlHelper.openUrl(stop.pdfUrl)
+  const goToWebsite = () => urlHelper.openUrl(stop.timetable)
 
   const close = () => {
     dispatchSearch({
@@ -76,33 +75,23 @@ const StopDetails = () => {
         ? (
           <>
             <DialogTitle id='dlg-title'>{stop.name}</DialogTitle>
-            <DialogContent dividers>
-              <TableContainer
-                component={Paper}
-                variant='outlined'
-                sx={{ mb: 2.5 }}
-              >
-                <Table size='small'>
+            <DialogContent>
+              <TableContainer>
+                <Table>
                   <TableBody>
                     <TableRow>
                       <TableCell variant='head'>Address</TableCell>
                       <TableCell>{stop.address}</TableCell>
                     </TableRow>
-                    <TableRow
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
+                    <TableRow>
                       <TableCell variant='head'>Authority</TableCell>
                       <TableCell>{stop.organisationName}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
-              <TableContainer
-                component={Paper}
-                variant='outlined'
-                sx={{ mb: 2 }}
-              >
-                <Table size='small'>
+              <TableContainer>
+                <Table>
                   <TableHead>
                     <TableRow>
                       <TableCell>Frequency</TableCell>
@@ -111,30 +100,23 @@ const StopDetails = () => {
                   </TableHead>
                   <TableBody>
                     {stop.routeFrequencyDescriptions.map((rs, idx) => (
-                      <TableRow
-                        key={'tc_rs_' + idx}
-                        sx={{
-                          '&:last-child td, &:last-child th': { border: 0 }
-                        }}
-                      >
+                      <TableRow key={'tc_rs_' + idx}>
                         <TableCell component='th' scope='row'>
                           {`${stop.routeDays[0]}, ${rs}`}
                         </TableCell>
                         <TableCell align='right'>
-                          {stop.routeSchedule[0].format('dddd Do MMMM h:mma')}
+                          {stop.nextVisitFormatted}
                         </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Stack direction='row' spacing={1} flexWrap='wrap' useFlexGap>
+              <Stack direction='row' spacing={1.5} flexWrap='wrap' useFlexGap>
                 {config.displayWebLinks && (
                   <Button
-                    onClick={() => goToWebsite()}
-                    color='primary'
+                    onClick={goToWebsite}
                     variant='outlined'
-                    size='small'
                     startIcon={<WebIcon />}
                   >
                     {urlHelper.getDomainFromUrl(stop.timetable)}
@@ -142,18 +124,14 @@ const StopDetails = () => {
                 )}
                 <Button
                   onClick={getStopCalendar}
-                  color='primary'
                   variant='outlined'
-                  size='small'
                   startIcon={<SaveIcon />}
                 >
                   Save calendar file
                 </Button>
                 <Button
                   onClick={getStopPdf}
-                  color='primary'
                   variant='outlined'
-                  size='small'
                   startIcon={<PrintIcon />}
                 >
                   Print PDF
@@ -163,14 +141,10 @@ const StopDetails = () => {
           </>
           )
         : (
-          <CircularProgress color='primary' size={30} sx={{ m: 3, mx: 'auto' }} />
+          <CircularProgress size={30} sx={{ m: 3, mx: 'auto' }} />
           )}
       <DialogActions>
-        <Button
-          onClick={() => close()}
-          color='secondary'
-          endIcon={<CancelIcon />}
-        >
+        <Button onClick={close} color='secondary' endIcon={<CancelIcon />}>
           Close
         </Button>
       </DialogActions>

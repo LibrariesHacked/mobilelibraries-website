@@ -5,7 +5,6 @@ import Dialog from '@mui/material/Dialog'
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import Paper from '@mui/material/Paper'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
 import TableCell from '@mui/material/TableCell'
@@ -23,6 +22,10 @@ import { useViewStateValue } from './context/viewState'
 
 import * as tripsModel from './models/trips'
 
+/**
+ * Dialog modal displaying origin, destination, distance, and duration for a selected route trip segment.
+ * @returns {JSX.Element} TripDetails dialog component.
+ */
 const TripDetails = () => {
   const [{ currentTripId }] = useSearchStateValue()
   const [{ tripDialogOpen }, dispatchView] = useViewStateValue() //eslint-disable-line
@@ -44,19 +47,19 @@ const TripDetails = () => {
     dispatchView({ type: 'SetTripDialog', tripDialogOpen: false })
   }
 
-  const estimatedDuration = Math.round(trip.duration / 60) + ' minutes'
-  const distance = Math.round(trip.distance / 1609, 1) + ' mile(s)'
-
   return (
-    <Dialog fullScreen={fullScreen} open={tripDialogOpen} onClose={close}>
-      <DialogTitle>
-        {trip.originStopName && trip.destinationStopName
-          ? `${trip.originStopName} to ${trip.destinationStopName}`
-          : 'Mobile trip details'}
+    <Dialog
+      fullScreen={fullScreen}
+      open={tripDialogOpen}
+      onClose={close}
+      aria-labelledby='trip-dlg-title'
+    >
+      <DialogTitle id='trip-dlg-title'>
+        {trip.title || 'Mobile trip details'}
       </DialogTitle>
-      <DialogContent dividers>
-        <TableContainer component={Paper} variant='outlined'>
-          <Table size='small'>
+      <DialogContent>
+        <TableContainer sx={{ mb: 0 }}>
+          <Table>
             <TableBody>
               <TableRow>
                 <TableCell variant='head'>Origin</TableCell>
@@ -68,13 +71,11 @@ const TripDetails = () => {
               </TableRow>
               <TableRow>
                 <TableCell variant='head'>Trip length</TableCell>
-                <TableCell>{distance}</TableCell>
+                <TableCell>{trip.distanceInMiles}</TableCell>
               </TableRow>
-              <TableRow
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
+              <TableRow>
                 <TableCell variant='head'>Trip duration</TableCell>
-                <TableCell>{estimatedDuration}</TableCell>
+                <TableCell>{trip.estimatedDuration}</TableCell>
               </TableRow>
             </TableBody>
           </Table>

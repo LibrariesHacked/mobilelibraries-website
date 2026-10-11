@@ -22,10 +22,16 @@ import * as organisationsModel from './models/organisations'
 import * as routesModel from './models/routes'
 
 import { useApplicationStateValue } from './context/applicationState'
+import { createLookup } from './helpers/utils'
 
 const MobileMap = lazy(() => import('./MobileMap'))
 const MemoMarkdownPage = lazy(() => import('./MarkdownPage'))
 
+/**
+ * Root application shell managing initial data loading, periodic live location polling,
+ * routing, and global modal/notification components.
+ * @returns {JSX.Element} Application shell element.
+ */
 const MobilesApplication = () => {
   const [{}, dispatchApplicationState] = useApplicationStateValue() //eslint-disable-line
 
@@ -41,36 +47,16 @@ const MobilesApplication = () => {
       ])
       if (!isMounted) return
 
-      const organisationLookup = {}
-      organisations.forEach(organisation => {
-        organisationLookup[organisation.id] = organisation
-      })
-
-      const mobileLookup = {}
-      mobiles.forEach(mobile => {
-        mobileLookup[mobile.id] = mobile
-      })
-
-      const routeLookup = {}
-      routes.forEach(route => {
-        routeLookup[route.id] = route
-      })
-
-      const mobileLocationLookup = {}
-      locations.forEach(location => {
-        mobileLocationLookup[location.mobileId] = location
-      })
-
       dispatchApplicationState({
         type: 'InitializeApplicationData',
         organisations,
-        organisationLookup,
+        organisationLookup: createLookup(organisations),
         mobiles,
-        mobileLookup,
+        mobileLookup: createLookup(mobiles),
         routes,
-        routeLookup,
+        routeLookup: createLookup(routes),
         mobileLocations: locations,
-        mobileLocationLookup
+        mobileLocationLookup: createLookup(locations, 'mobileId')
       })
     }
 
@@ -78,14 +64,10 @@ const MobilesApplication = () => {
       if (document.hidden) return
       const locations = await mobilesModel.getMobileLocations()
       if (!isMounted) return
-      const mobileLocationLookup = {}
-      locations.forEach(location => {
-        mobileLocationLookup[location.mobileId] = location
-      })
       dispatchApplicationState({
         type: 'AddMobileLocations',
         mobileLocations: locations,
-        mobileLocationLookup
+        mobileLocationLookup: createLookup(locations, 'mobileId')
       })
     }
 

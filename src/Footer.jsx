@@ -2,39 +2,32 @@ import React from 'react'
 
 import { Link, useMatch } from 'react-router-dom'
 
-import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 import MaterialLink from '@mui/material/Link'
+import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 
+/**
+ * Page footer displaying links to informational pages (Accessibility, Data, Privacy).
+ * Hidden when viewing the full-screen map.
+ * @returns {JSX.Element | null} Footer component or null on the map route.
+ */
 const Footer = () => {
   const mapPage = useMatch('/map')
   if (mapPage) return null
 
   return (
-    <Box
-      component='footer'
-      sx={{
-        backgroundColor: 'background.paper',
-        borderTop: 1,
-        borderColor: 'divider',
-        py: 2.5,
-        mt: 'auto'
-      }}
-    >
+    <Paper component='footer' square>
       <Container maxWidth='lg'>
         <Stack
           direction='row'
-          spacing={3}
+          spacing={2}
           justifyContent='center'
           alignItems='center'
         >
           <MaterialLink
             component={Link}
             to='/accessibility'
-            color='text.secondary'
-            underline='hover'
-            variant='body2'
             title='About the accessibility of this site'
           >
             Accessibility
@@ -42,9 +35,6 @@ const Footer = () => {
           <MaterialLink
             component={Link}
             to='/data'
-            color='text.secondary'
-            underline='hover'
-            variant='body2'
             title='Maintaining the data used on this site and licensing'
           >
             Data
@@ -52,16 +42,13 @@ const Footer = () => {
           <MaterialLink
             component={Link}
             to='/privacy'
-            color='text.secondary'
-            underline='hover'
-            variant='body2'
             title='About your privacy on this site'
           >
             Privacy
           </MaterialLink>
         </Stack>
       </Container>
-    </Box>
+    </Paper>
   )
 }
 

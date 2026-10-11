@@ -10,20 +10,20 @@ import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
+import { metersToMiles } from './helpers/utils'
 import Search from './Search'
 import MobileCard from './MobileCard'
 
 const noResultTypography = (
-  <Typography
-    component='p'
-    variant='body1'
-    color='text.secondary'
-    sx={{ textAlign: 'center', mt: 4 }}
-  >
+  <Typography component='p' variant='body2' sx={{ textAlign: 'center', mt: 4 }}>
     No mobile libraries currently on the road.
   </Typography>
 )
 
+/**
+ * Tracker page displaying a filterable grid of active and all mobile libraries.
+ * @returns {JSX.Element} Mobiles page component.
+ */
 const Mobiles = () => {
   const [
     {
@@ -96,10 +96,10 @@ const Mobiles = () => {
   // Then get those that are currently active
   const activeMobiles = useMemo(() => {
     return filteredMobiles.filter(mob => {
-      const status = mobileStatusLookup[mob.id]
-      return status && status.type !== 'offRoad' && status.type !== 'postRoute'
+      const loc = mobileLocationLookup[mob.id]
+      return loc ? loc.isActive(mobileStatusLookup[mob.id]) : false
     })
-  }, [filteredMobiles, mobileStatusLookup])
+  }, [filteredMobiles, mobileLocationLookup, mobileStatusLookup])
 
   const organisationName =
     organisationFilter.length > 0 && organisationLookup[organisationFilter[0]]
@@ -125,14 +125,14 @@ const Mobiles = () => {
   if (searchPostcode !== '') {
     title =
       'Mobile libraries with stops within ' +
-      Math.round(searchDistance / 1609) +
+      metersToMiles(searchDistance) +
       ' mile(s) of ' +
       searchPostcode
   }
   if (searchType === 'gps') {
     title =
       'Mobile libraries with stops within ' +
-      Math.round(searchDistance / 1609) +
+      metersToMiles(searchDistance) +
       ' mile(s) of your location'
   }
 
@@ -141,18 +141,11 @@ const Mobiles = () => {
   return (
     <>
       <Search />
-      <ListSubheader disableSticky disableGutters sx={{ textAlign: 'center' }}>
-        {title}
-      </ListSubheader>
+      <ListSubheader>{title}</ListSubheader>
       <Tabs
-        variant='standard'
-        scrollButtons={false}
         value={openTab}
-        indicatorColor='primary'
-        textColor='primary'
         onChange={(e, value) => changeTab(value)}
         centered
-        sx={{ mb: 3, borderBottom: 1, borderColor: 'divider' }}
       >
         <Tab label={`On the road (${activeMobiles.length})`} />
         <Tab label={`All (${filteredMobiles.length})`} />

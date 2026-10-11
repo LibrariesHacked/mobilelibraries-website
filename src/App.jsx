@@ -12,6 +12,10 @@ import MobilesApplication from './MobilesApplication'
 
 import theme from './theme'
 
+/**
+ * Top-level application component wrapping state providers and the MUI theme.
+ * @returns {JSX.Element} Root application element.
+ */
 const App = () => {
   return (
     <ApplicationStateProvider>

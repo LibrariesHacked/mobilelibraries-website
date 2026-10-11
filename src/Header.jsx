@@ -2,57 +2,29 @@ import React from 'react'
 
 import { Link, useLocation } from 'react-router-dom'
 
-import Paper from '@mui/material/Paper'
+import AppBar from '@mui/material/AppBar'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
-
-import { alpha } from '@mui/material/styles'
 
 import AirportShuttleRoundedIcon from '@mui/icons-material/AirportShuttleRounded'
 import SearchRoundedIcon from '@mui/icons-material/SearchRounded'
 import PlaceRoundedIcon from '@mui/icons-material/PlaceRounded'
 
+const NAV_PATHS = ['/', '/mobiles', '/map']
+
+/**
+ * Top navigation pill bar allowing users to switch between Search, Tracker, and Map views.
+ * @returns {JSX.Element} Header component.
+ */
 const Header = () => {
   const location = useLocation()
-  const tabValue = ['/', '/mobiles', '/map'].includes(location.pathname)
+  const tabValue = NAV_PATHS.includes(location.pathname)
     ? location.pathname
     : false
 
   return (
-    <Paper
-      component='header'
-      variant='outlined'
-      sx={{
-        mt: 2,
-        mb: 1,
-        mx: 'auto',
-        p: 0.5,
-        width: 'fit-content',
-        borderRadius: 3,
-        zIndex: 1000,
-        position: 'relative'
-      }}
-    >
-      <Tabs
-        value={tabValue}
-        variant='scrollable'
-        scrollButtons={false}
-        sx={{
-          minHeight: 40,
-          '& .MuiTabs-indicator': {
-            display: 'none'
-          },
-          '& .MuiTab-root': {
-            minHeight: 40,
-            py: 0.5,
-            px: 2,
-            borderRadius: 2.5,
-            '&.Mui-selected': {
-              backgroundColor: theme => alpha(theme.palette.primary.main, 0.1)
-            }
-          }
-        }}
-      >
+    <AppBar component='nav' aria-label='Main navigation'>
+      <Tabs value={tabValue} variant='scrollable'>
         <Tab
           icon={<SearchRoundedIcon fontSize='small' />}
           iconPosition='start'
@@ -78,7 +50,7 @@ const Header = () => {
           to='/map'
         />
       </Tabs>
-    </Paper>
+    </AppBar>
   )
 }
 

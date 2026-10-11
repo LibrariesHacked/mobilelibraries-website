@@ -17,6 +17,12 @@ const initialApplicationState = {
   trips: []
 }
 
+/**
+ * Reducer for managing global application domain data (organisations, mobiles, routes, locations).
+ * @param {Object} state - Current application state.
+ * @param {Object} action - Dispatched reducer action.
+ * @returns {Object} Updated application state.
+ */
 const applicationReducer = (state, action) => {
   switch (action.type) {
     case 'InitializeApplicationData':
@@ -66,6 +72,11 @@ const applicationReducer = (state, action) => {
   }
 }
 
+/**
+ * Context provider for global application domain data.
+ * @param {{ children: React.ReactNode }} props - Component props.
+ * @returns {JSX.Element} Provider element.
+ */
 export const ApplicationStateProvider = ({ children }) => (
   <ApplicationStateContext.Provider
     value={useReducer(applicationReducer, initialApplicationState)}
@@ -74,5 +85,9 @@ export const ApplicationStateProvider = ({ children }) => (
   </ApplicationStateContext.Provider>
 )
 
+/**
+ * Hook to access the global application state and dispatch function.
+ * @returns {[Object, Function]} Tuple of `[applicationState, dispatchApplication]`.
+ */
 export const useApplicationStateValue = () =>
   useContext(ApplicationStateContext)

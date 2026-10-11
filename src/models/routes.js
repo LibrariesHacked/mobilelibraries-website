@@ -7,11 +7,23 @@ import config from '../helpers/config.json'
 
 dayjs.extend(relativeTime)
 
+/**
+ * Represents a mobile library route and its schedule recurrence.
+ */
 export class Route {
+  /**
+   * @param {Partial<Route>} [obj] - Optional initial properties.
+   */
   constructor (obj) {
     Object.assign(this, obj)
   }
 
+  /**
+   * Populates the instance from an API JSON payload.
+   *
+   * @param {object} json - Raw route JSON from the API.
+   * @returns {Route} This instance.
+   */
   fromJson (json) {
     this.id = json.id
     this.organisationId = json.organisation_id
@@ -27,6 +39,11 @@ export class Route {
   }
 }
 
+/**
+ * Fetches all mobile library routes from the API.
+ *
+ * @returns {Promise<Route[]>} Array of Route instances.
+ */
 export async function getAllRoutes () {
   const response = await axios.get(config.api + '/routes')
   if (response && response.data && response.data.length > 0) {

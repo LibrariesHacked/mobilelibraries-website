@@ -7,7 +7,6 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
 import CircularProgress from '@mui/material/CircularProgress'
-import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -27,9 +26,12 @@ import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
-import { getText } from './helpers/rrule'
 import * as urlHelper from './helpers/url'
 
+/**
+ * Dialog modal displaying detailed information, status, and routes for a selected mobile library.
+ * @returns {JSX.Element} MobileLibraryDetails dialog component.
+ */
 const MobileLibraryDetails = () => {
   const [{ mobileLookup, organisationLookup, mobileLocationLookup, routes }] =
     useApplicationStateValue()
@@ -77,8 +79,6 @@ const MobileLibraryDetails = () => {
     }
   }
 
-  const goToWebsite = url => window.open(url, '_blank')
-
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
@@ -117,16 +117,11 @@ const MobileLibraryDetails = () => {
         ? (
           <>
             <DialogTitle id='dlg-title'>
-              {(organisation ? organisation.name + ' - ' : '') +
-                mobileLibrary.name}
+              {mobileLibrary.getDisplayTitle(organisation, ' - ')}
             </DialogTitle>
-            <DialogContent dividers>
-              <TableContainer
-                component={Paper}
-                variant='outlined'
-                sx={{ mb: 2.5 }}
-              >
-                <Table size='small'>
+            <DialogContent>
+              <TableContainer>
+                <Table>
                   <TableBody>
                     {organisation
                       ? (
@@ -148,9 +143,7 @@ const MobileLibraryDetails = () => {
                       <TableCell variant='head'>Routes</TableCell>
                       <TableCell>{mobileLibrary.numberRoutes}</TableCell>
                     </TableRow>
-                    <TableRow
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                    >
+                    <TableRow>
                       <TableCell variant='head'>Stops</TableCell>
                       <TableCell>{mobileLibrary.numberStops}</TableCell>
                     </TableRow>
@@ -159,12 +152,8 @@ const MobileLibraryDetails = () => {
               </TableContainer>
               {mobileRoutes.length > 0
                 ? (
-                  <TableContainer
-                    component={Paper}
-                    variant='outlined'
-                    sx={{ mb: 2 }}
-                  >
-                    <Table size='small'>
+                  <TableContainer>
+                    <Table>
                       <TableHead>
                         <TableRow>
                           <TableCell>Route</TableCell>
@@ -174,28 +163,18 @@ const MobileLibraryDetails = () => {
                       </TableHead>
                       <TableBody>
                         {mobileRoutes.map(route => (
-                          <TableRow
-                            key={'tc_rt_' + route.id}
-                            sx={{
-                              '&:last-child td, &:last-child th': { border: 0 }
-                            }}
-                          >
+                          <TableRow key={'tc_rt_' + route.id}>
                             <TableCell component='th' scope='row'>
                               <Button
                                 component={Link}
                                 to='/'
-                                size='small'
-                                color='primary'
                                 onClick={() => viewStopsByRoute(route.id)}
-                                sx={{ minWidth: 0, px: 0.5 }}
+                                sx={{ minWidth: 0, px: 1, py: 0.5 }}
                               >
                                 {route.name}
                               </Button>
                             </TableCell>
-                            <TableCell>
-                              {route.frequencyDescription ||
-                                (route.frequency ? getText(route.frequency) : '')}
-                            </TableCell>
+                            <TableCell>{route.frequencyDescription}</TableCell>
                             <TableCell align='right'>
                               {route.numberStops}
                             </TableCell>
@@ -206,14 +185,12 @@ const MobileLibraryDetails = () => {
                   </TableContainer>
                   )
                 : null}
-              <Stack direction='row' spacing={1} flexWrap='wrap' useFlexGap>
+              <Stack direction='row' spacing={1.5} flexWrap='wrap' useFlexGap>
                 <Button
                   component={Link}
                   to='/'
-                  onClick={() => viewStopsByMobile()}
-                  color='primary'
+                  onClick={viewStopsByMobile}
                   variant='outlined'
-                  size='small'
                   startIcon={<GridOnIcon />}
                 >
                   View all stops
@@ -221,10 +198,8 @@ const MobileLibraryDetails = () => {
                 {websiteUrl
                   ? (
                     <Button
-                      onClick={() => goToWebsite(websiteUrl)}
-                      color='primary'
+                      onClick={() => urlHelper.openUrl(websiteUrl)}
                       variant='outlined'
-                      size='small'
                       startIcon={<WebIcon />}
                     >
                       {urlHelper.getDomainFromUrl(websiteUrl)}
@@ -236,14 +211,10 @@ const MobileLibraryDetails = () => {
           </>
           )
         : (
-          <CircularProgress color='primary' size={30} sx={{ m: 3, mx: 'auto' }} />
+          <CircularProgress size={30} sx={{ m: 3, mx: 'auto' }} />
           )}
       <DialogActions>
-        <Button
-          onClick={() => close()}
-          color='secondary'
-          endIcon={<CancelIcon />}
-        >
+        <Button onClick={close} color='secondary' endIcon={<CancelIcon />}>
           Close
         </Button>
       </DialogActions>

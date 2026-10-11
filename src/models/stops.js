@@ -8,11 +8,23 @@ import config from '../helpers/config.json'
 
 dayjs.extend(relativeTime)
 
+/**
+ * Represents a mobile library stop and its schedule details.
+ */
 export class Stop {
+  /**
+   * @param {Partial<Stop>} [obj] - Optional initial properties.
+   */
   constructor (obj) {
     Object.assign(this, obj)
   }
 
+  /**
+   * Populates the instance from an API JSON payload.
+   *
+   * @param {object} json - Raw stop JSON from the API.
+   * @returns {Stop} This instance.
+   */
   fromJson (json) {
     this.id = json.id
     this.routeIds = json.route_ids
@@ -41,8 +53,47 @@ export class Stop {
     this.distance = json.distance
     return this
   }
+
+  /**
+   * URL to download the iCalendar (`.ics`) file for this stop.
+   *
+   * @returns {string} ICS download URL.
+   */
+  get icsUrl () {
+    return `${config.api}/stops/${this.id}/ics`
+  }
+
+  /**
+   * URL to view/print the PDF timetable for this stop.
+   *
+   * @returns {string} PDF timetable URL.
+   */
+  get pdfUrl () {
+    return `${config.api}/stops/${this.id}/pdf`
+  }
+
+  /**
+   * Formatted date and time string for the next scheduled visit.
+   *
+   * @returns {string} Formatted next visit date/time.
+   */
+  get nextVisitFormatted () {
+    if (!this.routeSchedule || this.routeSchedule.length === 0) return ''
+    return this.routeSchedule[0].format('dddd Do MMMM h:mma')
+  }
 }
 
+/**
+ * Fetches a paginated, sorted, and filtered list of stops from the API.
+ *
+ * @param {{ page: number, pageSize: number, orderBy?: { field: string, direction: string } }} query - Pagination and sort options.
+ * @param {number[]} searchPosition - Optional `[longitude, latitude]` coordinates.
+ * @param {number} distance - Search distance in meters.
+ * @param {Array<string|number>} organisationFilter - Selected organisation IDs.
+ * @param {Array<string|number>} mobileFilter - Selected mobile library IDs.
+ * @param {Array<string|number>} routeFilter - Selected route IDs.
+ * @returns {Promise<{ stops: Stop[], totalRowCount: number, currentPage: number }>} Paginated stops result.
+ */
 export async function getQueryStops (
   query,
   searchPosition,
@@ -87,6 +138,11 @@ export async function getQueryStops (
   }
 }
 
+/**
+ * Fetches all stops from the API.
+ *
+ * @returns {Promise<Stop[]>} Array of Stop instances.
+ */
 export async function getAllStops () {
   const response = await axios.get(`${config.api}/stops`)
   if (response && response.data && response.data.length > 0) {
@@ -96,6 +152,12 @@ export async function getAllStops () {
   }
 }
 
+/**
+ * Fetches a single stop by its ID.
+ *
+ * @param {string|number} id - Stop ID.
+ * @returns {Promise<Stop|object>} Stop instance or empty object.
+ */
 export async function getStopById (id) {
   const response = await axios.get(`${config.api}/stops/${id}`)
   if (response && response.data) {

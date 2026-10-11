@@ -15,6 +15,10 @@ import DirectionsIcon from '@mui/icons-material/DirectionsTwoTone'
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 
+/**
+ * Cascading filter controls allowing users to filter by library authority, mobile library, and route.
+ * @returns {JSX.Element} Filters component.
+ */
 const Filters = () => {
   const [
     {
@@ -116,7 +120,7 @@ const Filters = () => {
     <>
       <Stack
         direction='row'
-        spacing={1}
+        spacing={1.5}
         justifyContent='center'
         alignItems='center'
         flexWrap='wrap'
@@ -126,9 +130,7 @@ const Filters = () => {
           ? (
             <Tooltip title='Choose library service'>
               <Button
-                color='primary'
-                variant='outlined'
-                size='small'
+                size='large'
                 onClick={e => openOrganisationMenu(e.currentTarget)}
                 startIcon={<BusinessIcon />}
               >
@@ -138,8 +140,6 @@ const Filters = () => {
             )
           : (
             <Chip
-              color='primary'
-              variant='filled'
               onDelete={clearOrganisationFilter}
               label={organisationLookup[organisationFilter[0]]?.name}
             />
@@ -150,9 +150,7 @@ const Filters = () => {
                 ? (
                   <Tooltip title='Choose mobile library'>
                     <Button
-                      color='primary'
-                      variant='outlined'
-                      size='small'
+                      size='large'
                       onClick={e => openMobileMenu(e.currentTarget)}
                       startIcon={<DirectionBusIcon />}
                     >
@@ -162,8 +160,6 @@ const Filters = () => {
                   )
                 : (
                   <Chip
-                    color='primary'
-                    variant='filled'
                     onDelete={clearMobileFilter}
                     label={mobileLookup[mobileFilter[0]]?.name}
                   />
@@ -176,9 +172,7 @@ const Filters = () => {
                 ? (
                   <Tooltip title='Choose route'>
                     <Button
-                      color='primary'
-                      variant='outlined'
-                      size='small'
+                      size='large'
                       onClick={e => openRouteMenu(e.currentTarget)}
                       startIcon={<DirectionsIcon />}
                     >
@@ -188,8 +182,6 @@ const Filters = () => {
                   )
                 : (
                   <Chip
-                    color='primary'
-                    variant='filled'
                     onDelete={clearRouteFilter}
                     label={routeLookup[routeFilter[0]]?.name}
                   />
@@ -204,9 +196,7 @@ const Filters = () => {
         onClose={closeOrganisationMenu}
       >
         {organisationsByCountry.map(({ country, organisations: orgList }, idx) => [
-          <ListSubheader key={'lst_' + idx} disableSticky>
-            {country}
-          </ListSubheader>,
+          <ListSubheader key={'lst_' + idx}>{country}</ListSubheader>,
           ...orgList.map(org => (
             <MenuItem
               key={'mnu_itm_org_' + org.id}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import Box from '@mui/material/Box'
@@ -17,25 +17,25 @@ import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
+import usePrevious from './hooks/usePrevious'
 import * as geoHelper from './helpers/geo'
 import * as urlHelper from './helpers/url'
+import { createLookup } from './helpers/utils'
 import * as mobilesModel from './models/mobiles'
 
-const usePrevious = value => {
-  const ref = useRef()
-  useEffect(() => {
-    ref.current = value
-  })
-  return ref.current
-}
-
+/**
+ * Inline wrapper for loading spinner indicators inside the search bar.
+ * @param {{ children: React.ReactNode }} props - Component props.
+ * @returns {JSX.Element} SearchBox element.
+ */
 const SearchBox = ({ children }) => {
   return (
     <Box
       position='relative'
       display='inline-flex'
       sx={{
-        p: 1,
+        minWidth: 44,
+        minHeight: 44,
         textAlign: 'center',
         alignItems: 'center',
         justifyContent: 'center'
@@ -46,6 +46,10 @@ const SearchBox = ({ children }) => {
   )
 }
 
+/**
+ * Postcode and geolocation search input bar.
+ * @returns {JSX.Element} PostcodeSearch component.
+ */
 const PostcodeSearch = () => {
   const [{}, dispatchApplication] = useApplicationStateValue() //eslint-disable-line
   const [
@@ -72,14 +76,10 @@ const PostcodeSearch = () => {
       location,
       searchDistance
     )
-    const mobilesNearestLookup = {}
-    mobilesNearest.forEach(mn => {
-      mobilesNearestLookup[mn.mobileId] = mn
-    })
     dispatchApplication({
       type: 'UpdateMobilesNearest',
       mobilesNearest,
-      mobilesNearestLookup
+      mobilesNearestLookup: createLookup(mobilesNearest, 'mobileId')
     })
   }
 
@@ -176,24 +176,28 @@ const PostcodeSearch = () => {
 
   return (
     <Paper
+      component='form'
+      role='search'
+      onSubmit={e => {
+        e.preventDefault()
+        postcodeSearch()
+      }}
       variant='outlined'
       sx={{
         position: 'relative',
         display: 'inline-flex',
         alignItems: 'center',
+        gap: 0.5,
         pl: 2,
-        pr: 0.5,
-        py: 0.25
+        pr: 0.75,
+        py: 0.5
       }}
     >
       <InputBase
         placeholder='Enter postcode'
         value={tempPostcode}
         onChange={e => setTempPostcode(e.target.value.toUpperCase())}
-        onKeyDown={e => {
-          if (e.key === 'Enter') postcodeSearch()
-        }}
-        inputProps={{ 'aria-label': 'search by postcode' }}
+        inputProps={{ 'aria-label': 'Search by postcode' }}
         sx={{
           width: 140,
           fontWeight: 500
@@ -203,8 +207,7 @@ const PostcodeSearch = () => {
         ? (
           <Tooltip title='Search by postcode'>
             <IconButton
-              aria-label='Search'
-              color='primary'
+              aria-label='Search by postcode'
               onClick={() => postcodeSearch()}
               disabled={loadingPostcode || loadingLocation}
             >
@@ -214,15 +217,14 @@ const PostcodeSearch = () => {
           )
         : (
           <SearchBox>
-            <CircularProgress color='primary' size={20} />
+            <CircularProgress size={20} />
           </SearchBox>
           )}
       {!loadingLocation
         ? (
           <Tooltip title='Use your current location'>
             <IconButton
-              aria-label='Search by current location'
-              color='primary'
+              aria-label='Use your current location'
               onClick={() => getLocation()}
               disabled={loadingPostcode || loadingLocation}
             >
@@ -238,7 +240,7 @@ const PostcodeSearch = () => {
           )
         : (
           <SearchBox>
-            <CircularProgress color='primary' size={20} />
+            <CircularProgress size={20} />
           </SearchBox>
           )}
       {searchType === 'postcode' || searchType === 'gps'

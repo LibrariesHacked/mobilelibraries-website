@@ -28,6 +28,7 @@ import MapSettings from './MapSettings'
 import PostcodeSearch from './PostcodeSearch'
 
 import config from './helpers/config.json'
+import theme from './theme'
 
 dayjs.extend(relativeTime)
 setWorkerUrl(workerUrl)
@@ -49,7 +50,7 @@ const MAP_CONTAINER_STYLE = {
 const SERVICE_GEOJSON_PAINT = {
   'line-opacity': 0.4,
   'line-width': 2,
-  'line-color': '#455a64'
+  'line-color': theme.palette.secondary.main
 }
 
 const AUTHORITY_LINE_LAYOUT = {
@@ -58,13 +59,13 @@ const AUTHORITY_LINE_LAYOUT = {
 }
 
 const AUTHORITY_LINE_PAINT = {
-  'line-color': '#a7a39b',
+  'line-color': theme.palette.secondary.light,
   'line-opacity': 1,
   'line-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 18, 4]
 }
 
 const AUTHORITY_FILL_PAINT = {
-  'fill-color': '#ccc',
+  'fill-color': theme.palette.secondary.light,
   'fill-opacity': 0.1
 }
 
@@ -74,7 +75,7 @@ const TRIPS_LINE_LAYOUT = {
 }
 
 const TRIPS_LINE_PAINT = {
-  'line-color': '#a7a39b',
+  'line-color': theme.palette.secondary.light,
   'line-offset': ['interpolate', ['linear'], ['zoom'], 14, 1, 18, 4],
   'line-opacity': 1,
   'line-width': ['interpolate', ['linear'], ['zoom'], 14, 1, 18, 4],
@@ -83,9 +84,9 @@ const TRIPS_LINE_PAINT = {
 
 const STOPS_CIRCLE_PAINT = {
   'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 2, 18, 8],
-  'circle-color': '#455a64',
+  'circle-color': theme.palette.secondary.main,
   'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 18, 3],
-  'circle-stroke-color': '#ffffff',
+  'circle-stroke-color': theme.palette.common.white,
   'circle-opacity': 0.5
 }
 
@@ -107,10 +108,10 @@ const STOPS_NAME_LAYOUT = {
 }
 
 const STOPS_TEXT_PAINT = {
-  'text-halo-color': 'hsl(0, 0%, 100%)',
+  'text-halo-color': theme.palette.common.white,
   'text-halo-width': 1,
   'text-halo-blur': 1,
-  'text-color': '#6a6f73'
+  'text-color': theme.palette.text.secondary
 }
 
 const STOPS_NEXT_VISITING_LAYOUT = {
@@ -130,9 +131,19 @@ const STOPS_NEXT_VISITING_LAYOUT = {
   ]
 }
 
+/**
+ * Determines the marker icon size tier for a given map zoom level.
+ * @param {number} zoom - Current map zoom level.
+ * @returns {'small' | 'medium' | 'large'} Marker size.
+ */
 const getMarkerSizeForZoom = zoom =>
   zoom < 8 ? 'small' : zoom < 12 ? 'medium' : 'large'
 
+/**
+ * Interactive full-screen MapLibre GL map displaying live mobile library positions,
+ * stops, trips, and library authority boundaries.
+ * @returns {JSX.Element} MobileMap component.
+ */
 const MobileMap = () => {
   const [{ mobileLocations, mobileLookup, organisationLookup }] =
     useApplicationStateValue() //eslint-disable-line
@@ -248,19 +259,8 @@ const MobileMap = () => {
     if (!mobileLocations || mobileLocations.length === 0) return null
     const now = dayjs()
     return mobileLocations.map(l => {
-      if (!l.geoX || !l.geoY) return null
-      let locationPoint = [l.geoX, l.geoY]
-      if (l.routeSection && l.routeSection.coordinates && l.updated) {
-        const millisecondsPassed = now.diff(l.updated)
-        const index = Math.round(millisecondsPassed / 500)
-        const coords = l.routeSection.coordinates
-        if (coords.length > index && index > 0) {
-          locationPoint = coords[index]
-        }
-        if (coords.length <= index && index > 0) {
-          locationPoint = coords[coords.length - 1]
-        }
-      }
+      const locationPoint = l.getCoordinates(now)
+      if (!locationPoint) return null
       const mobile = mobileLookup[l.mobileId]
       const organisation = mobile
         ? organisationLookup[mobile.organisationId]
@@ -387,13 +387,12 @@ const MobileMap = () => {
       </Map>
       <Tooltip title='Map settings'>
         <Fab
-          color='primary'
+          aria-label='Map settings'
           sx={{
             position: 'absolute',
             bottom: 28,
             right: 16,
-            zIndex: 1,
-            color: 'white'
+            zIndex: 1
           }}
           onClick={() =>
             dispatchView({

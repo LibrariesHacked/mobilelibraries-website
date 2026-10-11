@@ -7,6 +7,10 @@ import CloseIcon from '@mui/icons-material/CloseTwoTone'
 
 import { useViewStateValue } from './context/viewState'
 
+/**
+ * Global snackbar notification banner for displaying user feedback messages.
+ * @returns {JSX.Element} Notification snackbar component.
+ */
 const Notification = () => {
   const [{ notificationOpen, notificationMessage }, dispatchView] =
     useViewStateValue() //eslint-disable-line

@@ -1,13 +1,23 @@
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import * as stopModel from '../models/stops'
 
+/**
+ * Custom hook for querying paginated and filtered mobile library stops.
+ *
+ * @returns {{
+ *   loadingMobileStops: boolean,
+ *   mobileStops: import('../models/stops').Stop[],
+ *   pageInfo: { totalRowCount?: number, currentPage?: number },
+ *   getMobileStopsFromQuery: Function
+ * }} Query state and trigger function.
+ */
 const useMobileStopsQuery = () => {
   const [loadingMobileStops, setLoadingMobileStops] = useState(false)
   const [mobileStops, setMobileStops] = useState([])
-  const [pageInfo, setPageInfo] = useState([])
+  const [pageInfo, setPageInfo] = useState({})
 
-  const getMobileStopsFromQuery = async queryOptions => {
+  const getMobileStopsFromQuery = useCallback(async queryOptions => {
     setLoadingMobileStops(true)
 
     const response = await stopModel.getQueryStops(
@@ -32,7 +42,7 @@ const useMobileStopsQuery = () => {
       currentPage: response.currentPage
     })
     return response
-  }
+  }, [])
 
   return { loadingMobileStops, mobileStops, pageInfo, getMobileStopsFromQuery }
 }

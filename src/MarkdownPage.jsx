@@ -11,8 +11,7 @@ const options = {
       component: Typography,
       props: {
         gutterBottom: true,
-        variant: 'h4',
-        color: 'text.primary'
+        variant: 'h4'
       }
     },
     h2: {
@@ -20,7 +19,6 @@ const options = {
       props: {
         gutterBottom: true,
         variant: 'h5',
-        color: 'text.primary',
         sx: { mt: 3 }
       }
     },
@@ -29,7 +27,6 @@ const options = {
       props: {
         gutterBottom: true,
         variant: 'h6',
-        color: 'text.secondary',
         sx: { mt: 2 }
       }
     },
@@ -38,33 +35,31 @@ const options = {
       props: {
         gutterBottom: true,
         variant: 'subtitle1',
-        paragraph: true,
-        color: 'text.primary'
+        paragraph: true
       }
     },
     p: {
       component: Typography,
-      props: { paragraph: true, color: 'text.secondary' }
+      props: { paragraph: true, variant: 'body2' }
     },
     a: {
-      component: Link,
-      props: {
-        underline: 'hover',
-        sx: {
-          fontWeight: 500
-        }
-      }
+      component: Link
     },
     li: {
       component: ({ ...props }) => (
         <li>
-          <Typography component='span' color='text.secondary' {...props} />
+          <Typography component='span' variant='body2' {...props} />
         </li>
       )
     }
   }
 }
 
+/**
+ * Fetches and renders a static Markdown document inside a themed Paper card.
+ * @param {{ page: string }} props - Component props containing the URL/asset path to the markdown file.
+ * @returns {JSX.Element} Rendered markdown page.
+ */
 const MarkdownPage = props => {
   const { page } = props
   const [pageText, setPageText] = useState('')
