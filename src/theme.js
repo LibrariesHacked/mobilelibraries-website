@@ -27,7 +27,10 @@ let theme = createTheme({
       primary: blueGrey[900],
       secondary: blueGrey[600]
     },
-    divider: blueGrey[100]
+    divider: blueGrey[100],
+    DataGrid: {
+      headerBg: '#f8fafc'
+    }
   },
   shape: {
     borderRadius: 8
@@ -400,11 +403,6 @@ theme = createTheme(theme, {
           color: theme.palette.secondary.main
         }
       }
-    }
-  },
-  mixins: {
-    MuiDataGrid: {
-      containerBackground: theme.palette.background.default
     }
   }
 })

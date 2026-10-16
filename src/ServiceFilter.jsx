@@ -121,15 +121,21 @@ const Filters = () => {
       <Stack
         direction='row'
         spacing={1.5}
-        justifyContent='center'
-        alignItems='center'
-        flexWrap='wrap'
         useFlexGap
+        sx={{
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}
       >
         {organisationFilter.length === 0
           ? (
             <Tooltip title='Choose library service'>
               <Button
+                id='filter-organisation-button'
+                aria-controls={organisationMenuAnchor ? 'menu-library-service' : undefined}
+                aria-expanded={Boolean(organisationMenuAnchor)}
+                aria-haspopup='menu'
                 size='large'
                 onClick={e => openOrganisationMenu(e.currentTarget)}
                 startIcon={<BusinessIcon />}
@@ -150,6 +156,10 @@ const Filters = () => {
                 ? (
                   <Tooltip title='Choose mobile library'>
                     <Button
+                      id='filter-mobile-button'
+                      aria-controls={mobileMenuAnchor ? 'menu-mobile-library' : undefined}
+                      aria-expanded={Boolean(mobileMenuAnchor)}
+                      aria-haspopup='menu'
                       size='large'
                       onClick={e => openMobileMenu(e.currentTarget)}
                       startIcon={<DirectionBusIcon />}
@@ -172,6 +182,10 @@ const Filters = () => {
                 ? (
                   <Tooltip title='Choose route'>
                     <Button
+                      id='filter-route-button'
+                      aria-controls={routeMenuAnchor ? 'menu-route' : undefined}
+                      aria-expanded={Boolean(routeMenuAnchor)}
+                      aria-haspopup='menu'
                       size='large'
                       onClick={e => openRouteMenu(e.currentTarget)}
                       startIcon={<DirectionsIcon />}
@@ -191,6 +205,7 @@ const Filters = () => {
       </Stack>
       <Menu
         id='menu-library-service'
+        aria-labelledby='filter-organisation-button'
         anchorEl={organisationMenuAnchor}
         open={Boolean(organisationMenuAnchor)}
         onClose={closeOrganisationMenu}
@@ -209,6 +224,7 @@ const Filters = () => {
       </Menu>
       <Menu
         id='menu-mobile-library'
+        aria-labelledby='filter-mobile-button'
         anchorEl={mobileMenuAnchor}
         open={Boolean(mobileMenuAnchor)}
         onClose={closeMobileMenu}
@@ -224,6 +240,7 @@ const Filters = () => {
       </Menu>
       <Menu
         id='menu-route'
+        aria-labelledby='filter-route-button'
         anchorEl={routeMenuAnchor}
         open={Boolean(routeMenuAnchor)}
         onClose={closeRouteMenu}

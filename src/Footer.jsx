@@ -22,8 +22,10 @@ const Footer = () => {
         <Stack
           direction='row'
           spacing={2}
-          justifyContent='center'
-          alignItems='center'
+          sx={{
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}
         >
           <MaterialLink
             component={Link}

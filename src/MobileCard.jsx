@@ -140,7 +140,7 @@ const MobileCard = props => {
         <Stack direction='row' spacing={0.5}>
           {mobile.timetable
             ? (
-              <Tooltip title='Website timetable'>
+              <Tooltip title='Website timetable' describeChild>
                 <IconButton
                   aria-label={`Website timetable for ${displayTitle}`}
                   onClick={goToWebsite}
@@ -150,7 +150,7 @@ const MobileCard = props => {
               </Tooltip>
               )
             : null}
-          <Tooltip title='See more mobile details'>
+          <Tooltip title='See more mobile details' describeChild>
             <IconButton
               aria-label={`More details for ${displayTitle}`}
               onClick={() => displayMobileLibraryInfo(mobile.id)}

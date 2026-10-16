@@ -59,22 +59,22 @@ const TripDetails = () => {
       </DialogTitle>
       <DialogContent>
         <TableContainer sx={{ mb: 0 }}>
-          <Table>
+          <Table aria-label='Trip details'>
             <TableBody>
               <TableRow>
-                <TableCell variant='head'>Origin</TableCell>
+                <TableCell component='th' scope='row'>Origin</TableCell>
                 <TableCell>{trip.originStopName}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell variant='head'>Destination</TableCell>
+                <TableCell component='th' scope='row'>Destination</TableCell>
                 <TableCell>{trip.destinationStopName}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell variant='head'>Trip length</TableCell>
+                <TableCell component='th' scope='row'>Trip length</TableCell>
                 <TableCell>{trip.distanceInMiles}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell variant='head'>Trip duration</TableCell>
+                <TableCell component='th' scope='row'>Trip duration</TableCell>
                 <TableCell>{trip.estimatedDuration}</TableCell>
               </TableRow>
             </TableBody>

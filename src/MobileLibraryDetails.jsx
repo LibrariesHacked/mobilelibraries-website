@@ -111,22 +111,22 @@ const MobileLibraryDetails = () => {
       fullScreen={fullScreen}
       open={mobileLibraryDialogOpen}
       onClose={close}
-      aria-labelledby='dlg-title'
+      aria-labelledby='mobile-library-dialog-title'
     >
       {mobileLibrary && mobileLibrary.id
         ? (
           <>
-            <DialogTitle id='dlg-title'>
+            <DialogTitle id='mobile-library-dialog-title'>
               {mobileLibrary.getDisplayTitle(organisation, ' - ')}
             </DialogTitle>
             <DialogContent>
               <TableContainer>
-                <Table>
+                <Table aria-label='Mobile library information'>
                   <TableBody>
                     {organisation
                       ? (
                         <TableRow>
-                          <TableCell variant='head'>Authority</TableCell>
+                          <TableCell component='th' scope='row'>Authority</TableCell>
                           <TableCell>{organisation.name}</TableCell>
                         </TableRow>
                         )
@@ -134,17 +134,17 @@ const MobileLibraryDetails = () => {
                     {status && status.textFormat
                       ? (
                         <TableRow>
-                          <TableCell variant='head'>Status</TableCell>
+                          <TableCell component='th' scope='row'>Status</TableCell>
                           <TableCell>{status.textFormat}</TableCell>
                         </TableRow>
                         )
                       : null}
                     <TableRow>
-                      <TableCell variant='head'>Routes</TableCell>
+                      <TableCell component='th' scope='row'>Routes</TableCell>
                       <TableCell>{mobileLibrary.numberRoutes}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell variant='head'>Stops</TableCell>
+                      <TableCell component='th' scope='row'>Stops</TableCell>
                       <TableCell>{mobileLibrary.numberStops}</TableCell>
                     </TableRow>
                   </TableBody>
@@ -153,7 +153,7 @@ const MobileLibraryDetails = () => {
               {mobileRoutes.length > 0
                 ? (
                   <TableContainer>
-                    <Table>
+                    <Table aria-label='Routes and schedules'>
                       <TableHead>
                         <TableRow>
                           <TableCell>Route</TableCell>
@@ -185,7 +185,12 @@ const MobileLibraryDetails = () => {
                   </TableContainer>
                   )
                 : null}
-              <Stack direction='row' spacing={1.5} flexWrap='wrap' useFlexGap>
+              <Stack
+                direction='row'
+                spacing={1.5}
+                useFlexGap
+                sx={{ flexWrap: 'wrap' }}
+              >
                 <Button
                   component={Link}
                   to='/'
@@ -211,7 +216,18 @@ const MobileLibraryDetails = () => {
           </>
           )
         : (
-          <CircularProgress size={30} sx={{ m: 3, mx: 'auto' }} />
+          <>
+            <DialogTitle id='mobile-library-dialog-title'>
+              Mobile library details
+            </DialogTitle>
+            <DialogContent>
+              <CircularProgress
+                size={30}
+                aria-label='Loading mobile library details'
+                sx={{ m: 3, mx: 'auto' }}
+              />
+            </DialogContent>
+          </>
           )}
       <DialogActions>
         <Button onClick={close} color='secondary' endIcon={<CancelIcon />}>

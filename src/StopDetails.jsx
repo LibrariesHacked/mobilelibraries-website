@@ -69,29 +69,29 @@ const StopDetails = () => {
       fullScreen={fullScreen}
       open={stopDialogOpen}
       onClose={close}
-      aria-labelledby='dlg-title'
+      aria-labelledby='stop-details-dialog-title'
     >
       {Object.keys(stop).length > 0 && stop.routeDays
         ? (
           <>
-            <DialogTitle id='dlg-title'>{stop.name}</DialogTitle>
+            <DialogTitle id='stop-details-dialog-title'>{stop.name}</DialogTitle>
             <DialogContent>
               <TableContainer>
-                <Table>
+                <Table aria-label='Stop address and authority'>
                   <TableBody>
                     <TableRow>
-                      <TableCell variant='head'>Address</TableCell>
+                      <TableCell component='th' scope='row'>Address</TableCell>
                       <TableCell>{stop.address}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell variant='head'>Authority</TableCell>
+                      <TableCell component='th' scope='row'>Authority</TableCell>
                       <TableCell>{stop.organisationName}</TableCell>
                     </TableRow>
                   </TableBody>
                 </Table>
               </TableContainer>
               <TableContainer>
-                <Table>
+                <Table aria-label='Stop schedule'>
                   <TableHead>
                     <TableRow>
                       <TableCell>Frequency</TableCell>
@@ -112,7 +112,12 @@ const StopDetails = () => {
                   </TableBody>
                 </Table>
               </TableContainer>
-              <Stack direction='row' spacing={1.5} flexWrap='wrap' useFlexGap>
+              <Stack
+                direction='row'
+                spacing={1.5}
+                useFlexGap
+                sx={{ flexWrap: 'wrap' }}
+              >
                 {config.displayWebLinks && (
                   <Button
                     onClick={goToWebsite}
@@ -141,7 +146,16 @@ const StopDetails = () => {
           </>
           )
         : (
-          <CircularProgress size={30} sx={{ m: 3, mx: 'auto' }} />
+          <>
+            <DialogTitle id='stop-details-dialog-title'>Stop details</DialogTitle>
+            <DialogContent>
+              <CircularProgress
+                size={30}
+                aria-label='Loading stop details'
+                sx={{ m: 3, mx: 'auto' }}
+              />
+            </DialogContent>
+          </>
           )}
       <DialogActions>
         <Button onClick={close} color='secondary' endIcon={<CancelIcon />}>

@@ -28,14 +28,16 @@ const Notification = () => {
       open={notificationOpen}
       autoHideDuration={3000}
       onClose={handleClose}
-      ContentProps={{
-        'aria-describedby': 'message-id'
+      slotProps={{
+        content: {
+          'aria-describedby': 'message-id'
+        }
       }}
       message={<span id='message-id'>{notificationMessage}</span>}
       action={[
         <IconButton
           key='close'
-          aria-label='close'
+          aria-label='Dismiss notification'
           onClick={handleClose}
           color='secondary'
           size='large'

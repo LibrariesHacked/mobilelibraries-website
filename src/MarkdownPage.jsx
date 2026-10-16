@@ -35,12 +35,12 @@ const options = {
       props: {
         gutterBottom: true,
         variant: 'subtitle1',
-        paragraph: true
+        sx: { mb: 2 }
       }
     },
     p: {
       component: Typography,
-      props: { paragraph: true, variant: 'body2' }
+      props: { variant: 'body2', sx: { mb: 2 } }
     },
     a: {
       component: Link

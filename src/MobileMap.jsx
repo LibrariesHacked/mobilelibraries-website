@@ -274,6 +274,7 @@ const MobileMap = () => {
         >
           <MobileAvatar
             organisation={organisation}
+            label={mobile ? mobile.getDisplayTitle(organisation) : undefined}
             location={l}
             size={markerSize}
           />
@@ -385,7 +386,7 @@ const MobileMap = () => {
           : null}
         <NavigationControl position='bottom-left' />
       </Map>
-      <Tooltip title='Map settings'>
+      <Tooltip title='Map settings' describeChild>
         <Fab
           aria-label='Map settings'
           sx={{

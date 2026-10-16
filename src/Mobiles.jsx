@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react'
 
-import Grid2 from '@mui/material/Grid2'
+import Grid from '@mui/material/Grid'
 import ListSubheader from '@mui/material/ListSubheader'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
@@ -152,10 +152,10 @@ const Mobiles = () => {
       </Tabs>
       {mobilesView.length > 0
         ? (
-          <Grid2 container spacing={2.5}>
+          <Grid container spacing={2.5}>
             {mobilesView.map((mobile, idx) => {
               return (
-                <Grid2
+                <Grid
                   key={'grd_' + mobile.id + '_' + idx}
                   size={{ xs: 12, sm: 6, md: 4, lg: 3, xl: 3 }}
                 >
@@ -165,10 +165,10 @@ const Mobiles = () => {
                     status={mobileStatusLookup[mobile.id]}
                     organisation={organisationLookup[mobile.organisationId]}
                   />
-                </Grid2>
+                </Grid>
               )
             })}
-          </Grid2>
+          </Grid>
           )
         : (
             noResultsView()

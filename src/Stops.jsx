@@ -149,6 +149,7 @@ const Stops = () => {
       <div style={{ display: 'flex', height: '100%' }}>
         <div style={{ flexGrow: 1, width: '100%' }}>
           <DataGrid
+            slotProps={{ main: { 'aria-label': 'Mobile library stops' } }}
             columnVisibilityModel={{
               community: true,
               name: useMediaQuery(theme.breakpoints.up('sm')),

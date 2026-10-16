@@ -11,8 +11,8 @@ import Face from '@mui/icons-material/FaceRounded'
  */
 const MeAvatar = () => {
   return (
-    <Tooltip title='Me'>
-      <Avatar>
+    <Tooltip title='Current search location' describeChild>
+      <Avatar role='img' aria-label='Your searched location'>
         <Face />
       </Avatar>
     </Tooltip>

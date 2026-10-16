@@ -31,9 +31,9 @@ import * as mobilesModel from './models/mobiles'
 const SearchBox = ({ children }) => {
   return (
     <Box
-      position='relative'
-      display='inline-flex'
       sx={{
+        position: 'relative',
+        display: 'inline-flex',
         minWidth: 44,
         minHeight: 44,
         textAlign: 'center',
@@ -178,6 +178,7 @@ const PostcodeSearch = () => {
     <Paper
       component='form'
       role='search'
+      aria-label='Find a mobile library'
       onSubmit={e => {
         e.preventDefault()
         postcodeSearch()
@@ -205,7 +206,7 @@ const PostcodeSearch = () => {
       />
       {!loadingPostcode
         ? (
-          <Tooltip title='Search by postcode'>
+          <Tooltip title='Search by postcode' describeChild>
             <IconButton
               aria-label='Search by postcode'
               onClick={() => postcodeSearch()}
@@ -217,12 +218,15 @@ const PostcodeSearch = () => {
           )
         : (
           <SearchBox>
-            <CircularProgress size={20} />
+            <CircularProgress
+              size={20}
+              aria-label='Searching for postcode'
+            />
           </SearchBox>
           )}
       {!loadingLocation
         ? (
-          <Tooltip title='Use your current location'>
+          <Tooltip title='Use your current location' describeChild>
             <IconButton
               aria-label='Use your current location'
               onClick={() => getLocation()}
@@ -240,12 +244,15 @@ const PostcodeSearch = () => {
           )
         : (
           <SearchBox>
-            <CircularProgress size={20} />
+            <CircularProgress
+              size={20}
+              aria-label='Getting your location'
+            />
           </SearchBox>
           )}
       {searchType === 'postcode' || searchType === 'gps'
         ? (
-          <Tooltip title='Clear search'>
+          <Tooltip title='Clear search' describeChild>
             <IconButton
               color='secondary'
               aria-label='Clear search'
