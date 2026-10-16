@@ -130,7 +130,7 @@ const Filters = () => {
       >
         {organisationFilter.length === 0
           ? (
-            <Tooltip title='Choose library service'>
+            <Tooltip title='Choose library service' describeChild>
               <Button
                 id='filter-organisation-button'
                 aria-controls={organisationMenuAnchor ? 'menu-library-service' : undefined}
@@ -154,7 +154,7 @@ const Filters = () => {
           ? (
               mobileFilter.length === 0
                 ? (
-                  <Tooltip title='Choose mobile library'>
+                  <Tooltip title='Choose mobile library' describeChild>
                     <Button
                       id='filter-mobile-button'
                       aria-controls={mobileMenuAnchor ? 'menu-mobile-library' : undefined}
@@ -180,7 +180,7 @@ const Filters = () => {
           ? (
               routeFilter.length === 0
                 ? (
-                  <Tooltip title='Choose route'>
+                  <Tooltip title='Choose route' describeChild>
                     <Button
                       id='filter-route-button'
                       aria-controls={routeMenuAnchor ? 'menu-route' : undefined}

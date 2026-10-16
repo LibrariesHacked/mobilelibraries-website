@@ -126,7 +126,7 @@ const MobileLibraryDetails = () => {
                     {organisation
                       ? (
                         <TableRow>
-                          <TableCell component='th' scope='row'>Authority</TableCell>
+                          <TableCell component='th' scope='row' variant='head'>Authority</TableCell>
                           <TableCell>{organisation.name}</TableCell>
                         </TableRow>
                         )
@@ -134,17 +134,17 @@ const MobileLibraryDetails = () => {
                     {status && status.textFormat
                       ? (
                         <TableRow>
-                          <TableCell component='th' scope='row'>Status</TableCell>
+                          <TableCell component='th' scope='row' variant='head'>Status</TableCell>
                           <TableCell>{status.textFormat}</TableCell>
                         </TableRow>
                         )
                       : null}
                     <TableRow>
-                      <TableCell component='th' scope='row'>Routes</TableCell>
+                      <TableCell component='th' scope='row' variant='head'>Routes</TableCell>
                       <TableCell>{mobileLibrary.numberRoutes}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>Stops</TableCell>
+                      <TableCell component='th' scope='row' variant='head'>Stops</TableCell>
                       <TableCell>{mobileLibrary.numberStops}</TableCell>
                     </TableRow>
                   </TableBody>

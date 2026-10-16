@@ -80,11 +80,11 @@ const StopDetails = () => {
                 <Table aria-label='Stop address and authority'>
                   <TableBody>
                     <TableRow>
-                      <TableCell component='th' scope='row'>Address</TableCell>
+                      <TableCell component='th' scope='row' variant='head'>Address</TableCell>
                       <TableCell>{stop.address}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row'>Authority</TableCell>
+                      <TableCell component='th' scope='row' variant='head'>Authority</TableCell>
                       <TableCell>{stop.organisationName}</TableCell>
                     </TableRow>
                   </TableBody>

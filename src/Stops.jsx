@@ -40,15 +40,7 @@ const Stops = () => {
   const prevPosition = usePrevious(searchPosition)
 
   const [sortModel, setSortModel] = useState(initialSortModel)
-  const [filterModel, setFilterModel] = useState({
-    items: [
-      {
-        field: 'localAuthority',
-        operator: 'contains',
-        value: ''
-      }
-    ]
-  })
+  const [filterModel, setFilterModel] = useState({ items: [] })
   const [paginationModel, setPaginationModel] = useState({
     page: 0,
     pageSize: 5

@@ -123,7 +123,7 @@ const MobileCard = props => {
       </CardContent>
       <Divider />
       <CardActions>
-        <Tooltip title='Mobile library stops'>
+        <Tooltip title='Mobile library stops' describeChild>
           <Button
             component={Link}
             to='/'
