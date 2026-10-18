@@ -3,13 +3,23 @@
   "name": "Mobile library stops, routes, and timetables",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "images/mobilelibraries-favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "images/mobilelibraries-favicon.png",
       "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "type": "image/png"
+    },
+    {
+      "src": "images/mobilelibraries-app-icon.png",
+      "sizes": "512x512 192x192",
+      "type": "image/png"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#3E6B2F",
+  "background_color": "#FBF5E3"
 }
