@@ -48,9 +48,9 @@ const MAP_CONTAINER_STYLE = {
 }
 
 const SERVICE_GEOJSON_PAINT = {
-  'line-opacity': 0.4,
+  'line-opacity': 0.5,
   'line-width': 2,
-  'line-color': theme.palette.secondary.main
+  'line-color': theme.palette.primary.main
 }
 
 const AUTHORITY_LINE_LAYOUT = {
@@ -59,13 +59,13 @@ const AUTHORITY_LINE_LAYOUT = {
 }
 
 const AUTHORITY_LINE_PAINT = {
-  'line-color': theme.palette.secondary.light,
+  'line-color': theme.palette.primary.light,
   'line-opacity': 1,
   'line-width': ['interpolate', ['linear'], ['zoom'], 6, 1, 18, 4]
 }
 
 const AUTHORITY_FILL_PAINT = {
-  'fill-color': theme.palette.secondary.light,
+  'fill-color': theme.palette.primary.light,
   'fill-opacity': 0.1
 }
 
@@ -75,19 +75,19 @@ const TRIPS_LINE_LAYOUT = {
 }
 
 const TRIPS_LINE_PAINT = {
-  'line-color': theme.palette.secondary.light,
+  'line-color': theme.palette.warmNeutral.main,
   'line-offset': ['interpolate', ['linear'], ['zoom'], 14, 1, 18, 4],
-  'line-opacity': 1,
+  'line-opacity': 0.85,
   'line-width': ['interpolate', ['linear'], ['zoom'], 14, 1, 18, 4],
   'line-dasharray': [2, 0.5]
 }
 
 const STOPS_CIRCLE_PAINT = {
   'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 2, 18, 8],
-  'circle-color': theme.palette.secondary.main,
+  'circle-color': theme.palette.tertiary.main,
   'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 18, 3],
   'circle-stroke-color': theme.palette.common.white,
-  'circle-opacity': 0.5
+  'circle-opacity': 0.75
 }
 
 const STOPS_NAME_LAYOUT = {
