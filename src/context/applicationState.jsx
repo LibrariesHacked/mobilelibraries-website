@@ -12,13 +12,12 @@ const initialApplicationState = {
   mobilesNearest: [],
   mobilesNearestLookup: {},
   routes: [],
-  routeLookup: {},
-  stops: [],
-  trips: []
+  routeLookup: {}
 }
 
 /**
  * Reducer for managing global application domain data (local authorities, mobiles, routes, locations).
+ *
  * @param {Object} state - Current application state.
  * @param {Object} action - Dispatched reducer action.
  * @returns {Object} Updated application state.
@@ -37,29 +36,11 @@ const applicationReducer = (state, action) => {
         mobileLocations: action.mobileLocations,
         mobileLocationLookup: action.mobileLocationLookup
       }
-    case 'AddLocalAuthorities':
-      return {
-        ...state,
-        localAuthorities: action.localAuthorities,
-        localAuthorityLookup: action.localAuthorityLookup
-      }
     case 'AddMobileLocations':
       return {
         ...state,
         mobileLocations: action.mobileLocations,
         mobileLocationLookup: action.mobileLocationLookup
-      }
-    case 'AddRoutes':
-      return {
-        ...state,
-        routes: action.routes,
-        routeLookup: action.routeLookup
-      }
-    case 'AddMobiles':
-      return {
-        ...state,
-        mobiles: action.mobiles,
-        mobileLookup: action.mobileLookup
       }
     case 'UpdateMobilesNearest':
       return {
@@ -74,6 +55,7 @@ const applicationReducer = (state, action) => {
 
 /**
  * Context provider for global application domain data.
+ *
  * @param {{ children: React.ReactNode }} props - Component props.
  * @returns {JSX.Element} Provider element.
  */
@@ -87,6 +69,7 @@ export const ApplicationStateProvider = ({ children }) => (
 
 /**
  * Hook to access the global application state and dispatch function.
+ *
  * @returns {[Object, Function]} Tuple of `[applicationState, dispatchApplication]`.
  */
 export const useApplicationStateValue = () =>

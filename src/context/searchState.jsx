@@ -19,14 +19,15 @@ const initialSearchState = {
   ...emptySearchLocation,
   ...emptyFilters,
   searchDistance: METERS_PER_MILE,
-  searchPositionUpdateInterval: null,
   currentStopId: null,
+  currentStop: null,
   currentMobileLibraryId: null,
   currentTripId: null
 }
 
 /**
- * Reducer for managing search parameters, active filters, and selected entity IDs.
+ * Reducer for managing search parameters, active filters, and selected entities.
+ *
  * @param {Object} state - Current search state.
  * @param {Object} action - Dispatched reducer action.
  * @returns {Object} Updated search state.
@@ -36,7 +37,10 @@ const searchReducer = (state, action) => {
     case 'SetCurrentStop':
       return {
         ...state,
-        currentStopId: action.currentStopId
+        currentStopId: action.currentStop
+          ? action.currentStop.id
+          : (action.currentStopId ?? null),
+        currentStop: action.currentStop ?? null
       }
     case 'SetCurrentMobileLibrary':
       return {
@@ -116,6 +120,7 @@ const searchReducer = (state, action) => {
 
 /**
  * Context provider for search and filter state.
+ *
  * @param {{ children: React.ReactNode }} props - Component props.
  * @returns {JSX.Element} Provider element.
  */
@@ -129,6 +134,7 @@ export const SearchStateProvider = ({ children }) => (
 
 /**
  * Hook to access the search state and dispatch function.
+ *
  * @returns {[Object, Function]} Tuple of `[searchState, dispatchSearch]`.
  */
 export const useSearchStateValue = () => useContext(SearchStateContext)

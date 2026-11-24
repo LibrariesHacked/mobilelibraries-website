@@ -7,10 +7,9 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@fontsource/roboto": "^5.3.0",
+    "@geovation/gb-name-index": "github:Geovation/gb-name-index#v1.0.0",
     "@mui/icons-material": "^9.5.0",
     "@mui/material": "^9.5.0",
-    "@mui/x-data-grid": "^9.15.0",
     "axios": "^1.20.0",
     "dayjs": "^1.11.23",
     "maplibre-gl": "^6.15.0",

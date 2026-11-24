@@ -3,7 +3,7 @@ import React from 'react'
 import IconButton from '@mui/material/IconButton'
 import Snackbar from '@mui/material/Snackbar'
 
-import CloseIcon from '@mui/icons-material/CloseTwoTone'
+import CloseIcon from '@mui/icons-material/CloseRounded'
 
 import { useViewStateValue } from './context/viewState'
 

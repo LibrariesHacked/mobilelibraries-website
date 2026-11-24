@@ -1,6 +1,4 @@
-import axios from 'axios'
-
-import config from '../helpers/config.json'
+import { apiGet } from '../helpers/url'
 import { hextoRGBA } from '../helpers/utils'
 import theme from '../theme'
 
@@ -56,7 +54,7 @@ export class LocalAuthority {
  */
 export async function getAllLocalAuthorities () {
   try {
-    const response = await axios.get(config.api + '/localauthorities')
+    const response = await apiGet('/localauthorities')
     if (response && Array.isArray(response.data) && response.data.length > 0) {
       return response.data.map(la => new LocalAuthority().fromJson(la))
     }
@@ -72,8 +70,8 @@ export async function getAllLocalAuthorities () {
  */
 export async function getLocalAuthorityById (id) {
   try {
-    const response = await axios.get(`${config.api}/localauthorities/${id}`)
-    if (response && response.data) {
+    const response = await apiGet(`/localauthorities/${id}`)
+    if (response && response.data && typeof response.data === 'object') {
       return new LocalAuthority().fromJson(response.data)
     }
   } catch (e) {}

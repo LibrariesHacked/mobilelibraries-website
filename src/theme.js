@@ -6,8 +6,11 @@ const HEADING_FONT_FAMILY =
 const BODY_FONT_FAMILY =
   "'Nunito Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
 
+/** Single uniform corner radius (8px) applied consistently across the style guide and all components. */
+const UNIFORM_BORDER_RADIUS = 8
+
 /**
- * Base Material UI theme defining the centralized `palette`, shadows, and border radius.
+ * Base Material UI theme defining the centralized `palette`, shadows, and uniform border radius.
  */
 let theme = createTheme({
   shadows: Array(25).fill('none'),
@@ -35,7 +38,8 @@ let theme = createTheme({
     },
     warmNeutral: {
       main: '#9A5A22',
-      cream: '#F6EBC8'
+      cream: '#F6EBC8',
+      sand: '#E8D7A4'
     },
     background: {
       default: '#FBF5E3',
@@ -69,19 +73,16 @@ let theme = createTheme({
       dark: '#1E4E8C',
       contrastText: '#FFFFFF'
     },
-    divider: alpha('#9A5A22', 0.2),
-    DataGrid: {
-      headerBg: '#F6EBC8'
-    }
+    divider: alpha('#6E9A5B', 0.25)
   },
   shape: {
-    borderRadius: 8
+    borderRadius: UNIFORM_BORDER_RADIUS
   }
 })
 
 /**
- * Composed Material UI theme referencing `theme.palette` for typography,
- * component defaults, and style overrides.
+ * Composed Material UI theme referencing `theme.palette` and `theme.shape.borderRadius`
+ * for typography, borderless block buttons and dropdowns, and soft complementary outlines.
  */
 theme = createTheme(theme, {
   typography: {
@@ -129,6 +130,7 @@ theme = createTheme(theme, {
     subtitle2: {
       fontFamily: HEADING_FONT_FAMILY,
       fontWeight: 700,
+      fontSize: '0.875rem',
       color: theme.palette.text.secondary
     },
     caption: {
@@ -147,61 +149,12 @@ theme = createTheme(theme, {
       color: theme.palette.text.secondary
     },
     button: {
-      fontFamily: BODY_FONT_FAMILY,
-      fontWeight: 600,
+      fontFamily: HEADING_FONT_FAMILY,
+      fontWeight: 700,
       textTransform: 'none'
     }
   },
   components: {
-    MuiAppBar: {
-      defaultProps: {
-        color: 'inherit',
-        elevation: 0,
-        position: 'relative',
-        variant: 'outlined'
-      },
-      styleOverrides: {
-        root: {
-          backgroundColor: theme.palette.background.paper,
-          borderColor: theme.palette.divider,
-          marginTop: 16,
-          marginBottom: 8,
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          padding: 4,
-          width: 'fit-content',
-          borderRadius: 12,
-          zIndex: 1000,
-          '& .MuiTabs-root': {
-            minHeight: 44,
-            borderBottom: 'none',
-            marginBottom: 0
-          },
-          '& .MuiTabs-indicator': {
-            display: 'none'
-          },
-          '& .MuiTab-root': {
-            fontFamily: HEADING_FONT_FAMILY,
-            fontWeight: 700,
-            minHeight: 44,
-            paddingTop: 6,
-            paddingBottom: 6,
-            paddingLeft: 20,
-            paddingRight: 20,
-            borderRadius: 10,
-            color: theme.palette.text.secondary,
-            '&:hover': {
-              backgroundColor: alpha(theme.palette.warmNeutral.cream, 0.6),
-              color: theme.palette.primary.main
-            },
-            '&.Mui-selected': {
-              backgroundColor: theme.palette.warmNeutral.cream,
-              color: theme.palette.primary.dark
-            }
-          }
-        }
-      }
-    },
     MuiAvatar: {
       styleOverrides: {
         root: {
@@ -216,23 +169,9 @@ theme = createTheme(theme, {
       },
       styleOverrides: {
         root: {
-          borderColor: theme.palette.divider,
-          '&:is(footer)': {
-            backgroundColor: theme.palette.background.paper,
-            borderTop: `1px solid ${theme.palette.divider}`,
-            paddingTop: 12,
-            paddingBottom: 12,
-            marginTop: 'auto',
-            '& .MuiLink-root': {
-              color: theme.palette.text.secondary,
-              fontWeight: 600,
-              fontSize: '0.875rem',
-              padding: 8,
-              '&:hover': {
-                color: theme.palette.primary.main
-              }
-            }
-          }
+          borderRadius: theme.shape.borderRadius,
+          border: 'none',
+          backgroundImage: 'none'
         }
       }
     },
@@ -243,9 +182,17 @@ theme = createTheme(theme, {
       },
       styleOverrides: {
         root: {
+          fontFamily: HEADING_FONT_FAMILY,
           textTransform: 'none',
-          fontWeight: 600,
-          borderRadius: 8
+          fontWeight: 700,
+          borderRadius: theme.shape.borderRadius,
+          padding: '7px 14px',
+          border: 'none',
+          transition: 'background-color 0.15s ease, color 0.15s ease'
+        },
+        sizeSmall: {
+          padding: '5px 11px',
+          fontSize: '0.84rem'
         },
         containedPrimary: {
           backgroundColor: theme.palette.primary.main,
@@ -259,37 +206,30 @@ theme = createTheme(theme, {
           color: theme.palette.secondary.contrastText,
           '&:hover': {
             backgroundColor: theme.palette.secondary.light
-          },
-          '&:active': {
-            backgroundColor: theme.palette.secondary.dark
           }
         },
-        outlinedPrimary: {
-          borderColor: alpha(theme.palette.primary.main, 0.45),
+        outlined: {
+          border: 'none',
+          backgroundColor: alpha(theme.palette.primary.light, 0.14),
           color: theme.palette.primary.main,
           '&:hover': {
-            borderColor: theme.palette.primary.main,
-            backgroundColor: alpha(theme.palette.primary.light, 0.12)
+            border: 'none',
+            backgroundColor: alpha(theme.palette.primary.light, 0.24)
           }
         },
         textPrimary: {
+          backgroundColor: 'transparent',
           color: theme.palette.primary.main,
           '&:hover': {
             backgroundColor: alpha(theme.palette.primary.light, 0.14)
           }
         },
         textSecondary: {
-          color: theme.palette.text.primary,
+          backgroundColor: 'transparent',
+          color: theme.palette.text.secondary,
           '&:hover': {
-            backgroundColor: alpha(theme.palette.secondary.main, 0.2)
-          }
-        },
-        outlinedSecondary: {
-          borderColor: alpha(theme.palette.warmNeutral.main, 0.4),
-          color: theme.palette.text.primary,
-          '&:hover': {
-            borderColor: theme.palette.warmNeutral.main,
-            backgroundColor: alpha(theme.palette.secondary.main, 0.18)
+            backgroundColor: alpha(theme.palette.primary.light, 0.12),
+            color: theme.palette.text.primary
           }
         }
       }
@@ -300,16 +240,21 @@ theme = createTheme(theme, {
       },
       styleOverrides: {
         root: {
-          minWidth: 44,
-          minHeight: 44,
+          minWidth: 36,
+          minHeight: 36,
+          borderRadius: theme.shape.borderRadius,
+          backgroundColor: 'transparent',
+          color: theme.palette.primary.main,
           '&:hover': {
-            backgroundColor: alpha(theme.palette.primary.light, 0.14)
+            backgroundColor: alpha(theme.palette.primary.light, 0.16),
+            color: theme.palette.primary.dark
           }
         },
         colorSecondary: {
-          color: theme.palette.tertiary.main,
+          color: theme.palette.text.secondary,
           '&:hover': {
-            backgroundColor: alpha(theme.palette.tertiary.main, 0.14)
+            backgroundColor: alpha(theme.palette.tertiary.main, 0.12),
+            color: theme.palette.tertiary.main
           }
         }
       }
@@ -336,51 +281,14 @@ theme = createTheme(theme, {
     },
     MuiCard: {
       defaultProps: {
-        elevation: 0,
-        variant: 'outlined'
+        elevation: 0
       },
       styleOverrides: {
         root: {
-          height: '100%',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          borderRadius: 12,
-          borderColor: theme.palette.divider,
-          transition: 'border-color 0.15s ease-in-out',
-          '&:hover': {
-            borderColor: alpha(theme.palette.warmNeutral.main, 0.45)
-          }
-        }
-      }
-    },
-    MuiCardHeader: {
-      styleOverrides: {
-        root: {
-          backgroundColor: theme.palette.warmNeutral.cream,
-          borderBottom: `1px solid ${theme.palette.divider}`,
-          padding: '8px 16px'
-        },
-        subheader: {
-          fontFamily: HEADING_FONT_FAMILY,
-          fontSize: '0.775rem',
-          fontWeight: 700,
-          color: theme.palette.primary.main
-        }
-      }
-    },
-    MuiCardContent: {
-      styleOverrides: {
-        root: {
-          flexGrow: 1
-        }
-      }
-    },
-    MuiCardActions: {
-      styleOverrides: {
-        root: {
-          padding: '8px 16px',
-          justifyContent: 'space-between'
+          borderRadius: theme.shape.borderRadius,
+          border: 'none',
+          backgroundColor: theme.palette.background.paper,
+          transition: 'background-color 0.15s ease'
         }
       }
     },
@@ -393,11 +301,16 @@ theme = createTheme(theme, {
         root: {
           fontFamily: HEADING_FONT_FAMILY,
           fontWeight: 700,
-          minHeight: 36
+          minHeight: 32,
+          borderRadius: theme.shape.borderRadius,
+          border: 'none'
         },
         filledPrimary: {
           backgroundColor: theme.palette.primary.main,
           color: theme.palette.primary.contrastText,
+          '&:hover': {
+            backgroundColor: theme.palette.primary.dark
+          },
           '& .MuiChip-deleteIcon': {
             color: alpha(theme.palette.common.white, 0.8),
             '&:hover': {
@@ -406,11 +319,14 @@ theme = createTheme(theme, {
           }
         },
         filledSecondary: {
-          backgroundColor: theme.palette.secondary.main,
-          color: theme.palette.secondary.contrastText
+          backgroundColor: theme.palette.warmNeutral.cream,
+          color: theme.palette.text.primary,
+          '&:hover': {
+            backgroundColor: theme.palette.warmNeutral.sand
+          }
         },
         deleteIcon: {
-          fontSize: '1.25rem',
+          fontSize: '1.15rem',
           padding: 2
         }
       }
@@ -421,8 +337,9 @@ theme = createTheme(theme, {
       },
       styleOverrides: {
         root: {
+          fontFamily: HEADING_FONT_FAMILY,
           color: theme.palette.primary.main,
-          fontWeight: 600,
+          fontWeight: 700,
           '&:hover': {
             color: theme.palette.primary.dark
           }
@@ -433,17 +350,26 @@ theme = createTheme(theme, {
       defaultProps: {
         slotProps: {
           paper: {
-            elevation: 0,
-            variant: 'outlined'
+            elevation: 0
           }
         }
       },
       styleOverrides: {
+        paper: {
+          borderRadius: theme.shape.borderRadius,
+          border: 'none',
+          backgroundColor: theme.palette.background.paper,
+          boxShadow: `0 8px 24px ${alpha(theme.palette.text.primary, 0.12)}`,
+          marginTop: 6
+        },
         list: {
+          padding: 6,
           '& .MuiListSubheader-root': {
             textAlign: 'left',
-            paddingLeft: 16,
-            paddingRight: 16
+            paddingLeft: 12,
+            paddingRight: 12,
+            color: theme.palette.primary.main,
+            fontWeight: 800
           }
         }
       }
@@ -451,14 +377,18 @@ theme = createTheme(theme, {
     MuiMenuItem: {
       styleOverrides: {
         root: {
-          minHeight: 44,
+          fontFamily: BODY_FONT_FAMILY,
+          fontWeight: 600,
+          minHeight: 38,
+          borderRadius: theme.shape.borderRadius,
           '&:hover': {
-            backgroundColor: alpha(theme.palette.warmNeutral.cream, 0.65)
+            backgroundColor: alpha(theme.palette.primary.light, 0.14)
           },
           '&.Mui-selected': {
-            backgroundColor: theme.palette.warmNeutral.cream,
+            backgroundColor: alpha(theme.palette.primary.light, 0.18),
+            color: theme.palette.primary.dark,
             '&:hover': {
-              backgroundColor: alpha(theme.palette.secondary.light, 0.35)
+              backgroundColor: alpha(theme.palette.primary.light, 0.24)
             }
           }
         }
@@ -475,9 +405,15 @@ theme = createTheme(theme, {
             }
           },
           paper: {
-            elevation: 0,
-            variant: 'outlined'
+            elevation: 0
           }
+        }
+      },
+      styleOverrides: {
+        paper: {
+          borderRadius: theme.shape.borderRadius,
+          border: 'none',
+          boxShadow: `0 12px 32px ${alpha(theme.palette.text.primary, 0.18)}`
         }
       }
     },
@@ -487,14 +423,13 @@ theme = createTheme(theme, {
           fontFamily: HEADING_FONT_FAMILY,
           fontSize: '1.2rem',
           fontWeight: 800,
-          color: theme.palette.primary.main,
-          backgroundColor: alpha(theme.palette.warmNeutral.cream, 0.5)
+          color: theme.palette.primary.main
         }
       }
     },
     MuiDialogContent: {
       defaultProps: {
-        dividers: true
+        dividers: false
       }
     },
     MuiListSubheader: {
@@ -513,35 +448,12 @@ theme = createTheme(theme, {
         }
       }
     },
-    MuiTabs: {
-      defaultProps: {
-        indicatorColor: 'primary',
-        textColor: 'primary',
-        scrollButtons: false
-      },
-      styleOverrides: {
-        root: {
-          marginBottom: 24,
-          borderBottom: `1px solid ${theme.palette.divider}`
-        }
-      }
-    },
-    MuiTab: {
-      styleOverrides: {
-        root: {
-          fontFamily: HEADING_FONT_FAMILY,
-          textTransform: 'none',
-          fontWeight: 700,
-          minHeight: 48
-        }
-      }
-    },
     MuiTableContainer: {
       styleOverrides: {
         root: {
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.divider}`,
-          borderRadius: 8,
+          backgroundColor: theme.palette.background.default,
+          border: 'none',
+          borderRadius: theme.shape.borderRadius,
           marginBottom: 16
         }
       }
@@ -551,47 +463,17 @@ theme = createTheme(theme, {
         size: 'small'
       }
     },
-    MuiTableRow: {
-      styleOverrides: {
-        root: {
-          '&:last-child td, &:last-child th': {
-            border: 0
-          }
-        }
-      }
-    },
     MuiTableCell: {
       styleOverrides: {
+        root: {
+          borderBottom: 'none',
+          padding: '8px 12px'
+        },
         head: {
           fontFamily: HEADING_FONT_FAMILY,
           fontWeight: 700,
-          color: theme.palette.text.primary,
-          backgroundColor: theme.palette.warmNeutral.cream
-        }
-      }
-    },
-    MuiDataGrid: {
-      styleOverrides: {
-        root: {
-          backgroundColor: theme.palette.background.paper,
-          border: `1px solid ${theme.palette.divider}`,
-          borderRadius: 8,
-          '& .MuiDataGrid-cell:focus:not(:focus-visible), & .MuiDataGrid-columnHeader:focus:not(:focus-visible)':
-            {
-              outline: 'none'
-            },
-          '& .MuiDataGrid-columnHeaders': {
-            borderBottom: `1px solid ${theme.palette.divider}`
-          },
-          '& .MuiDataGrid-row:hover': {
-            backgroundColor: alpha(theme.palette.warmNeutral.cream, 0.55),
-            cursor: 'pointer'
-          }
-        },
-        columnHeaderTitle: {
-          fontFamily: HEADING_FONT_FAMILY,
-          fontWeight: 700,
-          color: theme.palette.text.primary
+          color: theme.palette.text.secondary,
+          backgroundColor: 'transparent'
         }
       }
     }

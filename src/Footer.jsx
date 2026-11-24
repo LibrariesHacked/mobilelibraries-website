@@ -1,56 +1,102 @@
 import React from 'react'
 
-import { Link, useMatch } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 
+import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import Container from '@mui/material/Container'
-import MaterialLink from '@mui/material/Link'
-import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
+import Typography from '@mui/material/Typography'
+
+const FOOTER_LINKS = [
+  {
+    to: '/',
+    label: 'Home',
+    title: 'Return to mobile libraries map and stop finder',
+    hideOnHome: true
+  },
+  {
+    to: '/accessibility',
+    label: 'Accessibility',
+    title: 'About the accessibility of this site'
+  },
+  {
+    to: '/data',
+    label: 'Data',
+    title: 'Maintaining the data used on this site and licensing'
+  },
+  {
+    to: '/privacy',
+    label: 'Privacy',
+    title: 'About your privacy on this site'
+  }
+]
 
 /**
- * Page footer displaying links to informational pages (Accessibility, Data, Privacy).
- * Hidden when viewing the full-screen map.
- * @returns {JSX.Element | null} Footer component or null on the map route.
+ * Integrated page footer sitting directly on the warm cream canvas with
+ * prominent navigation links separated by bullet points.
+ *
+ * @returns {JSX.Element} Footer component.
  */
 const Footer = () => {
-  const mapPage = useMatch('/map')
-  if (mapPage) return null
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+  const visibleLinks = FOOTER_LINKS.filter(item => !(isHome && item.hideOnHome))
 
   return (
-    <Paper component='footer' square>
-      <Container maxWidth='lg'>
+    <Box
+      component='footer'
+      sx={{
+        py: 2,
+        mt: 'auto'
+      }}
+    >
+      <Container maxWidth='xl'>
         <Stack
           direction='row'
-          spacing={2}
+          spacing={1}
+          useFlexGap
           sx={{
             justifyContent: 'center',
-            alignItems: 'center'
+            alignItems: 'center',
+            flexWrap: 'wrap'
           }}
         >
-          <MaterialLink
-            component={Link}
-            to='/accessibility'
-            title='About the accessibility of this site'
-          >
-            Accessibility
-          </MaterialLink>
-          <MaterialLink
-            component={Link}
-            to='/data'
-            title='Maintaining the data used on this site and licensing'
-          >
-            Data
-          </MaterialLink>
-          <MaterialLink
-            component={Link}
-            to='/privacy'
-            title='About your privacy on this site'
-          >
-            Privacy
-          </MaterialLink>
+          {visibleLinks.map((item, idx) => (
+            <React.Fragment key={item.to}>
+              {idx > 0 && (
+                <Typography
+                  component='span'
+                  aria-hidden='true'
+                  sx={{
+                    color: 'primary.main',
+                    fontWeight: 800,
+                    fontSize: '1.1rem',
+                    userSelect: 'none'
+                  }}
+                >
+                  •
+                </Typography>
+              )}
+              <Button
+                component={Link}
+                to={item.to}
+                variant='text'
+                title={item.title}
+                sx={{
+                  fontSize: '1rem',
+                  fontWeight: 800,
+                  px: 1.25,
+                  py: 0.5
+                }}
+              >
+                {item.label}
+              </Button>
+            </React.Fragment>
+          ))}
         </Stack>
       </Container>
-    </Paper>
+    </Box>
   )
 }
 

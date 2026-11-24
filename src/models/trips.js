@@ -1,6 +1,4 @@
-import axios from 'axios'
-
-import config from '../helpers/config.json'
+import { apiGet } from '../helpers/url'
 import { metersToMiles } from '../helpers/utils'
 
 /**
@@ -69,7 +67,7 @@ export class Trip {
  */
 export async function getAllTrips () {
   try {
-    const response = await axios.get(config.api + '/trips')
+    const response = await apiGet('/trips')
     if (response && Array.isArray(response.data) && response.data.length > 0) {
       return response.data.map(t => new Trip().fromJson(t))
     }
@@ -85,7 +83,7 @@ export async function getAllTrips () {
  */
 export async function getTripById (id) {
   try {
-    const response = await axios.get(config.api + '/trips/' + id)
+    const response = await apiGet(`/trips/${id}`)
     if (response && response.data) {
       return new Trip().fromJson(response.data)
     }

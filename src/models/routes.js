@@ -1,9 +1,8 @@
-import axios from 'axios'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 import { getText } from '../helpers/rrule'
-import config from '../helpers/config.json'
+import { apiGet } from '../helpers/url'
 
 dayjs.extend(relativeTime)
 
@@ -53,10 +52,8 @@ export async function getAllRoutes (localAuthorityId, mobileId) {
     if (localAuthorityId) params.set('local_authority_id', localAuthorityId)
     if (mobileId) params.set('mobile_id', mobileId)
     const queryString = params.toString()
-    const url = queryString
-      ? `${config.api}/routes?${queryString}`
-      : `${config.api}/routes`
-    const response = await axios.get(url)
+    const path = queryString ? `/routes?${queryString}` : '/routes'
+    const response = await apiGet(path)
     if (response && Array.isArray(response.data) && response.data.length > 0) {
       return response.data.map(r => new Route().fromJson(r))
     }
@@ -72,7 +69,7 @@ export async function getAllRoutes (localAuthorityId, mobileId) {
  */
 export async function getRouteById (id) {
   try {
-    const response = await axios.get(`${config.api}/routes/${id}`)
+    const response = await apiGet(`/routes/${id}`)
     if (response && response.data) {
       return new Route().fromJson(response.data)
     }

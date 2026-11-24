@@ -74,7 +74,13 @@ const MarkdownPage = props => {
   }, [page])
 
   return (
-    <Paper variant='outlined' sx={{ p: { xs: 2.5, sm: 4 }, mt: 2 }}>
+    <Paper
+      sx={{
+        p: { xs: 2.5, sm: 4 },
+        mt: 1,
+        borderRadius: 1
+      }}
+    >
       <ReactMarkdown options={options} {...props}>
         {pageText}
       </ReactMarkdown>

@@ -6,24 +6,24 @@ import PostcodeSearch from './PostcodeSearch'
 import ServiceFilter from './ServiceFilter'
 
 /**
- * Hero search section containing the header logo artwork, postcode search input, and service/mobile/route filters.
- * @returns {JSX.Element} Search section component.
+ * Clean, aligned header section combining the logo artwork,
+ * the Geovation GB Names / postcode search input, and service filters.
+ *
+ * @returns {JSX.Element} Search panel component.
  */
 const Search = () => {
   return (
     <Box
       sx={{
-        textAlign: 'center',
-        mt: 1,
-        mb: 3,
-        width: '100%'
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1.25
       }}
     >
       <Box
         component='h1'
         sx={{
           m: 0,
-          mb: 1,
           display: 'flex',
           justifyContent: 'center'
         }}
@@ -34,7 +34,7 @@ const Search = () => {
           alt='MobileLibraries — Opposite the willow tree'
           sx={{
             width: '100%',
-            maxWidth: { xs: 340, sm: 460, md: 520 },
+            maxWidth: 350,
             height: 'auto',
             display: 'block',
             filter: 'brightness(1.021)',
@@ -42,9 +42,7 @@ const Search = () => {
           }}
         />
       </Box>
-      <Box sx={{ my: 2 }}>
-        <PostcodeSearch />
-      </Box>
+      <PostcodeSearch />
       <ServiceFilter />
     </Box>
   )

@@ -10,29 +10,37 @@ import * as utilsHelper from './helpers/utils'
 
 /**
  * Map marker icon representing a mobile library vehicle, coloured by its local authority.
+ * Accepts a stable `onSelect` callback and `mobileId` so `React.memo` avoids unnecessary re-renders.
+ *
  * @param {Object} props - Component props.
+ * @param {number} props.mobileId - ID of the mobile library vehicle.
  * @param {string} [props.label] - Mobile library name for the accessible marker label.
- * @param {import('./models/mobiles').MobileLocation} [props.location] - Vehicle location and status.
+ * @param {string} [props.statusText=''] - Precomputed status text.
  * @param {import('./models/localAuthorities').LocalAuthority} [props.localAuthority] - Owning local library authority.
  * @param {'small' | 'medium' | 'large'} [props.size='small'] - Marker button size.
+ * @param {boolean} [props.selected=false] - Whether this vehicle is currently selected in the tracker.
+ * @param {(mobileId: number) => void} [props.onSelect] - Stable callback to open the mobile tracker.
  * @returns {JSX.Element} MobileAvatar element.
  */
 const MobileAvatar = props => {
-  const { label, location, localAuthority, size = 'small' } = props
+  const {
+    mobileId,
+    label,
+    statusText = '',
+    localAuthority,
+    size = 'small',
+    selected = false,
+    onSelect
+  } = props
   const theme = useTheme()
-
-  const statusText = useMemo(() => {
-    const status = location ? location.getStatus() : null
-    return status ? status.textFormat : ''
-  }, [location])
 
   const backgroundColor = useMemo(() => {
     return localAuthority
-      ? localAuthority.getRgbaColour(0.8)
-      : utilsHelper.hextoRGBA(theme.palette.primary.main, 0.8)
+      ? localAuthority.getRgbaColour(0.9)
+      : utilsHelper.hextoRGBA(theme.palette.primary.main, 0.9)
   }, [localAuthority, theme.palette.primary.main])
 
-  const border = size === 'small' ? 2 : size === 'medium' ? 3 : 4
+  const border = selected ? 4 : size === 'small' ? 2 : size === 'medium' ? 3 : 4
   const ariaLabel = [
     label ||
       (localAuthority
@@ -44,17 +52,20 @@ const MobileAvatar = props => {
     .join(': ')
 
   return (
-    <Tooltip title={statusText} describeChild>
+    <Tooltip title={`${ariaLabel} (click to track)`} describeChild>
       <Fab
-        component='div'
         size={size}
-        role='img'
-        tabIndex={-1}
         aria-label={ariaLabel}
+        onClick={e => {
+          e.stopPropagation()
+          if (onSelect) onSelect(mobileId)
+        }}
         style={{
           backgroundColor,
           borderWidth: border,
-          borderColor: theme.palette.common.white,
+          borderColor: selected
+            ? theme.palette.secondary.main
+            : theme.palette.common.white,
           borderStyle: 'solid'
         }}
       >

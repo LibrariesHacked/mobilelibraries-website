@@ -1,10 +1,17 @@
-import axios from 'axios'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
-import config from '../helpers/config.json'
+import { apiGet } from '../helpers/url'
 
 dayjs.extend(relativeTime)
+
+const STATUS_MESSAGES = {
+  offRoad: 'Not out today',
+  preRoute: 'Arriving at ',
+  atStop: 'At ',
+  betweenStops: 'Arriving at ',
+  postRoute: 'Finished for the day'
+}
 
 /**
  * Represents a mobile library vehicle.
@@ -92,6 +99,8 @@ export class MobileNearestStop {
 
 /**
  * Represents the real-time or estimated location and schedule status of a mobile library.
+ * The backend provides a 60-second `routeSection` LineString sampled at 500ms intervals,
+ * allowing smooth client-side position interpolation between 30-second API polls.
  */
 export class MobileLocation {
   /**
@@ -125,6 +134,7 @@ export class MobileLocation {
       : null
     this.nextStopName = json.next_stop_name
     this.updated = json.updated ? dayjs(json.updated) : null
+    this.receivedAt = dayjs()
     this.updateType = json.update_type
     this.geoX = json.geox != null ? Number(json.geox) : null
     this.geoY = json.geoy != null ? Number(json.geoy) : null
@@ -133,132 +143,97 @@ export class MobileLocation {
   }
 
   /**
+   * Whether this vehicle has a multi-point `routeSection` for client-side interpolation.
+   *
+   * @returns {boolean} True if currently moving along a route section.
+   */
+  get isMoving () {
+    return Boolean(this.routeSection?.coordinates?.length > 1)
+  }
+
+  /**
    * Interpolates the mobile library's current `[longitude, latitude]` coordinates
-   * along its active `routeSection` if available.
+   * along its active `routeSection` (sampled every 500ms) if available.
+   * Uses `receivedAt` as a clock-skew-safe fallback if server/client clocks differ.
    *
    * @param {dayjs.Dayjs} [now=dayjs()] - Reference timestamp.
    * @returns {number[]|null} `[longitude, latitude]` coordinates or `null` if unavailable.
    */
   getCoordinates (now = dayjs()) {
     if (this.geoX == null || this.geoY == null) return null
-    let locationPoint = [this.geoX, this.geoY]
-    if (this.routeSection && this.routeSection.coordinates && this.updated) {
-      const millisecondsPassed = now.diff(this.updated)
-      const index = Math.round(millisecondsPassed / 500)
-      const coords = this.routeSection.coordinates
-      if (coords.length > index && index > 0) {
-        locationPoint = coords[index]
-      }
-      if (coords.length <= index && index > 0) {
-        locationPoint = coords[coords.length - 1]
-      }
-    }
-    return locationPoint
+    const coords = this.routeSection?.coordinates
+    if (!coords || coords.length === 0) return [this.geoX, this.geoY]
+
+    const baseTime = this.receivedAt || this.updated
+    if (!baseTime) return [this.geoX, this.geoY]
+
+    const elapsedMs = Math.max(0, now.diff(baseTime))
+    const index = Math.min(coords.length - 1, Math.round(elapsedMs / 500))
+    return coords[index] || [this.geoX, this.geoY]
   }
 
   /**
    * Computes the current operational status of the mobile library.
    *
+   * @param {dayjs.Dayjs} [now=dayjs()] - Reference timestamp.
    * @returns {{
    *   type: 'offRoad'|'preRoute'|'atStop'|'betweenStops'|'postRoute',
    *   message: string,
    *   textFormat: string,
    *   args?: Array<any>
-   * }|null} Status object or `null`.
+   * }} Status object.
    */
-  getStatus () {
-    const now = dayjs()
-    const statuses = {
-      offRoad: 'Not out today',
-      preRoute: 'Arriving at ',
-      atStop: 'At ',
-      betweenStops: 'Arriving at ',
-      postRoute: 'Finished for the day'
-    }
-    // The mobile is not due out today
-    if (
-      !this.currentStopId &&
-      !this.previousStopId &&
-      this.nextStopId &&
-      this.nextStopArrival &&
-      !this.nextStopArrival.isSame(now, 'day')
-    ) {
-      return {
-        type: 'offRoad',
-        textFormat: statuses.offRoad,
-        message: statuses.offRoad
-      }
-    }
-    // The mobile is due out today
-    if (
-      !this.currentStopId &&
-      !this.previousStopId &&
-      this.nextStopId &&
-      this.nextStopArrival &&
-      this.nextStopArrival.isSame(now, 'day')
-    ) {
-      const arrival = this.nextStopArrival.fromNow()
-      return {
-        type: 'preRoute',
-        message: statuses.preRoute,
-        textFormat: statuses.preRoute + this.nextStopName + ' ' + arrival,
-        args: [
-          { stopName: this.nextStopName, stopId: this.nextStopId },
-          arrival
-        ]
-      }
-    }
-    // The mobile is at a stop, and will be for a certain amount of time
+  getStatus (now = dayjs()) {
+    // 1. Currently parked at a scheduled stop
     if (this.currentStopId && this.currentStopDeparture) {
       const stopRemaining = this.currentStopDeparture.fromNow(true)
       return {
         type: 'atStop',
-        message: statuses.atStop,
-        textFormat:
-          statuses.atStop + this.currentStopName + ' for ' + stopRemaining,
+        message: STATUS_MESSAGES.atStop,
+        textFormat: `${STATUS_MESSAGES.atStop}${this.currentStopName} for ${stopRemaining}`,
         args: [
           { stopName: this.currentStopName, stopId: this.currentStopId },
           stopRemaining
         ]
       }
     }
-    // The mobile is between stops
-    if (
-      !this.currentStopId &&
-      this.previousStopId &&
-      this.nextStopId &&
-      this.previousStopDeparture &&
-      this.nextStopArrival &&
-      this.previousStopDeparture.isSame(now, 'day') &&
-      this.nextStopArrival.isSame(now, 'day')
-    ) {
+
+    // 2. En route to an upcoming stop today (either before first stop or between stops)
+    if (this.nextStopId && this.nextStopArrival) {
+      if (!this.nextStopArrival.isSame(now, 'day')) {
+        return {
+          type: 'offRoad',
+          message: STATUS_MESSAGES.offRoad,
+          textFormat: STATUS_MESSAGES.offRoad
+        }
+      }
+      const type = this.previousStopId ? 'betweenStops' : 'preRoute'
       const arrival = this.nextStopArrival.fromNow()
       return {
-        type: 'betweenStops',
-        message: statuses.betweenStops,
-        textFormat: statuses.betweenStops + this.nextStopName + ' ' + arrival,
+        type,
+        message: STATUS_MESSAGES[type],
+        textFormat: `${STATUS_MESSAGES[type]}${this.nextStopName} ${arrival}`,
         args: [
           { stopName: this.nextStopName, stopId: this.nextStopId },
           arrival
         ]
       }
     }
-    // The mobile has finished for the day
-    if (
-      this.previousStopId &&
-      this.nextStopId &&
-      this.previousStopDeparture &&
-      this.nextStopArrival &&
-      this.previousStopDeparture.isSame(now, 'day') &&
-      !this.nextStopArrival.isSame(now, 'day')
-    ) {
+
+    // 3. No more stops today after departing the final stop of the route
+    if (this.previousStopId) {
       return {
         type: 'postRoute',
-        message: statuses.postRoute,
-        textFormat: statuses.postRoute
+        message: STATUS_MESSAGES.postRoute,
+        textFormat: STATUS_MESSAGES.postRoute
       }
     }
-    return null
+
+    return {
+      type: 'offRoad',
+      message: STATUS_MESSAGES.offRoad,
+      textFormat: STATUS_MESSAGES.offRoad
+    }
   }
 
   /**
@@ -282,10 +257,10 @@ export class MobileLocation {
  */
 export async function getAllMobiles (localAuthorityId) {
   try {
-    const url = localAuthorityId
-      ? `${config.api}/mobiles?local_authority_id=${localAuthorityId}`
-      : `${config.api}/mobiles`
-    const response = await axios.get(url)
+    const path = localAuthorityId
+      ? `/mobiles?local_authority_id=${localAuthorityId}`
+      : '/mobiles'
+    const response = await apiGet(path)
     if (response && Array.isArray(response.data) && response.data.length > 0) {
       return response.data.map(m => new Mobile().fromJson(m))
     }
@@ -301,7 +276,7 @@ export async function getAllMobiles (localAuthorityId) {
  */
 export async function getMobileById (id) {
   try {
-    const response = await axios.get(`${config.api}/mobiles/${id}`)
+    const response = await apiGet(`/mobiles/${id}`)
     if (response && response.data) {
       return new Mobile().fromJson(response.data)
     }
@@ -316,7 +291,7 @@ export async function getMobileById (id) {
  */
 export async function getMobileLocations () {
   try {
-    const response = await axios.get(config.api + '/mobiles/locations')
+    const response = await apiGet('/mobiles/locations')
     if (response && Array.isArray(response.data) && response.data.length > 0) {
       return response.data.map(ml => new MobileLocation().fromJson(ml))
     }
@@ -333,14 +308,8 @@ export async function getMobileLocations () {
  */
 export async function getMobilesNearest (location, distance) {
   try {
-    const response = await axios.get(
-      config.api +
-        '/mobiles/nearest?longitude=' +
-        location[0] +
-        '&latitude=' +
-        location[1] +
-        '&distance=' +
-        distance
+    const response = await apiGet(
+      `/mobiles/nearest?longitude=${location[0]}&latitude=${location[1]}&distance=${distance}`
     )
     if (response && Array.isArray(response.data) && response.data.length > 0) {
       return response.data.map(m => new MobileNearestStop().fromJson(m))

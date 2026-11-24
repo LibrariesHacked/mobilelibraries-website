@@ -1,9 +1,8 @@
-import axios from 'axios'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 
 import { getText } from '../helpers/rrule'
-
+import { apiGet } from '../helpers/url'
 import config from '../helpers/config.json'
 
 dayjs.extend(relativeTime)
@@ -113,42 +112,44 @@ export async function getQueryStops (
   routeFilter = [],
   localAuthorityCodeFilter = []
 ) {
-  let url = `${config.api}/stops?page=${query.page + 1}&limit=${query.pageSize}`
+  let path = `/stops?page=${query.page + 1}&limit=${query.pageSize}`
 
   if (query.orderBy && query.orderBy.field) {
     const sortField =
       SORT_FIELD_MAP[query.orderBy.field] || query.orderBy.field
-    url = `${url}&sort=${sortField}&direction=${query.orderBy.direction}`
+    path = `${path}&sort=${sortField}&direction=${query.orderBy.direction}`
   }
 
   if (searchPosition && searchPosition.length > 1) {
-    url = `${url}&longitude=${searchPosition[0]}&latitude=${searchPosition[1]}`
+    path = `${path}&longitude=${searchPosition[0]}&latitude=${searchPosition[1]}`
   }
 
-  if (distance && distance !== '') url = `${url}&distance=${distance}`
+  if (distance && distance !== '') path = `${path}&distance=${distance}`
 
   if (localAuthorityFilter && localAuthorityFilter.length > 0) {
-    url = `${url}&local_authority_ids=${localAuthorityFilter.join('|')}`
+    path = `${path}&local_authority_ids=${localAuthorityFilter.join('|')}`
   }
 
   if (localAuthorityCodeFilter && localAuthorityCodeFilter.length > 0) {
-    url = `${url}&local_authority_codes=${localAuthorityCodeFilter.join('|')}`
+    path = `${path}&local_authority_codes=${localAuthorityCodeFilter.join('|')}`
   }
 
   if (mobileFilter && mobileFilter.length > 0) {
-    url = `${url}&mobile_ids=${mobileFilter.join('|')}`
+    path = `${path}&mobile_ids=${mobileFilter.join('|')}`
   }
 
   if (routeFilter && routeFilter.length > 0) {
-    url = `${url}&route_ids=${routeFilter.join('|')}`
+    path = `${path}&route_ids=${routeFilter.join('|')}`
   }
 
   try {
-    const response = await axios.get(url)
+    const response = await apiGet(path)
     if (response && Array.isArray(response.data) && response.data.length > 0) {
       return {
         stops: response.data.map(s => new Stop().fromJson(s)),
-        totalRowCount: parseInt(response.headers['x-total-count'], 10) || response.data.length,
+        totalRowCount:
+          parseInt(response.headers['x-total-count'], 10) ||
+          response.data.length,
         currentPage: parseInt(response.headers['x-page'], 10) || 1
       }
     }
@@ -165,8 +166,8 @@ export async function getQueryStops (
  */
 export async function getNearestStops (location, limit = 1) {
   try {
-    const response = await axios.get(
-      `${config.api}/stops/nearest?longitude=${location[0]}&latitude=${location[1]}&limit=${limit}`
+    const response = await apiGet(
+      `/stops/nearest?longitude=${location[0]}&latitude=${location[1]}&limit=${limit}`
     )
     if (response && Array.isArray(response.data) && response.data.length > 0) {
       return response.data.map(s => new Stop().fromJson(s))
@@ -182,7 +183,7 @@ export async function getNearestStops (location, limit = 1) {
  */
 export async function getAllStops () {
   try {
-    const response = await axios.get(`${config.api}/stops`)
+    const response = await apiGet('/stops')
     if (response && Array.isArray(response.data) && response.data.length > 0) {
       return response.data.map(s => new Stop().fromJson(s))
     }
@@ -198,7 +199,7 @@ export async function getAllStops () {
  */
 export async function getStopById (id) {
   try {
-    const response = await axios.get(`${config.api}/stops/${id}`)
+    const response = await apiGet(`/stops/${id}`)
     if (response && response.data) {
       return new Stop().fromJson(response.data)
     }

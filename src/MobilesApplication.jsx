@@ -1,16 +1,12 @@
 import React, { Suspense, lazy, useEffect } from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
 
-import Header from './Header'
 import Footer from './Footer'
-import Mobiles from './Mobiles'
-import MobileLibraryDetails from './MobileLibraryDetails'
-import Notification from './Notification'
 import Home from './Home'
-import StopDetails from './StopDetails'
+import Notification from './Notification'
 import TripDetails from './TripDetails'
 
 import Accessibility from './pages/accessibility.md'
@@ -24,19 +20,51 @@ import * as routesModel from './models/routes'
 import { useApplicationStateValue } from './context/applicationState'
 import { createLookup } from './helpers/utils'
 
-const MobileMap = lazy(() => import('./MobileMap'))
 const MemoMarkdownPage = lazy(() => import('./MarkdownPage'))
 
+/** Active polling interval (30s) matching the API's 30s location cache and 60s route section window. */
+const ACTIVE_POLL_INTERVAL_MS = 30000
+/** Idle polling interval (5m) when no mobile libraries are currently active on the road. */
+const IDLE_POLL_INTERVAL_MS = 300000
+
 /**
- * Root application shell managing initial data loading, periodic live location polling,
- * routing, and global modal/notification components.
+ * Root application shell managing initial data loading, adaptive live location polling,
+ * routing, and global notification/trip components.
+ *
  * @returns {JSX.Element} Application shell element.
  */
 const MobilesApplication = () => {
-  const [{}, dispatchApplicationState] = useApplicationStateValue() //eslint-disable-line
+  const [, dispatchApplicationState] = useApplicationStateValue()
 
   useEffect(() => {
     let isMounted = true
+    let timeoutId = null
+
+    const scheduleNextPoll = locations => {
+      if (!isMounted) return
+      clearTimeout(timeoutId)
+      const hasActiveVehicles =
+        Array.isArray(locations) && locations.some(loc => loc.isActive())
+      const delay = hasActiveVehicles
+        ? ACTIVE_POLL_INTERVAL_MS
+        : IDLE_POLL_INTERVAL_MS
+      timeoutId = setTimeout(pollMobileLocations, delay)
+    }
+
+    async function pollMobileLocations () {
+      if (document.hidden) {
+        timeoutId = setTimeout(pollMobileLocations, ACTIVE_POLL_INTERVAL_MS)
+        return
+      }
+      const locations = await mobilesModel.getMobileLocations()
+      if (!isMounted) return
+      dispatchApplicationState({
+        type: 'AddMobileLocations',
+        mobileLocations: locations,
+        mobileLocationLookup: createLookup(locations, 'mobileId')
+      })
+      scheduleNextPoll(locations)
+    }
 
     async function loadInitialData () {
       const [localAuthorities, mobiles, routes, locations] = await Promise.all([
@@ -58,28 +86,22 @@ const MobilesApplication = () => {
         mobileLocations: locations,
         mobileLocationLookup: createLookup(locations, 'mobileId')
       })
+      scheduleNextPoll(locations)
     }
 
-    async function getMobileLocations () {
-      if (document.hidden) return
-      const locations = await mobilesModel.getMobileLocations()
-      if (!isMounted) return
-      dispatchApplicationState({
-        type: 'AddMobileLocations',
-        mobileLocations: locations,
-        mobileLocationLookup: createLookup(locations, 'mobileId')
-      })
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        pollMobileLocations()
+      }
     }
 
     loadInitialData()
-
-    const intervalId = setInterval(() => {
-      getMobileLocations()
-    }, 15000)
+    document.addEventListener('visibilitychange', handleVisibilityChange)
 
     return () => {
       isMounted = false
-      clearInterval(intervalId)
+      clearTimeout(timeoutId)
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
   }, [dispatchApplicationState])
 
@@ -92,13 +114,16 @@ const MobilesApplication = () => {
           minHeight: '100vh'
         }}
       >
-        <Header />
-        <Container component='main' maxWidth='lg' sx={{ flexGrow: 1, pb: 4 }}>
+        <Container
+          component='main'
+          maxWidth='xl'
+          sx={{ flexGrow: 1, py: 2 }}
+        >
           <Suspense fallback={null}>
             <Routes>
               <Route path='/' element={<Home />} />
-              <Route path='/mobiles' element={<Mobiles />} />
-              <Route path='/map' element={<MobileMap />} />
+              <Route path='/mobiles' element={<Navigate to='/' replace />} />
+              <Route path='/map' element={<Navigate to='/' replace />} />
               <Route
                 path='/accessibility'
                 element={<MemoMarkdownPage page={Accessibility} />}
@@ -112,8 +137,6 @@ const MobilesApplication = () => {
           </Suspense>
         </Container>
         <Footer />
-        <StopDetails />
-        <MobileLibraryDetails />
         <TripDetails />
         <Notification />
       </Box>

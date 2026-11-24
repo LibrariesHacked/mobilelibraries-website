@@ -4,39 +4,32 @@ export const ViewStateContext = createContext()
 
 const initialViewState = {
   stopDialogOpen: false,
+  stopDetailsExpanded: false,
   mobileLibraryDialogOpen: false,
   tripDialogOpen: false,
   notificationOpen: false,
   notificationMessage: '',
-  mapZoom: [7],
-  mapPosition: [-1.155414, 52.691432],
+  mapZoom: [6],
+  mapPosition: [-1.8, 53.2],
   mapFlyToPosition: null,
-  mapBounds: null,
   mapSettings: {
     authorityBoundary: false
   },
   mapSettingsDialogOpen: false,
-  loadingLocalAuthorities: false,
-  loadingMobiles: false,
-  loadingRoutes: false,
-  loadingMobileLocations: false,
-  loadingNearestMobiles: false,
-  loadingLibraryOrMobileLibrary: false,
   loadingPostcode: false,
   loadingLocation: false,
   locationLoaded: false
 }
 
 /**
- * Reducer for managing UI view state (dialogs, notifications, map camera, loading indicators).
+ * Reducer for managing UI view state (popups, notifications, map camera target, loading flags).
+ *
  * @param {Object} state - Current view state.
  * @param {Object} action - Dispatched reducer action.
  * @returns {Object} Updated view state.
  */
 const viewReducer = (state, action) => {
   switch (action.type) {
-    case 'SetNotificationMessage':
-      return { ...state, notificationMessage: action.notificationMessage }
     case 'SetNotification':
       return { ...state, notificationOpen: action.notificationOpen }
     case 'ShowNotification':
@@ -47,6 +40,8 @@ const viewReducer = (state, action) => {
       }
     case 'SetStopDialog':
       return { ...state, stopDialogOpen: action.stopDialogOpen }
+    case 'SetStopExpanded':
+      return { ...state, stopDetailsExpanded: action.stopDetailsExpanded }
     case 'SetMobileLibraryDialog':
       return {
         ...state,
@@ -56,45 +51,26 @@ const viewReducer = (state, action) => {
       return { ...state, tripDialogOpen: action.tripDialogOpen }
     case 'SetMapSettingsDialog':
       return { ...state, mapSettingsDialogOpen: action.mapSettingsDialogOpen }
-    case 'ToggleMapSetting': {
-      const settings = {
-        ...state.mapSettings,
-        [action.mapSetting]: !state.mapSettings[action.mapSetting]
+    case 'ToggleMapSetting':
+      return {
+        ...state,
+        mapSettings: {
+          ...state.mapSettings,
+          [action.mapSetting]: !state.mapSettings[action.mapSetting]
+        }
       }
-      return { ...state, mapSettings: settings }
-    }
-    case 'SetPostcodeSearch':
-      return { ...state, mapPosition: action.mapPosition, mapZoom: [13] }
     case 'FlyTo':
       return {
         ...state,
         mapFlyToPosition: action.mapFlyToPosition,
-        mapPosition: action.mapFlyToPosition,
         mapZoom: [action.mapZoom]
       }
     case 'ToggleLoadingPostcode':
       return { ...state, loadingPostcode: !state.loadingPostcode }
     case 'ToggleLoadingLocation':
-      return {
-        ...state,
-        loadingLocation: !state.loadingLocation
-      }
+      return { ...state, loadingLocation: !state.loadingLocation }
     case 'SetLocationLoaded':
-      return {
-        ...state,
-        locationLoaded: true
-      }
-    case 'ToggleLoadingLibraryOrMobileLibrary':
-      return {
-        ...state,
-        loadingLibraryOrMobileLibrary: !state.loadingLibraryOrMobileLibrary
-      }
-    case 'SetMapPosition':
-      return {
-        ...state,
-        mapPosition: action.mapPosition,
-        mapZoom: [action.mapZoom]
-      }
+      return { ...state, locationLoaded: true }
     default:
       return state
   }
@@ -102,6 +78,7 @@ const viewReducer = (state, action) => {
 
 /**
  * Context provider for UI view state.
+ *
  * @param {{ children: React.ReactNode }} props - Component props.
  * @returns {JSX.Element} Provider element.
  */
@@ -113,6 +90,7 @@ export const ViewStateProvider = ({ children }) => (
 
 /**
  * Hook to access the UI view state and dispatch function.
+ *
  * @returns {[Object, Function]} Tuple of `[viewState, dispatchView]`.
  */
 export const useViewStateValue = () => useContext(ViewStateContext)

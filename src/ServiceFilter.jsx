@@ -1,22 +1,31 @@
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import CircularProgress from '@mui/material/CircularProgress'
 import ListSubheader from '@mui/material/ListSubheader'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Stack from '@mui/material/Stack'
-import Tooltip from '@mui/material/Tooltip'
 
-import BusinessIcon from '@mui/icons-material/BusinessTwoTone'
-import DirectionBusIcon from '@mui/icons-material/DirectionsBusTwoTone'
-import DirectionsIcon from '@mui/icons-material/DirectionsTwoTone'
+import BusinessIcon from '@mui/icons-material/BusinessRounded'
+import DirectionBusIcon from '@mui/icons-material/DirectionsBusRounded'
+import DirectionsIcon from '@mui/icons-material/DirectionsRounded'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMoreRounded'
 
 import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
+import { useViewStateValue } from './context/viewState'
+
+import { createLookup } from './helpers/utils'
+import * as localAuthoritiesModel from './models/localAuthorities'
+import * as mobilesModel from './models/mobiles'
+import * as routesModel from './models/routes'
 
 /**
- * Cascading filter controls allowing users to filter by local library authority, mobile library, and route.
+ * Full-width aligned cascading filter controls allowing users to filter by
+ * local library authority, mobile library vehicle, and route.
+ *
  * @returns {JSX.Element} Filters component.
  */
 const Filters = () => {
@@ -28,212 +37,244 @@ const Filters = () => {
       mobileLookup,
       routeLookup,
       routes
-    }
+    },
+    dispatchApplication
   ] = useApplicationStateValue()
   const [{ localAuthorityFilter, mobileFilter, routeFilter }, dispatchSearch] =
     useSearchStateValue()
+  const [, dispatchView] = useViewStateValue()
 
   const [localAuthorityMenuAnchor, setLocalAuthorityMenuAnchor] = useState(null)
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null)
   const [routeMenuAnchor, setRouteMenuAnchor] = useState(null)
+  const [reloadingServices, setReloadingServices] = useState(false)
 
-  const openLocalAuthorityMenu = element => setLocalAuthorityMenuAnchor(element)
-
-  const closeLocalAuthorityMenu = () => setLocalAuthorityMenuAnchor(null)
-
-  const chooseLocalAuthority = localAuthorityId => {
-    dispatchSearch({
-      type: 'FilterByLocalAuthority',
-      localAuthorityId
-    })
-    closeLocalAuthorityMenu()
+  const handleOpenLocalAuthorityMenu = async event => {
+    setLocalAuthorityMenuAnchor(event.currentTarget)
+    if (localAuthorities.length === 0 && !reloadingServices) {
+      setReloadingServices(true)
+      try {
+        const [freshAuthorities, freshMobiles, freshRoutes, freshLocations] =
+          await Promise.all([
+            localAuthoritiesModel.getAllLocalAuthorities(),
+            mobilesModel.getAllMobiles(),
+            routesModel.getAllRoutes(),
+            mobilesModel.getMobileLocations()
+          ])
+        if (freshAuthorities.length > 0) {
+          dispatchApplication({
+            type: 'InitializeApplicationData',
+            localAuthorities: freshAuthorities,
+            localAuthorityLookup: createLookup(freshAuthorities),
+            mobiles: freshMobiles,
+            mobileLookup: createLookup(freshMobiles),
+            routes: freshRoutes,
+            routeLookup: createLookup(freshRoutes),
+            mobileLocations: freshLocations,
+            mobileLocationLookup: createLookup(freshLocations, 'mobileId')
+          })
+        }
+      } finally {
+        setReloadingServices(false)
+      }
+    }
   }
 
-  const clearLocalAuthorityFilter = () => {
-    dispatchSearch({ type: 'ClearAll' })
-  }
-
-  const openMobileMenu = element => setMobileMenuAnchor(element)
-
-  const closeMobileMenu = () => setMobileMenuAnchor(null)
+  const chooseLocalAuthority = useCallback(
+    localAuthorityId => {
+      dispatchSearch({ type: 'FilterByLocalAuthority', localAuthorityId })
+      setLocalAuthorityMenuAnchor(null)
+    },
+    [dispatchSearch]
+  )
 
   const chooseMobile = (localAuthorityId, mobileId) => {
+    dispatchSearch({ type: 'FilterByMobile', localAuthorityId, mobileId })
     dispatchSearch({
-      type: 'FilterByMobile',
-      localAuthorityId,
-      mobileId
+      type: 'SetCurrentMobileLibrary',
+      mobileLibraryId: mobileId
     })
-    closeMobileMenu()
+    dispatchView({
+      type: 'SetMobileLibraryDialog',
+      mobileLibraryDialogOpen: true
+    })
+    setMobileMenuAnchor(null)
   }
-
-  const clearMobileFilter = () => {
-    dispatchSearch({ type: 'ClearMobileFilter' })
-  }
-
-  const openRouteMenu = element => setRouteMenuAnchor(element)
-
-  const closeRouteMenu = () => setRouteMenuAnchor(null)
 
   const chooseRoute = routeId => {
     dispatchSearch({ type: 'FilterByRoute', routeId })
-    closeRouteMenu()
+    setRouteMenuAnchor(null)
   }
 
-  const clearRouteFilter = () => {
-    dispatchSearch({ type: 'ClearRouteFilter' })
-  }
-
-  const localAuthoritiesByCountry = useMemo(() => {
+  const localAuthorityMenuItems = useMemo(() => {
     const countries = Array.from(
-      new Set(localAuthorities.map(la => la.country))
+      new Set(localAuthorities.map(la => la.country || 'United Kingdom'))
     ).sort((a, b) => a.localeCompare(b))
-    const sortedAuthorities = [...localAuthorities].sort((a, b) =>
-      a.name.localeCompare(b.name)
-    )
-    return countries.map(country => ({
-      country,
-      localAuthorities: sortedAuthorities.filter(la => la.country === country)
-    }))
-  }, [localAuthorities])
+
+    return countries.flatMap((country, idx) => {
+      const laList = localAuthorities.filter(
+        la => (la.country || 'United Kingdom') === country
+      )
+      return [
+        <ListSubheader key={'lst_' + idx}>{country}</ListSubheader>,
+        ...laList.map(la => (
+          <MenuItem
+            key={'mnu_itm_la_' + la.id}
+            onClick={() => chooseLocalAuthority(la.id)}
+          >
+            {la.name}
+          </MenuItem>
+        ))
+      ]
+    })
+  }, [localAuthorities, chooseLocalAuthority])
 
   const filteredMobiles = useMemo(() => {
-    return mobiles
-      .filter(
-        mob =>
-          localAuthorityFilter.length === 0 ||
-          localAuthorityFilter.indexOf(mob.localAuthorityId) !== -1
-      )
-      .sort((a, b) => a.name.localeCompare(b.name))
+    if (localAuthorityFilter.length === 0) return mobiles
+    return mobiles.filter(mob =>
+      localAuthorityFilter.includes(mob.localAuthorityId)
+    )
   }, [mobiles, localAuthorityFilter])
 
   const filteredRoutes = useMemo(() => {
-    return routes
-      .filter(
-        route =>
-          mobileFilter.length === 0 ||
-          mobileFilter.indexOf(route.mobileId) !== -1
-      )
-      .sort((a, b) => a.name.localeCompare(b.name))
+    if (mobileFilter.length === 0) return routes
+    return routes.filter(route => mobileFilter.includes(route.mobileId))
   }, [routes, mobileFilter])
 
   return (
     <>
       <Stack
         direction='row'
-        spacing={1.5}
+        spacing={1}
         useFlexGap
         sx={{
-          justifyContent: 'center',
+          width: '100%',
           alignItems: 'center',
           flexWrap: 'wrap'
         }}
       >
         {localAuthorityFilter.length === 0
           ? (
-            <Tooltip title='Choose library service' describeChild>
-              <Button
-                id='filter-local-authority-button'
-                aria-controls={
-                  localAuthorityMenuAnchor ? 'menu-library-service' : undefined
-                }
-                aria-expanded={Boolean(localAuthorityMenuAnchor)}
-                aria-haspopup='menu'
-                size='large'
-                onClick={e => openLocalAuthorityMenu(e.currentTarget)}
-                startIcon={<BusinessIcon />}
-              >
-                Select service
-              </Button>
-            </Tooltip>
+            <Button
+              id='filter-local-authority-button'
+              aria-controls={
+                localAuthorityMenuAnchor ? 'menu-library-service' : undefined
+              }
+              aria-expanded={Boolean(localAuthorityMenuAnchor)}
+              aria-haspopup='menu'
+              variant='outlined'
+              fullWidth
+              onClick={handleOpenLocalAuthorityMenu}
+              startIcon={<BusinessIcon />}
+              endIcon={
+                reloadingServices
+                  ? <CircularProgress size={16} color='inherit' />
+                  : <ExpandMoreIcon />
+              }
+              sx={{ justifyContent: 'space-between', py: 1 }}
+            >
+              Select library service
+            </Button>
             )
           : (
             <Chip
-              onDelete={clearLocalAuthorityFilter}
+              onDelete={() => dispatchSearch({ type: 'ClearAll' })}
               label={localAuthorityLookup[localAuthorityFilter[0]]?.name}
+              sx={{ minHeight: 36 }}
             />
             )}
-        {localAuthorityFilter.length > 0
-          ? (
-              mobileFilter.length === 0
-                ? (
-                  <Tooltip title='Choose mobile library' describeChild>
-                    <Button
-                      id='filter-mobile-button'
-                      aria-controls={
-                        mobileMenuAnchor ? 'menu-mobile-library' : undefined
-                      }
-                      aria-expanded={Boolean(mobileMenuAnchor)}
-                      aria-haspopup='menu'
-                      size='large'
-                      onClick={e => openMobileMenu(e.currentTarget)}
-                      startIcon={<DirectionBusIcon />}
-                    >
-                      Select mobile
-                    </Button>
-                  </Tooltip>
-                  )
-                : (
-                  <Chip
-                    onDelete={clearMobileFilter}
-                    label={mobileLookup[mobileFilter[0]]?.name}
-                  />
-                  )
-            )
-          : null}
-        {mobileFilter.length > 0
-          ? (
-              routeFilter.length === 0
-                ? (
-                  <Tooltip title='Choose route' describeChild>
-                    <Button
-                      id='filter-route-button'
-                      aria-controls={routeMenuAnchor ? 'menu-route' : undefined}
-                      aria-expanded={Boolean(routeMenuAnchor)}
-                      aria-haspopup='menu'
-                      size='large'
-                      onClick={e => openRouteMenu(e.currentTarget)}
-                      startIcon={<DirectionsIcon />}
-                    >
-                      Select route
-                    </Button>
-                  </Tooltip>
-                  )
-                : (
-                  <Chip
-                    onDelete={clearRouteFilter}
-                    label={routeLookup[routeFilter[0]]?.name}
-                  />
-                  )
-            )
-          : null}
+
+        {localAuthorityFilter.length > 0 &&
+          (mobileFilter.length === 0
+            ? (
+              <Button
+                id='filter-mobile-button'
+                aria-controls={
+                  mobileMenuAnchor ? 'menu-mobile-library' : undefined
+                }
+                aria-expanded={Boolean(mobileMenuAnchor)}
+                aria-haspopup='menu'
+                variant='outlined'
+                size='small'
+                onClick={e => setMobileMenuAnchor(e.currentTarget)}
+                startIcon={<DirectionBusIcon />}
+                endIcon={<ExpandMoreIcon />}
+                sx={{ minHeight: 36 }}
+              >
+                Select mobile
+              </Button>
+              )
+            : (
+              <Chip
+                onDelete={() => dispatchSearch({ type: 'ClearMobileFilter' })}
+                label={mobileLookup[mobileFilter[0]]?.name}
+                sx={{ minHeight: 36 }}
+              />
+              ))}
+
+        {mobileFilter.length > 0 &&
+          (routeFilter.length === 0
+            ? (
+              <Button
+                id='filter-route-button'
+                aria-controls={routeMenuAnchor ? 'menu-route' : undefined}
+                aria-expanded={Boolean(routeMenuAnchor)}
+                aria-haspopup='menu'
+                variant='outlined'
+                size='small'
+                onClick={e => setRouteMenuAnchor(e.currentTarget)}
+                startIcon={<DirectionsIcon />}
+                endIcon={<ExpandMoreIcon />}
+                sx={{ minHeight: 36 }}
+              >
+                Select route
+              </Button>
+              )
+            : (
+              <Chip
+                onDelete={() => dispatchSearch({ type: 'ClearRouteFilter' })}
+                label={routeLookup[routeFilter[0]]?.name}
+                sx={{ minHeight: 36 }}
+              />
+              ))}
       </Stack>
+
       <Menu
         id='menu-library-service'
         aria-labelledby='filter-local-authority-button'
         anchorEl={localAuthorityMenuAnchor}
         open={Boolean(localAuthorityMenuAnchor)}
-        onClose={closeLocalAuthorityMenu}
+        onClose={() => setLocalAuthorityMenuAnchor(null)}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: { maxHeight: 360, minWidth: 260 }
+          }
+        }}
       >
-        {localAuthoritiesByCountry.map(
-          ({ country, localAuthorities: laList }, idx) => [
-            <ListSubheader key={'lst_' + idx}>{country}</ListSubheader>,
-            ...laList.map(la => (
-              <MenuItem
-                key={'mnu_itm_la_' + la.id}
-                onClick={() => chooseLocalAuthority(la.id)}
-              >
-                {la.name}
-              </MenuItem>
-            ))
-          ]
-        )}
+        {localAuthorityMenuItems.length > 0
+          ? localAuthorityMenuItems
+          : (
+            <MenuItem disabled>
+              {reloadingServices
+                ? 'Loading library services…'
+                : 'Library services temporarily unavailable'}
+            </MenuItem>
+            )}
       </Menu>
+
       <Menu
         id='menu-mobile-library'
         aria-labelledby='filter-mobile-button'
         anchorEl={mobileMenuAnchor}
         open={Boolean(mobileMenuAnchor)}
-        onClose={closeMobileMenu}
+        onClose={() => setMobileMenuAnchor(null)}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: { maxHeight: 360, minWidth: 220 }
+          }
+        }}
       >
         {filteredMobiles.map(mob => (
           <MenuItem
@@ -244,12 +285,19 @@ const Filters = () => {
           </MenuItem>
         ))}
       </Menu>
+
       <Menu
         id='menu-route'
         aria-labelledby='filter-route-button'
         anchorEl={routeMenuAnchor}
         open={Boolean(routeMenuAnchor)}
-        onClose={closeRouteMenu}
+        onClose={() => setRouteMenuAnchor(null)}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: { maxHeight: 360, minWidth: 220 }
+          }
+        }}
       >
         {filteredRoutes.map(route => (
           <MenuItem
