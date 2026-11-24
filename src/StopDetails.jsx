@@ -79,14 +79,42 @@ const StopDetails = () => {
               <TableContainer>
                 <Table aria-label='Stop address and authority'>
                   <TableBody>
+                    {stop.community
+                      ? (
+                        <TableRow>
+                          <TableCell component='th' scope='row' variant='head'>
+                            Community
+                          </TableCell>
+                          <TableCell>{stop.community}</TableCell>
+                        </TableRow>
+                        )
+                      : null}
                     <TableRow>
-                      <TableCell component='th' scope='row' variant='head'>Address</TableCell>
-                      <TableCell>{stop.address}</TableCell>
+                      <TableCell component='th' scope='row' variant='head'>
+                        Address
+                      </TableCell>
+                      <TableCell>
+                        {[stop.address, stop.postcode]
+                          .filter(Boolean)
+                          .join(', ')}
+                      </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row' variant='head'>Authority</TableCell>
-                      <TableCell>{stop.organisationName}</TableCell>
+                      <TableCell component='th' scope='row' variant='head'>
+                        Authority
+                      </TableCell>
+                      <TableCell>{stop.localAuthorityName}</TableCell>
                     </TableRow>
+                    {stop.type
+                      ? (
+                        <TableRow>
+                          <TableCell component='th' scope='row' variant='head'>
+                            Type
+                          </TableCell>
+                          <TableCell>{stop.type}</TableCell>
+                        </TableRow>
+                        )
+                      : null}
                   </TableBody>
                 </Table>
               </TableContainer>
@@ -102,7 +130,9 @@ const StopDetails = () => {
                     {stop.routeFrequencyDescriptions.map((rs, idx) => (
                       <TableRow key={'tc_rs_' + idx}>
                         <TableCell component='th' scope='row'>
-                          {`${stop.routeDays[0]}, ${rs}`}
+                          {`${
+                            stop.routeDays[idx] || stop.routeDays[0] || ''
+                          }${stop.routeDays.length > 0 ? ', ' : ''}${rs}`}
                         </TableCell>
                         <TableCell align='right'>
                           {stop.nextVisitFormatted}
@@ -118,7 +148,7 @@ const StopDetails = () => {
                 useFlexGap
                 sx={{ flexWrap: 'wrap' }}
               >
-                {config.displayWebLinks && (
+                {config.displayWebLinks && stop.timetable && (
                   <Button
                     onClick={goToWebsite}
                     variant='outlined'

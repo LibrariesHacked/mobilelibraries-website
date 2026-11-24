@@ -33,8 +33,9 @@ import * as urlHelper from './helpers/url'
  * @returns {JSX.Element} MobileLibraryDetails dialog component.
  */
 const MobileLibraryDetails = () => {
-  const [{ mobileLookup, organisationLookup, mobileLocationLookup, routes }] =
-    useApplicationStateValue()
+  const [
+    { mobileLookup, localAuthorityLookup, mobileLocationLookup, routes }
+  ] = useApplicationStateValue()
   const [{ currentMobileLibraryId }, dispatchSearch] = useSearchStateValue()
   const [{ mobileLibraryDialogOpen }, dispatchView] = useViewStateValue()
 
@@ -57,7 +58,7 @@ const MobileLibraryDetails = () => {
     if (mobileLibrary && mobileLibrary.id) {
       dispatchSearch({
         type: 'FilterByMobile',
-        organisationId: mobileLibrary.organisationId,
+        localAuthorityId: mobileLibrary.localAuthorityId,
         mobileId: mobileLibrary.id
       })
       close()
@@ -68,7 +69,7 @@ const MobileLibraryDetails = () => {
     if (mobileLibrary && mobileLibrary.id) {
       dispatchSearch({
         type: 'FilterByMobile',
-        organisationId: mobileLibrary.organisationId,
+        localAuthorityId: mobileLibrary.localAuthorityId,
         mobileId: mobileLibrary.id
       })
       dispatchSearch({
@@ -82,9 +83,9 @@ const MobileLibraryDetails = () => {
   const theme = useTheme()
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'))
 
-  const organisation =
-    mobileLibrary && mobileLibrary.organisationId && organisationLookup
-      ? organisationLookup[mobileLibrary.organisationId]
+  const localAuthority =
+    mobileLibrary && mobileLibrary.localAuthorityId && localAuthorityLookup
+      ? localAuthorityLookup[mobileLibrary.localAuthorityId]
       : null
 
   const location =
@@ -103,7 +104,7 @@ const MobileLibraryDetails = () => {
 
   const websiteUrl =
     (mobileLibrary && mobileLibrary.timetable) ||
-    (organisation && (organisation.timetable || organisation.website)) ||
+    (localAuthority && (localAuthority.timetable || localAuthority.website)) ||
     null
 
   return (
@@ -117,34 +118,42 @@ const MobileLibraryDetails = () => {
         ? (
           <>
             <DialogTitle id='mobile-library-dialog-title'>
-              {mobileLibrary.getDisplayTitle(organisation, ' - ')}
+              {mobileLibrary.getDisplayTitle(localAuthority, ' - ')}
             </DialogTitle>
             <DialogContent>
               <TableContainer>
                 <Table aria-label='Mobile library information'>
                   <TableBody>
-                    {organisation
+                    {localAuthority
                       ? (
                         <TableRow>
-                          <TableCell component='th' scope='row' variant='head'>Authority</TableCell>
-                          <TableCell>{organisation.name}</TableCell>
+                          <TableCell component='th' scope='row' variant='head'>
+                            Authority
+                          </TableCell>
+                          <TableCell>{localAuthority.name}</TableCell>
                         </TableRow>
                         )
                       : null}
                     {status && status.textFormat
                       ? (
                         <TableRow>
-                          <TableCell component='th' scope='row' variant='head'>Status</TableCell>
+                          <TableCell component='th' scope='row' variant='head'>
+                            Status
+                          </TableCell>
                           <TableCell>{status.textFormat}</TableCell>
                         </TableRow>
                         )
                       : null}
                     <TableRow>
-                      <TableCell component='th' scope='row' variant='head'>Routes</TableCell>
+                      <TableCell component='th' scope='row' variant='head'>
+                        Routes
+                      </TableCell>
                       <TableCell>{mobileLibrary.numberRoutes}</TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell component='th' scope='row' variant='head'>Stops</TableCell>
+                      <TableCell component='th' scope='row' variant='head'>
+                        Stops
+                      </TableCell>
                       <TableCell>{mobileLibrary.numberStops}</TableCell>
                     </TableRow>
                   </TableBody>

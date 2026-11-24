@@ -28,7 +28,7 @@ const Stops = () => {
     {
       searchDistance,
       searchPosition,
-      organisationFilter,
+      localAuthorityFilter,
       mobileFilter,
       routeFilter
     },
@@ -69,7 +69,7 @@ const Stops = () => {
       sortModel,
       searchPosition,
       searchDistance,
-      organisationFilter,
+      localAuthorityFilter,
       mobileFilter,
       routeFilter
     })
@@ -78,7 +78,7 @@ const Stops = () => {
     sortModel,
     searchPosition,
     searchDistance,
-    organisationFilter,
+    localAuthorityFilter,
     mobileFilter,
     routeFilter,
     prevPosition,
@@ -99,7 +99,7 @@ const Stops = () => {
     () => [
       { field: 'community', headerName: 'Community', flex: 1 },
       { field: 'name', headerName: 'Name', flex: 1 },
-      { field: 'organisationName', headerName: 'Library service', flex: 1 },
+      { field: 'localAuthorityName', headerName: 'Library service', flex: 1 },
       {
         field: 'distance',
         headerName: 'Distance',
@@ -145,7 +145,7 @@ const Stops = () => {
             columnVisibilityModel={{
               community: true,
               name: useMediaQuery(theme.breakpoints.up('sm')),
-              organisationName: useMediaQuery(theme.breakpoints.up('md')),
+              localAuthorityName: useMediaQuery(theme.breakpoints.up('md')),
               distance: searchPosition.length > 0
             }}
             density='standard'

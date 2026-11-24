@@ -32,20 +32,20 @@ const bull = (
  * Summary card for a single mobile library showing route/stop counts, live status, and quick actions.
  * @param {Object} props - Component props.
  * @param {import('./models/mobiles').Mobile} props.mobile - Mobile library model instance.
- * @param {import('./models/organisations').Organisation} [props.organisation] - Owning library authority.
+ * @param {import('./models/localAuthorities').LocalAuthority} [props.localAuthority] - Owning local library authority.
  * @param {import('./models/mobiles').MobileLocation} [props.location] - Live vehicle location.
  * @param {Object} [props.status] - Precomputed status object from `location.getStatus()`.
  * @returns {JSX.Element} MobileCard element.
  */
 const MobileCard = props => {
-  const { mobile, organisation, location, status: statusProp } = props
+  const { mobile, localAuthority, location, status: statusProp } = props
   const [{}, dispatchSearch] = useSearchStateValue() // eslint-disable-line
   const [{}, dispatchView] = useViewStateValue() // eslint-disable-line
 
-  const viewStopsByMobile = (organisationId, mobileId) => {
+  const viewStopsByMobile = (localAuthorityId, mobileId) => {
     dispatchSearch({
       type: 'FilterByMobile',
-      organisationId,
+      localAuthorityId,
       mobileId
     })
   }
@@ -102,7 +102,7 @@ const MobileCard = props => {
   }
 
   const status = statusProp || (location ? location.getStatus() : null)
-  const displayTitle = mobile.getDisplayTitle(organisation)
+  const displayTitle = mobile.getDisplayTitle(localAuthority)
 
   return (
     <Card>
@@ -129,7 +129,7 @@ const MobileCard = props => {
             to='/'
             onClick={() =>
               viewStopsByMobile(
-                organisation ? organisation.id : mobile.organisationId,
+                localAuthority ? localAuthority.id : mobile.localAuthorityId,
                 mobile.id
               )}
             startIcon={<GridOnIcon />}

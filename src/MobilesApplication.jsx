@@ -17,8 +17,8 @@ import Accessibility from './pages/accessibility.md'
 import Data from './pages/data.md'
 import Privacy from './pages/privacy.md'
 
+import * as localAuthoritiesModel from './models/localAuthorities'
 import * as mobilesModel from './models/mobiles'
-import * as organisationsModel from './models/organisations'
 import * as routesModel from './models/routes'
 
 import { useApplicationStateValue } from './context/applicationState'
@@ -39,8 +39,8 @@ const MobilesApplication = () => {
     let isMounted = true
 
     async function loadInitialData () {
-      const [organisations, mobiles, routes, locations] = await Promise.all([
-        organisationsModel.getAllOrganisations(),
+      const [localAuthorities, mobiles, routes, locations] = await Promise.all([
+        localAuthoritiesModel.getAllLocalAuthorities(),
         mobilesModel.getAllMobiles(),
         routesModel.getAllRoutes(),
         mobilesModel.getMobileLocations()
@@ -49,8 +49,8 @@ const MobilesApplication = () => {
 
       dispatchApplicationState({
         type: 'InitializeApplicationData',
-        organisations,
-        organisationLookup: createLookup(organisations),
+        localAuthorities,
+        localAuthorityLookup: createLookup(localAuthorities),
         mobiles,
         mobileLookup: createLookup(mobiles),
         routes,

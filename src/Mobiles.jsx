@@ -27,7 +27,7 @@ const noResultTypography = (
 const Mobiles = () => {
   const [
     {
-      organisationLookup,
+      localAuthorityLookup,
       mobiles,
       mobileLookup,
       mobileLocationLookup,
@@ -37,7 +37,7 @@ const Mobiles = () => {
   ] = useApplicationStateValue()
   const [
     {
-      organisationFilter,
+      localAuthorityFilter,
       mobileFilter,
       routeFilter,
       searchType,
@@ -75,8 +75,8 @@ const Mobiles = () => {
         display = Boolean(mobilesNearestLookup[mob.id])
       }
       if (
-        organisationFilter.length > 0 &&
-        organisationFilter.indexOf(mob.organisationId) === -1
+        localAuthorityFilter.length > 0 &&
+        localAuthorityFilter.indexOf(mob.localAuthorityId) === -1
       ) {
         display = false
       }
@@ -89,7 +89,7 @@ const Mobiles = () => {
     mobiles,
     searchType,
     mobilesNearestLookup,
-    organisationFilter,
+    localAuthorityFilter,
     mobileFilter
   ])
 
@@ -101,9 +101,10 @@ const Mobiles = () => {
     })
   }, [filteredMobiles, mobileLocationLookup, mobileStatusLookup])
 
-  const organisationName =
-    organisationFilter.length > 0 && organisationLookup[organisationFilter[0]]
-      ? organisationLookup[organisationFilter[0]].name
+  const localAuthorityName =
+    localAuthorityFilter.length > 0 &&
+    localAuthorityLookup[localAuthorityFilter[0]]
+      ? localAuthorityLookup[localAuthorityFilter[0]].name
       : ''
 
   const mobileName =
@@ -117,11 +118,11 @@ const Mobiles = () => {
       : ''
 
   let title = 'Mobile libraries'
-  if (organisationName !== '') {
-    title = 'Mobile libraries serving ' + organisationName
+  if (localAuthorityName !== '') {
+    title = 'Mobile libraries serving ' + localAuthorityName
   }
-  if (mobileName !== '') title = organisationName + ' ' + mobileName
-  if (routeName !== '') title = organisationName + ' ' + routeName
+  if (mobileName !== '') title = localAuthorityName + ' ' + mobileName
+  if (routeName !== '') title = localAuthorityName + ' ' + routeName
   if (searchPostcode !== '') {
     title =
       'Mobile libraries with stops within ' +
@@ -163,7 +164,9 @@ const Mobiles = () => {
                     mobile={mobile}
                     location={mobileLocationLookup[mobile.id]}
                     status={mobileStatusLookup[mobile.id]}
-                    organisation={organisationLookup[mobile.organisationId]}
+                    localAuthority={
+                      localAuthorityLookup[mobile.localAuthorityId]
+                    }
                   />
                 </Grid>
               )

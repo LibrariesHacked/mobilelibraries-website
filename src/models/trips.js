@@ -26,8 +26,8 @@ export class Trip {
     this.originStopName = json.origin_stop_name
     this.destinationStopId = json.destination_stop_id
     this.destinationStopName = json.destination_stop_name
-    this.distance = json.distance
-    this.duration = json.duration
+    this.distance = json.distance != null ? Number(json.distance) : 0
+    this.duration = json.duration != null ? Number(json.duration) : 0
     this.routeLine = json.route_line
     return this
   }
@@ -68,12 +68,13 @@ export class Trip {
  * @returns {Promise<Trip[]>} Array of Trip instances.
  */
 export async function getAllTrips () {
-  const response = await axios.get(config.api + '/trips')
-  if (response && response.data && response.data.length > 0) {
-    return response.data.map(t => new Trip().fromJson(t))
-  } else {
-    return []
-  }
+  try {
+    const response = await axios.get(config.api + '/trips')
+    if (response && Array.isArray(response.data) && response.data.length > 0) {
+      return response.data.map(t => new Trip().fromJson(t))
+    }
+  } catch (e) {}
+  return []
 }
 
 /**
@@ -83,10 +84,11 @@ export async function getAllTrips () {
  * @returns {Promise<Trip|object>} Trip instance or empty object.
  */
 export async function getTripById (id) {
-  const response = await axios.get(config.api + '/trips/' + id)
-  if (response && response.data) {
-    return new Trip().fromJson(response.data)
-  } else {
-    return {}
-  }
+  try {
+    const response = await axios.get(config.api + '/trips/' + id)
+    if (response && response.data) {
+      return new Trip().fromJson(response.data)
+    }
+  } catch (e) {}
+  return {}
 }

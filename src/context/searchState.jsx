@@ -10,7 +10,7 @@ const emptySearchLocation = {
 }
 
 const emptyFilters = {
-  organisationFilter: [],
+  localAuthorityFilter: [],
   mobileFilter: [],
   routeFilter: []
 }
@@ -68,11 +68,11 @@ const searchReducer = (state, action) => {
         searchPosition: action.searchPosition,
         searchType: 'gps'
       }
-    case 'FilterByOrganisation':
+    case 'FilterByLocalAuthority':
       return {
         ...state,
         ...emptySearchLocation,
-        organisationFilter: [action.organisationId],
+        localAuthorityFilter: [action.localAuthorityId],
         mobileFilter: [],
         routeFilter: []
       }
@@ -80,7 +80,7 @@ const searchReducer = (state, action) => {
       return {
         ...state,
         ...emptySearchLocation,
-        organisationFilter: [action.organisationId],
+        localAuthorityFilter: [action.localAuthorityId],
         mobileFilter: [action.mobileId],
         routeFilter: []
       }

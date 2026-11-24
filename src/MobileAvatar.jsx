@@ -9,16 +9,16 @@ import DirectionBusIcon from '@mui/icons-material/DirectionsBusRounded'
 import * as utilsHelper from './helpers/utils'
 
 /**
- * Map marker icon representing a mobile library vehicle, coloured by its organisation.
+ * Map marker icon representing a mobile library vehicle, coloured by its local authority.
  * @param {Object} props - Component props.
  * @param {string} [props.label] - Mobile library name for the accessible marker label.
  * @param {import('./models/mobiles').MobileLocation} [props.location] - Vehicle location and status.
- * @param {import('./models/organisations').Organisation} [props.organisation] - Owning library authority.
+ * @param {import('./models/localAuthorities').LocalAuthority} [props.localAuthority] - Owning local library authority.
  * @param {'small' | 'medium' | 'large'} [props.size='small'] - Marker button size.
  * @returns {JSX.Element} MobileAvatar element.
  */
 const MobileAvatar = props => {
-  const { label, location, organisation, size = 'small' } = props
+  const { label, location, localAuthority, size = 'small' } = props
   const theme = useTheme()
 
   const statusText = useMemo(() => {
@@ -27,16 +27,21 @@ const MobileAvatar = props => {
   }, [location])
 
   const backgroundColor = useMemo(() => {
-    return organisation
-      ? organisation.getRgbaColour(0.8)
+    return localAuthority
+      ? localAuthority.getRgbaColour(0.8)
       : utilsHelper.hextoRGBA(theme.palette.primary.main, 0.8)
-  }, [organisation, theme.palette.primary.main])
+  }, [localAuthority, theme.palette.primary.main])
 
   const border = size === 'small' ? 2 : size === 'medium' ? 3 : 4
   const ariaLabel = [
-    label || (organisation ? `${organisation.name} mobile library` : 'Mobile library'),
+    label ||
+      (localAuthority
+        ? `${localAuthority.name} mobile library`
+        : 'Mobile library'),
     statusText
-  ].filter(Boolean).join(': ')
+  ]
+    .filter(Boolean)
+    .join(': ')
 
   return (
     <Tooltip title={statusText} describeChild>

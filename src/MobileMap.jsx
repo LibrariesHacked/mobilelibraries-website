@@ -145,7 +145,7 @@ const getMarkerSizeForZoom = zoom =>
  * @returns {JSX.Element} MobileMap component.
  */
 const MobileMap = () => {
-  const [{ mobileLocations, mobileLookup, organisationLookup }] =
+  const [{ mobileLocations, mobileLookup, localAuthorityLookup }] =
     useApplicationStateValue() //eslint-disable-line
   const [{ searchType, searchPosition, currentService }, dispatchSearch] =
     useSearchStateValue() //eslint-disable-line
@@ -262,8 +262,8 @@ const MobileMap = () => {
       const locationPoint = l.getCoordinates(now)
       if (!locationPoint) return null
       const mobile = mobileLookup[l.mobileId]
-      const organisation = mobile
-        ? organisationLookup[mobile.organisationId]
+      const localAuthority = mobile
+        ? localAuthorityLookup[mobile.localAuthorityId]
         : null
       return (
         <Marker
@@ -273,15 +273,15 @@ const MobileMap = () => {
           anchor='bottom'
         >
           <MobileAvatar
-            organisation={organisation}
-            label={mobile ? mobile.getDisplayTitle(organisation) : undefined}
+            localAuthority={localAuthority}
+            label={mobile ? mobile.getDisplayTitle(localAuthority) : undefined}
             location={l}
             size={markerSize}
           />
         </Marker>
       )
     })
-  }, [mobileLocations, mobileLookup, organisationLookup, markerSize])
+  }, [mobileLocations, mobileLookup, localAuthorityLookup, markerSize])
 
   return (
     <>

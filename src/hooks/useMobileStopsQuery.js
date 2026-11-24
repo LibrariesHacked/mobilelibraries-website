@@ -31,7 +31,7 @@ const useMobileStopsQuery = () => {
       },
       queryOptions.searchPosition,
       queryOptions.searchDistance,
-      queryOptions.organisationFilter,
+      queryOptions.localAuthorityFilter,
       queryOptions.mobileFilter,
       queryOptions.routeFilter
     )

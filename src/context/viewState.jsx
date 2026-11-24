@@ -16,7 +16,7 @@ const initialViewState = {
     authorityBoundary: false
   },
   mapSettingsDialogOpen: false,
-  loadingOrganisations: false,
+  loadingLocalAuthorities: false,
   loadingMobiles: false,
   loadingRoutes: false,
   loadingMobileLocations: false,

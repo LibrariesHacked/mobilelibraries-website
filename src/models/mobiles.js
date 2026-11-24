@@ -25,11 +25,12 @@ export class Mobile {
    */
   fromJson (json) {
     this.id = json.id
-    this.organisationId = json.organisation_id
+    this.localAuthorityId = json.local_authority_id
+    this.localAuthorityCode = json.local_authority_code
     this.name = json.name
     this.timetable = json.timetable
-    this.numberRoutes = json.number_routes
-    this.numberStops = json.number_stops
+    this.numberRoutes = Number(json.number_routes) || 0
+    this.numberStops = Number(json.number_stops) || 0
     return this
   }
 
@@ -52,14 +53,14 @@ export class Mobile {
   }
 
   /**
-   * Formats the display title combining the authority name and mobile name.
+   * Formats the display title combining the local authority name and mobile name.
    *
-   * @param {import('./organisations').Organisation} [organisation] - Owning organisation.
+   * @param {import('./localAuthorities').LocalAuthority} [localAuthority] - Owning local authority.
    * @param {string} [separator=' '] - Separator between authority and mobile name.
    * @returns {string} Combined display title.
    */
-  getDisplayTitle (organisation, separator = ' ') {
-    return (organisation ? organisation.name + separator : '') + this.name
+  getDisplayTitle (localAuthority, separator = ' ') {
+    return (localAuthority ? localAuthority.name + separator : '') + this.name
   }
 }
 
@@ -84,7 +85,7 @@ export class MobileNearestStop {
     this.mobileId = json.mobile_id
     this.stopId = json.stop_id
     this.stopName = json.stop_name
-    this.stopDistance = json.stop_distance
+    this.stopDistance = Number(json.stop_distance) || 0
     return this
   }
 }
@@ -109,18 +110,24 @@ export class MobileLocation {
   fromJson (json) {
     this.mobileId = json.mobile_id
     this.currentStopId = json.current_stop_id
-    this.currentStopDeparture = dayjs(json.current_stop_departure)
+    this.currentStopDeparture = json.current_stop_departure
+      ? dayjs(json.current_stop_departure)
+      : null
     this.currentStopName = json.current_stop_name
     this.previousStopId = json.previous_stop_id
-    this.previousStopDeparture = dayjs(json.previous_stop_departure)
+    this.previousStopDeparture = json.previous_stop_departure
+      ? dayjs(json.previous_stop_departure)
+      : null
     this.previousStopName = json.previous_stop_name
     this.nextStopId = json.next_stop_id
-    this.nextStopArrival = dayjs(json.next_stop_arrival)
+    this.nextStopArrival = json.next_stop_arrival
+      ? dayjs(json.next_stop_arrival)
+      : null
     this.nextStopName = json.next_stop_name
-    this.updated = dayjs(json.updated)
+    this.updated = json.updated ? dayjs(json.updated) : null
     this.updateType = json.update_type
-    this.geoX = json.geox
-    this.geoY = json.geoy
+    this.geoX = json.geox != null ? Number(json.geox) : null
+    this.geoY = json.geoy != null ? Number(json.geoy) : null
     this.routeSection = json.route_section
     return this
   }
@@ -133,7 +140,7 @@ export class MobileLocation {
    * @returns {number[]|null} `[longitude, latitude]` coordinates or `null` if unavailable.
    */
   getCoordinates (now = dayjs()) {
-    if (!this.geoX || !this.geoY) return null
+    if (this.geoX == null || this.geoY == null) return null
     let locationPoint = [this.geoX, this.geoY]
     if (this.routeSection && this.routeSection.coordinates && this.updated) {
       const millisecondsPassed = now.diff(this.updated)
@@ -173,6 +180,7 @@ export class MobileLocation {
       !this.currentStopId &&
       !this.previousStopId &&
       this.nextStopId &&
+      this.nextStopArrival &&
       !this.nextStopArrival.isSame(now, 'day')
     ) {
       return {
@@ -186,6 +194,7 @@ export class MobileLocation {
       !this.currentStopId &&
       !this.previousStopId &&
       this.nextStopId &&
+      this.nextStopArrival &&
       this.nextStopArrival.isSame(now, 'day')
     ) {
       const arrival = this.nextStopArrival.fromNow()
@@ -200,7 +209,7 @@ export class MobileLocation {
       }
     }
     // The mobile is at a stop, and will be for a certain amount of time
-    if (this.currentStopId) {
+    if (this.currentStopId && this.currentStopDeparture) {
       const stopRemaining = this.currentStopDeparture.fromNow(true)
       return {
         type: 'atStop',
@@ -218,6 +227,8 @@ export class MobileLocation {
       !this.currentStopId &&
       this.previousStopId &&
       this.nextStopId &&
+      this.previousStopDeparture &&
+      this.nextStopArrival &&
       this.previousStopDeparture.isSame(now, 'day') &&
       this.nextStopArrival.isSame(now, 'day')
     ) {
@@ -236,6 +247,8 @@ export class MobileLocation {
     if (
       this.previousStopId &&
       this.nextStopId &&
+      this.previousStopDeparture &&
+      this.nextStopArrival &&
       this.previousStopDeparture.isSame(now, 'day') &&
       !this.nextStopArrival.isSame(now, 'day')
     ) {
@@ -262,18 +275,38 @@ export class MobileLocation {
 }
 
 /**
- * Fetches all mobile libraries from the API.
+ * Fetches all mobile libraries from the API, optionally filtered by local authority ID.
  *
+ * @param {number|string} [localAuthorityId] - Optional local authority ID filter.
  * @returns {Promise<Mobile[]>} Array of Mobile instances.
  */
-export async function getAllMobiles () {
-  const response = await axios.get(config.api + '/mobiles')
-  if (response && response.data && response.data.length > 0) {
-    const mobiles = response.data.map(m => new Mobile().fromJson(m))
-    return mobiles
-  } else {
-    return []
-  }
+export async function getAllMobiles (localAuthorityId) {
+  try {
+    const url = localAuthorityId
+      ? `${config.api}/mobiles?local_authority_id=${localAuthorityId}`
+      : `${config.api}/mobiles`
+    const response = await axios.get(url)
+    if (response && Array.isArray(response.data) && response.data.length > 0) {
+      return response.data.map(m => new Mobile().fromJson(m))
+    }
+  } catch (e) {}
+  return []
+}
+
+/**
+ * Fetches a single mobile library by its numeric ID.
+ *
+ * @param {number|string} id - Mobile library ID.
+ * @returns {Promise<Mobile|null>} Mobile instance or null.
+ */
+export async function getMobileById (id) {
+  try {
+    const response = await axios.get(`${config.api}/mobiles/${id}`)
+    if (response && response.data) {
+      return new Mobile().fromJson(response.data)
+    }
+  } catch (e) {}
+  return null
 }
 
 /**
@@ -282,13 +315,13 @@ export async function getAllMobiles () {
  * @returns {Promise<MobileLocation[]>} Array of MobileLocation instances.
  */
 export async function getMobileLocations () {
-  const response = await axios.get(config.api + '/mobiles/locations')
-  if (response && response.data && response.data.length > 0) {
-    const locations = response.data.map(ml => new MobileLocation().fromJson(ml))
-    return locations
-  } else {
-    return []
-  }
+  try {
+    const response = await axios.get(config.api + '/mobiles/locations')
+    if (response && Array.isArray(response.data) && response.data.length > 0) {
+      return response.data.map(ml => new MobileLocation().fromJson(ml))
+    }
+  } catch (e) {}
+  return []
 }
 
 /**
@@ -299,18 +332,19 @@ export async function getMobileLocations () {
  * @returns {Promise<MobileNearestStop[]>} Matching nearest mobile stops.
  */
 export async function getMobilesNearest (location, distance) {
-  const response = await axios.get(
-    config.api +
-      '/mobiles/nearest?longitude=' +
-      location[0] +
-      '&latitude=' +
-      location[1] +
-      '&distance=' +
-      distance
-  )
-  if (response && response.data && response.data.length > 0) {
-    return response.data.map(m => new MobileNearestStop().fromJson(m))
-  } else {
-    return []
-  }
+  try {
+    const response = await axios.get(
+      config.api +
+        '/mobiles/nearest?longitude=' +
+        location[0] +
+        '&latitude=' +
+        location[1] +
+        '&distance=' +
+        distance
+    )
+    if (response && Array.isArray(response.data) && response.data.length > 0) {
+      return response.data.map(m => new MobileNearestStop().fromJson(m))
+    }
+  } catch (e) {}
+  return []
 }

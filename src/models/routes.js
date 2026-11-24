@@ -26,29 +26,56 @@ export class Route {
    */
   fromJson (json) {
     this.id = json.id
-    this.organisationId = json.organisation_id
+    this.localAuthorityId = json.local_authority_id
+    this.localAuthorityCode = json.local_authority_code
     this.mobileId = json.mobile_id
     this.name = json.name
     this.frequency = json.frequency
     this.frequencyDescription = json.frequency ? getText(json.frequency) : ''
-    this.start = dayjs(json.start)
-    this.end = dayjs(json.end)
+    this.start = json.start ? dayjs(json.start) : null
+    this.end = json.end ? dayjs(json.end) : null
     this.timetable = json.timetable
-    this.numberStops = json.number_stops
+    this.numberStops = Number(json.number_stops) || 0
     return this
   }
 }
 
 /**
- * Fetches all mobile library routes from the API.
+ * Fetches all mobile library routes from the API, optionally filtered by local authority or mobile ID.
  *
+ * @param {number|string} [localAuthorityId] - Optional local authority ID filter.
+ * @param {number|string} [mobileId] - Optional mobile vehicle ID filter.
  * @returns {Promise<Route[]>} Array of Route instances.
  */
-export async function getAllRoutes () {
-  const response = await axios.get(config.api + '/routes')
-  if (response && response.data && response.data.length > 0) {
-    return response.data.map(r => new Route().fromJson(r))
-  } else {
-    return []
-  }
+export async function getAllRoutes (localAuthorityId, mobileId) {
+  try {
+    const params = new URLSearchParams()
+    if (localAuthorityId) params.set('local_authority_id', localAuthorityId)
+    if (mobileId) params.set('mobile_id', mobileId)
+    const queryString = params.toString()
+    const url = queryString
+      ? `${config.api}/routes?${queryString}`
+      : `${config.api}/routes`
+    const response = await axios.get(url)
+    if (response && Array.isArray(response.data) && response.data.length > 0) {
+      return response.data.map(r => new Route().fromJson(r))
+    }
+  } catch (e) {}
+  return []
+}
+
+/**
+ * Fetches a single mobile library route by its numeric ID.
+ *
+ * @param {number|string} id - Route ID.
+ * @returns {Promise<Route|null>} Route instance or null.
+ */
+export async function getRouteById (id) {
+  try {
+    const response = await axios.get(`${config.api}/routes/${id}`)
+    if (response && response.data) {
+      return new Route().fromJson(response.data)
+    }
+  } catch (e) {}
+  return null
 }

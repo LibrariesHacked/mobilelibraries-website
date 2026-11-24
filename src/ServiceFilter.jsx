@@ -16,40 +16,40 @@ import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 
 /**
- * Cascading filter controls allowing users to filter by library authority, mobile library, and route.
+ * Cascading filter controls allowing users to filter by local library authority, mobile library, and route.
  * @returns {JSX.Element} Filters component.
  */
 const Filters = () => {
   const [
     {
-      organisations,
-      organisationLookup,
+      localAuthorities,
+      localAuthorityLookup,
       mobiles,
       mobileLookup,
       routeLookup,
       routes
     }
   ] = useApplicationStateValue()
-  const [{ organisationFilter, mobileFilter, routeFilter }, dispatchSearch] =
+  const [{ localAuthorityFilter, mobileFilter, routeFilter }, dispatchSearch] =
     useSearchStateValue()
 
-  const [organisationMenuAnchor, setOrganisationMenuAnchor] = useState(null)
+  const [localAuthorityMenuAnchor, setLocalAuthorityMenuAnchor] = useState(null)
   const [mobileMenuAnchor, setMobileMenuAnchor] = useState(null)
   const [routeMenuAnchor, setRouteMenuAnchor] = useState(null)
 
-  const openOrganisationMenu = element => setOrganisationMenuAnchor(element)
+  const openLocalAuthorityMenu = element => setLocalAuthorityMenuAnchor(element)
 
-  const closeOrganisationMenu = () => setOrganisationMenuAnchor(null)
+  const closeLocalAuthorityMenu = () => setLocalAuthorityMenuAnchor(null)
 
-  const chooseOrganisation = organisationId => {
+  const chooseLocalAuthority = localAuthorityId => {
     dispatchSearch({
-      type: 'FilterByOrganisation',
-      organisationId
+      type: 'FilterByLocalAuthority',
+      localAuthorityId
     })
-    closeOrganisationMenu()
+    closeLocalAuthorityMenu()
   }
 
-  const clearOrganisationFilter = () => {
+  const clearLocalAuthorityFilter = () => {
     dispatchSearch({ type: 'ClearAll' })
   }
 
@@ -57,10 +57,10 @@ const Filters = () => {
 
   const closeMobileMenu = () => setMobileMenuAnchor(null)
 
-  const chooseMobile = (organisationId, mobileId) => {
+  const chooseMobile = (localAuthorityId, mobileId) => {
     dispatchSearch({
       type: 'FilterByMobile',
-      organisationId,
+      localAuthorityId,
       mobileId
     })
     closeMobileMenu()
@@ -83,28 +83,28 @@ const Filters = () => {
     dispatchSearch({ type: 'ClearRouteFilter' })
   }
 
-  const organisationsByCountry = useMemo(() => {
+  const localAuthoritiesByCountry = useMemo(() => {
     const countries = Array.from(
-      new Set(organisations.map(org => org.country))
+      new Set(localAuthorities.map(la => la.country))
     ).sort((a, b) => a.localeCompare(b))
-    const sortedOrgs = [...organisations].sort((a, b) =>
+    const sortedAuthorities = [...localAuthorities].sort((a, b) =>
       a.name.localeCompare(b.name)
     )
     return countries.map(country => ({
       country,
-      organisations: sortedOrgs.filter(org => org.country === country)
+      localAuthorities: sortedAuthorities.filter(la => la.country === country)
     }))
-  }, [organisations])
+  }, [localAuthorities])
 
   const filteredMobiles = useMemo(() => {
     return mobiles
       .filter(
         mob =>
-          organisationFilter.length === 0 ||
-          organisationFilter.indexOf(mob.organisationId) !== -1
+          localAuthorityFilter.length === 0 ||
+          localAuthorityFilter.indexOf(mob.localAuthorityId) !== -1
       )
       .sort((a, b) => a.name.localeCompare(b.name))
-  }, [mobiles, organisationFilter])
+  }, [mobiles, localAuthorityFilter])
 
   const filteredRoutes = useMemo(() => {
     return routes
@@ -128,16 +128,18 @@ const Filters = () => {
           flexWrap: 'wrap'
         }}
       >
-        {organisationFilter.length === 0
+        {localAuthorityFilter.length === 0
           ? (
             <Tooltip title='Choose library service' describeChild>
               <Button
-                id='filter-organisation-button'
-                aria-controls={organisationMenuAnchor ? 'menu-library-service' : undefined}
-                aria-expanded={Boolean(organisationMenuAnchor)}
+                id='filter-local-authority-button'
+                aria-controls={
+                  localAuthorityMenuAnchor ? 'menu-library-service' : undefined
+                }
+                aria-expanded={Boolean(localAuthorityMenuAnchor)}
                 aria-haspopup='menu'
                 size='large'
-                onClick={e => openOrganisationMenu(e.currentTarget)}
+                onClick={e => openLocalAuthorityMenu(e.currentTarget)}
                 startIcon={<BusinessIcon />}
               >
                 Select service
@@ -146,18 +148,20 @@ const Filters = () => {
             )
           : (
             <Chip
-              onDelete={clearOrganisationFilter}
-              label={organisationLookup[organisationFilter[0]]?.name}
+              onDelete={clearLocalAuthorityFilter}
+              label={localAuthorityLookup[localAuthorityFilter[0]]?.name}
             />
             )}
-        {organisationFilter.length > 0
+        {localAuthorityFilter.length > 0
           ? (
               mobileFilter.length === 0
                 ? (
                   <Tooltip title='Choose mobile library' describeChild>
                     <Button
                       id='filter-mobile-button'
-                      aria-controls={mobileMenuAnchor ? 'menu-mobile-library' : undefined}
+                      aria-controls={
+                        mobileMenuAnchor ? 'menu-mobile-library' : undefined
+                      }
                       aria-expanded={Boolean(mobileMenuAnchor)}
                       aria-haspopup='menu'
                       size='large'
@@ -205,22 +209,24 @@ const Filters = () => {
       </Stack>
       <Menu
         id='menu-library-service'
-        aria-labelledby='filter-organisation-button'
-        anchorEl={organisationMenuAnchor}
-        open={Boolean(organisationMenuAnchor)}
-        onClose={closeOrganisationMenu}
+        aria-labelledby='filter-local-authority-button'
+        anchorEl={localAuthorityMenuAnchor}
+        open={Boolean(localAuthorityMenuAnchor)}
+        onClose={closeLocalAuthorityMenu}
       >
-        {organisationsByCountry.map(({ country, organisations: orgList }, idx) => [
-          <ListSubheader key={'lst_' + idx}>{country}</ListSubheader>,
-          ...orgList.map(org => (
-            <MenuItem
-              key={'mnu_itm_org_' + org.id}
-              onClick={() => chooseOrganisation(org.id)}
-            >
-              {org.name}
-            </MenuItem>
-          ))
-        ])}
+        {localAuthoritiesByCountry.map(
+          ({ country, localAuthorities: laList }, idx) => [
+            <ListSubheader key={'lst_' + idx}>{country}</ListSubheader>,
+            ...laList.map(la => (
+              <MenuItem
+                key={'mnu_itm_la_' + la.id}
+                onClick={() => chooseLocalAuthority(la.id)}
+              >
+                {la.name}
+              </MenuItem>
+            ))
+          ]
+        )}
       </Menu>
       <Menu
         id='menu-mobile-library'
@@ -232,7 +238,7 @@ const Filters = () => {
         {filteredMobiles.map(mob => (
           <MenuItem
             key={'mnu_itm_mob_' + mob.id}
-            onClick={() => chooseMobile(mob.organisationId, mob.id)}
+            onClick={() => chooseMobile(mob.localAuthorityId, mob.id)}
           >
             {mob.name}
           </MenuItem>

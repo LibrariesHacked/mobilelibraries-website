@@ -3,8 +3,8 @@ import React, { createContext, useContext, useReducer } from 'react'
 export const ApplicationStateContext = createContext()
 
 const initialApplicationState = {
-  organisations: [],
-  organisationLookup: {},
+  localAuthorities: [],
+  localAuthorityLookup: {},
   mobiles: [],
   mobileLookup: {},
   mobileLocations: [],
@@ -18,7 +18,7 @@ const initialApplicationState = {
 }
 
 /**
- * Reducer for managing global application domain data (organisations, mobiles, routes, locations).
+ * Reducer for managing global application domain data (local authorities, mobiles, routes, locations).
  * @param {Object} state - Current application state.
  * @param {Object} action - Dispatched reducer action.
  * @returns {Object} Updated application state.
@@ -28,8 +28,8 @@ const applicationReducer = (state, action) => {
     case 'InitializeApplicationData':
       return {
         ...state,
-        organisations: action.organisations,
-        organisationLookup: action.organisationLookup,
+        localAuthorities: action.localAuthorities,
+        localAuthorityLookup: action.localAuthorityLookup,
         mobiles: action.mobiles,
         mobileLookup: action.mobileLookup,
         routes: action.routes,
@@ -37,11 +37,11 @@ const applicationReducer = (state, action) => {
         mobileLocations: action.mobileLocations,
         mobileLocationLookup: action.mobileLocationLookup
       }
-    case 'AddOrganisations':
+    case 'AddLocalAuthorities':
       return {
         ...state,
-        organisations: action.organisations,
-        organisationLookup: action.organisationLookup
+        localAuthorities: action.localAuthorities,
+        localAuthorityLookup: action.localAuthorityLookup
       }
     case 'AddMobileLocations':
       return {
