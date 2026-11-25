@@ -82,9 +82,42 @@ let theme = createTheme({
 
 /**
  * Composed Material UI theme referencing `theme.palette` and `theme.shape.borderRadius`
- * for typography, borderless block buttons and dropdowns, and soft complementary outlines.
+ * for typography, reusable custom design tokens (`theme.custom`), borderless block buttons
+ * and dropdowns, external link indicators, and soft complementary outlines.
  */
 theme = createTheme(theme, {
+  custom: {
+    outline: `2px solid ${alpha(theme.palette.primary.light, 0.3)}`,
+    outlineHover: `2px solid ${alpha(theme.palette.primary.light, 0.55)}`,
+    outlineFocus: `2px solid ${theme.palette.primary.light}`,
+    floatingShadow: `0 8px 24px ${alpha(theme.palette.text.primary, 0.14)}`,
+    iconBadge: {
+      width: 32,
+      height: 32,
+      borderRadius: `${theme.shape.borderRadius}px`,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      flexShrink: 0,
+      backgroundColor: alpha(theme.palette.primary.main, 0.1),
+      color: theme.palette.primary.main
+    },
+    mapTopBar: {
+      backgroundColor: alpha(theme.palette.background.default, 0.92),
+      backdropFilter: 'blur(6px)'
+    },
+    fieldLabel: {
+      display: 'block',
+      color: theme.palette.primary.main,
+      fontWeight: 800,
+      fontSize: '0.78rem'
+    },
+    fieldValue: {
+      color: theme.palette.text.primary,
+      fontWeight: 600,
+      fontSize: '0.92rem'
+    }
+  },
   typography: {
     fontFamily: BODY_FONT_FAMILY,
     h1: {
@@ -288,7 +321,25 @@ theme = createTheme(theme, {
           borderRadius: theme.shape.borderRadius,
           border: 'none',
           backgroundColor: theme.palette.background.paper,
-          transition: 'background-color 0.15s ease'
+          transition: 'background-color 0.15s ease',
+          overflow: 'hidden'
+        }
+      }
+    },
+    MuiCardActionArea: {
+      styleOverrides: {
+        root: {
+          padding: 14
+        }
+      }
+    },
+    MuiCardContent: {
+      styleOverrides: {
+        root: {
+          padding: '12px 14px 14px',
+          '&:last-child': {
+            paddingBottom: 14
+          }
         }
       }
     },
@@ -339,7 +390,9 @@ theme = createTheme(theme, {
         root: {
           fontFamily: HEADING_FONT_FAMILY,
           color: theme.palette.primary.main,
-          fontWeight: 700,
+          fontWeight: 800,
+          display: 'inline-flex',
+          alignItems: 'center',
           '&:hover': {
             color: theme.palette.primary.dark
           }
@@ -359,7 +412,7 @@ theme = createTheme(theme, {
           borderRadius: theme.shape.borderRadius,
           border: 'none',
           backgroundColor: theme.palette.background.paper,
-          boxShadow: `0 8px 24px ${alpha(theme.palette.text.primary, 0.12)}`,
+          boxShadow: `0 8px 24px ${alpha(theme.palette.text.primary, 0.14)}`,
           marginTop: 6
         },
         list: {
@@ -445,6 +498,36 @@ theme = createTheme(theme, {
           fontWeight: 700,
           lineHeight: '2rem',
           textAlign: 'center'
+        }
+      }
+    },
+    MuiPaginationItem: {
+      styleOverrides: {
+        root: {
+          fontFamily: HEADING_FONT_FAMILY,
+          fontWeight: 700,
+          borderRadius: theme.shape.borderRadius
+        }
+      }
+    },
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          fontFamily: HEADING_FONT_FAMILY,
+          fontWeight: 700,
+          fontSize: '0.78rem',
+          backgroundColor: theme.palette.text.primary,
+          borderRadius: theme.shape.borderRadius,
+          padding: '6px 10px'
+        }
+      }
+    },
+    MuiAlert: {
+      styleOverrides: {
+        root: {
+          fontFamily: HEADING_FONT_FAMILY,
+          fontWeight: 700,
+          borderRadius: theme.shape.borderRadius
         }
       }
     },

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react'
 
-import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
@@ -17,14 +16,14 @@ import CalendarTodayIcon from '@mui/icons-material/CalendarTodayRounded'
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBusRounded'
 import ExpandLessIcon from '@mui/icons-material/ExpandLessRounded'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMoreRounded'
-import PlaceIcon from '@mui/icons-material/PlaceRounded'
 import PrintIcon from '@mui/icons-material/PrintRounded'
 import SaveIcon from '@mui/icons-material/SaveAltRounded'
-import WebIcon from '@mui/icons-material/LanguageRounded'
 
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
+import ExternalLink from './ExternalLink'
+import { formatTimeWindow } from './helpers/dates'
 import * as stopModel from './models/stops'
 import * as urlHelper from './helpers/url'
 import { metersToMiles } from './helpers/utils'
@@ -33,12 +32,12 @@ const PAGE_SIZE = 6
 
 /**
  * Clean expandable card representing a single mobile library stop.
- * Clicking the card selects the stop on the map and toggles full stop details inline.
+ * Clicking the card selects & locates the stop on the map and toggles full stop details inline.
  *
  * @param {Object} props - Component props.
  * @param {import('./models/stops').Stop} props.stop - Stop model instance.
  * @param {boolean} props.expanded - Whether the full stop details are expanded.
- * @param {(stop: import('./models/stops').Stop, keepExpanded?: boolean) => void} props.onToggle - Handler when the stop card is clicked.
+ * @param {(stop: import('./models/stops').Stop) => void} props.onToggle - Handler when the stop card is clicked.
  * @param {(mobileId: number) => void} [props.onSelectMobile] - Handler to open the mobile tracker for a visiting vehicle.
  * @returns {JSX.Element} StopCard component.
  */
@@ -51,27 +50,14 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
     })
     .join(' • ')
 
-  const arrivalTime = stop.arrivalTimes?.[0]?.slice(0, 5) || ''
-  const departureTime = stop.departureTimes?.[0]?.slice(0, 5) || ''
-  const timeWindow =
-    arrivalTime && departureTime
-      ? `${arrivalTime} – ${departureTime}`
-      : arrivalTime
+  const timeWindow = formatTimeWindow(
+    stop.arrivalTimes?.[0],
+    stop.departureTimes?.[0]
+  )
 
   return (
-    <Card
-      id={`stop-card-${stop.id}`}
-      sx={theme => ({
-        height: 'auto',
-        backgroundColor: theme.palette.background.paper,
-        overflow: 'hidden'
-      })}
-    >
-      <CardActionArea
-        onClick={() => onToggle(stop)}
-        aria-expanded={expanded}
-        sx={{ p: 1.75 }}
-      >
+    <Card id={`stop-card-${stop.id}`}>
+      <CardActionArea onClick={() => onToggle(stop)} aria-expanded={expanded}>
         <Stack
           direction='row'
           spacing={1}
@@ -84,11 +70,17 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
               sx={{ alignItems: 'center', mb: 0.25, flexWrap: 'wrap' }}
               useFlexGap
             >
-              <Typography variant='caption' sx={{ color: 'primary.main' }}>
+              <Typography
+                variant='caption'
+                sx={{ color: 'primary.main', fontWeight: 800 }}
+              >
                 {stop.localAuthorityName}
               </Typography>
               {stop.community && (
-                <Typography variant='caption' sx={{ color: 'text.secondary' }}>
+                <Typography
+                  variant='caption'
+                  sx={{ color: 'text.primary', fontWeight: 700 }}
+                >
                   • {stop.community}
                 </Typography>
               )}
@@ -97,7 +89,7 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
                   size='small'
                   color='secondary'
                   label={`${metersToMiles(stop.distance)} mi`}
-                  sx={{ minHeight: 20, height: 20, fontSize: '0.7rem' }}
+                  sx={{ minHeight: 20, height: 20, fontSize: '0.72rem' }}
                 />
               )}
             </Stack>
@@ -111,9 +103,16 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
                 sx={{ alignItems: 'center', mt: 0.5 }}
               >
                 <CalendarTodayIcon
-                  sx={{ fontSize: '0.85rem', color: 'text.secondary' }}
+                  sx={{ fontSize: '0.88rem', color: 'primary.main' }}
                 />
-                <Typography variant='body2' sx={{ fontSize: '0.825rem' }}>
+                <Typography
+                  variant='body2'
+                  sx={{
+                    fontSize: '0.85rem',
+                    fontWeight: 600,
+                    color: 'text.primary'
+                  }}
+                >
                   {stop.nextVisitFormatted}
                 </Typography>
               </Stack>
@@ -128,20 +127,22 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
       <Collapse in={expanded} timeout='auto' unmountOnExit>
         <CardContent
           sx={theme => ({
-            pt: 1,
-            px: 1.75,
-            pb: 1.75,
-            '&:last-child': { pb: 1.75 },
-            backgroundColor: alpha(theme.palette.warmNeutral.cream, 0.45)
+            borderTop: `2px solid ${theme.palette.background.default}`
           })}
         >
-          <Stack spacing={1}>
+          <Stack spacing={1.25}>
             {addressLine && (
               <Box>
-                <Typography variant='caption' sx={{ display: 'block' }}>
+                <Typography
+                  variant='caption'
+                  sx={theme => theme.custom.fieldLabel}
+                >
                   Address
                 </Typography>
-                <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                <Typography
+                  variant='body2'
+                  sx={theme => theme.custom.fieldValue}
+                >
                   {addressLine}
                 </Typography>
               </Box>
@@ -155,30 +156,48 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
             >
               {scheduleSummary && (
                 <Box>
-                  <Typography variant='caption' sx={{ display: 'block' }}>
+                  <Typography
+                    variant='caption'
+                    sx={theme => theme.custom.fieldLabel}
+                  >
                     Frequency
                   </Typography>
-                  <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                  <Typography
+                    variant='body2'
+                    sx={theme => theme.custom.fieldValue}
+                  >
                     {scheduleSummary}
                   </Typography>
                 </Box>
               )}
               {timeWindow && (
                 <Box>
-                  <Typography variant='caption' sx={{ display: 'block' }}>
+                  <Typography
+                    variant='caption'
+                    sx={theme => theme.custom.fieldLabel}
+                  >
                     Stop time
                   </Typography>
-                  <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                  <Typography
+                    variant='body2'
+                    sx={theme => theme.custom.fieldValue}
+                  >
                     {timeWindow}
                   </Typography>
                 </Box>
               )}
               {stop.type && (
                 <Box>
-                  <Typography variant='caption' sx={{ display: 'block' }}>
+                  <Typography
+                    variant='caption'
+                    sx={theme => theme.custom.fieldLabel}
+                  >
                     Access
                   </Typography>
-                  <Typography variant='body2' sx={{ color: 'text.primary' }}>
+                  <Typography
+                    variant='body2'
+                    sx={theme => theme.custom.fieldValue}
+                  >
                     {stop.type}
                   </Typography>
                 </Box>
@@ -189,7 +208,7 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
               <Box>
                 <Typography
                   variant='caption'
-                  sx={{ display: 'block', mb: 0.5 }}
+                  sx={theme => ({ ...theme.custom.fieldLabel, mb: 0.5 })}
                 >
                   Mobile library
                 </Typography>
@@ -223,43 +242,43 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
 
             <Stack
               direction='row'
-              spacing={0.75}
+              spacing={1.25}
               useFlexGap
-              sx={{ flexWrap: 'wrap', pt: 0.5 }}
+              sx={{
+                flexWrap: 'wrap',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                pt: 0.5
+              }}
             >
-              <Button
-                size='small'
-                variant='outlined'
-                startIcon={<PlaceIcon />}
-                onClick={() => onToggle(stop, true)}
+              <Stack
+                direction='row'
+                spacing={0.75}
+                useFlexGap
+                sx={{ flexWrap: 'wrap', alignItems: 'center' }}
               >
-                Locate
-              </Button>
-              <Button
-                size='small'
-                variant='outlined'
-                startIcon={<SaveIcon />}
-                onClick={() => urlHelper.openUrl(stop.icsUrl)}
-              >
-                Calendar
-              </Button>
-              <Button
-                size='small'
-                variant='outlined'
-                startIcon={<PrintIcon />}
-                onClick={() => urlHelper.openUrl(stop.pdfUrl)}
-              >
-                PDF
-              </Button>
-              {stop.timetable && (
                 <Button
                   size='small'
                   variant='outlined'
-                  startIcon={<WebIcon />}
-                  onClick={() => urlHelper.openUrl(stop.timetable)}
+                  startIcon={<SaveIcon />}
+                  onClick={() => urlHelper.openUrl(stop.icsUrl)}
                 >
-                  Timetable
+                  Calendar
                 </Button>
+                <Button
+                  size='small'
+                  variant='outlined'
+                  startIcon={<PrintIcon />}
+                  onClick={() => urlHelper.openUrl(stop.pdfUrl)}
+                >
+                  PDF
+                </Button>
+              </Stack>
+
+              {stop.timetable && (
+                <ExternalLink href={stop.timetable} sx={{ fontSize: '0.88rem' }}>
+                  Timetable
+                </ExternalLink>
               )}
             </Stack>
           </Stack>
@@ -370,13 +389,9 @@ const Stops = () => {
   ])
 
   const handleToggleStop = useCallback(
-    (stop, keepExpanded = false) => {
+    stop => {
       const isSameStop = currentStopId === stop.id
-      const nextExpanded = keepExpanded
-        ? true
-        : isSameStop
-          ? !stopDetailsExpanded
-          : true
+      const nextExpanded = isSameStop ? !stopDetailsExpanded : true
 
       dispatchSearch({
         type: 'SetCurrentStop',

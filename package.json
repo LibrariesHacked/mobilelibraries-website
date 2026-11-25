@@ -7,11 +7,10 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@geovation/gb-name-index": "github:Geovation/gb-name-index#v1.0.0",
+    "@geovation/gb-name-index": "https://github.com/Geovation/gb-name-index/tarball/main",
     "@mui/icons-material": "^9.5.0",
     "@mui/material": "^9.5.0",
     "axios": "^1.20.0",
-    "dayjs": "^1.11.23",
     "maplibre-gl": "^6.15.0",
     "markdown-to-jsx": "^9.10.3",
     "react": "^19.3.1",

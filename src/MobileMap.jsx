@@ -1,13 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
 import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
 import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
@@ -42,7 +41,6 @@ import * as stopModel from './models/stops'
 import config from './helpers/config.json'
 import theme from './theme'
 
-dayjs.extend(relativeTime)
 setWorkerUrl(workerUrl)
 
 const MAP_STYLE =
@@ -183,6 +181,7 @@ const MobileMap = () => {
 
   const [map, setMap] = useState(null)
   const [cursor, setCursor] = useState('grab')
+  const [activeMobilesMenuAnchor, setActiveMobilesMenuAnchor] = useState(null)
   const [markerSize, setMarkerSize] = useState(() =>
     getMarkerSizeForZoom(mapZoom[0])
   )
@@ -329,7 +328,7 @@ const MobileMap = () => {
   // Precompute static vehicle metadata & status once per API location poll
   const vehicleStatuses = useMemo(() => {
     if (!mobileLocations || mobileLocations.length === 0) return []
-    const now = dayjs()
+    const now = new Date()
     return mobileLocations
       .map(loc => {
         const mobile = mobileLookup[loc.mobileId]
@@ -488,10 +487,11 @@ const MobileMap = () => {
   }, [trackedMobile, routes])
 
   const markers = useMemo(() => {
-    const now = dayjs()
+    const now = new Date()
     const renderedIds = new Set()
     const list = vehicleStatuses
-      .map(({ loc, localAuthority, label, statusText }) => {
+      .map(({ loc, localAuthority, label, statusText, isActive }) => {
+        if (!isActive) return null
         const coordinates =
           loc.getCoordinates(now) || fallbackCoordsByMobileId[loc.mobileId]
         if (!coordinates) return null
@@ -523,9 +523,13 @@ const MobileMap = () => {
     if (
       trackedMobile &&
       !renderedIds.has(trackedMobile.id) &&
-      fallbackCoordsByMobileId[trackedMobile.id]
+      (trackedLocation?.getCoordinates(now) ||
+        fallbackCoordsByMobileId[trackedMobile.id])
     ) {
-      const coords = fallbackCoordsByMobileId[trackedMobile.id]
+      const coords =
+        trackedLocation?.getCoordinates(now) ||
+        fallbackCoordsByMobileId[trackedMobile.id]
+      const trackedStatus = trackedLocation?.getStatus(now)
       list.push(
         <Marker
           key={'mkr_' + trackedMobile.id}
@@ -537,7 +541,7 @@ const MobileMap = () => {
             mobileId={trackedMobile.id}
             localAuthority={trackedAuthority}
             label={trackedMobile.getDisplayTitle(trackedAuthority)}
-            statusText='Not out today'
+            statusText={trackedStatus?.textFormat || 'Not out today'}
             size={markerSize}
             selected
             onSelect={openMobileTracker}
@@ -555,6 +559,7 @@ const MobileMap = () => {
     currentMobileLibraryId,
     trackedMobile,
     trackedAuthority,
+    trackedLocation,
     openMobileTracker
   ])
 
@@ -574,11 +579,11 @@ const MobileMap = () => {
         height: '100%',
         minHeight: { xs: 460, md: 660 },
         borderRadius: 1,
-        border: `2px solid ${alpha(theme.palette.primary.light, 0.3)}`,
+        border: theme.custom.outline,
         overflow: 'hidden'
       })}
     >
-      {/* Full-width top bar showing active mobile libraries and map layers button */}
+      {/* Full-width top bar with compact "On the road" dropdown and map layers button */}
       <Paper
         elevation={0}
         sx={theme => ({
@@ -590,8 +595,7 @@ const MobileMap = () => {
           px: 1.5,
           py: 0.75,
           borderRadius: 0,
-          backgroundColor: alpha(theme.palette.background.default, 0.92),
-          backdropFilter: 'blur(6px)',
+          ...theme.custom.mapTopBar,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
@@ -602,42 +606,45 @@ const MobileMap = () => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            gap: 0.75,
-            overflowX: 'auto',
+            gap: 1,
             minWidth: 0
           }}
         >
-          <Chip
+          <Button
+            id='on-the-road-button'
+            aria-controls={
+              activeMobilesMenuAnchor ? 'on-the-road-menu' : undefined
+            }
+            aria-expanded={Boolean(activeMobilesMenuAnchor)}
+            aria-haspopup='menu'
             size='small'
+            variant={activeVehicles.length > 0 ? 'contained' : 'outlined'}
             color='primary'
-            icon={<DirectionsBusIcon />}
-            label={`On the road (${activeVehicles.length})`}
+            startIcon={<DirectionsBusIcon />}
+            endIcon={activeVehicles.length > 0 ? <ExpandMoreIcon /> : undefined}
+            onClick={e => {
+              if (activeVehicles.length > 0) {
+                setActiveMobilesMenuAnchor(e.currentTarget)
+              }
+            }}
             sx={{ flexShrink: 0 }}
-          />
-          {activeVehicles.length > 0
-            ? activeVehicles.slice(0, 8).map(({ mobile, localAuthority }) => (
-              <Chip
-                key={`act_mob_${mobile.id}`}
-                size='small'
-                color={
-                  mobileLibraryDialogOpen &&
-                  currentMobileLibraryId === mobile.id
-                    ? 'primary'
-                    : 'secondary'
-                }
-                label={mobile.getDisplayTitle(localAuthority, ': ')}
-                onClick={() => openMobileTracker(mobile.id)}
-                sx={{ flexShrink: 0 }}
-              />
-            ))
-            : (
-              <Typography
-                variant='caption'
-                sx={{ whiteSpace: 'nowrap', px: 0.5 }}
-              >
-                Click any vehicle or stop on the map to inspect schedules
-              </Typography>
-              )}
+          >
+            On the road ({activeVehicles.length})
+          </Button>
+
+          {trackedMobile && (
+            <Chip
+              size='small'
+              color='secondary'
+              label={trackedMobile.getDisplayTitle(trackedAuthority, ': ')}
+              onClick={() => openMobileTracker(trackedMobile.id)}
+              onDelete={() =>
+                dispatchView({
+                  type: 'SetMobileLibraryDialog',
+                  mobileLibraryDialogOpen: false
+                })}
+            />
+          )}
         </Box>
 
         <Tooltip title='Map layers & settings' describeChild>
@@ -656,6 +663,54 @@ const MobileMap = () => {
           </Button>
         </Tooltip>
       </Paper>
+
+      <Menu
+        id='on-the-road-menu'
+        aria-labelledby='on-the-road-button'
+        anchorEl={activeMobilesMenuAnchor}
+        open={Boolean(activeMobilesMenuAnchor)}
+        onClose={() => setActiveMobilesMenuAnchor(null)}
+        slotProps={{
+          paper: {
+            elevation: 0,
+            sx: { maxHeight: 360, minWidth: 260, maxWidth: 340 }
+          }
+        }}
+      >
+        {activeVehicles.map(({ mobile, localAuthority, statusText }) => (
+          <MenuItem
+            key={`act_mob_${mobile.id}`}
+            selected={
+              mobileLibraryDialogOpen && currentMobileLibraryId === mobile.id
+            }
+            onClick={() => {
+              setActiveMobilesMenuAnchor(null)
+              openMobileTracker(mobile.id)
+            }}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              py: 0.75
+            }}
+          >
+            <Typography
+              variant='body2'
+              sx={{ fontWeight: 700, color: 'text.primary' }}
+            >
+              {mobile.getDisplayTitle(localAuthority, ': ')}
+            </Typography>
+            {statusText && (
+              <Typography
+                variant='caption'
+                sx={{ color: 'primary.main', fontSize: '0.75rem' }}
+              >
+                {statusText}
+              </Typography>
+            )}
+          </MenuItem>
+        ))}
+      </Menu>
 
       {/* Selected stop info card overlay positioned top-left below the full-width status bar */}
       {currentStop && (stopDialogOpen || currentStopId === currentStop.id) && (

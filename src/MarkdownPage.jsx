@@ -5,6 +5,8 @@ import Link from '@mui/material/Link'
 import Paper from '@mui/material/Paper'
 import Typography from '@mui/material/Typography'
 
+import ExternalLink from './ExternalLink'
+
 const options = {
   overrides: {
     h1: {
@@ -43,7 +45,15 @@ const options = {
       props: { variant: 'body2', sx: { mb: 2 } }
     },
     a: {
-      component: Link
+      component: ({ href, children, ...rest }) => {
+        const isExternal = Boolean(href && /^https?:\/\//i.test(href))
+        const Component = isExternal ? ExternalLink : Link
+        return (
+          <Component href={href} {...rest}>
+            {children}
+          </Component>
+        )
+      }
     },
     li: {
       component: ({ ...props }) => (

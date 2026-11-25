@@ -6,7 +6,6 @@ import Box from '@mui/material/Box'
 import CircularProgress from '@mui/material/CircularProgress'
 import IconButton from '@mui/material/IconButton'
 import InputBase from '@mui/material/InputBase'
-import Link from '@mui/material/Link'
 import List from '@mui/material/List'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemText from '@mui/material/ListItemText'
@@ -22,6 +21,7 @@ import { useApplicationStateValue } from './context/applicationState'
 import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
+import ExternalLink from './ExternalLink'
 import * as geoHelper from './helpers/geo'
 import { createLookup } from './helpers/utils'
 import * as mobilesModel from './models/mobiles'
@@ -322,29 +322,17 @@ const PostcodeSearch = () => {
           p: 0.75,
           borderRadius: 1,
           backgroundColor: theme.palette.background.paper,
-          border: `2px solid ${alpha(theme.palette.primary.light, 0.28)}`,
+          border: theme.custom.outline,
           transition: 'border-color 0.15s ease',
           '&:hover': {
-            borderColor: alpha(theme.palette.primary.light, 0.5)
+            border: theme.custom.outlineHover
           },
           '&:focus-within': {
-            borderColor: theme.palette.primary.light
+            border: theme.custom.outlineFocus
           }
         })}
       >
-        <Box
-          sx={theme => ({
-            width: 32,
-            height: 32,
-            borderRadius: 1,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            flexShrink: 0,
-            backgroundColor: alpha(theme.palette.primary.main, 0.1),
-            color: theme.palette.primary.main
-          })}
-        >
+        <Box sx={theme => theme.custom.iconBadge}>
           {loadingPostcode || loadingPlaces
             ? <CircularProgress size={18} color='inherit' />
             : <SearchIcon sx={{ fontSize: '1.25rem' }} />}
@@ -488,21 +476,13 @@ const PostcodeSearch = () => {
                   })}
                 >
                   {dataAttribution.osOpenNames}{' '}
-                  <Link
-                    href={dataAttribution.osOpenNamesLicense}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
+                  <ExternalLink href={dataAttribution.osOpenNamesLicense}>
                     Open Government Licence
-                  </Link>
+                  </ExternalLink>
                   .{' '}
-                  <Link
-                    href={dataAttribution.overtureAttribution}
-                    target='_blank'
-                    rel='noopener noreferrer'
-                  >
+                  <ExternalLink href={dataAttribution.overtureAttribution}>
                     {dataAttribution.overturePlaces}
-                  </Link>
+                  </ExternalLink>
                   .
                 </Typography>
               </>

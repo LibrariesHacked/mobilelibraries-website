@@ -1,9 +1,9 @@
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
+import {
+  formatRelativeTime,
+  isSameDay,
+  parseDate
+} from '../helpers/dates'
 import { apiGet } from '../helpers/url'
-
-dayjs.extend(relativeTime)
 
 const STATUS_MESSAGES = {
   offRoad: 'Not out today',
@@ -119,22 +119,16 @@ export class MobileLocation {
   fromJson (json) {
     this.mobileId = json.mobile_id
     this.currentStopId = json.current_stop_id
-    this.currentStopDeparture = json.current_stop_departure
-      ? dayjs(json.current_stop_departure)
-      : null
+    this.currentStopDeparture = parseDate(json.current_stop_departure)
     this.currentStopName = json.current_stop_name
     this.previousStopId = json.previous_stop_id
-    this.previousStopDeparture = json.previous_stop_departure
-      ? dayjs(json.previous_stop_departure)
-      : null
+    this.previousStopDeparture = parseDate(json.previous_stop_departure)
     this.previousStopName = json.previous_stop_name
     this.nextStopId = json.next_stop_id
-    this.nextStopArrival = json.next_stop_arrival
-      ? dayjs(json.next_stop_arrival)
-      : null
+    this.nextStopArrival = parseDate(json.next_stop_arrival)
     this.nextStopName = json.next_stop_name
-    this.updated = json.updated ? dayjs(json.updated) : null
-    this.receivedAt = dayjs()
+    this.updated = parseDate(json.updated)
+    this.receivedAt = new Date()
     this.updateType = json.update_type
     this.geoX = json.geox != null ? Number(json.geox) : null
     this.geoY = json.geoy != null ? Number(json.geoy) : null
@@ -156,10 +150,10 @@ export class MobileLocation {
    * along its active `routeSection` (sampled every 500ms) if available.
    * Uses `receivedAt` as a clock-skew-safe fallback if server/client clocks differ.
    *
-   * @param {dayjs.Dayjs} [now=dayjs()] - Reference timestamp.
+   * @param {Date} [now=new Date()] - Reference timestamp.
    * @returns {number[]|null} `[longitude, latitude]` coordinates or `null` if unavailable.
    */
-  getCoordinates (now = dayjs()) {
+  getCoordinates (now = new Date()) {
     if (this.geoX == null || this.geoY == null) return null
     const coords = this.routeSection?.coordinates
     if (!coords || coords.length === 0) return [this.geoX, this.geoY]
@@ -167,7 +161,7 @@ export class MobileLocation {
     const baseTime = this.receivedAt || this.updated
     if (!baseTime) return [this.geoX, this.geoY]
 
-    const elapsedMs = Math.max(0, now.diff(baseTime))
+    const elapsedMs = Math.max(0, now.getTime() - baseTime.getTime())
     const index = Math.min(coords.length - 1, Math.round(elapsedMs / 500))
     return coords[index] || [this.geoX, this.geoY]
   }
@@ -175,7 +169,7 @@ export class MobileLocation {
   /**
    * Computes the current operational status of the mobile library.
    *
-   * @param {dayjs.Dayjs} [now=dayjs()] - Reference timestamp.
+   * @param {Date} [now=new Date()] - Reference timestamp.
    * @returns {{
    *   type: 'offRoad'|'preRoute'|'atStop'|'betweenStops'|'postRoute',
    *   message: string,
@@ -183,10 +177,14 @@ export class MobileLocation {
    *   args?: Array<any>
    * }} Status object.
    */
-  getStatus (now = dayjs()) {
+  getStatus (now = new Date()) {
     // 1. Currently parked at a scheduled stop
     if (this.currentStopId && this.currentStopDeparture) {
-      const stopRemaining = this.currentStopDeparture.fromNow(true)
+      const stopRemaining = formatRelativeTime(
+        this.currentStopDeparture,
+        true,
+        now
+      )
       return {
         type: 'atStop',
         message: STATUS_MESSAGES.atStop,
@@ -200,7 +198,7 @@ export class MobileLocation {
 
     // 2. En route to an upcoming stop today (either before first stop or between stops)
     if (this.nextStopId && this.nextStopArrival) {
-      if (!this.nextStopArrival.isSame(now, 'day')) {
+      if (!isSameDay(this.nextStopArrival, now)) {
         return {
           type: 'offRoad',
           message: STATUS_MESSAGES.offRoad,
@@ -208,7 +206,7 @@ export class MobileLocation {
         }
       }
       const type = this.previousStopId ? 'betweenStops' : 'preRoute'
-      const arrival = this.nextStopArrival.fromNow()
+      const arrival = formatRelativeTime(this.nextStopArrival, false, now)
       return {
         type,
         message: STATUS_MESSAGES[type],

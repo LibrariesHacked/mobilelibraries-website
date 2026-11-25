@@ -1,10 +1,6 @@
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
+import { parseDate } from '../helpers/dates'
 import { getText } from '../helpers/rrule'
 import { apiGet } from '../helpers/url'
-
-dayjs.extend(relativeTime)
 
 /**
  * Represents a mobile library route and its schedule recurrence.
@@ -31,8 +27,8 @@ export class Route {
     this.name = json.name
     this.frequency = json.frequency
     this.frequencyDescription = json.frequency ? getText(json.frequency) : ''
-    this.start = json.start ? dayjs(json.start) : null
-    this.end = json.end ? dayjs(json.end) : null
+    this.start = parseDate(json.start)
+    this.end = parseDate(json.end)
     this.timetable = json.timetable
     this.numberStops = Number(json.number_stops) || 0
     return this

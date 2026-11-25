@@ -1,6 +1,5 @@
 import React from 'react'
 
-import { alpha } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
@@ -13,9 +12,9 @@ import CloseIcon from '@mui/icons-material/CloseRounded'
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBusRounded'
 import FilterListIcon from '@mui/icons-material/FilterListRounded'
 import PlaceIcon from '@mui/icons-material/PlaceRounded'
-import WebIcon from '@mui/icons-material/LanguageRounded'
 
-import * as urlHelper from './helpers/url'
+import ExternalLink from './ExternalLink'
+import { formatRelativeTime } from './helpers/dates'
 
 /**
  * Clean mobile library tracker overlay displayed on the map when a vehicle is selected.
@@ -63,7 +62,10 @@ const MobileTracker = ({
         }}
       >
         <Box sx={{ minWidth: 0 }}>
-          <Typography variant='caption' sx={{ display: 'block', lineHeight: 1.2 }}>
+          <Typography
+            variant='caption'
+            sx={theme => ({ ...theme.custom.fieldLabel, lineHeight: 1.2 })}
+          >
             {label}
           </Typography>
           <Button
@@ -78,7 +80,11 @@ const MobileTracker = ({
               justifyContent: 'flex-start'
             }}
           >
-            <Typography variant='body2' noWrap sx={{ fontWeight: 700, color: 'inherit' }}>
+            <Typography
+              variant='body2'
+              noWrap
+              sx={{ fontWeight: 700, color: 'inherit' }}
+            >
               {stopName}
             </Typography>
           </Button>
@@ -109,7 +115,7 @@ const MobileTracker = ({
         borderRadius: 1,
         overflow: 'hidden',
         backgroundColor: theme.palette.background.paper,
-        boxShadow: `0 8px 24px ${alpha(theme.palette.text.primary, 0.16)}`
+        boxShadow: theme.custom.floatingShadow
       })}
     >
       <Box
@@ -123,7 +129,11 @@ const MobileTracker = ({
           gap: 1
         })}
       >
-        <Stack direction='row' spacing={1} sx={{ alignItems: 'center', minWidth: 0 }}>
+        <Stack
+          direction='row'
+          spacing={1}
+          sx={{ alignItems: 'center', minWidth: 0 }}
+        >
           <DirectionsBusIcon color='primary' fontSize='small' />
           <Box sx={{ minWidth: 0 }}>
             <Typography
@@ -152,7 +162,12 @@ const MobileTracker = ({
       </Box>
 
       <Box sx={{ p: 2, overflowY: 'auto' }}>
-        <Stack direction='row' spacing={1} sx={{ mb: 1.25, alignItems: 'center', flexWrap: 'wrap' }} useFlexGap>
+        <Stack
+          direction='row'
+          spacing={1}
+          sx={{ mb: 1.25, alignItems: 'center', flexWrap: 'wrap' }}
+          useFlexGap
+        >
           <Chip
             size='small'
             color={isActive ? 'primary' : 'secondary'}
@@ -169,28 +184,35 @@ const MobileTracker = ({
               'Previous stop',
               location.previousStopId,
               location.previousStopName,
-              location.previousStopDeparture ? location.previousStopDeparture.fromNow() : ''
+              location.previousStopDeparture
+                ? formatRelativeTime(location.previousStopDeparture)
+                : ''
             )}
             {renderStopRow(
               'Current stop',
               location.currentStopId,
               location.currentStopName,
               location.currentStopDeparture
-                ? `${location.currentStopDeparture.fromNow(true)} left`
+                ? `${formatRelativeTime(location.currentStopDeparture, true)} left`
                 : ''
             )}
             {renderStopRow(
               'Next stop',
               location.nextStopId,
               location.nextStopName,
-              location.nextStopArrival ? location.nextStopArrival.fromNow() : ''
+              location.nextStopArrival
+                ? formatRelativeTime(location.nextStopArrival)
+                : ''
             )}
           </Stack>
         )}
 
         {routes.length > 0 && (
           <Box sx={{ mt: 1 }}>
-            <Typography variant='caption' sx={{ display: 'block', mb: 0.5 }}>
+            <Typography
+              variant='caption'
+              sx={theme => ({ ...theme.custom.fieldLabel, mb: 0.5 })}
+            >
               Routes ({routes.length})
             </Typography>
             <Stack
@@ -212,10 +234,23 @@ const MobileTracker = ({
                     size='small'
                     variant='text'
                     onClick={() =>
-                      onFilterMobile(mobile.localAuthorityId, mobile.id, route.id)}
-                    sx={{ p: 0, minWidth: 0, textAlign: 'left', justifyContent: 'flex-start' }}
+                      onFilterMobile(
+                        mobile.localAuthorityId,
+                        mobile.id,
+                        route.id
+                      )}
+                    sx={{
+                      p: 0,
+                      minWidth: 0,
+                      textAlign: 'left',
+                      justifyContent: 'flex-start'
+                    }}
                   >
-                    <Typography variant='body2' noWrap sx={{ fontWeight: 600, color: 'inherit' }}>
+                    <Typography
+                      variant='body2'
+                      noWrap
+                      sx={{ fontWeight: 600, color: 'inherit' }}
+                    >
                       {route.name}
                     </Typography>
                   </Button>
@@ -243,14 +278,9 @@ const MobileTracker = ({
             Show vehicle stops
           </Button>
           {websiteUrl && (
-            <Button
-              size='small'
-              variant='outlined'
-              startIcon={<WebIcon />}
-              onClick={() => urlHelper.openUrl(websiteUrl)}
-            >
+            <ExternalLink href={websiteUrl} sx={{ fontSize: '0.88rem' }}>
               Timetable
-            </Button>
+            </ExternalLink>
           )}
         </Stack>
       </Box>

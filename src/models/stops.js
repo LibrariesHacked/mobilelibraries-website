@@ -1,11 +1,7 @@
-import dayjs from 'dayjs'
-import relativeTime from 'dayjs/plugin/relativeTime'
-
+import { formatVisitDateTime, parseDate } from '../helpers/dates'
 import { getText } from '../helpers/rrule'
 import { apiGet } from '../helpers/url'
 import config from '../helpers/config.json'
-
-dayjs.extend(relativeTime)
 
 const SORT_FIELD_MAP = {
   localAuthorityName: 'local_authority_name',
@@ -45,8 +41,8 @@ export class Stop {
     this.postcode = json.postcode
     this.arrivalTimes = json.arrival_times || []
     this.departureTimes = json.departure_times || []
-    this.routeStart = json.route_start ? dayjs(json.route_start) : null
-    this.routeEnd = json.route_end ? dayjs(json.route_end) : null
+    this.routeStart = parseDate(json.route_start)
+    this.routeEnd = parseDate(json.route_end)
     this.routeDays = json.route_days || []
     this.type = json.type
     this.exceptions = json.exceptions || []
@@ -54,7 +50,9 @@ export class Stop {
     this.routeFrequencyDescriptions = (json.route_frequencies || []).map(f =>
       getText(f)
     )
-    this.routeSchedule = (json.route_schedule || []).map(s => dayjs(s))
+    this.routeSchedule = (json.route_schedule || [])
+      .map(parseDate)
+      .filter(Boolean)
     this.timetable = json.timetable
     this.longitude = json.longitude != null ? Number(json.longitude) : null
     this.latitude = json.latitude != null ? Number(json.latitude) : null
@@ -81,13 +79,14 @@ export class Stop {
   }
 
   /**
-   * Formatted date and time string for the next scheduled visit.
+   * Formatted date and time string for the next scheduled visit
+   * (e.g. `"Monday 30th November 12:40pm"`).
    *
    * @returns {string} Formatted next visit date/time.
    */
   get nextVisitFormatted () {
     if (!this.routeSchedule || this.routeSchedule.length === 0) return ''
-    return this.routeSchedule[0].format('dddd Do MMMM h:mma')
+    return formatVisitDateTime(this.routeSchedule[0])
   }
 }
 
