@@ -3,7 +3,6 @@ import React, { createContext, useContext, useReducer } from 'react'
 export const ViewStateContext = createContext()
 
 const initialViewState = {
-  stopDialogOpen: false,
   stopDetailsExpanded: false,
   mobileLibraryDialogOpen: false,
   tripDialogOpen: false,
@@ -38,8 +37,6 @@ const viewReducer = (state, action) => {
         notificationOpen: true,
         notificationMessage: action.notificationMessage
       }
-    case 'SetStopDialog':
-      return { ...state, stopDialogOpen: action.stopDialogOpen }
     case 'SetStopExpanded':
       return { ...state, stopDetailsExpanded: action.stopDetailsExpanded }
     case 'SetMobileLibraryDialog':

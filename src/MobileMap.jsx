@@ -1,15 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { alpha } from '@mui/material/styles'
+import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
-import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
-import Paper from '@mui/material/Paper'
-import Stack from '@mui/material/Stack'
 import Tooltip from '@mui/material/Tooltip'
+import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
 
 import { setWorkerUrl } from 'maplibre-gl'
@@ -21,8 +19,6 @@ import Map, {
   NavigationControl
 } from 'react-map-gl/maplibre'
 
-import CalendarTodayIcon from '@mui/icons-material/CalendarTodayRounded'
-import CloseIcon from '@mui/icons-material/CloseRounded'
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBusRounded'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMoreRounded'
 import LayersIcon from '@mui/icons-material/LayersRounded'
@@ -140,7 +136,7 @@ const getMarkerSizeForZoom = zoom =>
 
 /**
  * Interactive MapLibre GL map displaying live mobile library positions,
- * stops, trips, stop info card overlay, and the interactive MobileTracker.
+ * stops, trips, the embedded stop list, and the interactive MobileTracker.
  *
  * @returns {JSX.Element} MobileMap component.
  */
@@ -173,8 +169,7 @@ const MobileMap = () => {
       mapSettings,
       mapSettingsDialogOpen,
       mapFlyToPosition,
-      mobileLibraryDialogOpen,
-      stopDialogOpen
+      mobileLibraryDialogOpen
     },
     dispatchView
   ] = useViewStateValue()
@@ -391,24 +386,12 @@ const MobileMap = () => {
         currentStopId: stopId
       })
       dispatchView({
-        type: 'SetStopDialog',
-        stopDialogOpen: true
+        type: 'SetStopExpanded',
+        stopDetailsExpanded: false
       })
     },
     [dispatchSearch, dispatchView]
   )
-
-  const expandStopDetailsInList = useCallback(() => {
-    if (!currentStop) return
-    dispatchView({
-      type: 'SetStopExpanded',
-      stopDetailsExpanded: true
-    })
-    const cardEl = document.getElementById(`stop-card-${currentStop.id}`)
-    if (cardEl) {
-      cardEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-    }
-  }, [currentStop, dispatchView])
 
   const handleFilterMobile = useCallback(
     (localAuthorityId, mobileId, routeId) => {
@@ -464,10 +447,7 @@ const MobileMap = () => {
       ) {
         return false
       }
-      if (mobileFilter.length > 0 && !mobileFilter.includes(mobile.id)) {
-        return false
-      }
-      return true
+      return mobileFilter.length === 0 || mobileFilter.includes(mobile.id)
     })
   }, [vehicleStatuses, localAuthorityFilter, mobileFilter])
 
@@ -520,21 +500,21 @@ const MobileMap = () => {
       })
       .filter(Boolean)
 
+    const trackedCoordinates =
+      trackedLocation?.getCoordinates(now) ||
+      fallbackCoordsByMobileId[trackedMobile?.id]
+
     if (
       trackedMobile &&
       !renderedIds.has(trackedMobile.id) &&
-      (trackedLocation?.getCoordinates(now) ||
-        fallbackCoordsByMobileId[trackedMobile.id])
+      trackedCoordinates
     ) {
-      const coords =
-        trackedLocation?.getCoordinates(now) ||
-        fallbackCoordsByMobileId[trackedMobile.id]
       const trackedStatus = trackedLocation?.getStatus(now)
       list.push(
         <Marker
           key={'mkr_' + trackedMobile.id}
-          longitude={coords[0]}
-          latitude={coords[1]}
+          longitude={trackedCoordinates[0]}
+          latitude={trackedCoordinates[1]}
           anchor='bottom'
         >
           <MobileAvatar
@@ -573,96 +553,99 @@ const MobileMap = () => {
 
   return (
     <Box
-      sx={theme => ({
+      sx={{
         position: 'relative',
         width: '100%',
         height: '100%',
-        minHeight: { xs: 460, md: 660 },
-        borderRadius: 1,
-        border: theme.custom.outline,
+        minHeight: 0,
+        borderRadius: 0,
         overflow: 'hidden'
-      })}
+      }}
     >
-      {/* Full-width top bar with compact "On the road" dropdown and map layers button */}
-      <Paper
+      {/* Full-width map app bar with the active mobile and map layer controls */}
+      <AppBar
+        component='header'
+        position='absolute'
         elevation={0}
         sx={theme => ({
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
           zIndex: 5,
-          px: 1.5,
-          py: 0.75,
-          borderRadius: 0,
           ...theme.custom.mapTopBar,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: 1
+          color: theme.palette.text.primary
         })}
       >
-        <Box
+        <Toolbar
+          variant='dense'
           sx={{
-            display: 'flex',
-            alignItems: 'center',
+            minHeight: { xs: 48, sm: 56 },
+            px: 1.5,
             gap: 1,
-            minWidth: 0
+            justifyContent: 'space-between'
           }}
         >
-          <Button
-            id='on-the-road-button'
-            aria-controls={
-              activeMobilesMenuAnchor ? 'on-the-road-menu' : undefined
-            }
-            aria-expanded={Boolean(activeMobilesMenuAnchor)}
-            aria-haspopup='menu'
-            size='small'
-            variant={activeVehicles.length > 0 ? 'contained' : 'outlined'}
-            color='primary'
-            startIcon={<DirectionsBusIcon />}
-            endIcon={activeVehicles.length > 0 ? <ExpandMoreIcon /> : undefined}
-            onClick={e => {
-              if (activeVehicles.length > 0) {
-                setActiveMobilesMenuAnchor(e.currentTarget)
-              }
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 1,
+              minWidth: 0
             }}
-            sx={{ flexShrink: 0 }}
           >
-            On the road ({activeVehicles.length})
-          </Button>
-
-          {trackedMobile && (
-            <Chip
+            <Button
+              id='on-the-road-button'
+              aria-controls={
+                activeMobilesMenuAnchor ? 'on-the-road-menu' : undefined
+              }
+              aria-expanded={Boolean(activeMobilesMenuAnchor)}
+              aria-haspopup='menu'
               size='small'
-              color='secondary'
-              label={trackedMobile.getDisplayTitle(trackedAuthority, ': ')}
-              onClick={() => openMobileTracker(trackedMobile.id)}
-              onDelete={() =>
-                dispatchView({
-                  type: 'SetMobileLibraryDialog',
-                  mobileLibraryDialogOpen: false
-                })}
-            />
-          )}
-        </Box>
+              variant={activeVehicles.length > 0 ? 'contained' : 'outlined'}
+              color='primary'
+              startIcon={<DirectionsBusIcon />}
+              endIcon={
+                activeVehicles.length > 0 ? <ExpandMoreIcon /> : undefined
+              }
+              onClick={e => {
+                if (activeVehicles.length > 0) {
+                  setActiveMobilesMenuAnchor(e.currentTarget)
+                }
+              }}
+              sx={{ flexShrink: 0 }}
+            >
+              On the road ({activeVehicles.length})
+            </Button>
 
-        <Tooltip title='Map layers & settings' describeChild>
-          <Button
-            size='small'
-            variant='outlined'
-            startIcon={<LayersIcon />}
-            onClick={() =>
-              dispatchView({
-                type: 'SetMapSettingsDialog',
-                mapSettingsDialogOpen: true
-              })}
-            sx={{ flexShrink: 0 }}
-          >
-            Layers
-          </Button>
-        </Tooltip>
-      </Paper>
+            {trackedMobile && (
+              <Chip
+                size='small'
+                color='secondary'
+                label={trackedMobile.getDisplayTitle(trackedAuthority, ': ')}
+                onClick={() => openMobileTracker(trackedMobile.id)}
+                onDelete={() =>
+                  dispatchView({
+                    type: 'SetMobileLibraryDialog',
+                    mobileLibraryDialogOpen: false
+                  })}
+              />
+            )}
+          </Box>
+
+          <Tooltip title='Map layers & settings' describeChild>
+            <Button
+              size='small'
+              variant='outlined'
+              startIcon={<LayersIcon />}
+              onClick={() =>
+                dispatchView({
+                  type: 'SetMapSettingsDialog',
+                  mapSettingsDialogOpen: true
+                })}
+              sx={{ flexShrink: 0 }}
+            >
+              Layers
+            </Button>
+          </Tooltip>
+        </Toolbar>
+      </AppBar>
 
       <Menu
         id='on-the-road-menu'
@@ -712,100 +695,6 @@ const MobileMap = () => {
         ))}
       </Menu>
 
-      {/* Selected stop info card overlay positioned top-left below the full-width status bar */}
-      {currentStop && (stopDialogOpen || currentStopId === currentStop.id) && (
-        <Paper
-          elevation={0}
-          aria-label={`Stop details on map for ${currentStop.name}`}
-          sx={theme => ({
-            position: 'absolute',
-            top: 66,
-            left: 12,
-            right: { xs: 12, sm: 'auto' },
-            width: { sm: 320 },
-            zIndex: 8,
-            p: 1.75,
-            borderRadius: 1,
-            backgroundColor: theme.palette.background.paper,
-            boxShadow: `0 6px 20px ${alpha(theme.palette.text.primary, 0.14)}`
-          })}
-        >
-          <Stack
-            direction='row'
-            spacing={1}
-            sx={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
-          >
-            <Box sx={{ minWidth: 0 }}>
-              <Typography variant='caption' sx={{ color: 'primary.main' }}>
-                {currentStop.localAuthorityName}
-                {currentStop.community ? ` • ${currentStop.community}` : ''}
-              </Typography>
-              <Typography
-                variant='h6'
-                sx={{ fontSize: '1rem', lineHeight: 1.25 }}
-              >
-                {currentStop.name}
-              </Typography>
-            </Box>
-            <IconButton
-              size='small'
-              aria-label='Close stop info on map'
-              onClick={() => {
-                dispatchView({ type: 'SetStopDialog', stopDialogOpen: false })
-                dispatchSearch({ type: 'SetCurrentStop', currentStopId: null })
-              }}
-            >
-              <CloseIcon fontSize='small' />
-            </IconButton>
-          </Stack>
-
-          {currentStop.nextVisitFormatted && (
-            <Stack
-              direction='row'
-              spacing={0.5}
-              sx={{ alignItems: 'center', mt: 0.75 }}
-            >
-              <CalendarTodayIcon
-                sx={{ fontSize: '0.85rem', color: 'text.secondary' }}
-              />
-              <Typography variant='body2' sx={{ fontSize: '0.82rem' }}>
-                Next: <strong>{currentStop.nextVisitFormatted}</strong>
-              </Typography>
-            </Stack>
-          )}
-
-          <Stack
-            direction='row'
-            spacing={1}
-            sx={{
-              mt: 1.25,
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}
-          >
-            <Button
-              size='small'
-              variant='contained'
-              color='primary'
-              endIcon={<ExpandMoreIcon />}
-              onClick={expandStopDetailsInList}
-            >
-              More details
-            </Button>
-            {currentStop.mobileIds?.[0] && (
-              <Button
-                size='small'
-                variant='outlined'
-                startIcon={<DirectionsBusIcon />}
-                onClick={() => openMobileTracker(currentStop.mobileIds[0])}
-              >
-                Track van
-              </Button>
-            )}
-          </Stack>
-        </Paper>
-      )}
-
       {/* Interactive Mobile Tracker overlay when a mobile library is clicked */}
       {trackedMobile && (
         <MobileTracker
@@ -817,7 +706,10 @@ const MobileMap = () => {
             stopModel.getStopById(stopId).then(s => {
               if (s && s.id) {
                 dispatchSearch({ type: 'SetCurrentStop', currentStop: s })
-                dispatchView({ type: 'SetStopDialog', stopDialogOpen: true })
+                dispatchView({
+                  type: 'SetStopExpanded',
+                  stopDetailsExpanded: false
+                })
                 if (s.longitude != null && s.latitude != null) {
                   dispatchView({
                     type: 'FlyTo',

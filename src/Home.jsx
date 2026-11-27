@@ -1,14 +1,15 @@
 import React from 'react'
 
 import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
 
 import MobileMap from './MobileMap'
 import Search from './Search'
 import Stops from './Stops'
 
 /**
- * Unified single-page workspace pairing the stop search and expandable stop cards
- * panel alongside the interactive mobile library map and live vehicle tracker.
+ * Map-first workspace pairing the stop search and expandable stop list with the
+ * interactive mobile library map and live vehicle tracker.
  *
  * @returns {JSX.Element} Home page component.
  */
@@ -16,34 +17,51 @@ const Home = () => {
   return (
     <Box
       sx={{
-        display: 'flex',
-        flexDirection: { xs: 'column', md: 'row' },
-        gap: 2.5,
-        alignItems: 'stretch',
-        minHeight: { md: 'calc(100vh - 88px)' }
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        minHeight: 0,
+        overflow: 'hidden'
       }}
     >
+      <MobileMap />
       <Box
         sx={{
-          width: { xs: '100%', md: 420, lg: 450 },
-          flexShrink: 0,
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 2
+          position: 'absolute',
+          inset: 0,
+          pointerEvents: 'none'
         }}
       >
-        <Search />
-        <Stops />
-      </Box>
-      <Box
-        sx={{
-          flexGrow: 1,
-          minWidth: 0,
-          display: 'flex',
-          minHeight: { xs: 460, md: 'auto' }
-        }}
-      >
-        <MobileMap />
+        <Paper
+          component='section'
+          aria-label='Search and mobile library stops'
+          elevation={0}
+          sx={theme => ({
+            position: 'absolute',
+            left: { xs: 12, md: 16 },
+            right: { xs: 12, md: 'auto' },
+            top: { xs: 52, md: 'auto' },
+            bottom: { xs: 'auto', md: 16 },
+            zIndex: 4,
+            width: { xs: 'auto', sm: 360, md: 420 },
+            height: { xs: 'min(42dvh, 340px)', md: 'calc(100% - 80px)' },
+            maxHeight: { xs: 'min(42dvh, 340px)', md: 'calc(100% - 80px)' },
+            minHeight: { xs: 220, md: 0 },
+            display: 'flex',
+            flexDirection: 'column',
+            overflow: 'hidden',
+            borderRadius: 1,
+            p: { xs: 1.5, md: 2 },
+            backgroundColor: theme.palette.background.paper,
+            boxShadow: theme.custom.floatingShadow,
+            pointerEvents: 'auto'
+          })}
+        >
+          <Search />
+          <Box sx={{ flexGrow: 1, minHeight: 0 }}>
+            <Stops />
+          </Box>
+        </Paper>
       </Box>
     </Box>
   )

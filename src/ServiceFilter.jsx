@@ -22,6 +22,10 @@ import * as localAuthoritiesModel from './models/localAuthorities'
 import * as mobilesModel from './models/mobiles'
 import * as routesModel from './models/routes'
 
+const ActiveFilterChip = ({ label, onDelete }) => (
+  <Chip onDelete={onDelete} label={label} sx={{ minHeight: 36 }} />
+)
+
 /**
  * Full-width aligned cascading filter controls allowing users to filter by
  * local library authority, mobile library vehicle, and route.
@@ -90,13 +94,9 @@ const Filters = () => {
 
   const chooseMobile = (localAuthorityId, mobileId) => {
     dispatchSearch({ type: 'FilterByMobile', localAuthorityId, mobileId })
-    dispatchSearch({
-      type: 'SetCurrentMobileLibrary',
-      mobileLibraryId: mobileId
-    })
     dispatchView({
       type: 'SetMobileLibraryDialog',
-      mobileLibraryDialogOpen: true
+      mobileLibraryDialogOpen: false
     })
     setMobileMenuAnchor(null)
   }
@@ -177,10 +177,9 @@ const Filters = () => {
             </Button>
             )
           : (
-            <Chip
+            <ActiveFilterChip
               onDelete={() => dispatchSearch({ type: 'ClearAll' })}
               label={localAuthorityLookup[localAuthorityFilter[0]]?.name}
-              sx={{ minHeight: 36 }}
             />
             )}
 
@@ -205,10 +204,9 @@ const Filters = () => {
               </Button>
               )
             : (
-              <Chip
+              <ActiveFilterChip
                 onDelete={() => dispatchSearch({ type: 'ClearMobileFilter' })}
                 label={mobileLookup[mobileFilter[0]]?.name}
-                sx={{ minHeight: 36 }}
               />
               ))}
 
@@ -231,10 +229,9 @@ const Filters = () => {
               </Button>
               )
             : (
-              <Chip
+              <ActiveFilterChip
                 onDelete={() => dispatchSearch({ type: 'ClearRouteFilter' })}
                 label={routeLookup[routeFilter[0]]?.name}
-                sx={{ minHeight: 36 }}
               />
               ))}
       </Stack>

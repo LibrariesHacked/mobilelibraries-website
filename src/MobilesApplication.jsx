@@ -1,5 +1,11 @@
 import React, { Suspense, lazy, useEffect } from 'react'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import {
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
+  useLocation
+} from 'react-router-dom'
 
 import Box from '@mui/material/Box'
 import Container from '@mui/material/Container'
@@ -28,6 +34,60 @@ const ACTIVE_POLL_INTERVAL_MS = 30000
 const IDLE_POLL_INTERVAL_MS = 300000
 
 /**
+ * Route-aware application layout that reserves the full viewport for the home map.
+ *
+ * @returns {JSX.Element} Application layout element.
+ */
+const ApplicationLayout = () => {
+  const { pathname } = useLocation()
+  const isHome = pathname === '/'
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        minHeight: isHome ? 0 : '100vh',
+        height: isHome ? '100dvh' : undefined,
+        overflow: isHome ? 'hidden' : undefined
+      }}
+    >
+      <Container
+        component='main'
+        maxWidth={isHome ? false : 'xl'}
+        disableGutters={isHome}
+        sx={{
+          flexGrow: 1,
+          py: isHome ? 0 : 2,
+          height: isHome ? '100%' : undefined,
+          minHeight: isHome ? 0 : undefined
+        }}
+      >
+        <Suspense fallback={null}>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/mobiles' element={<Navigate to='/' replace />} />
+            <Route path='/map' element={<Navigate to='/' replace />} />
+            <Route
+              path='/accessibility'
+              element={<MemoMarkdownPage page={Accessibility} />}
+            />
+            <Route path='/data' element={<MemoMarkdownPage page={Data} />} />
+            <Route
+              path='/privacy'
+              element={<MemoMarkdownPage page={Privacy} />}
+            />
+          </Routes>
+        </Suspense>
+      </Container>
+      {!isHome && <Footer />}
+      <TripDetails />
+      <Notification />
+    </Box>
+  )
+}
+
+/**
  * Root application shell managing initial data loading, adaptive live location polling,
  * routing, and global notification/trip components.
  *
@@ -43,6 +103,7 @@ const MobilesApplication = () => {
     const scheduleNextPoll = locations => {
       if (!isMounted) return
       clearTimeout(timeoutId)
+      if (document.hidden) return
       const hasActiveVehicles =
         Array.isArray(locations) && locations.some(loc => loc.isActive())
       const delay = hasActiveVehicles
@@ -52,10 +113,7 @@ const MobilesApplication = () => {
     }
 
     async function pollMobileLocations () {
-      if (document.hidden) {
-        timeoutId = setTimeout(pollMobileLocations, ACTIVE_POLL_INTERVAL_MS)
-        return
-      }
+      if (document.hidden) return
       const locations = await mobilesModel.getMobileLocations()
       if (!isMounted) return
       dispatchApplicationState({
@@ -107,39 +165,7 @@ const MobilesApplication = () => {
 
   return (
     <BrowserRouter>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          minHeight: '100vh'
-        }}
-      >
-        <Container
-          component='main'
-          maxWidth='xl'
-          sx={{ flexGrow: 1, py: 2 }}
-        >
-          <Suspense fallback={null}>
-            <Routes>
-              <Route path='/' element={<Home />} />
-              <Route path='/mobiles' element={<Navigate to='/' replace />} />
-              <Route path='/map' element={<Navigate to='/' replace />} />
-              <Route
-                path='/accessibility'
-                element={<MemoMarkdownPage page={Accessibility} />}
-              />
-              <Route path='/data' element={<MemoMarkdownPage page={Data} />} />
-              <Route
-                path='/privacy'
-                element={<MemoMarkdownPage page={Privacy} />}
-              />
-            </Routes>
-          </Suspense>
-        </Container>
-        <Footer />
-        <TripDetails />
-        <Notification />
-      </Box>
+      <ApplicationLayout />
     </BrowserRouter>
   )
 }

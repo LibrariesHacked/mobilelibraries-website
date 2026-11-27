@@ -8,11 +8,13 @@ import CardContent from '@mui/material/CardContent'
 import Chip from '@mui/material/Chip'
 import CircularProgress from '@mui/material/CircularProgress'
 import Collapse from '@mui/material/Collapse'
+import IconButton from '@mui/material/IconButton'
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import Typography from '@mui/material/Typography'
 
 import CalendarTodayIcon from '@mui/icons-material/CalendarTodayRounded'
+import CloseIcon from '@mui/icons-material/CloseRounded'
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBusRounded'
 import ExpandLessIcon from '@mui/icons-material/ExpandLessRounded'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMoreRounded'
@@ -23,6 +25,7 @@ import { useSearchStateValue } from './context/searchState'
 import { useViewStateValue } from './context/viewState'
 
 import ExternalLink from './ExternalLink'
+import ServiceFilter from './ServiceFilter'
 import { formatTimeWindow } from './helpers/dates'
 import * as stopModel from './models/stops'
 import * as urlHelper from './helpers/url'
@@ -36,12 +39,13 @@ const PAGE_SIZE = 6
  *
  * @param {Object} props - Component props.
  * @param {import('./models/stops').Stop} props.stop - Stop model instance.
+ * @param {boolean} props.selected - Whether this stop is the current map selection.
  * @param {boolean} props.expanded - Whether the full stop details are expanded.
  * @param {(stop: import('./models/stops').Stop) => void} props.onToggle - Handler when the stop card is clicked.
  * @param {(mobileId: number) => void} [props.onSelectMobile] - Handler to open the mobile tracker for a visiting vehicle.
  * @returns {JSX.Element} StopCard component.
  */
-const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
+const StopCard = React.memo(({ stop, selected, expanded, onToggle, onSelectMobile }) => {
   const addressLine = [stop.address, stop.postcode].filter(Boolean).join(', ')
   const scheduleSummary = (stop.routeFrequencyDescriptions || [])
     .map((desc, idx) => {
@@ -56,8 +60,15 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
   )
 
   return (
-    <Card id={`stop-card-${stop.id}`}>
-      <CardActionArea onClick={() => onToggle(stop)} aria-expanded={expanded}>
+    <Card
+      id={`stop-card-${stop.id}`}
+      sx={selected ? { backgroundColor: 'background.subtle' } : undefined}
+    >
+      <CardActionArea
+        onClick={() => onToggle(stop)}
+        aria-expanded={expanded}
+        sx={{ px: { xs: 1.25, sm: 2 }, py: { xs: 1, sm: 1.5 } }}
+      >
         <Stack
           direction='row'
           spacing={1}
@@ -67,19 +78,33 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
             <Stack
               direction='row'
               spacing={0.75}
-              sx={{ alignItems: 'center', mb: 0.25, flexWrap: 'wrap' }}
+              sx={{
+                alignItems: 'center',
+                mb: { xs: 0, sm: 0.25 },
+                flexWrap: 'wrap'
+              }}
               useFlexGap
             >
               <Typography
                 variant='caption'
-                sx={{ color: 'primary.main', fontWeight: 800 }}
+                noWrap
+                sx={{
+                  color: 'primary.main',
+                  fontWeight: 800,
+                  display: { xs: 'none', sm: 'block' }
+                }}
               >
                 {stop.localAuthorityName}
               </Typography>
               {stop.community && (
                 <Typography
                   variant='caption'
-                  sx={{ color: 'text.primary', fontWeight: 700 }}
+                  noWrap
+                  sx={{
+                    color: 'text.primary',
+                    fontWeight: 700,
+                    display: { xs: 'none', sm: 'block' }
+                  }}
                 >
                   • {stop.community}
                 </Typography>
@@ -89,11 +114,24 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
                   size='small'
                   color='secondary'
                   label={`${metersToMiles(stop.distance)} mi`}
-                  sx={{ minHeight: 20, height: 20, fontSize: '0.72rem' }}
+                  sx={{
+                    minHeight: 20,
+                    height: 20,
+                    fontSize: '0.72rem',
+                    display: { xs: 'none', sm: 'flex' }
+                  }}
                 />
               )}
             </Stack>
-            <Typography variant='h6' component='h3' sx={{ lineHeight: 1.25 }}>
+            <Typography
+              variant='h6'
+              component='h3'
+              noWrap
+              sx={{
+                lineHeight: 1.25,
+                fontSize: { xs: '1rem', sm: '1.25rem' }
+              }}
+            >
               {stop.name}
             </Typography>
             {stop.nextVisitFormatted && (
@@ -106,9 +144,9 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
                   sx={{ fontSize: '0.88rem', color: 'primary.main' }}
                 />
                 <Typography
-                  variant='body2'
+                  variant='caption'
                   sx={{
-                    fontSize: '0.85rem',
+                    fontSize: { xs: '0.75rem', sm: '0.85rem' },
                     fontWeight: 600,
                     color: 'text.primary'
                   }}
@@ -127,10 +165,37 @@ const StopCard = React.memo(({ stop, expanded, onToggle, onSelectMobile }) => {
       <Collapse in={expanded} timeout='auto' unmountOnExit>
         <CardContent
           sx={theme => ({
+            p: { xs: 1.25, sm: 2 },
             borderTop: `2px solid ${theme.palette.background.default}`
           })}
         >
-          <Stack spacing={1.25}>
+          <Stack spacing={{ xs: 1, sm: 1.25 }}>
+            {(stop.localAuthorityName || stop.community || stop.distance != null) && (
+              <Stack
+                direction='row'
+                spacing={0.75}
+                useFlexGap
+                sx={{
+                  display: { xs: 'flex', sm: 'none' },
+                  alignItems: 'center',
+                  flexWrap: 'wrap'
+                }}
+              >
+                <Typography variant='caption' sx={{ fontWeight: 700 }}>
+                  {[stop.localAuthorityName, stop.community]
+                    .filter(Boolean)
+                    .join(' • ')}
+                </Typography>
+                {stop.distance != null && (
+                  <Chip
+                    size='small'
+                    color='secondary'
+                    label={`${metersToMiles(stop.distance)} mi away`}
+                    sx={{ minHeight: 20, height: 20, fontSize: '0.72rem' }}
+                  />
+                )}
+              </Stack>
+            )}
             {addressLine && (
               <Box>
                 <Typography
@@ -354,19 +419,21 @@ const Stops = () => {
         setTotalCount(res.totalRowCount || 0)
         setLoadingMobileStops(false)
 
-        // When a service or route filter is newly selected, pan the map to the first matching stop
+        // When a filter is newly selected, pan the map to the first matching stop
         if (
           filterChanged &&
           res.stops.length > 0 &&
-          (localAuthorityFilter.length > 0 || routeFilter.length > 0) &&
-          mobileFilter.length === 0
+          (localAuthorityFilter.length > 0 ||
+            mobileFilter.length > 0 ||
+            routeFilter.length > 0)
         ) {
           const first = res.stops[0]
           if (first.longitude != null && first.latitude != null) {
             dispatchView({
               type: 'FlyTo',
               mapFlyToPosition: [first.longitude, first.latitude],
-              mapZoom: routeFilter.length > 0 ? 13 : 10
+              mapZoom:
+                routeFilter.length > 0 || mobileFilter.length > 0 ? 13 : 10
             })
           }
         }
@@ -378,8 +445,6 @@ const Stops = () => {
   }, [
     effectivePage,
     filterSignature,
-    filterChanged,
-    page,
     searchPosition,
     searchDistance,
     localAuthorityFilter,
@@ -401,11 +466,6 @@ const Stops = () => {
         type: 'SetStopExpanded',
         stopDetailsExpanded: nextExpanded
       })
-      dispatchView({
-        type: 'SetStopDialog',
-        stopDialogOpen: true
-      })
-
       if (stop.longitude != null && stop.latitude != null) {
         dispatchView({
           type: 'FlyTo',
@@ -442,7 +502,15 @@ const Stops = () => {
   }, [currentStop, mobileStops])
 
   return (
-    <Box>
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100%',
+        minHeight: 0,
+        overflow: 'hidden'
+      }}
+    >
       <Stack
         direction='row'
         sx={{
@@ -455,39 +523,74 @@ const Stops = () => {
         <Typography variant='subtitle2'>
           Stops {totalCount > 0 ? `(${totalCount.toLocaleString()})` : ''}
         </Typography>
-        {loadingMobileStops && (
-          <CircularProgress size={16} aria-label='Loading stops' />
-        )}
+        <Stack direction='row' spacing={0.5} sx={{ alignItems: 'center' }}>
+          {loadingMobileStops && (
+            <CircularProgress size={16} aria-label='Loading stops' />
+          )}
+          {currentStop && (
+            <IconButton
+              size='small'
+              aria-label={`Clear selected stop ${currentStop.name}`}
+              onClick={() => {
+                dispatchSearch({
+                  type: 'SetCurrentStop',
+                  currentStopId: null
+                })
+                dispatchView({
+                  type: 'SetStopExpanded',
+                  stopDetailsExpanded: false
+                })
+              }}
+            >
+              <CloseIcon fontSize='small' />
+            </IconButton>
+          )}
+        </Stack>
       </Stack>
 
-      {displayedStops.length > 0
-        ? (
-          <Stack spacing={1}>
-            {displayedStops.map(stop => (
-              <StopCard
-                key={`stop_${stop.id}`}
-                stop={stop}
-                expanded={
-                  currentStopId === stop.id && Boolean(stopDetailsExpanded)
-                }
-                onToggle={handleToggleStop}
-                onSelectMobile={handleSelectMobile}
-              />
-            ))}
-          </Stack>
-          )
-        : !loadingMobileStops
-            ? (
-              <Card sx={{ p: 3, textAlign: 'center' }}>
-                <Typography variant='body2'>
-                  No mobile library stops match your current search.
-                </Typography>
-              </Card>
-              )
-            : null}
+      <Box sx={{ px: 0.25, mb: 1, flexShrink: 0 }}>
+        <ServiceFilter />
+      </Box>
+
+      <Box sx={{ flexGrow: 1, minHeight: 0, overflowY: 'auto', px: 0.25 }}>
+        {displayedStops.length > 0
+          ? (
+            <Stack spacing={1}>
+              {displayedStops.map(stop => (
+                <StopCard
+                  key={`stop_${stop.id}`}
+                  stop={stop}
+                  selected={currentStopId === stop.id}
+                  expanded={
+                    currentStopId === stop.id && Boolean(stopDetailsExpanded)
+                  }
+                  onToggle={handleToggleStop}
+                  onSelectMobile={handleSelectMobile}
+                />
+              ))}
+            </Stack>
+            )
+          : !loadingMobileStops
+              ? (
+                <Card sx={{ p: 3, textAlign: 'center' }}>
+                  <Typography variant='body2'>
+                    No mobile library stops match your current search.
+                  </Typography>
+                </Card>
+                )
+              : null}
+      </Box>
 
       {totalPages > 1 && (
-        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            flexShrink: 0,
+            mt: 1,
+            pb: 0.5
+          }}
+        >
           <Pagination
             count={totalPages}
             page={effectivePage + 1}

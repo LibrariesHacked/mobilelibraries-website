@@ -3,11 +3,9 @@ import React from 'react'
 import Box from '@mui/material/Box'
 
 import PostcodeSearch from './PostcodeSearch'
-import ServiceFilter from './ServiceFilter'
 
 /**
- * Clean, aligned header section combining the logo artwork,
- * the Geovation GB Names / postcode search input, and service filters.
+ * Branded search header for the stop panel.
  *
  * @returns {JSX.Element} Search panel component.
  */
@@ -17,14 +15,16 @@ const Search = () => {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        gap: 1.25
+        gap: 1.25,
+        flexShrink: 0,
+        mb: 1.5
       }}
     >
       <Box
         component='h1'
         sx={{
           m: 0,
-          display: 'flex',
+          display: { xs: 'none', md: 'flex' },
           justifyContent: 'center'
         }}
       >
@@ -34,16 +34,14 @@ const Search = () => {
           alt='MobileLibraries — Opposite the willow tree'
           sx={{
             width: '100%',
-            maxWidth: 350,
+            maxWidth: 320,
             height: 'auto',
-            display: 'block',
             filter: 'brightness(1.021)',
             mixBlendMode: 'multiply'
           }}
         />
       </Box>
       <PostcodeSearch />
-      <ServiceFilter />
     </Box>
   )
 }

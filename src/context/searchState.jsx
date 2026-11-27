@@ -76,6 +76,8 @@ const searchReducer = (state, action) => {
       return {
         ...state,
         ...emptySearchLocation,
+        currentStopId: null,
+        currentStop: null,
         localAuthorityFilter: [action.localAuthorityId],
         mobileFilter: [],
         routeFilter: []
@@ -84,6 +86,8 @@ const searchReducer = (state, action) => {
       return {
         ...state,
         ...emptySearchLocation,
+        currentStopId: null,
+        currentStop: null,
         localAuthorityFilter: [action.localAuthorityId],
         mobileFilter: [action.mobileId],
         routeFilter: []
@@ -92,18 +96,24 @@ const searchReducer = (state, action) => {
       return {
         ...state,
         ...emptySearchLocation,
+        currentStopId: null,
+        currentStop: null,
         routeFilter: [action.routeId]
       }
     case 'ClearAll':
       return {
         ...state,
         ...emptyFilters,
-        ...emptySearchLocation
+        ...emptySearchLocation,
+        currentStopId: null,
+        currentStop: null
       }
     case 'ClearMobileFilter':
       return {
         ...state,
         ...emptySearchLocation,
+        currentStopId: null,
+        currentStop: null,
         mobileFilter: [],
         routeFilter: []
       }
@@ -111,6 +121,8 @@ const searchReducer = (state, action) => {
       return {
         ...state,
         ...emptySearchLocation,
+        currentStopId: null,
+        currentStop: null,
         routeFilter: []
       }
     default:
