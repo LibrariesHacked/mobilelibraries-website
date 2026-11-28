@@ -48,6 +48,39 @@ export const getPostcode = async postcode => {
 }
 
 /**
+ * Creates a MapLibre bounds tuple from a collection of `[longitude, latitude]` coordinates.
+ *
+ * @param {number[][]} coordinates - Coordinate pairs.
+ * @returns {number[][]|null} `[[west, south], [east, north]]` bounds, or `null` if empty.
+ */
+export const getCoordinateBounds = coordinates => {
+  const validCoordinates = (coordinates || []).filter(
+    pair =>
+      Array.isArray(pair) &&
+      Number.isFinite(pair[0]) &&
+      Number.isFinite(pair[1])
+  )
+  if (validCoordinates.length === 0) return null
+
+  return validCoordinates.reduce(
+    (bounds, [longitude, latitude]) => [
+      [
+        Math.min(bounds[0][0], longitude),
+        Math.min(bounds[0][1], latitude)
+      ],
+      [
+        Math.max(bounds[1][0], longitude),
+        Math.max(bounds[1][1], latitude)
+      ]
+    ],
+    [
+      [Infinity, Infinity],
+      [-Infinity, -Infinity]
+    ]
+  )
+}
+
+/**
  * Validates whether a string matches standard UK postcode format.
  *
  * @param {string} postcode - Postcode string to validate.

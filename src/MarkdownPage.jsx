@@ -73,14 +73,34 @@ const options = {
 const MarkdownPage = props => {
   const { page } = props
   const [pageText, setPageText] = useState('')
+  const [pageStatus, setPageStatus] = useState('loading')
 
   useEffect(() => {
+    const controller = new AbortController()
+
     async function fetchPage () {
-      const pageData = await window.fetch(page)
-      const pageText = await pageData.text()
-      setPageText(pageText)
+      try {
+        const pageData = await window.fetch(page, {
+          signal: controller.signal
+        })
+        if (!pageData.ok) {
+          setPageStatus('error')
+          return
+        }
+
+        const content = await pageData.text()
+        setPageText(content)
+        setPageStatus('loaded')
+      } catch {
+        if (!controller.signal.aborted) setPageStatus('error')
+      }
     }
+
+    setPageText('')
+    setPageStatus('loading')
     fetchPage()
+
+    return () => controller.abort()
   }, [page])
 
   return (
@@ -91,9 +111,19 @@ const MarkdownPage = props => {
         borderRadius: 1
       }}
     >
-      <ReactMarkdown options={options} {...props}>
-        {pageText}
-      </ReactMarkdown>
+      {pageStatus === 'error'
+        ? (
+          <Typography role='alert' variant='body2'>
+            This page couldn't be loaded. Please try again later.
+          </Typography>
+          )
+        : pageStatus === 'loading'
+          ? (
+            <Typography role='status' variant='body2'>Loading page…</Typography>
+            )
+          : (
+            <ReactMarkdown options={options}>{pageText}</ReactMarkdown>
+            )}
     </Paper>
   )
 }

@@ -119,11 +119,14 @@ const MobileTracker = ({
       sx={theme => ({
         position: 'absolute',
         top: { xs: 'auto', sm: 64 },
-        bottom: { xs: 16, sm: 'auto' },
+        bottom: { xs: 72, sm: 'auto' },
         left: { xs: 16, sm: 'auto' },
         right: 16,
         width: { sm: 360, md: 380 },
-        maxHeight: { xs: 'min(55dvh, 420px)', sm: 'calc(100% - 80px)' },
+        maxHeight: {
+          xs: 'min(55dvh, 420px, calc(100% - max(min(42dvh, 340px), 220px) - 140px))',
+          sm: 'calc(100% - 80px)'
+        },
         display: 'flex',
         flexDirection: 'column',
         zIndex: 10,

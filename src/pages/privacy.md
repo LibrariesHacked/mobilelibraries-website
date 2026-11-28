@@ -1,15 +1,15 @@
 ## Privacy
 
-These pages were created by Dave, Founder of [Libraries Hacked](https://www.librarieshacked.org). You can [contact me via email](mailto:info@librarieshacked.org) should you have any questions.
+This website is run by Dave, founder of [Libraries Hacked](https://www.librarieshacked.org). If you have questions, [email us](mailto:info@librarieshacked.org).
 
-### GitHub pages
+### GitHub Pages
 
-This site is hosted using [GitHub pages](https://pages.github.com/). Although this site does not directly record any user data, it is important to be aware that website hosting providers can store web traffic data that could include information such as your IP address.
+This site is hosted using [GitHub Pages](https://pages.github.com/). Like most web hosts, GitHub may log visitors' IP addresses and related technical information for security purposes.
 
-GitHub has its own [privacy statement](https://help.github.com/en/github/site-policy/github-privacy-statement). The majority of this is in reference to logged-in services within GitHub, but there is a reference to GitHub pages sites in this policy. In addition to advising that GitHub pages sites should have their own privacy policy (this one), it informs us that logs of visitor IP addresses can be used for security purposes. This does not include user tracking or marketing. A quote of this is displayed below, but a maintained version will be on the GitHub site.
+GitHub's [privacy statement](https://help.github.com/en/github/site-policy/github-privacy-statement) explains that visitor IP addresses may be logged to protect its services. The quote below is from that statement; see GitHub's site for the current version.
 
 > “Please note that GitHub may collect Technical Information from visitors to your GitHub Pages website, including logs of visitor IP addresses, to maintain the security and integrity of the website and service.”
 
-### Tracking and analytics
+### Data and external services
 
-There are no marketing or analytics trackers set on this website. We do not store your personal data or usage data.
+We do not use advertising or analytics trackers. When you use your device's location, your browser asks for permission if it has not already been granted. Your coordinates are sent to the services that find nearby stops and a postcode. If you search for a postcode, that postcode is sent to a lookup service. The map and library information also come from external services; these services may receive your IP address and the details needed to answer your request. Check those services' privacy policies for information about how they handle requests.

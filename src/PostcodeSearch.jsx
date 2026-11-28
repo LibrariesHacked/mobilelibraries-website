@@ -113,8 +113,7 @@ const PostcodeSearch = () => {
     const alnum = trimmed.replace(/[^a-z0-9]/gi, '')
     if (
       alnum.length < 3 ||
-      trimmed === selectedLabelRef.current ||
-      geoHelper.validatePostcode(trimmed)
+      trimmed === selectedLabelRef.current
     ) {
       setSuggestions([])
       setDropdownOpen(false)
@@ -244,9 +243,13 @@ const PostcodeSearch = () => {
         const upper = trimmed.toUpperCase()
         const service = await geoHelper.getPostcode(upper)
         if (!service?.location?.length) {
-          throw new Error('Postcode not found')
+          dispatchView({
+            type: 'ShowNotification',
+            notificationMessage: "We couldn't find that postcode"
+          })
+        } else {
+          await applySearchLocation(upper, service.location)
         }
-        await applySearchLocation(upper, service.location)
       } catch (e) {
         dispatchView({
           type: 'ShowNotification',
@@ -271,7 +274,13 @@ const PostcodeSearch = () => {
       const first = places.find(
         p => Number.isFinite(p.latitude) && Number.isFinite(p.longitude)
       )
-      if (!first) throw new Error('Place not found')
+      if (!first) {
+        dispatchView({
+          type: 'ShowNotification',
+          notificationMessage: "We couldn't find a matching place or postcode"
+        })
+        return
+      }
       const label = [
         ...new Set([first.name, first.locality, first.region].filter(Boolean))
       ].join(', ')
@@ -408,7 +417,7 @@ const PostcodeSearch = () => {
             zIndex: 30,
             borderRadius: 1,
             backgroundColor: theme.palette.background.paper,
-            boxShadow: `0 8px 24px ${alpha(theme.palette.text.primary, 0.14)}`,
+            boxShadow: theme.custom.floatingShadow,
             overflow: 'hidden'
           })}
         >

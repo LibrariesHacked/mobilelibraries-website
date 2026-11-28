@@ -56,7 +56,9 @@ export async function getAllLocalAuthorities () {
   try {
     const response = await apiGet('/localauthorities')
     if (response && Array.isArray(response.data) && response.data.length > 0) {
-      return response.data.map(la => new LocalAuthority().fromJson(la))
+      return response.data.map(la =>
+        new LocalAuthority().fromJson(la)
+      )
     }
   } catch (e) {}
   return []

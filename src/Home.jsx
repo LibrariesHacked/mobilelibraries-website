@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { lazy, Suspense } from 'react'
 
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 
-import MobileMap from './MobileMap'
 import Search from './Search'
 import Stops from './Stops'
+
+const MobileMap = lazy(() => import('./MobileMap'))
 
 /**
  * Map-first workspace pairing the stop search and expandable stop list with the
@@ -24,7 +25,19 @@ const Home = () => {
         overflow: 'hidden'
       }}
     >
-      <MobileMap />
+      <Suspense
+        fallback={
+          <Box
+            sx={{
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'background.default'
+            }}
+          />
+        }
+      >
+        <MobileMap />
+      </Suspense>
       <Box
         sx={{
           position: 'absolute',

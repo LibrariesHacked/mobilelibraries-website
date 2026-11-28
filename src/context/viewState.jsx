@@ -11,6 +11,8 @@ const initialViewState = {
   mapZoom: [6],
   mapPosition: [-1.8, 53.2],
   mapFlyToPosition: null,
+  mapFitBounds: null,
+  mapFitMaxZoom: 14,
   mapSettings: {
     authorityBoundary: false
   },
@@ -61,6 +63,12 @@ const viewReducer = (state, action) => {
         ...state,
         mapFlyToPosition: action.mapFlyToPosition,
         mapZoom: [action.mapZoom]
+      }
+    case 'FitBounds':
+      return {
+        ...state,
+        mapFitBounds: action.mapFitBounds,
+        mapFitMaxZoom: action.mapFitMaxZoom || 14
       }
     case 'ToggleLoadingPostcode':
       return { ...state, loadingPostcode: !state.loadingPostcode }

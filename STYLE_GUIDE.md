@@ -51,6 +51,8 @@ The colour palette is derived from the **MobileLibraries ("Opposite the willow t
   - Child controls inside a bordered container (such as the full-width top bar inside the map frame) are docked flush (`top: 0, left: 0, right: 0, borderRadius: 0`) with a translucent light background (`theme.custom.mapTopBar`) rather than drawing a second inner border.
 - **Soft Complementary Outlines (`theme.custom.outline`)**:
   - Where an outline is needed to frame a primary interactive area (the search text box and the map container), use `theme.custom.outline` (`2px solid alpha(palette.primary.light, 0.3)`), transitioning to `theme.custom.outlineHover` on hover and `theme.custom.outlineFocus` (`2px solid palette.primary.light`) on focus.
+- **Flat Surfaces**:
+  - Controls, menus, dialogs, and map overlays use no box shadows or elevation; this is enforced centrally by the theme shadow palette and component overrides.
 
 ---
 

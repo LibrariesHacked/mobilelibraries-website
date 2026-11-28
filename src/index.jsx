@@ -3,12 +3,14 @@ import { createRoot } from 'react-dom/client'
 
 import App from './App'
 
-import 'maplibre-gl/dist/maplibre-gl.css'
-
 const container = document.getElementById('root')
 const root = createRoot(container)
 root.render(<App />)
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.ready.then(registration => registration.unregister())
+  const unregisterServiceWorker = async () => {
+    const registration = await navigator.serviceWorker.ready
+    await registration.unregister()
+  }
+  unregisterServiceWorker()
 }

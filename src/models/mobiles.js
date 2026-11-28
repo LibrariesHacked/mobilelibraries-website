@@ -4,6 +4,7 @@ import {
   parseDate
 } from '../helpers/dates'
 import { apiGet } from '../helpers/url'
+import { isMobileOnRoad } from './mobileStatus.js'
 
 const STATUS_MESSAGES = {
   offRoad: 'Not out today',
@@ -245,6 +246,16 @@ export class MobileLocation {
       status && status.type !== 'offRoad' && status.type !== 'postRoute'
     )
   }
+
+  /**
+   * Returns whether the mobile library is currently travelling between scheduled stops.
+   *
+   * @param {ReturnType<MobileLocation['getStatus']>} [status=this.getStatus()] - Precomputed status.
+   * @returns {boolean} True if the vehicle is currently travelling on route.
+   */
+  isOnRoad (status = this.getStatus()) {
+    return isMobileOnRoad(status)
+  }
 }
 
 /**
@@ -291,7 +302,9 @@ export async function getMobileLocations () {
   try {
     const response = await apiGet('/mobiles/locations')
     if (response && Array.isArray(response.data) && response.data.length > 0) {
-      return response.data.map(ml => new MobileLocation().fromJson(ml))
+      return response.data.map(ml =>
+        new MobileLocation().fromJson(ml)
+      )
     }
   } catch (e) {}
   return []
@@ -310,7 +323,9 @@ export async function getMobilesNearest (location, distance) {
       `/mobiles/nearest?longitude=${location[0]}&latitude=${location[1]}&distance=${distance}`
     )
     if (response && Array.isArray(response.data) && response.data.length > 0) {
-      return response.data.map(m => new MobileNearestStop().fromJson(m))
+      return response.data.map(m =>
+        new MobileNearestStop().fromJson(m)
+      )
     }
   } catch (e) {}
   return []

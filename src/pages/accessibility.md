@@ -16,7 +16,7 @@ We've also made the website text as simple as possible to understand.
 
 We know some parts of this website are not fully accessible:
 
-- The map page is not fully accessible. The information on mobile library timetables is made available on two alternative pages, the stops page and the mobile library vans page.
+- The interactive map is not fully accessible. You can also use the search, filters, and on-page lists to browse stops and mobile libraries, although some map features may not be available without using the map.
 
 ### Technical information about this website's accessibility
 

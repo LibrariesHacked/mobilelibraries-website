@@ -44,7 +44,8 @@ let theme = createTheme({
     background: {
       default: '#FBF5E3',
       paper: '#FFFFFF',
-      subtle: '#F6EBC8'
+      subtle: '#EDF3E9',
+      detail: '#F7F9F5'
     },
     text: {
       primary: '#1F3A18',
@@ -90,7 +91,7 @@ theme = createTheme(theme, {
     outline: `2px solid ${alpha(theme.palette.primary.light, 0.3)}`,
     outlineHover: `2px solid ${alpha(theme.palette.primary.light, 0.55)}`,
     outlineFocus: `2px solid ${theme.palette.primary.light}`,
-    floatingShadow: `0 8px 24px ${alpha(theme.palette.text.primary, 0.14)}`,
+    floatingShadow: 'none',
     iconBadge: {
       width: 32,
       height: 32,
@@ -103,8 +104,8 @@ theme = createTheme(theme, {
       color: theme.palette.primary.main
     },
     mapTopBar: {
-      backgroundColor: alpha(theme.palette.background.default, 0.92),
-      backdropFilter: 'blur(6px)'
+      backgroundColor: `${alpha(theme.palette.background.default, 0.2)} !important`,
+      backdropFilter: 'blur(8px)'
     },
     fieldLabel: {
       display: 'block',
@@ -412,7 +413,7 @@ theme = createTheme(theme, {
           borderRadius: theme.shape.borderRadius,
           border: 'none',
           backgroundColor: theme.palette.background.paper,
-          boxShadow: `0 8px 24px ${alpha(theme.palette.text.primary, 0.14)}`,
+          boxShadow: 'none',
           marginTop: 6
         },
         list: {
@@ -466,7 +467,7 @@ theme = createTheme(theme, {
         paper: {
           borderRadius: theme.shape.borderRadius,
           border: 'none',
-          boxShadow: `0 12px 32px ${alpha(theme.palette.text.primary, 0.18)}`
+          boxShadow: 'none'
         }
       }
     },

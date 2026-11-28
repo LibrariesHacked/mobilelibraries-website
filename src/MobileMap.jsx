@@ -1,14 +1,25 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 
 import AppBar from '@mui/material/AppBar'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Chip from '@mui/material/Chip'
+import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
 import MenuItem from '@mui/material/MenuItem'
 import Tooltip from '@mui/material/Tooltip'
 import Toolbar from '@mui/material/Toolbar'
 import Typography from '@mui/material/Typography'
+
+import 'maplibre-gl/dist/maplibre-gl.css'
 
 import { setWorkerUrl } from 'maplibre-gl'
 import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url'
@@ -30,12 +41,14 @@ import { useViewStateValue } from './context/viewState'
 
 import MeAvatar from './MeAvatar'
 import MobileAvatar from './MobileAvatar'
-import MobileTracker from './MobileTracker'
-import MapSettings from './MapSettings'
-
+import * as geoHelper from './helpers/geo'
 import * as stopModel from './models/stops'
+import { getOtherMobiles } from './models/mobileStatus.js'
 import config from './helpers/config.json'
 import theme from './theme'
+
+const MobileTracker = lazy(() => import('./MobileTracker'))
+const MapSettings = lazy(() => import('./MapSettings'))
 
 setWorkerUrl(workerUrl)
 
@@ -43,11 +56,25 @@ const MAP_STYLE =
   'https://api.maptiler.com/maps/dataviz/style.json?key=1OK05AJqNta7xYzrG2kA'
 const LIBRARY_AUTHORITY_TILES = [config.libraryAuthorityTiles]
 const MOBILE_TILES = [config.mobileTiles]
-const INTERACTIVE_LAYER_IDS = ['stops-circle', 'trips-line']
+const INTERACTIVE_LAYER_IDS = ['stops-circle', 'trips-line', 'trips-label']
 const MAP_CONTAINER_STYLE = { width: '100%', height: '100%' }
 
 /** Client-side interpolation step interval (2s) along a vehicle's 60-second `routeSection`. */
 const INTERPOLATION_TICK_MS = 2000
+
+const MOBILE_MAP_PADDING = { top: 380, bottom: 36, left: 20, right: 20 }
+const DESKTOP_MAP_PADDING = { top: 76, bottom: 36, left: 450, right: 32 }
+
+const getMapPadding = map => {
+  const isMobileViewport = map.getContainer().clientWidth < 900
+  return isMobileViewport ? MOBILE_MAP_PADDING : DESKTOP_MAP_PADDING
+}
+
+const getMapCenterOffset = padding => {
+  const horizontalOffset = (padding.left - padding.right) / 2
+  const verticalOffset = (padding.top - padding.bottom) / 2
+  return [horizontalOffset, verticalOffset]
+}
 
 const ACTIVE_SECTION_PAINT = {
   'line-opacity': 0.9,
@@ -70,16 +97,55 @@ const AUTHORITY_FILL_PAINT = {
 
 const TRIPS_LINE_PAINT = {
   'line-color': theme.palette.warmNeutral.main,
-  'line-offset': ['interpolate', ['linear'], ['zoom'], 14, 1, 18, 4],
-  'line-opacity': 0.85,
-  'line-width': ['interpolate', ['linear'], ['zoom'], 14, 1, 18, 4],
+  'line-offset': ['interpolate', ['linear'], ['zoom'], 9, 0.5, 18, 4],
+  'line-opacity': 0.8,
+  'line-width': ['interpolate', ['linear'], ['zoom'], 9, 1, 18, 4],
   'line-dasharray': [2, 0.5]
 }
 
+const TRIPS_NAME_LAYOUT = {
+  'symbol-placement': 'line',
+  'symbol-spacing': 350,
+  'text-field': [
+    'case',
+    [
+      'all',
+      ['has', 'origin_stop_name'],
+      ['has', 'destination_stop_name']
+    ],
+    [
+      'concat',
+      ['get', 'origin_stop_name'],
+      ' → ',
+      ['get', 'destination_stop_name']
+    ],
+    [
+      'coalesce',
+      ['get', 'route_name'],
+      ['get', 'name'],
+      ['get', 'origin_name'],
+      [
+        'to-string',
+        ['coalesce', ['get', 'route_id'], ['get', 'id']]
+      ]
+    ]
+  ],
+  'text-font': ['Source Sans Pro Bold'],
+  'text-size': 11,
+  'text-keep-upright': true,
+  'text-max-angle': 45
+}
+
+const TRIPS_NAME_PAINT = {
+  'text-color': theme.palette.text.primary,
+  'text-halo-color': theme.palette.common.white,
+  'text-halo-width': 1
+}
+
 const STOPS_CIRCLE_PAINT = {
-  'circle-radius': ['interpolate', ['linear'], ['zoom'], 5, 2.5, 18, 8],
+  'circle-radius': ['interpolate', ['linear'], ['zoom'], 8, 2.5, 18, 8],
   'circle-color': theme.palette.tertiary.main,
-  'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 5, 1, 18, 3],
+  'circle-stroke-width': ['interpolate', ['linear'], ['zoom'], 8, 1, 18, 3],
   'circle-stroke-color': theme.palette.common.white,
   'circle-opacity': 0.8
 }
@@ -169,6 +235,8 @@ const MobileMap = () => {
       mapSettings,
       mapSettingsDialogOpen,
       mapFlyToPosition,
+      mapFitBounds,
+      mapFitMaxZoom,
       mobileLibraryDialogOpen
     },
     dispatchView
@@ -177,6 +245,7 @@ const MobileMap = () => {
   const [map, setMap] = useState(null)
   const [cursor, setCursor] = useState('grab')
   const [activeMobilesMenuAnchor, setActiveMobilesMenuAnchor] = useState(null)
+  const [activeMobileMenuType, setActiveMobileMenuType] = useState('active')
   const [markerSize, setMarkerSize] = useState(() =>
     getMarkerSizeForZoom(mapZoom[0])
   )
@@ -196,12 +265,27 @@ const MobileMap = () => {
 
   useEffect(() => {
     if (mapFlyToPosition && map) {
+      const padding = getMapPadding(map)
+      const offset = getMapCenterOffset(padding)
       map.flyTo({
         center: mapFlyToPosition,
-        zoom: mapZoom?.[0] || 14
+        zoom: mapZoom?.[0] || 14,
+        padding: 0,
+        offset
       })
     }
   }, [mapFlyToPosition, mapZoom, map])
+
+  useEffect(() => {
+    if (!mapFitBounds || !map) return
+    const padding = getMapPadding(map)
+    map.fitBounds(mapFitBounds, {
+      padding,
+      absolutePadding: true,
+      maxZoom: mapFitMaxZoom || 14,
+      duration: 900
+    })
+  }, [mapFitBounds, mapFitMaxZoom, map])
 
   // Only fetch stop details from API if selected by ID on the map (when currentStop isn't already populated)
   useEffect(() => {
@@ -209,11 +293,13 @@ const MobileMap = () => {
     if (!currentStopId || (currentStop && currentStop.id === currentStopId)) {
       return
     }
-    stopModel.getStopById(currentStopId).then(stopData => {
+    const loadCurrentStop = async () => {
+      const stopData = await stopModel.getStopById(currentStopId)
       if (active && stopData && stopData.id) {
         dispatchSearch({ type: 'SetCurrentStop', currentStop: stopData })
       }
-    })
+    }
+    loadCurrentStop()
     return () => {
       active = false
     }
@@ -277,7 +363,29 @@ const MobileMap = () => {
     let active = true
     if (!mobileLibraryDialogOpen || !currentMobileLibraryId) return
 
-    resolveMobileCoordinates(currentMobileLibraryId).then(coords => {
+    const fitMobileStops = async () => {
+      const stops = await stopModel.getAllQueryStops(
+        [],
+        [currentMobileLibraryId],
+        []
+      )
+      if (!active) return
+
+      const stopCoordinates = stops.map(stop => [
+        stop.longitude,
+        stop.latitude
+      ])
+      const bounds = geoHelper.getCoordinateBounds(stopCoordinates)
+      if (bounds) {
+        dispatchView({
+          type: 'FitBounds',
+          mapFitBounds: bounds,
+          mapFitMaxZoom: 14
+        })
+        return
+      }
+
+      const coords = await resolveMobileCoordinates(currentMobileLibraryId)
       if (active && coords) {
         dispatchView({
           type: 'FlyTo',
@@ -285,7 +393,8 @@ const MobileMap = () => {
           mapZoom: 12
         })
       }
-    })
+    }
+    fitMobileStops()
     return () => {
       active = false
     }
@@ -310,11 +419,14 @@ const MobileMap = () => {
           loc.currentStopId || loc.nextStopId || loc.previousStopId
         if (stopId) {
           requestedFallbackIdsRef.current.add(loc.mobileId)
-          stopModel.getStopById(stopId).then(stop => {
+          const cacheStopCoordinates = async () => {
+            const stop = await stopModel.getStopById(stopId)
             if (stop && stop.longitude != null && stop.latitude != null) {
-              cacheFallbackCoords(loc.mobileId, [stop.longitude, stop.latitude])
+              const coords = [stop.longitude, stop.latitude]
+              cacheFallbackCoords(loc.mobileId, coords)
             }
-          })
+          }
+          cacheStopCoordinates()
         }
       }
     }
@@ -330,7 +442,7 @@ const MobileMap = () => {
         if (!mobile) return null
         const localAuthority = localAuthorityLookup[mobile.localAuthorityId]
         const status = loc.getStatus(now)
-        const isActive = loc.isActive(status)
+        const isOnRoad = loc.isOnRoad(status)
         return {
           loc,
           mobile,
@@ -338,7 +450,7 @@ const MobileMap = () => {
           label: mobile.getDisplayTitle(localAuthority),
           status,
           statusText: status?.textFormat || '',
-          isActive
+          isOnRoad
         }
       })
       .filter(Boolean)
@@ -439,8 +551,8 @@ const MobileMap = () => {
   const handleMouseLeave = useCallback(() => setCursor('grab'), [])
 
   const activeVehicles = useMemo(() => {
-    return vehicleStatuses.filter(({ mobile, isActive }) => {
-      if (!isActive) return false
+    return vehicleStatuses.filter(({ mobile, isOnRoad }) => {
+      if (!isOnRoad) return false
       if (
         localAuthorityFilter.length > 0 &&
         !localAuthorityFilter.includes(mobile.localAuthorityId)
@@ -450,6 +562,37 @@ const MobileMap = () => {
       return mobileFilter.length === 0 || mobileFilter.includes(mobile.id)
     })
   }, [vehicleStatuses, localAuthorityFilter, mobileFilter])
+
+  const otherMobiles = useMemo(() => {
+    const onRoadMobileIds = new Set(
+      vehicleStatuses
+        .filter(({ isOnRoad }) => isOnRoad)
+        .map(({ mobile }) => mobile.id)
+    )
+    const allMobiles = Object.values(mobileLookup || {})
+    const filteredMobiles = getOtherMobiles(allMobiles, onRoadMobileIds)
+      .filter(mobile =>
+        localAuthorityFilter.length === 0 ||
+        localAuthorityFilter.includes(mobile.localAuthorityId)
+      )
+      .filter(mobile =>
+        mobileFilter.length === 0 || mobileFilter.includes(mobile.id)
+      )
+    return filteredMobiles.map(mobile => {
+      const localAuthority = localAuthorityLookup[mobile.localAuthorityId]
+      const location = mobileLocationLookup[mobile.id]
+      const status = location?.getStatus()
+      const statusText = status?.textFormat || ''
+      return { mobile, localAuthority, statusText }
+    })
+  }, [
+    vehicleStatuses,
+    mobileLookup,
+    mobileLocationLookup,
+    localAuthorityLookup,
+    localAuthorityFilter,
+    mobileFilter
+  ])
 
   const trackedMobile =
     mobileLibraryDialogOpen && currentMobileLibraryId != null
@@ -470,8 +613,8 @@ const MobileMap = () => {
     const now = new Date()
     const renderedIds = new Set()
     const list = vehicleStatuses
-      .map(({ loc, localAuthority, label, statusText, isActive }) => {
-        if (!isActive) return null
+      .map(({ loc, localAuthority, label, statusText, status }) => {
+        if (!loc.isOnRoad(status)) return null
         const coordinates =
           loc.getCoordinates(now) || fallbackCoordsByMobileId[loc.mobileId]
         if (!coordinates) return null
@@ -506,6 +649,7 @@ const MobileMap = () => {
 
     if (
       trackedMobile &&
+      trackedLocation?.isOnRoad(trackedLocation?.getStatus(now)) &&
       !renderedIds.has(trackedMobile.id) &&
       trackedCoordinates
     ) {
@@ -551,6 +695,13 @@ const MobileMap = () => {
     }
   }, [trackedLocation])
 
+  const vehiclesInMobileMenu =
+    activeMobileMenuType === 'active' ? activeVehicles : otherMobiles
+  const mobileMenuButtonId =
+    activeMobileMenuType === 'active'
+      ? 'on-the-road-button'
+      : 'other-mobiles-button'
+
   return (
     <Box
       sx={{
@@ -567,6 +718,7 @@ const MobileMap = () => {
         component='header'
         position='absolute'
         elevation={0}
+        color='transparent'
         sx={theme => ({
           zIndex: 5,
           ...theme.custom.mapTopBar,
@@ -578,7 +730,7 @@ const MobileMap = () => {
           sx={{
             minHeight: { xs: 48, sm: 56 },
             px: 1.5,
-            gap: 1,
+            gap: { xs: 0.5, sm: 1 },
             justifyContent: 'space-between'
           }}
         >
@@ -586,32 +738,85 @@ const MobileMap = () => {
             sx={{
               display: 'flex',
               alignItems: 'center',
-              gap: 1,
+              gap: { xs: 0.5, sm: 1 },
+              flex: { xs: 1, sm: 'initial' },
               minWidth: 0
             }}
           >
             <Button
               id='on-the-road-button'
               aria-controls={
-                activeMobilesMenuAnchor ? 'on-the-road-menu' : undefined
+                activeMobilesMenuAnchor && activeMobileMenuType === 'active'
+                  ? 'mobile-status-menu'
+                  : undefined
               }
-              aria-expanded={Boolean(activeMobilesMenuAnchor)}
+              aria-expanded={
+                Boolean(activeMobilesMenuAnchor) &&
+                activeMobileMenuType === 'active'
+              }
               aria-haspopup='menu'
               size='small'
               variant={activeVehicles.length > 0 ? 'contained' : 'outlined'}
               color='primary'
               startIcon={<DirectionsBusIcon />}
-              endIcon={
-                activeVehicles.length > 0 ? <ExpandMoreIcon /> : undefined
-              }
+              endIcon={<ExpandMoreIcon />}
               onClick={e => {
-                if (activeVehicles.length > 0) {
-                  setActiveMobilesMenuAnchor(e.currentTarget)
-                }
+                setActiveMobileMenuType('active')
+                setActiveMobilesMenuAnchor(e.currentTarget)
               }}
-              sx={{ flexShrink: 0 }}
+              sx={{
+                flex: { xs: '1 1 0', sm: '0 0 auto' },
+                minWidth: 0,
+                px: { xs: 0.75, sm: 1.5 },
+                fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+                '& .MuiButton-startIcon': { mr: { xs: 0.5, sm: 1 } },
+                '& .MuiButton-endIcon': { ml: { xs: 0.25, sm: 0.5 } }
+              }}
             >
-              On the road ({activeVehicles.length})
+              <Box component='span' sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                On the road ({activeVehicles.length})
+              </Box>
+              <Box component='span' sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                Out now ({activeVehicles.length})
+              </Box>
+            </Button>
+
+            <Button
+              id='other-mobiles-button'
+              aria-controls={
+                activeMobilesMenuAnchor && activeMobileMenuType === 'other'
+                  ? 'mobile-status-menu'
+                  : undefined
+              }
+              aria-expanded={
+                Boolean(activeMobilesMenuAnchor) &&
+                activeMobileMenuType === 'other'
+              }
+              aria-haspopup='menu'
+              size='small'
+              variant={otherMobiles.length > 0 ? 'contained' : 'outlined'}
+              color='primary'
+              startIcon={<DirectionsBusIcon />}
+              endIcon={<ExpandMoreIcon />}
+              onClick={e => {
+                setActiveMobileMenuType('other')
+                setActiveMobilesMenuAnchor(e.currentTarget)
+              }}
+              sx={{
+                flex: { xs: '1 1 0', sm: '0 0 auto' },
+                minWidth: 0,
+                px: { xs: 0.75, sm: 1.5 },
+                fontSize: { xs: '0.75rem', sm: '0.8125rem' },
+                '& .MuiButton-startIcon': { mr: { xs: 0.5, sm: 1 } },
+                '& .MuiButton-endIcon': { ml: { xs: 0.25, sm: 0.5 } }
+              }}
+            >
+              <Box component='span' sx={{ display: { xs: 'none', sm: 'inline' } }}>
+                Other mobiles ({otherMobiles.length})
+              </Box>
+              <Box component='span' sx={{ display: { xs: 'inline', sm: 'none' } }}>
+                Other ({otherMobiles.length})
+              </Box>
             </Button>
 
             {trackedMobile && (
@@ -625,6 +830,7 @@ const MobileMap = () => {
                     type: 'SetMobileLibraryDialog',
                     mobileLibraryDialogOpen: false
                   })}
+                sx={{ display: { xs: 'none', md: 'inline-flex' } }}
               />
             )}
           </Box>
@@ -639,7 +845,10 @@ const MobileMap = () => {
                   type: 'SetMapSettingsDialog',
                   mapSettingsDialogOpen: true
                 })}
-              sx={{ flexShrink: 0 }}
+              sx={{
+                display: { xs: 'none', md: 'inline-flex' },
+                flexShrink: 0
+              }}
             >
               Layers
             </Button>
@@ -648,8 +857,8 @@ const MobileMap = () => {
       </AppBar>
 
       <Menu
-        id='on-the-road-menu'
-        aria-labelledby='on-the-road-button'
+        id='mobile-status-menu'
+        aria-labelledby={mobileMenuButtonId}
         anchorEl={activeMobilesMenuAnchor}
         open={Boolean(activeMobilesMenuAnchor)}
         onClose={() => setActiveMobilesMenuAnchor(null)}
@@ -660,73 +869,88 @@ const MobileMap = () => {
           }
         }}
       >
-        {activeVehicles.map(({ mobile, localAuthority, statusText }) => (
-          <MenuItem
-            key={`act_mob_${mobile.id}`}
-            selected={
-              mobileLibraryDialogOpen && currentMobileLibraryId === mobile.id
-            }
-            onClick={() => {
-              setActiveMobilesMenuAnchor(null)
-              openMobileTracker(mobile.id)
-            }}
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'flex-start',
-              py: 0.75
-            }}
-          >
-            <Typography
-              variant='body2'
-              sx={{ fontWeight: 700, color: 'text.primary' }}
-            >
-              {mobile.getDisplayTitle(localAuthority, ': ')}
-            </Typography>
-            {statusText && (
-              <Typography
-                variant='caption'
-                sx={{ color: 'primary.main', fontSize: '0.75rem' }}
+        {vehiclesInMobileMenu.length > 0
+          ? vehiclesInMobileMenu.map(
+            ({ mobile, localAuthority, statusText }) => (
+              <MenuItem
+                key={`${activeMobileMenuType}_${mobile.id}`}
+                selected={
+                  mobileLibraryDialogOpen &&
+                  currentMobileLibraryId === mobile.id
+                }
+                onClick={() => {
+                  setActiveMobilesMenuAnchor(null)
+                  openMobileTracker(mobile.id)
+                }}
+                sx={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  py: 0.75
+                }}
               >
-                {statusText}
+                <Typography
+                  variant='body2'
+                  sx={{ fontWeight: 700, color: 'text.primary' }}
+                >
+                  {mobile.getDisplayTitle(localAuthority, ': ')}
+                </Typography>
+                {statusText && (
+                  <Typography
+                    variant='caption'
+                    sx={{ color: 'primary.main', fontSize: '0.75rem' }}
+                  >
+                    {statusText}
+                  </Typography>
+                )}
+              </MenuItem>
+            )
+          )
+          : (
+            <MenuItem disabled>
+              <Typography variant='body2'>
+                {activeMobileMenuType === 'active'
+                  ? 'No mobiles on the road.'
+                  : 'No other mobiles.'}
               </Typography>
+            </MenuItem>
             )}
-          </MenuItem>
-        ))}
       </Menu>
 
       {/* Interactive Mobile Tracker overlay when a mobile library is clicked */}
       {trackedMobile && (
-        <MobileTracker
-          mobile={trackedMobile}
-          localAuthority={trackedAuthority}
-          location={trackedLocation}
-          routes={trackedRoutes}
-          onSelectStop={stopId => {
-            stopModel.getStopById(stopId).then(s => {
-              if (s && s.id) {
-                dispatchSearch({ type: 'SetCurrentStop', currentStop: s })
+        <Suspense fallback={null}>
+          <MobileTracker
+            mobile={trackedMobile}
+            localAuthority={trackedAuthority}
+            location={trackedLocation}
+            routes={trackedRoutes}
+            onSelectStop={async stopId => {
+              const stop = await stopModel.getStopById(stopId)
+              if (stop && stop.id) {
+                dispatchSearch({ type: 'SetCurrentStop', currentStop: stop })
                 dispatchView({
                   type: 'SetStopExpanded',
                   stopDetailsExpanded: false
                 })
-                if (s.longitude != null && s.latitude != null) {
+                if (stop.longitude != null && stop.latitude != null) {
+                  const coordinates = [stop.longitude, stop.latitude]
                   dispatchView({
                     type: 'FlyTo',
-                    mapFlyToPosition: [s.longitude, s.latitude],
+                    mapFlyToPosition: coordinates,
                     mapZoom: 15
                   })
                 }
               }
-            })
-          }}
-          onFilterMobile={handleFilterMobile}
-          onClose={() =>
-            dispatchView({
-              type: 'SetMobileLibraryDialog',
-              mobileLibraryDialogOpen: false
-            })}
-        />
+            }}
+            onFilterMobile={handleFilterMobile}
+            onClose={() =>
+              dispatchView({
+                type: 'SetMobileLibraryDialog',
+                mobileLibraryDialogOpen: false
+              })}
+          />
+        </Suspense>
       )}
 
       <Map
@@ -756,8 +980,7 @@ const MobileMap = () => {
                 <PlaceIcon
                   sx={{
                     fontSize: 38,
-                    color: 'tertiary.main',
-                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.35))'
+                    color: 'primary.main'
                   }}
                 />
               </Tooltip>
@@ -812,15 +1035,23 @@ const MobileMap = () => {
             id='trips-line'
             type='line'
             source-layer='trips'
-            minzoom={14}
+            minzoom={9}
             layout={LINE_LAYOUT}
             paint={TRIPS_LINE_PAINT}
+          />
+          <Layer
+            id='trips-label'
+            type='symbol'
+            source-layer='trips'
+            minzoom={9}
+            layout={TRIPS_NAME_LAYOUT}
+            paint={TRIPS_NAME_PAINT}
           />
           <Layer
             id='stops-circle'
             type='circle'
             source-layer='stops'
-            minzoom={5}
+            minzoom={8}
             paint={STOPS_CIRCLE_PAINT}
           />
           <Layer
@@ -850,10 +1081,38 @@ const MobileMap = () => {
         <NavigationControl position='bottom-right' showCompass={false} />
       </Map>
 
-      <MapSettings
-        mapSettings={mapSettings}
-        mapSettingsDialogOpen={mapSettingsDialogOpen}
-      />
+      <Box
+        sx={{
+          position: 'absolute',
+          left: 1.5,
+          bottom: 1.5,
+          zIndex: 5,
+          display: { xs: 'flex', md: 'none' },
+          border: 1,
+          borderColor: 'divider',
+          borderRadius: 1,
+          backgroundColor: 'background.paper'
+        }}
+      >
+        <Tooltip title='Map layers & settings' describeChild>
+          <IconButton
+            aria-label='Map layers and settings'
+            onClick={() =>
+              dispatchView({
+                type: 'SetMapSettingsDialog',
+                mapSettingsDialogOpen: true
+              })}
+          >
+            <LayersIcon />
+          </IconButton>
+        </Tooltip>
+      </Box>
+
+      {mapSettingsDialogOpen && (
+        <Suspense fallback={null}>
+          <MapSettings />
+        </Suspense>
+      )}
     </Box>
   )
 }

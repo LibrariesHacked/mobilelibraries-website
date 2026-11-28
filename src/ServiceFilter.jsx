@@ -138,7 +138,9 @@ const Filters = () => {
 
   const filteredRoutes = useMemo(() => {
     if (mobileFilter.length === 0) return routes
-    return routes.filter(route => mobileFilter.includes(route.mobileId))
+    return routes.filter(route =>
+      mobileFilter.includes(route.mobileId)
+    )
   }, [routes, mobileFilter])
 
   return (

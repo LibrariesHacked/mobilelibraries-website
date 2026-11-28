@@ -144,16 +144,64 @@ export async function getQueryStops (
   try {
     const response = await apiGet(path)
     if (response && Array.isArray(response.data) && response.data.length > 0) {
+      const parsedTotalCount = parseInt(
+        response.headers?.['x-total-count'],
+        10
+      )
+      const hasTotalCount = Number.isFinite(parsedTotalCount)
+      const stops = response.data.map(s => new Stop().fromJson(s))
       return {
-        stops: response.data.map(s => new Stop().fromJson(s)),
-        totalRowCount:
-          parseInt(response.headers['x-total-count'], 10) ||
-          response.data.length,
-        currentPage: parseInt(response.headers['x-page'], 10) || 1
+        stops,
+        totalRowCount: hasTotalCount ? parsedTotalCount : response.data.length,
+        currentPage: parseInt(response.headers?.['x-page'], 10) || 1,
+        hasMore: hasTotalCount
+          ? (query.page + 1) * query.pageSize < parsedTotalCount
+          : response.data.length === query.pageSize
       }
     }
   } catch (e) {}
   return { stops: [], totalRowCount: 0, currentPage: 1 }
+}
+
+/**
+ * Fetches every stop matching the selected service, mobile, or route filters.
+ *
+ * @param {Array<string|number>} localAuthorityFilter - Selected local authority IDs.
+ * @param {Array<string|number>} mobileFilter - Selected mobile library IDs.
+ * @param {Array<string|number>} routeFilter - Selected route IDs.
+ * @returns {Promise<Stop[]>} All matching stops.
+ */
+export async function getAllQueryStops (
+  localAuthorityFilter = [],
+  mobileFilter = [],
+  routeFilter = []
+) {
+  const pageSize = 500
+  const stops = []
+  let page = 0
+  let hasMore = true
+
+  while (hasMore) {
+    const result = await getQueryStops(
+      {
+        page,
+        pageSize,
+        orderBy: { field: 'name', direction: 'asc' }
+      },
+      [],
+      '',
+      localAuthorityFilter,
+      mobileFilter,
+      routeFilter
+    )
+    if (result.stops.length === 0) break
+
+    stops.push(...result.stops)
+    hasMore = result.hasMore
+    page += 1
+  }
+
+  return stops
 }
 
 /**

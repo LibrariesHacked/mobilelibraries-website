@@ -27,6 +27,7 @@ import { useViewStateValue } from './context/viewState'
 import ExternalLink from './ExternalLink'
 import ServiceFilter from './ServiceFilter'
 import { formatTimeWindow } from './helpers/dates'
+import * as geoHelper from './helpers/geo'
 import * as stopModel from './models/stops'
 import * as urlHelper from './helpers/url'
 import { metersToMiles } from './helpers/utils'
@@ -35,21 +36,28 @@ const PAGE_SIZE = 6
 
 /**
  * Clean expandable card representing a single mobile library stop.
- * Clicking the card selects & locates the stop on the map and toggles full stop details inline.
+ * Clicking the card locates the stop on the map; the expand button toggles its details.
  *
  * @param {Object} props - Component props.
  * @param {import('./models/stops').Stop} props.stop - Stop model instance.
  * @param {boolean} props.selected - Whether this stop is the current map selection.
  * @param {boolean} props.expanded - Whether the full stop details are expanded.
- * @param {(stop: import('./models/stops').Stop) => void} props.onToggle - Handler when the stop card is clicked.
+ * @param {(stop: import('./models/stops').Stop) => void} props.onSelect - Handler when the stop card is clicked.
+ * @param {(stop: import('./models/stops').Stop) => void} props.onToggleExpand - Handler when details are toggled.
  * @param {(mobileId: number) => void} [props.onSelectMobile] - Handler to open the mobile tracker for a visiting vehicle.
  * @returns {JSX.Element} StopCard component.
  */
-const StopCard = React.memo(({ stop, selected, expanded, onToggle, onSelectMobile }) => {
+const StopCard = React.memo(({ stop, selected, expanded, onSelect, onToggleExpand, onSelectMobile }) => {
   const addressLine = [stop.address, stop.postcode].filter(Boolean).join(', ')
   const scheduleSummary = (stop.routeFrequencyDescriptions || [])
     .map((desc, idx) => {
       const day = stop.routeDays?.[idx] || stop.routeDays?.[0] || ''
+      const includesDay =
+        day &&
+        typeof desc === 'string' &&
+        desc.toLowerCase().includes(day.toLowerCase())
+      if (includesDay) return desc
+
       return [day, desc].filter(Boolean).join(', ')
     })
     .join(' • ')
@@ -64,17 +72,13 @@ const StopCard = React.memo(({ stop, selected, expanded, onToggle, onSelectMobil
       id={`stop-card-${stop.id}`}
       sx={selected ? { backgroundColor: 'background.subtle' } : undefined}
     >
-      <CardActionArea
-        onClick={() => onToggle(stop)}
-        aria-expanded={expanded}
-        sx={{ px: { xs: 1.25, sm: 2 }, py: { xs: 1, sm: 1.5 } }}
-      >
-        <Stack
-          direction='row'
-          spacing={1}
-          sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <CardActionArea
+          onClick={() => onSelect(stop)}
+          aria-label={`Locate ${stop.name} on map`}
+          sx={{ flexGrow: 1, minWidth: 0, px: { xs: 1.25, sm: 2 }, py: { xs: 0.75, sm: 1.5 } }}
         >
-          <Box sx={{ minWidth: 0, flexGrow: 1 }}>
+          <Box sx={{ minWidth: 0 }}>
             <Stack
               direction='row'
               spacing={0.75}
@@ -138,15 +142,19 @@ const StopCard = React.memo(({ stop, selected, expanded, onToggle, onSelectMobil
               <Stack
                 direction='row'
                 spacing={0.5}
-                sx={{ alignItems: 'center', mt: 0.5 }}
+                sx={{ alignItems: 'center', mt: { xs: 0.25, sm: 0.5 } }}
               >
                 <CalendarTodayIcon
-                  sx={{ fontSize: '0.88rem', color: 'primary.main' }}
+                  sx={{
+                    fontSize: '0.88rem',
+                    color: 'primary.main',
+                    display: { xs: 'none', sm: 'block' }
+                  }}
                 />
                 <Typography
                   variant='caption'
                   sx={{
-                    fontSize: { xs: '0.75rem', sm: '0.85rem' },
+                    fontSize: { xs: '0.7rem', sm: '0.85rem' },
                     fontWeight: 600,
                     color: 'text.primary'
                   }}
@@ -156,18 +164,23 @@ const StopCard = React.memo(({ stop, selected, expanded, onToggle, onSelectMobil
               </Stack>
             )}
           </Box>
-          <Box sx={{ color: 'primary.main', display: 'flex' }}>
-            {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-          </Box>
-        </Stack>
-      </CardActionArea>
+        </CardActionArea>
+        <IconButton
+          aria-label={`${expanded ? 'Hide' : 'Show'} details for ${stop.name}`}
+          aria-expanded={expanded}
+          onClick={() => onToggleExpand(stop)}
+          sx={{ flexShrink: 0, mx: { xs: 0.25, sm: 0.75 } }}
+        >
+          {expanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+        </IconButton>
+      </Box>
 
       <Collapse in={expanded} timeout='auto' unmountOnExit>
         <CardContent
-          sx={theme => ({
+          sx={{
             p: { xs: 1.25, sm: 2 },
-            borderTop: `2px solid ${theme.palette.background.default}`
-          })}
+            backgroundColor: 'background.detail'
+          }}
         >
           <Stack spacing={{ xs: 1, sm: 1.25 }}>
             {(stop.localAuthorityName || stop.community || stop.distance != null) && (
@@ -389,9 +402,25 @@ const Stops = () => {
   const prevFilterSigRef = useRef(filterSignature)
   const filterChanged = prevFilterSigRef.current !== filterSignature
   const effectivePage = filterChanged ? 0 : page
+  const hasStopQuery =
+    searchPosition?.length > 1 ||
+    localAuthorityFilter.length > 0 ||
+    mobileFilter.length > 0 ||
+    routeFilter.length > 0
 
   useEffect(() => {
     let active = true
+    if (!hasStopQuery) {
+      prevFilterSigRef.current = filterSignature
+      if (page !== 0) setPage(0)
+      setMobileStops([])
+      setTotalCount(0)
+      setLoadingMobileStops(false)
+      return () => {
+        active = false
+      }
+    }
+
     if (filterChanged) {
       prevFilterSigRef.current = filterSignature
       if (page !== 0) setPage(0)
@@ -400,8 +429,8 @@ const Stops = () => {
     const sortField = searchPosition?.length > 0 ? 'distance' : 'name'
     setLoadingMobileStops(true)
 
-    stopModel
-      .getQueryStops(
+    const loadStops = async () => {
+      const result = await stopModel.getQueryStops(
         {
           page: effectivePage,
           pageSize: PAGE_SIZE,
@@ -413,31 +442,41 @@ const Stops = () => {
         mobileFilter,
         routeFilter
       )
-      .then(res => {
-        if (!active) return
-        setMobileStops(res.stops)
-        setTotalCount(res.totalRowCount || 0)
-        setLoadingMobileStops(false)
+      if (!active) return
+      setMobileStops(result.stops)
+      setTotalCount(result.totalRowCount || 0)
+      setLoadingMobileStops(false)
 
-        // When a filter is newly selected, pan the map to the first matching stop
-        if (
-          filterChanged &&
-          res.stops.length > 0 &&
-          (localAuthorityFilter.length > 0 ||
-            mobileFilter.length > 0 ||
-            routeFilter.length > 0)
-        ) {
-          const first = res.stops[0]
-          if (first.longitude != null && first.latitude != null) {
-            dispatchView({
-              type: 'FlyTo',
-              mapFlyToPosition: [first.longitude, first.latitude],
-              mapZoom:
-                routeFilter.length > 0 || mobileFilter.length > 0 ? 13 : 10
-            })
-          }
+      if (
+        filterChanged &&
+        (localAuthorityFilter.length > 0 ||
+          mobileFilter.length > 0 ||
+          routeFilter.length > 0)
+      ) {
+        const stops = await stopModel.getAllQueryStops(
+          localAuthorityFilter,
+          mobileFilter,
+          routeFilter
+        )
+        if (!active) return
+
+        const stopCoordinates = stops.map(stop => [
+          stop.longitude,
+          stop.latitude
+        ])
+        const bounds = geoHelper.getCoordinateBounds(stopCoordinates)
+        if (bounds) {
+          const mapFitMaxZoom =
+            routeFilter.length > 0 || mobileFilter.length > 0 ? 14 : 12
+          dispatchView({
+            type: 'FitBounds',
+            mapFitBounds: bounds,
+            mapFitMaxZoom
+          })
         }
-      })
+      }
+    }
+    loadStops()
 
     return () => {
       active = false
@@ -450,21 +489,38 @@ const Stops = () => {
     localAuthorityFilter,
     mobileFilter,
     routeFilter,
-    dispatchView
+    dispatchView,
+    hasStopQuery
   ])
 
-  const handleToggleStop = useCallback(
+  const handleSelectStop = useCallback(
     stop => {
-      const isSameStop = currentStopId === stop.id
-      const nextExpanded = isSameStop ? !stopDetailsExpanded : true
-
       dispatchSearch({
         type: 'SetCurrentStop',
         currentStop: stop
       })
       dispatchView({
         type: 'SetStopExpanded',
-        stopDetailsExpanded: nextExpanded
+        stopDetailsExpanded: false
+      })
+      if (stop.longitude != null && stop.latitude != null) {
+        dispatchView({
+          type: 'FlyTo',
+          mapFlyToPosition: [stop.longitude, stop.latitude],
+          mapZoom: 15
+        })
+      }
+    },
+    [dispatchSearch, dispatchView]
+  )
+
+  const handleToggleStopDetails = useCallback(
+    stop => {
+      const isSameStop = currentStopId === stop.id
+      dispatchSearch({ type: 'SetCurrentStop', currentStop: stop })
+      dispatchView({
+        type: 'SetStopExpanded',
+        stopDetailsExpanded: isSameStop ? !stopDetailsExpanded : true
       })
       if (stop.longitude != null && stop.latitude != null) {
         dispatchView({
@@ -564,7 +620,8 @@ const Stops = () => {
                   expanded={
                     currentStopId === stop.id && Boolean(stopDetailsExpanded)
                   }
-                  onToggle={handleToggleStop}
+                  onSelect={handleSelectStop}
+                  onToggleExpand={handleToggleStopDetails}
                   onSelectMobile={handleSelectMobile}
                 />
               ))}
@@ -574,7 +631,9 @@ const Stops = () => {
               ? (
                 <Card sx={{ p: 3, textAlign: 'center' }}>
                   <Typography variant='body2'>
-                    No mobile library stops match your current search.
+                    {hasStopQuery
+                      ? 'No mobile library stops match your current search.'
+                      : 'Search for a place or choose a library service to find stops.'}
                   </Typography>
                 </Card>
                 )
